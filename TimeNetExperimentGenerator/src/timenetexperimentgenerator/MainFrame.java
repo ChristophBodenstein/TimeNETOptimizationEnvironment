@@ -571,7 +571,7 @@ private int sizeOfDesignSpace;
                 */
                 //modifiziertes Parameterset hinzufügen
                 //if(!isAlreadyInExportList){ListOfParameterSetsToBeWritten.add(nextParameterSet);}
-                if(ListOfParameterAsFromTable.size()==1){
+                if(ListOfParameterAsFromTable.size()==0){
                 addToListOfParameterSetsToBeWritten(nextParameterSet);}
                 //Aufruf mit der aktuellen, reduzierten Parameterliste
                 buildListOfParameterSetsToExport(ListOfParameterSetsToBeWritten, ListOfParameterAsFromTable, nextParameterSet, infoLabel);
