@@ -236,6 +236,7 @@ JLabel infoLabel;
         newParameterSet[i].setValue(getString(Math.min(arrayOfIncrements[i]+getFloat(newParameterSet[i].getValue()),getFloat(newParameterSet[i].getEndValue())) ) );
         System.out.println(newParameterSet[i].getValue());
         }
+    this.parameterBase=newParameterSet;
     }
 
     /*
