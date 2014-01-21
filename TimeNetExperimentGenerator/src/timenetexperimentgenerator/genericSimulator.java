@@ -80,7 +80,7 @@ String actualSimulationLogFile="";//actual log-file for one local simulation
         if(checkTimeNetPath()){
             try{
             System.out.println("Timenet-Path ok, starting local simulations.");
-            logFileName=tmpFilePath+File.separator+"SimLog"+Calendar.getInstance().getTime().toString()+".csv";
+            logFileName=tmpFilePath+File.separator+"SimLog"+Calendar.getInstance().getTimeInMillis()+".csv";
             System.out.println("Logfilename is:"+logFileName);
             //Öffnen des Logfiles und Schreiben der ersten Zeile
             FileWriter fw;
