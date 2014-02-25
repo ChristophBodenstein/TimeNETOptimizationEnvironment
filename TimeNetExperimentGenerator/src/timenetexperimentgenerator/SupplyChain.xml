@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<net id="0" netclass="SCPN"
+  xmlns="http://pdv.cs.tu-berlin.de/TimeNET/schema/SCPN"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pdv.cs.tu-berlin.de/TimeNET/schema/SCPN etc/schemas/SCPN.xsd">
+  <place capacity="0" id="0.0" initialMarking="" queue="Random"
+    tokentype="Workpiece" type="node" watch="false">
+    <graphics orientation="0" x="284" y="118"/>
+    <label id="0.0.0" text="ToPlant" type="text">
+      <graphics x="-68" y="-9"/>
+    </label>
+  </place>
+  <place capacity="$capacityOut" id="0.3" initialMarking=""
+    queue="Random" tokentype="Workpiece" type="node" watch="false">
+    <graphics orientation="0" x="670" y="198"/>
+    <label id="0.3.0" text="Material" type="text">
+      <graphics x="23" y="-8"/>
+    </label>
+  </place>
+  <place capacity="0" id="0.7" initialMarking="" queue="Random"
+    tokentype="Container" type="node" watch="false">
+    <graphics orientation="0" x="488" y="268"/>
+    <label id="0.7.0" text="PlantOutbound" type="text">
+      <graphics x="-43" y="25"/>
+    </label>
+  </place>
+  <place capacity="0" id="0.8" initialMarking="" queue="Random"
+    tokentype="int" type="node" watch="false">
+    <graphics orientation="0" x="208" y="268"/>
+    <label id="0.8.0" text="EmptyContainers" type="text">
+      <graphics x="-45" y="-37"/>
+    </label>
+  </place>
+  <place capacity="0" id="0.21" initialMarking="" queue="Random"
+    tokentype="Workpiece" type="node" watch="false">
+    <graphics orientation="0" x="488" y="118"/>
+    <label id="0.21.0" text="PlantInbound" type="text">
+      <graphics x="-35" y="-41"/>
+    </label>
+  </place>
+  <place capacity="0" id="0.28" queue="Random" tokentype="int"
+    type="node" watch="false">
+    <graphics orientation="0" x="213" y="432"/>
+    <label id="0.28.0" text="sum" type="text">
+      <graphics x="9" y="-38"/>
+    </label>
+  </place>
+  <place capacity="0" id="0.29" queue="Random" tokentype="int"
+    type="node" watch="false">
+    <graphics orientation="0" x="220" y="503"/>
+    <label id="0.29.0" text="inserting" type="text">
+      <graphics x="-10" y="-40"/>
+    </label>
+  </place>
+  <place capacity="0" id="0.27" queue="Random" tokentype="int"
+    type="node" watch="false">
+    <graphics orientation="0" x="60" y="352"/>
+    <label id="0.27.0" text="containercount" type="text">
+      <graphics x="-31" y="-39"/>
+    </label>
+  </place>
+  <timedTransition id="0.1" serverType="ExclusiveServer"
+    specType="Automatic" takeFirst="true" timeFunction="EXP(23.5)"
+    type="node" watch="false">
+    <graphics orientation="0" x="186" y="68"/>
+    <label id="0.1.0" text="SupplierA" type="text">
+      <graphics x="-27" y="-43"/>
+    </label>
+  </timedTransition>
+  <timedTransition id="0.2" serverType="ExclusiveServer"
+    specType="Automatic" takeFirst="true" timeFunction="EXP(0.5)"
+    type="node" watch="true">
+    <graphics orientation="0" x="582" y="198"/>
+    <label id="0.2.0" text="Deliver" type="text">
+      <graphics x="-57" y="-8"/>
+    </label>
+  </timedTransition>
+  <timedTransition id="0.9" serverType="InfiniteServer"
+    specType="Automatic" takeFirst="true" timeFunction="EXP(12.0)"
+    type="node" watch="false">
+    <graphics orientation="0" x="354" y="268"/>
+    <label id="0.9.0" text="TransportToSupplier" type="text">
+      <graphics x="-53" y="25"/>
+    </label>
+  </timedTransition>
+  <timedTransition id="0.14" localGuard="w.Type==&quot;A&quot;"
+    serverType="ExclusiveServer" specType="Automatic" takeFirst="true"
+    timeFunction="EXP(24.0)" type="node" watch="true">
+    <graphics orientation="0" x="766" y="123"/>
+    <label id="0.14.0" text="ConsumptionA" type="text">
+      <graphics x="-45" y="-43"/>
+    </label>
+  </timedTransition>
+  <timedTransition id="0.18" serverType="ExclusiveServer"
+    specType="Automatic" takeFirst="true" timeFunction="EXP(5.8)"
+    type="node" watch="false">
+    <graphics orientation="0" x="186" y="158"/>
+    <label id="0.18.0" text="SupplierB" type="text">
+      <graphics x="-28" y="24"/>
+    </label>
+  </timedTransition>
+  <timedTransition id="0.22" serverType="InfiniteServer"
+    specType="Automatic" takeFirst="true" timeFunction="EXP(12.0)"
+    type="node" watch="false">
+    <graphics orientation="0" x="388" y="118"/>
+    <label id="0.22.0" text="TransportToPlant" type="text">
+      <graphics x="-46" y="-44"/>
+    </label>
+  </timedTransition>
+  <timedTransition id="0.25" localGuard="w.Type==&quot;B&quot;"
+    serverType="ExclusiveServer" specType="Automatic" takeFirst="true"
+    timeFunction="EXP(6.0)" type="node" watch="true">
+    <graphics orientation="0" x="768" y="263"/>
+    <label id="0.25.0" text="ConsumptionB" type="text">
+      <graphics x="-43" y="24"/>
+    </label>
+  </timedTransition>
+  <immediateTransition globalGuard="#inserting&lt;1" id="0.30"
+    priority="1" serverType="ExclusiveServer" specType="Automatic"
+    takeFirst="false" type="node" watch="false" weight="1.0E0">
+    <graphics orientation="0" x="58" y="434"/>
+    <label id="0.30.0" text="producing" type="text">
+      <graphics x="-10" y="-40"/>
+    </label>
+  </immediateTransition>
+  <immediateTransition globalGuard="#sum>=$containercount" id="0.33"
+    priority="1" serverType="ExclusiveServer" specType="Automatic"
+    takeFirst="false" type="node" watch="false" weight="1.0E0">
+    <graphics orientation="0" x="55" y="501"/>
+    <label id="0.33.0" text="T1" type="text">
+      <graphics x="-10" y="-40"/>
+    </label>
+  </immediateTransition>
+  <immediateTransition globalGuard="#inserting>0" id="0.34" priority="1"
+    serverType="ExclusiveServer" specType="Automatic" takeFirst="false"
+    type="node" watch="false" weight="1.0E0">
+    <graphics orientation="-90" x="211" y="351"/>
+    <label id="0.34.0" text="T2" type="text">
+      <graphics x="28" y="-8"/>
+    </label>
+  </immediateTransition>
+  <arc fromNode="0.1" id="0.4" toNode="0.0" type="connector">
+    <inscription id="0.4.0" text="new ({Type=&quot;A&quot;})" type="inscriptionText">
+      <graphics x="-40" y="-20"/>
+    </inscription>
+    <handle id="0.4.1">
+      <graphics orientation="0" x="248" y="69"/>
+    </handle>
+  </arc>
+  <arc fromNode="0.2" id="0.6" toNode="0.3" type="connector">
+    <inscription id="0.6.0" text="w" type="inscriptionText">
+      <graphics x="-18" y="6"/>
+    </inscription>
+  </arc>
+  <arc fromNode="0.2" id="0.10" toNode="0.7" type="connector">
+    <inscription id="0.10.0" text="new({N=1})" type="inscriptionText">
+      <graphics x="-51" y="2"/>
+    </inscription>
+    <handle id="0.10.1">
+      <graphics orientation="0" x="583" y="268"/>
+    </handle>
+  </arc>
+  <arc fromNode="0.7" id="0.11" toNode="0.9" type="connector">
+    <inscription id="0.11.0" text="c" type="inscriptionText">
+      <graphics x="-21" y="3"/>
+    </inscription>
+  </arc>
+  <arc fromNode="0.9" id="0.12" toNode="0.8" type="connector">
+    <inscription id="0.12.0" text="new(0)" type="inscriptionText">
+      <graphics x="0" y="5"/>
+    </inscription>
+  </arc>
+  <arc fromNode="0.8" id="0.13" toNode="0.1" type="connector">
+    <inscription id="0.13.0" text="c" type="inscriptionText">
+      <graphics x="6" y="-89"/>
+    </inscription>
+    <handle id="0.13.2">
+      <graphics orientation="0" x="100" y="267"/>
+    </handle>
+    <handle id="0.13.1">
+      <graphics orientation="0" x="99" y="68"/>
+    </handle>
+  </arc>
+  <arc fromNode="0.3" id="0.15" toNode="0.14" type="connector">
+    <inscription id="0.15.0" text="w" type="inscriptionText">
+      <graphics x="12" y="4"/>
+    </inscription>
+    <handle id="0.15.1">
+      <graphics orientation="0" x="690" y="125"/>
+    </handle>
+  </arc>
+  <arc fromNode="0.8" id="0.19" toNode="0.18" type="connector">
+    <inscription id="0.19.0" text="c" type="inscriptionText">
+      <graphics x="6" y="-45"/>
+    </inscription>
+    <handle id="0.19.2">
+      <graphics orientation="0" x="121" y="267"/>
+    </handle>
+    <handle id="0.19.1">
+      <graphics orientation="0" x="119" y="157"/>
+    </handle>
+  </arc>
+  <arc fromNode="0.18" id="0.20" toNode="0.0" type="connector">
+    <inscription id="0.20.0" text="new ({Type=&quot;B&quot;})" type="inscriptionText">
+      <graphics x="-34" y="1"/>
+    </inscription>
+    <handle id="0.20.1">
+      <graphics orientation="0" x="243" y="158"/>
+    </handle>
+  </arc>
+  <arc fromNode="0.0" id="0.23" toNode="0.22" type="connector">
+    <inscription id="0.23.0" text="w" type="inscriptionText">
+      <graphics x="-10" y="-16"/>
+    </inscription>
+  </arc>
+  <arc fromNode="0.22" id="0.24" toNode="0.21" type="connector">
+    <inscription id="0.24.0" text="w" type="inscriptionText">
+      <graphics x="-22" y="-16"/>
+    </inscription>
+  </arc>
+  <arc fromNode="0.21" id="0.5" toNode="0.2" type="connector">
+    <inscription id="0.5.0" text="w" type="inscriptionText">
+      <graphics x="-47" y="-16"/>
+    </inscription>
+    <handle id="0.5.1">
+      <graphics orientation="0" x="581" y="119"/>
+    </handle>
+  </arc>
+  <arc fromNode="0.3" id="0.26" toNode="0.25" type="connector">
+    <inscription id="0.26.0" text="w" type="inscriptionText">
+      <graphics x="8" y="5"/>
+    </inscription>
+    <handle id="0.26.1">
+      <graphics orientation="0" x="694" y="263"/>
+    </handle>
+  </arc>
+  <arc fromNode="0.30" id="0.36" toNode="0.28" type="connector">
+    <inscription id="0.36.0" text="new(0)" type="inscriptionText">
+      <graphics x="0" y="0"/>
+    </inscription>
+  </arc>
+  <arc fromNode="0.33" id="0.38" toNode="0.29" type="connector">
+    <inscription id="0.38.0" text="new(0)" type="inscriptionText">
+      <graphics x="0" y="0"/>
+    </inscription>
+  </arc>
+  <arc fromNode="0.28" id="0.39" toNode="0.34" type="connector">
+    <inscription id="0.39.0" text="x" type="inscriptionText">
+      <graphics x="0" y="0"/>
+    </inscription>
+  </arc>
+  <arc fromNode="0.34" id="0.40" toNode="0.8" type="connector">
+    <inscription id="0.40.0" text="x" type="inscriptionText">
+      <graphics x="0" y="0"/>
+    </inscription>
+  </arc>
+  <arc fromNode="0.34" id="0.35" toNode="0.27" type="connector">
+    <inscription id="0.35.0" text="new(0)" type="inscriptionText">
+      <graphics x="-10" y="1"/>
+    </inscription>
+  </arc>
+  <measure eval="TimeAverage" expression="#Material &lt; 1" id="0.31"
+    name="NoMaterial" result="0.002308793" type="text" watch="true">
+    <graphics x="358" y="338"/>
+  </measure>
+  <measure eval="TimeAverage"
+    expression="($containercount -  #Material)/2.0" id="0.32"
+    name="ImportanceFunction" result="0.2073041" type="text" watch="true">
+    <graphics x="358" y="360"/>
+  </measure>
+  <measure eval="TimeAverage" expression="#Deliver" id="0.43"
+    name="Delivery" result="" type="text" watch="true">
+    <graphics x="359" y="386"/>
+  </measure>
+  <recordTokentype id="0.16" name="Workpiece" type="text">
+    <graphics x="604" y="43"/>
+    <attribute dataType="string" name="Type"/>
+  </recordTokentype>
+  <recordTokentype id="0.17" name="Container" type="text">
+    <graphics x="714" y="43"/>
+    <attribute dataType="int" name="N"/>
+  </recordTokentype>
+  <parameter dataType="int" defaultValue="0" description="" name="testpara"/>
+  <parameter dataType="int" defaultValue="20" description="" name="containercount"/>
+  <parameter dataType="int" defaultValue="20" description="" name="capacityOut"/>
+</net>
