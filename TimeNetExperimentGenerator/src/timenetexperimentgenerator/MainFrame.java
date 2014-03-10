@@ -49,6 +49,7 @@ ArrayList <Long>ListOfParameterSetIds=new ArrayList<Long>();
 private int sizeOfDesignSpace;
 
 
+
     /** Creates new form MainFrame */
     public MainFrame() {
         initComponents();
@@ -223,7 +224,7 @@ private int sizeOfDesignSpace;
             }
         });
 
-        jLabelCheckPathToTimeNet.setFont(new java.awt.Font("Lucida Grande", 1, 13));
+        jLabelCheckPathToTimeNet.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
         jLabelCheckPathToTimeNet.setForeground(new java.awt.Color(255, 0, 0));
         jLabelCheckPathToTimeNet.setText("Check Path to TimeNET.jar!");
 
@@ -262,33 +263,35 @@ private int sizeOfDesignSpace;
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                             .add(layout.createSequentialGroup()
-                                .add(jLabelCheckPathToTimeNet, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 256, Short.MAX_VALUE)
+                                .add(jLabelCheckPathToTimeNet, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .add(182, 182, 182))
-                            .add(org.jdesktop.layout.GroupLayout.LEADING, jTextFieldPathToTimeNet, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 438, Short.MAX_VALUE)
-                            .add(org.jdesktop.layout.GroupLayout.LEADING, jTextFieldSCPNFile, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 438, Short.MAX_VALUE)
-                            .add(org.jdesktop.layout.GroupLayout.LEADING, jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 438, Short.MAX_VALUE))
+                            .add(org.jdesktop.layout.GroupLayout.LEADING, jTextFieldPathToTimeNet)
+                            .add(org.jdesktop.layout.GroupLayout.LEADING, jTextFieldSCPNFile)
+                            .add(org.jdesktop.layout.GroupLayout.LEADING, jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                         .add(28, 28, 28)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                            .add(jLabelSimulationCount, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 286, Short.MAX_VALUE)
-                            .add(org.jdesktop.layout.GroupLayout.LEADING, jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 286, Short.MAX_VALUE)
-                            .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
-                                .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
-                                    .add(jButtonOpenSCPN, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 126, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                    .add(59, 59, 59)
-                                    .add(jButtonReload))
-                                .add(org.jdesktop.layout.GroupLayout.LEADING, jSeparator2)
-                                .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
-                                    .add(jButtonExport)
-                                    .add(18, 18, 18)
-                                    .add(jButton1))
-                                .add(org.jdesktop.layout.GroupLayout.LEADING, jButtonGenerateListOfExperiments, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .add(org.jdesktop.layout.GroupLayout.LEADING, jButtonStartBatchSimulation, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .add(org.jdesktop.layout.GroupLayout.LEADING, jSeparator3)
-                                .add(org.jdesktop.layout.GroupLayout.LEADING, jButtonLoadSampleLogFile, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
-                                    .add(38, 38, 38)
-                                    .add(jLabelExportStatus, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .add(org.jdesktop.layout.GroupLayout.LEADING, jButtonStartOptimization, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
+                            .add(jLabelSimulationCount, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .add(org.jdesktop.layout.GroupLayout.LEADING, jTabbedPane1)
+                            .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
+                                    .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
+                                        .add(jButtonOpenSCPN, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 126, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                        .add(59, 59, 59)
+                                        .add(jButtonReload))
+                                    .add(org.jdesktop.layout.GroupLayout.LEADING, jSeparator2)
+                                    .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
+                                        .add(jButtonExport)
+                                        .add(18, 18, 18)
+                                        .add(jButton1))
+                                    .add(org.jdesktop.layout.GroupLayout.LEADING, jButtonGenerateListOfExperiments, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .add(org.jdesktop.layout.GroupLayout.LEADING, jButtonStartBatchSimulation, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .add(org.jdesktop.layout.GroupLayout.LEADING, jSeparator3)
+                                    .add(org.jdesktop.layout.GroupLayout.LEADING, jButtonLoadSampleLogFile, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
+                                        .add(38, 38, 38)
+                                        .add(jLabelExportStatus, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .add(org.jdesktop.layout.GroupLayout.LEADING, jButtonStartOptimization, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .add(0, 0, Short.MAX_VALUE)))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -321,11 +324,11 @@ private int sizeOfDesignSpace;
                         .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .add(44, 44, 44)
                         .add(jButtonStartOptimization))
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 410, Short.MAX_VALUE))
-                .add(18, 18, 18)
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 399, Short.MAX_VALUE))
+                .add(29, 29, 29)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(jLabelExportStatus, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 18, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jTextFieldPathToTimeNet, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(jTextFieldPathToTimeNet, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jLabelExportStatus, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 18, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                     .add(layout.createSequentialGroup()
@@ -848,12 +851,41 @@ private int sizeOfDesignSpace;
     //this.jButtonStartBatchSimulation.setEnabled(true);
     }
 
+    
+    /*
+    * Checks, if given Path to TimeNet is correct
+    * If correct, then install new "RemoteSystem Client.config"
+    */
     private void checkIfTimeNetPathIsCorrect(){
     String path=jTextFieldPathToTimeNet.getText();
     File tmpFile=new File(path+File.separator+"TimeNET.jar");
         if(tmpFile.exists()){
         this.jButtonStartBatchSimulation.setEnabled(true);
         this.jLabelCheckPathToTimeNet.setVisible(false);
+            //Try to install "RemoteSystem Client.config"
+            try{
+            InputStream ddlStream = this.getClass().getClassLoader().getResourceAsStream("timenetexperimentgenerator/RemoteSystem Client.config");
+                FileOutputStream fos = null;
+                try {
+                    fos = new FileOutputStream(path+File.separator+"RemoteSystem Client.config");
+                    byte[] buf = new byte[2048];
+                    int r = ddlStream.read(buf);
+                    while(r != -1) {
+                        fos.write(buf, 0, r);
+                        r = ddlStream.read(buf);
+                    }
+                } finally {
+                    if(fos != null) {
+                        fos.close();
+                    }
+                }
+            }catch(Exception e){
+            System.out.println("Failed to install RemoteSystem Clent.config");
+            e.printStackTrace();
+            }
+            
+        
+        
         }else{
         this.jButtonStartBatchSimulation.setEnabled(false);
         this.jLabelCheckPathToTimeNet.setVisible(true);
@@ -984,4 +1016,6 @@ private int sizeOfDesignSpace;
         }
     return myTmpList;
     }
+    
+
 }

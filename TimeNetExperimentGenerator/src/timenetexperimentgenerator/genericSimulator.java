@@ -35,7 +35,7 @@ private int simulationCounter=0;//Startvalue for count of simulations, will be i
 boolean cancelSimulations=false;
 String logFileName;
 String actualSimulationLogFile="";//actual log-file for one local simulation
-
+private String nameOfTempDirectory="14623786483530251523506521233052";
 
     //Constructor
 /*
@@ -259,7 +259,14 @@ String actualSimulationLogFile="";//actual log-file for one local simulation
             System.out.println("Deleted original Log-file and directory.");
             this.actualSimulationLogFile=sinkFile;
             }
-
+        File file = new File(exportFileName);
+        String path=file.getAbsolutePath().substring(0,file.getAbsolutePath().lastIndexOf(File.separator)) +File.separator+nameOfTempDirectory;
+    
+        System.out.println("Delete Path to tmp files: "+path);
+        this.del(new File(path));
+        
+        
+        
         } catch (IOException e) {
             e.printStackTrace();
         }
