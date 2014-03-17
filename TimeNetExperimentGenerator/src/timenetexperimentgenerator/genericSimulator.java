@@ -108,6 +108,7 @@ private String nameOfTempDirectory="14623786483530251523506521233052";
                                 }
                                 try {
                                     fw.write(line);
+                                    fw.append( System.getProperty("line.separator") );
                                 } catch (IOException ex) {
                                     System.out.println("Error writing line to log-file.");
                                     ex.printStackTrace();
@@ -116,8 +117,8 @@ private String nameOfTempDirectory="14623786483530251523506521233052";
 
                             //Schreiben der nächsten Zeile ins Logfile
                              try{
-                              fw.write(line);
-                              fw.append( System.getProperty("line.separator") );
+                              //fw.write(line);
+                              //fw.append( System.getProperty("line.separator") );
                                 for(int i1=0;i1<myParser.getMeasures().size();i1++){//Alle Measure schreiben
                                 MeasureType exportMeasure=myParser.getMeasures().get(i1);
                                 line=exportMeasure.getMeasureName()+";"+getCommaFloat(exportMeasure.getMeanValue())+";"+getCommaFloat(exportMeasure.getVariance())+";"+getCommaFloat(exportMeasure.getConfidenceInterval()[0])+";"+getCommaFloat(exportMeasure.getConfidenceInterval()[1])+";"+getCommaFloat(exportMeasure.getEpsilon())+";"+getCommaFloat(myParser.getSimulationTime());
