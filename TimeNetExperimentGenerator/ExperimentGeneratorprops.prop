@@ -1,18 +1,18 @@
 #ExperimentGenerator-Properties
-#Thu Jan 16 13:49:57 CET 2014
+#Tue Mar 25 15:55:40 CET 2014
 MaxErrorEnd=10
 SeedStart=1
 MaxErrorStepping=1
-file=/Users/sse/ownCloud/TimeNet_Versuche/Original-Netz/SupplyChain.xml
+file=/Users/sse/Dropbox/TimeNetWorkingDir/2014/house_17.03.14_01.xml
 MaxTimeEnd=500
-EndTimeEnd=78200
+EndTimeEnd=0
 timenetpath=/Users/sse/timenet_Working_dir/trunk/TimeNET/dist/TimeNET
 SeedEnd=1
 MaxTimeStart=500
 EndTimeStepping=1
-ConfidenceIntervallStart=85
-ConfidenceIntervallEnd=85
-EndTimeStart=78200
+ConfidenceIntervallStart=99
+ConfidenceIntervallEnd=99
+EndTimeStart=0
 MaxErrorStart=10
 SeedStepping=1
 ConfidenceIntervallStepping=1

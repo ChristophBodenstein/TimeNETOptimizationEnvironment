@@ -837,6 +837,6 @@ is divided into following sections:
         </zip>
 
         <delete file="${store.dir}/temp_final.jar"/>
-
+        <chmod file="${store.jar}" perm="755"/>
     </target>
 </project>

@@ -33,7 +33,7 @@ import org.w3c.dom.*;
  * @author sse
  */
 public class MainFrame extends javax.swing.JFrame implements TableModelListener{
-private String propertyFile="ExperimentGeneratorprops.prop";
+private String propertyFile=System.getProperty("user.home")+File.separatorChar+ ".ExperimentGeneratorprops.prop";
 Properties auto = new Properties();
 private String fileName="";
 public boolean cancelOperation=false;
@@ -120,6 +120,8 @@ private int sizeOfDesignSpace;
         });
 
 
+        //Reload the last File
+        this.readSCPNFile(jTextFieldSCPNFile.getText());
         
         
     }
@@ -148,12 +150,14 @@ private int sizeOfDesignSpace;
         jLabelCheckPathToTimeNet = new javax.swing.JLabel();
         jButtonGenerateListOfExperiments = new javax.swing.JButton();
         jSeparator3 = new javax.swing.JSeparator();
-        jButtonLoadSampleLogFile = new javax.swing.JButton();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         measurementForm1 = new timenetexperimentgenerator.MeasurementForm();
         measurementForm2 = new timenetexperimentgenerator.MeasurementForm();
         jButtonStartOptimization = new javax.swing.JButton();
         jLabelSimulationCount = new javax.swing.JLabel();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu1 = new javax.swing.JMenu();
+        jMenu2 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -235,13 +239,6 @@ private int sizeOfDesignSpace;
             }
         });
 
-        jButtonLoadSampleLogFile.setText("Load Sample Log-File for Opti");
-        jButtonLoadSampleLogFile.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonLoadSampleLogFileActionPerformed(evt);
-            }
-        });
-
         jTabbedPane1.addTab("T1", measurementForm1);
         jTabbedPane1.addTab("T2", measurementForm2);
 
@@ -251,6 +248,14 @@ private int sizeOfDesignSpace;
                 jButtonStartOptimizationActionPerformed(evt);
             }
         });
+
+        jMenu1.setText("File");
+        jMenuBar1.add(jMenu1);
+
+        jMenu2.setText("Edit");
+        jMenuBar1.add(jMenu2);
+
+        setJMenuBar(jMenuBar1);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -286,7 +291,6 @@ private int sizeOfDesignSpace;
                                     .add(org.jdesktop.layout.GroupLayout.LEADING, jButtonGenerateListOfExperiments, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .add(org.jdesktop.layout.GroupLayout.LEADING, jButtonStartBatchSimulation, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .add(org.jdesktop.layout.GroupLayout.LEADING, jSeparator3)
-                                    .add(org.jdesktop.layout.GroupLayout.LEADING, jButtonLoadSampleLogFile, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
                                         .add(38, 38, 38)
                                         .add(jLabelExportStatus, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -318,13 +322,11 @@ private int sizeOfDesignSpace;
                         .add(jButtonStartBatchSimulation)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jSeparator3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 10, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                        .add(jButtonLoadSampleLogFile)
-                        .add(18, 18, 18)
+                        .add(59, 59, 59)
                         .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .add(44, 44, 44)
                         .add(jButtonStartOptimization))
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 399, Short.MAX_VALUE))
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .add(29, 29, 29)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                     .add(jTextFieldPathToTimeNet, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
@@ -435,50 +437,12 @@ private int sizeOfDesignSpace;
     this.restartGenerator();
     }//GEN-LAST:event_jButtonGenerateListOfExperimentsActionPerformed
 
-    private void jButtonLoadSampleLogFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLoadSampleLogFileActionPerformed
-        /*
-         show Filechoser
-         * load log-file
-         * parse log-file
-         * get list of measurements
-         * Set Names of Measurements in Tabs
-         * 
-         */
-      javax.swing.filechooser.FileFilter myFilter=new javax.swing.filechooser.FileNameExtensionFilter("log-file", "log");
-      JFileChooser fileChooser = new JFileChooser(this.jTextFieldSCPNFile.getText());
-      fileChooser.setCurrentDirectory(new java.io.File(this.jTextFieldSCPNFile.getText()+"/.."));
-      fileChooser.setFileFilter(myFilter);
-      fileChooser.setDialogTitle("Select Log-File");
-
-      if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-        System.out.println("getCurrentDirectory(): "
-         +  fileChooser.getCurrentDirectory());
-        System.out.println("getSelectedFile() : "
-         +  fileChooser.getSelectedFile());
-      parser myParser=new parser();
-      myParser.parse(fileChooser.getSelectedFile().toString(),this.jTextFieldSCPNFile.getText());
-
-      
-       for(int i=0;i<this.jTabbedPane1.getComponentCount();i++){
-       ((MeasurementForm)this.jTabbedPane1.getComponent(i)).setMeasurements(myParser.getMeasures());
-       }
-
-
-        //this.jTextFieldSCPNFile.setText(fileChooser.getSelectedFile().toString());
-        //this.readSCPNFile(fileChooser.getSelectedFile().toString());
-        this.saveProperties();
-
-      }
-    else {
-      System.out.println("No Selection ");
-      }
-
-
-    }//GEN-LAST:event_jButtonLoadSampleLogFileActionPerformed
-
     private void jButtonStartOptimizationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonStartOptimizationActionPerformed
-       
-        genericOptimizer myOptimizer=new genericOptimizer(this.jTextFieldSCPNFile.getText(), this, jTabbedPane1, this.jTextFieldPathToTimeNet.getText(), this.jLabelExportStatus);
+        if(this.sizeOfDesignSpace<=10){
+        
+        }else   {
+                genericOptimizer myOptimizer=new genericOptimizer(this.jTextFieldSCPNFile.getText(), this, jTabbedPane1, this.jTextFieldPathToTimeNet.getText(), this.jLabelExportStatus);
+                }
     }//GEN-LAST:event_jButtonStartOptimizationActionPerformed
 
     public void calculateDesignSpace(){
@@ -627,7 +591,6 @@ private int sizeOfDesignSpace;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButtonExport;
     private javax.swing.JButton jButtonGenerateListOfExperiments;
-    private javax.swing.JButton jButtonLoadSampleLogFile;
     private javax.swing.JButton jButtonOpenSCPN;
     private javax.swing.JButton jButtonReload;
     private javax.swing.JButton jButtonStartBatchSimulation;
@@ -635,6 +598,9 @@ private int sizeOfDesignSpace;
     private javax.swing.JLabel jLabelCheckPathToTimeNet;
     private javax.swing.JLabel jLabelExportStatus;
     private javax.swing.JLabel jLabelSimulationCount;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
@@ -661,11 +627,30 @@ private int sizeOfDesignSpace;
 
             for(int i=0;i<parameterList.getLength();i++){
             System.out.println(parameterList.item(i).getAttributes().getNamedItem("name").getNodeValue());
-            
             }
         jTableParameterList.setModel(new parameterTableModel(parameterList, this));
         jTableParameterList.getModel().addTableModelListener(this);
 
+        //TODO
+        //Measures auslesen
+        NodeList MeasurenameList=doc.getElementsByTagName("measure");
+        if(MeasurenameList.getLength()>=1){
+        ArrayList<MeasureType> Measures=new ArrayList();
+        System.out.println("****** Measure-Names ******");
+            for(int i=0;i<MeasurenameList.getLength();i++){
+            System.out.println(MeasurenameList.item(i).getAttributes().getNamedItem("name").getNodeValue());
+            MeasureType tmpMeasure=new MeasureType();
+            tmpMeasure.setMeasureName(MeasurenameList.item(i).getAttributes().getNamedItem("name").getNodeValue());
+            Measures.add(tmpMeasure);
+            }
+        
+            for(int i=0;i<this.jTabbedPane1.getComponentCount();i++){
+            ((MeasurementForm)this.jTabbedPane1.getComponent(i)).setMeasurements(Measures);
+            }
+        
+        }
+        
+        
         this.fileName=filename;//nach Erfolg, globalen filename setzen
         activateGenerateButtons();
         }catch(Exception e){

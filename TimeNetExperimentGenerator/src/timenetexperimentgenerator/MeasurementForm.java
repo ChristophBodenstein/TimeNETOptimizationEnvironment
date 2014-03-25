@@ -45,6 +45,11 @@ private ArrayList<MeasureType> listOfMeasureMents=new ArrayList<MeasureType>();
 
         jComboBoxOptimizationTarget.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Min", "Max", "Custom" }));
         jComboBoxOptimizationTarget.setToolTipText("Chose Optimization Target Value");
+        jComboBoxOptimizationTarget.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jComboBoxOptimizationTargetItemStateChanged(evt);
+            }
+        });
 
         jTextFieldCustomTargetValue.setText("0");
         jTextFieldCustomTargetValue.setToolTipText("Enter Custom Target Value for Measurement");
@@ -81,7 +86,7 @@ private ArrayList<MeasureType> listOfMeasureMents=new ArrayList<MeasureType>();
                     .addComponent(jTextFieldCustomTargetValue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jComboBoxOptimizationTarget, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(25, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jCheckBoxEnableOptimizationForThisMeasurement)
                 .addContainerGap())
         );
@@ -90,6 +95,10 @@ private ArrayList<MeasureType> listOfMeasureMents=new ArrayList<MeasureType>();
     private void jCheckBoxEnableOptimizationForThisMeasurementItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBoxEnableOptimizationForThisMeasurementItemStateChanged
      this.setActivated(this.jCheckBoxEnableOptimizationForThisMeasurement.isSelected());
     }//GEN-LAST:event_jCheckBoxEnableOptimizationForThisMeasurementItemStateChanged
+
+    private void jComboBoxOptimizationTargetItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxOptimizationTargetItemStateChanged
+    this.jTextFieldCustomTargetValue.setEnabled(this.getOptimizationTarget().equals("value"));
+    }//GEN-LAST:event_jComboBoxOptimizationTargetItemStateChanged
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -165,7 +174,7 @@ private ArrayList<MeasureType> listOfMeasureMents=new ArrayList<MeasureType>();
     public void setActivated(boolean b){
     this.jComboBoxMeasurementName.setEnabled(b);
     this.jComboBoxOptimizationTarget.setEnabled(b);
-    this.jTextFieldCustomTargetValue.setEnabled(b);
+    this.jTextFieldCustomTargetValue.setEnabled(this.getOptimizationTarget().equals("value"));
     }
 
     public boolean isActive(){
