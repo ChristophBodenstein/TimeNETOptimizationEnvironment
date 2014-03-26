@@ -26,7 +26,9 @@ import javax.swing.event.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.*;
+import org.xml.sax.SAXException;
 
 /**
  *
@@ -48,7 +50,8 @@ private int colorClm = -1, colorRow = -1;
 ArrayList <Long>ListOfParameterSetIds=new ArrayList<Long>();
 private int sizeOfDesignSpace;
 private String pathToTimeNet="";
-
+private SimulationCache mySimulationCache=new SimulationCache();
+private String pathToLastSimulationCache="";
 
 
     /** Creates new form MainFrame */
@@ -96,6 +99,7 @@ private String pathToTimeNet="";
         this.pMaxError.setEndValue(checkIfStringIsNull(auto.getProperty("MaxErrorEnd"),pMaxError.getEndValue()));
         this.pMaxError.setStepping(checkIfStringIsNull(auto.getProperty("MaxErrorStepping"),pMaxError.getStepping()));
 
+        this.pathToLastSimulationCache=auto.getProperty("pathToLastSimulationCache", "");
 
         this.checkIfTimeNetPathIsCorrect();
         this.deactivateExportButtons();
@@ -149,7 +153,6 @@ private String pathToTimeNet="";
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableParameterList = new javax.swing.JTable();
         jButtonExport = new javax.swing.JButton();
-        jLabelExportStatus = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JSeparator();
         jSeparator2 = new javax.swing.JSeparator();
@@ -162,6 +165,9 @@ private String pathToTimeNet="";
         jButtonStartOptimization = new javax.swing.JButton();
         jLabelSimulationCount = new javax.swing.JLabel();
         jButtonPathToTimeNet = new javax.swing.JButton();
+        jLabelExportStatus = new javax.swing.JLabel();
+        jButtonLoadCacheFile = new javax.swing.JButton();
+        jCheckBox1 = new javax.swing.JCheckBox();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
@@ -212,8 +218,6 @@ private String pathToTimeNet="";
             }
         });
 
-        jLabelExportStatus.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-
         jButton1.setText("Cancel");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -235,8 +239,8 @@ private String pathToTimeNet="";
             }
         });
 
-        jTabbedPane1.addTab("T1", measurementForm1);
-        jTabbedPane1.addTab("T2", measurementForm2);
+        jTabbedPane1.addTab("Target 1", measurementForm1);
+        jTabbedPane1.addTab("Target 2", measurementForm2);
 
         jButtonStartOptimization.setText("Start Optimization");
         jButtonStartOptimization.addActionListener(new java.awt.event.ActionListener() {
@@ -251,6 +255,15 @@ private String pathToTimeNet="";
                 jButtonPathToTimeNetActionPerformed(evt);
             }
         });
+
+        jButtonLoadCacheFile.setText("Load Cached Simulation Results");
+        jButtonLoadCacheFile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonLoadCacheFileActionPerformed(evt);
+            }
+        });
+
+        jCheckBox1.setText("Cached Optimization");
 
         jMenu1.setText("File");
         jMenuBar1.add(jMenu1);
@@ -276,34 +289,35 @@ private String pathToTimeNet="";
                                 .add(jButtonPathToTimeNet)
                                 .add(0, 0, Short.MAX_VALUE)))
                         .add(28, 28, 28)
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                            .add(jLabelSimulationCount, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .add(org.jdesktop.layout.GroupLayout.LEADING, jTabbedPane1)
-                            .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
-                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
-                                    .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
-                                        .add(jButtonOpenSCPN, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 126, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                        .add(59, 59, 59)
-                                        .add(jButtonReload))
-                                    .add(org.jdesktop.layout.GroupLayout.LEADING, jSeparator2)
-                                    .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
-                                        .add(jButtonExport)
-                                        .add(18, 18, 18)
-                                        .add(jButton1))
-                                    .add(org.jdesktop.layout.GroupLayout.LEADING, jButtonGenerateListOfExperiments, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .add(org.jdesktop.layout.GroupLayout.LEADING, jButtonStartBatchSimulation, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .add(org.jdesktop.layout.GroupLayout.LEADING, jSeparator3)
-                                    .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
-                                        .add(38, 38, 38)
-                                        .add(jLabelExportStatus, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                    .add(org.jdesktop.layout.GroupLayout.LEADING, jButtonStartOptimization, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(org.jdesktop.layout.GroupLayout.TRAILING, jLabelSimulationCount, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .add(layout.createSequentialGroup()
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                                    .add(jCheckBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 265, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
+                                        .add(org.jdesktop.layout.GroupLayout.LEADING, jTabbedPane1)
+                                        .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
+                                            .add(jButtonOpenSCPN, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 126, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                            .add(59, 59, 59)
+                                            .add(jButtonReload))
+                                        .add(org.jdesktop.layout.GroupLayout.LEADING, jSeparator2)
+                                        .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
+                                            .add(jButtonExport)
+                                            .add(18, 18, 18)
+                                            .add(jButton1))
+                                        .add(org.jdesktop.layout.GroupLayout.LEADING, jButtonGenerateListOfExperiments, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .add(org.jdesktop.layout.GroupLayout.LEADING, jButtonStartBatchSimulation, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .add(org.jdesktop.layout.GroupLayout.LEADING, jSeparator3)
+                                        .add(org.jdesktop.layout.GroupLayout.LEADING, jButtonStartOptimization, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .add(jLabelExportStatus, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .add(jButtonLoadCacheFile, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                                 .add(0, 0, Short.MAX_VALUE)))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .add(66, 66, 66)
+                .add(21, 21, 21)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jTextFieldSCPNFile, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(jButtonOpenSCPN)
@@ -312,6 +326,9 @@ private String pathToTimeNet="";
                 .add(jSeparator1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 14, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(layout.createSequentialGroup()
+                        .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                        .add(30, 30, 30))
                     .add(layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                             .add(jButtonExport)
@@ -326,13 +343,16 @@ private String pathToTimeNet="";
                         .add(jSeparator3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 10, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .add(59, 59, 59)
                         .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .add(44, 44, 44)
-                        .add(jButtonStartOptimization))
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .add(30, 30, 30)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(jButtonPathToTimeNet)
-                    .add(jLabelExportStatus, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 18, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jButtonLoadCacheFile)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .add(jCheckBox1)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jButtonStartOptimization)
+                        .add(0, 19, Short.MAX_VALUE)))
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                    .add(jButtonPathToTimeNet, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(jLabelExportStatus, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jLabelSimulationCount, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 24, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
         );
@@ -423,7 +443,7 @@ private String pathToTimeNet="";
     fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
     fileChooser.setControlButtonsAreShown(true);
     fileChooser.setDialogTitle(" Choose Dir of TimeNet ");
-    String outputDir="";
+    String outputDir;
 
 
       if (fileChooser.showDialog(this, "Choose this") == JFileChooser.APPROVE_OPTION) {
@@ -441,6 +461,37 @@ private String pathToTimeNet="";
         
         
     }//GEN-LAST:event_jButtonPathToTimeNetActionPerformed
+
+    private void jButtonLoadCacheFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLoadCacheFileActionPerformed
+    //JFileChooser fileChooser = new JFileChooser(this.getPathToTimeNet());
+    JFileChooser fileChooser = new JFileChooser(this.pathToLastSimulationCache);
+    fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+    fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
+    fileChooser.setControlButtonsAreShown(true);
+    fileChooser.setDialogTitle(" Choose File with cached simulation files ");
+    String inputFile="";
+
+
+      if (fileChooser.showDialog(this, "Open") == JFileChooser.APPROVE_OPTION) {
+        if(fileChooser.getSelectedFile().isDirectory() ){
+            System.out.println("No input file chosen!");
+            return;
+        }else{
+            inputFile=fileChooser.getSelectedFile().toString();
+        }
+        System.out.println("choosen input file with cached simulation results: "+inputFile);
+      }else{
+      System.out.println("No input file chosen!");
+      }  
+      
+        if(!mySimulationCache.parseSimulationCacheFile(inputFile)){
+            System.out.println("Wrong Simulation cache file for this SCPN!");
+        }else{
+        this.pathToLastSimulationCache=fileChooser.getSelectedFile().getPath();
+        this.saveProperties();
+        }
+        
+    }//GEN-LAST:event_jButtonLoadCacheFileActionPerformed
 
     public void calculateDesignSpace(){
         myGenerator=new generator(ListOfParameterSetsToBeWritten, fileName, jLabelExportStatus, this, jTableParameterList);
@@ -479,14 +530,14 @@ private String pathToTimeNet="";
                     }
                 }
             */
-            }catch(Exception e){
+            }catch(NumberFormatException e){
             //canIterate=false;
             System.out.println("Could not convert into float, maybe String is used. Will not iterate through parameter "+loopParameter.getName());
             return;
             }
 
             if(canIterate){
-            float usedValue=start;
+            float usedValue;
             int endCounter=1;
                     if((end-start)>0){
                         endCounter=(int)Math.ceil((end-start)/step) +1 ;
@@ -504,7 +555,9 @@ private String pathToTimeNet="";
                     //Kopie des Parametersets anlegen
                     for(int c=0;c<lastParameterSet.length;c++){
                         try{nextParameterSet[c]=(parameter) lastParameterSet[c].clone();}
-                        catch(Exception e){e.printStackTrace();}
+                        catch(CloneNotSupportedException e){
+                        System.out.println("Clone is not Supported:"+e.toString());
+                        }
 
                     }
 
@@ -588,11 +641,13 @@ private String pathToTimeNet="";
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButtonExport;
     private javax.swing.JButton jButtonGenerateListOfExperiments;
+    private javax.swing.JButton jButtonLoadCacheFile;
     private javax.swing.JButton jButtonOpenSCPN;
     private javax.swing.JButton jButtonPathToTimeNet;
     private javax.swing.JButton jButtonReload;
     private javax.swing.JButton jButtonStartBatchSimulation;
     private javax.swing.JButton jButtonStartOptimization;
+    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabelExportStatus;
     private javax.swing.JLabel jLabelSimulationCount;
     private javax.swing.JMenu jMenu1;
@@ -650,8 +705,10 @@ private String pathToTimeNet="";
         this.fileName=filename;//nach Erfolg, globalen filename setzen
         activateGenerateButtons();
         activateReloadButtons();
-        }catch(Exception e){
-        e.printStackTrace();
+        }catch(ParserConfigurationException e){
+        } catch (SAXException e) {
+        } catch (IOException e) {
+        } catch (DOMException e) {
         }
     }
 
@@ -773,6 +830,7 @@ private String pathToTimeNet="";
 
     /**
      * restarts the generator after Table has changed
+     * @param e
      */
     public void tableChanged(TableModelEvent e) {
     //System.out.println("Editing of Cell stopped, restarting generator.");
@@ -807,7 +865,7 @@ private String pathToTimeNet="";
 
     }
 
-    protected void deactivateExportButtons(){
+    protected final void deactivateExportButtons(){
     this.jButtonExport.setEnabled(false);
     this.jButtonStartBatchSimulation.setEnabled(false);
     //this.jButtonOpenSCPN.setEnabled(false);
@@ -907,11 +965,12 @@ private String pathToTimeNet="";
     auto.setProperty("MaxErrorEnd",this.pMaxError.getEndValue());
     auto.setProperty("MaxErrorStepping",this.pMaxError.getStepping());
     
+    auto.setProperty("pathToLastSimulationCache", this.pathToLastSimulationCache);
+    
     File parserprops =  new File(propertyFile);
     auto.store(new FileOutputStream(parserprops), "ExperimentGenerator-Properties");
-        }catch(Exception e){
+        }catch(IOException e){
         System.out.println("Problem Saving the properties.");
-        e.printStackTrace();
         }
 
     }
@@ -955,12 +1014,13 @@ private String pathToTimeNet="";
 
     }
 
-        /**
-     calculates list of parameters from table
+     /**
+     * calculates list of parameters from table
      * this is the base list with start/end/stepping values
+     * @return List of Parameters from Table (Base of Parameter Iterations)
      **/
     public parameter[] getParameterBase(){
-    int parameterCount=this.jTableParameterList.getModel().getRowCount();
+    //int parameterCount=this.jTableParameterList.getModel().getRowCount();
     parameterTableModel tModel=(parameterTableModel) this.jTableParameterList.getModel();
     //String [][] parameterArray=tModel.getParameterArray();
     parameter[] parameterArray=new parameter[tModel.getRowCount()];
@@ -993,7 +1053,7 @@ private String pathToTimeNet="";
     
     
     /**
-     * Returns List of MeasureTypes, given by Tabbed-Pane, to which it should be optimized
+     * @return List of MeasureTypes, given by Tabbed-Pane, to which it should be optimized
      */
     public ArrayList<MeasureType> getListOfActiveMeasureMentsToOptimize(){
     ArrayList<MeasureType> myTmpList=new ArrayList<MeasureType>();//((MeasurementForm)this.jTabbedPane1.getComponent(0)).getListOfMeasurements();
@@ -1014,5 +1074,7 @@ private String pathToTimeNet="";
         
     }
     
-
+    
+    
+    
 }

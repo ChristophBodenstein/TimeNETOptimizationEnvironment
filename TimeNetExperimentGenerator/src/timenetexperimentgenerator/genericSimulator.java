@@ -102,7 +102,7 @@ private String nameOfTempDirectory="14623786483530251523506521233052";
                             if(i==0){
                             //Schreiben der ersten Zeile, vorher check, welche Measures verfügbar sind
                             MeasureType exportMeasure=myParser.getMeasures().get(0);//Dummy, es wird das erste Measure abgefragt und die Paramsterliste
-                            line="MeasureName;Mean Value; Variance; Conf.Interval-Min;Conf.Interval-Max;Epsilon;"+"Simulation Time";
+                            line="MeasureName;Mean Value;Variance;Conf.Interval-Min;Conf.Interval-Max;Epsilon;"+"Simulation Time";
                                 for(int i1=0;i1<exportMeasure.getParameterList().size();i1++){
                                 line=line+";"+exportMeasure.getParameterList().get(i1).getName();
                                 }
