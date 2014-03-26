@@ -47,6 +47,7 @@ public parameter pMaxError=new parameter();
 private int colorClm = -1, colorRow = -1;
 ArrayList <Long>ListOfParameterSetIds=new ArrayList<Long>();
 private int sizeOfDesignSpace;
+private String pathToTimeNet="";
 
 
 
@@ -60,6 +61,10 @@ private int sizeOfDesignSpace;
 	} catch (IOException e) {
 		// Exception bearbeiten
 	}
+        
+        jButtonPathToTimeNet.setBackground(Color.GRAY);
+        jButtonPathToTimeNet.setText("Enter Path To TimeNet");
+        
         pConfidenceIntervall.initWithValues("ConfidenceIntervall", "95", "95", "1"); 
         pSeed.initWithValues("Seed", "0", "0", "1");
         pEndTime.initWithValues("EndTime","0","0","1");
@@ -67,7 +72,10 @@ private int sizeOfDesignSpace;
         pMaxError.initWithValues("MaxError","5","5","1");
 
         this.jTextFieldSCPNFile.setText(auto.getProperty("file"));
-        this.jTextFieldPathToTimeNet.setText(auto.getProperty("timenetpath"));
+        //this.jTextFieldPathToTimeNet.setText(auto.getProperty("timenetpath"));
+        this.setPathToTimeNet(auto.getProperty("timenetpath"));
+        //System.out.println("Read Path to TimeNet:"+auto.getProperty("timenetpath"));
+        
         this.pConfidenceIntervall.setStartValue(checkIfStringIsNull(auto.getProperty("ConfidenceIntervallStart"),pConfidenceIntervall.getStartValue()));
         this.pConfidenceIntervall.setEndValue(checkIfStringIsNull(auto.getProperty("ConfidenceIntervallEnd"),pConfidenceIntervall.getEndValue()));
         this.pConfidenceIntervall.setStepping(checkIfStringIsNull(auto.getProperty("ConfidenceIntervallStepping"),pConfidenceIntervall.getStepping()));
@@ -91,7 +99,7 @@ private int sizeOfDesignSpace;
 
         this.checkIfTimeNetPathIsCorrect();
         this.deactivateExportButtons();
-        this.activateReloadButtons();
+        //this.activateReloadButtons();
 
 
         jTableParameterList.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
@@ -143,11 +151,9 @@ private int sizeOfDesignSpace;
         jButtonExport = new javax.swing.JButton();
         jLabelExportStatus = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
-        jTextFieldPathToTimeNet = new javax.swing.JTextField();
         jSeparator1 = new javax.swing.JSeparator();
         jSeparator2 = new javax.swing.JSeparator();
         jButtonStartBatchSimulation = new javax.swing.JButton();
-        jLabelCheckPathToTimeNet = new javax.swing.JLabel();
         jButtonGenerateListOfExperiments = new javax.swing.JButton();
         jSeparator3 = new javax.swing.JSeparator();
         jTabbedPane1 = new javax.swing.JTabbedPane();
@@ -155,6 +161,7 @@ private int sizeOfDesignSpace;
         measurementForm2 = new timenetexperimentgenerator.MeasurementForm();
         jButtonStartOptimization = new javax.swing.JButton();
         jLabelSimulationCount = new javax.swing.JLabel();
+        jButtonPathToTimeNet = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
@@ -214,23 +221,12 @@ private int sizeOfDesignSpace;
             }
         });
 
-        jTextFieldPathToTimeNet.setText("Absolute Path to TimeNet");
-        jTextFieldPathToTimeNet.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                jTextFieldPathToTimeNetKeyReleased(evt);
-            }
-        });
-
         jButtonStartBatchSimulation.setText("Start batch simulation");
         jButtonStartBatchSimulation.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonStartBatchSimulationActionPerformed(evt);
             }
         });
-
-        jLabelCheckPathToTimeNet.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
-        jLabelCheckPathToTimeNet.setForeground(new java.awt.Color(255, 0, 0));
-        jLabelCheckPathToTimeNet.setText("Check Path to TimeNET.jar!");
 
         jButtonGenerateListOfExperiments.setText("Generate Design Space");
         jButtonGenerateListOfExperiments.addActionListener(new java.awt.event.ActionListener() {
@@ -246,6 +242,13 @@ private int sizeOfDesignSpace;
         jButtonStartOptimization.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonStartOptimizationActionPerformed(evt);
+            }
+        });
+
+        jButtonPathToTimeNet.setText("Enter Path to TimeNet");
+        jButtonPathToTimeNet.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonPathToTimeNetActionPerformed(evt);
             }
         });
 
@@ -267,12 +270,11 @@ private int sizeOfDesignSpace;
                     .add(jSeparator1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 752, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                            .add(layout.createSequentialGroup()
-                                .add(jLabelCheckPathToTimeNet, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .add(182, 182, 182))
-                            .add(org.jdesktop.layout.GroupLayout.LEADING, jTextFieldPathToTimeNet)
                             .add(org.jdesktop.layout.GroupLayout.LEADING, jTextFieldSCPNFile)
-                            .add(org.jdesktop.layout.GroupLayout.LEADING, jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                            .add(org.jdesktop.layout.GroupLayout.LEADING, jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                            .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
+                                .add(jButtonPathToTimeNet)
+                                .add(0, 0, Short.MAX_VALUE)))
                         .add(28, 28, 28)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                             .add(jLabelSimulationCount, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -327,16 +329,12 @@ private int sizeOfDesignSpace;
                         .add(44, 44, 44)
                         .add(jButtonStartOptimization))
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .add(29, 29, 29)
+                .add(30, 30, 30)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(jTextFieldPathToTimeNet, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jButtonPathToTimeNet)
                     .add(jLabelExportStatus, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 18, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(layout.createSequentialGroup()
-                        .add(jLabelCheckPathToTimeNet)
-                        .add(8, 8, 8))
-                    .add(jLabelSimulationCount, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 24, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                .add(jLabelSimulationCount, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 24, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
@@ -360,13 +358,6 @@ private int sizeOfDesignSpace;
         this.jTextFieldSCPNFile.setText(fileChooser.getSelectedFile().toString());
         this.readSCPNFile(fileChooser.getSelectedFile().toString());
         this.saveProperties();
-        /*auto.setProperty("file", fileChooser.getSelectedFile().toString());
-        File parserprops =  new File(propertyFile);
-	try {
-		auto.store(new FileOutputStream(parserprops), "ExperimentGenerator-Properties");
-	} catch (IOException e) {
-		// Exception bearbeiten
-	}*/
       }
     else {
       System.out.println("No Selection ");
@@ -378,12 +369,6 @@ private int sizeOfDesignSpace;
     }//GEN-LAST:event_jButtonReloadActionPerformed
 
     private void jButtonExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonExportActionPerformed
-    //this.cancelOperation=false;
-    //ArrayList <parameter[]>ListOfParameterSetsToBeWritten=new ArrayList<parameter[]>();//Name, Value
-
-    
-    //this.restartGenerator();
-    //this.waitForGenerator();
 
         if(ListOfParameterSetsToBeWritten!=null){
         System.out.println("Length of ParameterSet-List: "+ListOfParameterSetsToBeWritten.size());
@@ -402,21 +387,8 @@ private int sizeOfDesignSpace;
     
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void jTextFieldPathToTimeNetKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldPathToTimeNetKeyReleased
-    this.saveProperties();
-        /*auto.setProperty("timenetpath", this.jTextFieldPathToTimeNet.getText());
-        File parserprops =  new File(propertyFile);
-	try {
-		auto.store(new FileOutputStream(parserprops), "ExperimentGenerator-Properties");
-	} catch (IOException e) {
-		// Exception bearbeiten
-	}
-    */
-     this.checkIfTimeNetPathIsCorrect();
-    }//GEN-LAST:event_jTextFieldPathToTimeNetKeyReleased
-
     public String getPathToTimeNet(){
-    return this.jTextFieldPathToTimeNet.getText();
+    return this.pathToTimeNet;
     }
 
     /**
@@ -441,9 +413,34 @@ private int sizeOfDesignSpace;
         if(this.sizeOfDesignSpace<=10){
         
         }else   {
-                genericOptimizer myOptimizer=new genericOptimizer(this.jTextFieldSCPNFile.getText(), this, jTabbedPane1, this.jTextFieldPathToTimeNet.getText(), this.jLabelExportStatus);
+                genericOptimizer myOptimizer=new genericOptimizer(this.jTextFieldSCPNFile.getText(), this, jTabbedPane1, this.getPathToTimeNet(), this.jLabelExportStatus);
                 }
     }//GEN-LAST:event_jButtonStartOptimizationActionPerformed
+
+    private void jButtonPathToTimeNetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPathToTimeNetActionPerformed
+    JFileChooser fileChooser = new JFileChooser(this.getPathToTimeNet());
+    fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+    fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
+    fileChooser.setControlButtonsAreShown(true);
+    fileChooser.setDialogTitle(" Choose Dir of TimeNet ");
+    String outputDir="";
+
+
+      if (fileChooser.showDialog(this, "Choose this") == JFileChooser.APPROVE_OPTION) {
+        if(fileChooser.getSelectedFile().isDirectory() ){
+            outputDir=fileChooser.getSelectedFile().toString();
+        }else{
+            outputDir=fileChooser.getCurrentDirectory().toString();
+        }
+        System.out.println("choosen outputdir: "+outputDir);
+        this.setPathToTimeNet(outputDir);
+        this.checkIfTimeNetPathIsCorrect();
+      }else{
+      System.out.println("No Path to TimeNet chosen.");
+      }  
+        
+        
+    }//GEN-LAST:event_jButtonPathToTimeNetActionPerformed
 
     public void calculateDesignSpace(){
         myGenerator=new generator(ListOfParameterSetsToBeWritten, fileName, jLabelExportStatus, this, jTableParameterList);
@@ -592,10 +589,10 @@ private int sizeOfDesignSpace;
     private javax.swing.JButton jButtonExport;
     private javax.swing.JButton jButtonGenerateListOfExperiments;
     private javax.swing.JButton jButtonOpenSCPN;
+    private javax.swing.JButton jButtonPathToTimeNet;
     private javax.swing.JButton jButtonReload;
     private javax.swing.JButton jButtonStartBatchSimulation;
     private javax.swing.JButton jButtonStartOptimization;
-    private javax.swing.JLabel jLabelCheckPathToTimeNet;
     private javax.swing.JLabel jLabelExportStatus;
     private javax.swing.JLabel jLabelSimulationCount;
     private javax.swing.JMenu jMenu1;
@@ -607,7 +604,6 @@ private int sizeOfDesignSpace;
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTableParameterList;
-    private javax.swing.JTextField jTextFieldPathToTimeNet;
     private javax.swing.JTextField jTextFieldSCPNFile;
     private timenetexperimentgenerator.MeasurementForm measurementForm1;
     private timenetexperimentgenerator.MeasurementForm measurementForm2;
@@ -631,7 +627,7 @@ private int sizeOfDesignSpace;
         jTableParameterList.setModel(new parameterTableModel(parameterList, this));
         jTableParameterList.getModel().addTableModelListener(this);
 
-        //TODO
+        
         //Measures auslesen
         NodeList MeasurenameList=doc.getElementsByTagName("measure");
         if(MeasurenameList.getLength()>=1){
@@ -653,6 +649,7 @@ private int sizeOfDesignSpace;
         
         this.fileName=filename;//nach Erfolg, globalen filename setzen
         activateGenerateButtons();
+        activateReloadButtons();
         }catch(Exception e){
         e.printStackTrace();
         }
@@ -787,7 +784,7 @@ private int sizeOfDesignSpace;
     }
 
     private void readStaticParametersFromTable(){
-    //TODO: implement this
+    
     this.pConfidenceIntervall.setStartValue( ((parameterTableModel)this.jTableParameterList.getModel()).getValueByName("ConfidenceIntervall", "StartValue")) ;
     this.pConfidenceIntervall.setEndValue( ((parameterTableModel)this.jTableParameterList.getModel()).getValueByName("ConfidenceIntervall", "EndValue")) ;
     this.pConfidenceIntervall.setStepping( ((parameterTableModel)this.jTableParameterList.getModel()).getValueByName("ConfidenceIntervall", "Stepping")) ;
@@ -810,7 +807,7 @@ private int sizeOfDesignSpace;
 
     }
 
-    public void deactivateExportButtons(){
+    protected void deactivateExportButtons(){
     this.jButtonExport.setEnabled(false);
     this.jButtonStartBatchSimulation.setEnabled(false);
     //this.jButtonOpenSCPN.setEnabled(false);
@@ -842,11 +839,16 @@ private int sizeOfDesignSpace;
     * If correct, then install new "RemoteSystem Client.config"
     */
     private void checkIfTimeNetPathIsCorrect(){
-    String path=jTextFieldPathToTimeNet.getText();
+    String path=this.getPathToTimeNet();//jTextFieldPathToTimeNet.getText();
     File tmpFile=new File(path+File.separator+"TimeNET.jar");
+    System.out.println("TimeNet should be here: "+tmpFile.getAbsolutePath());
         if(tmpFile.exists()){
         this.jButtonStartBatchSimulation.setEnabled(true);
-        this.jLabelCheckPathToTimeNet.setVisible(false);
+        //this.jLabelCheckPathToTimeNet.setVisible(false);
+        jButtonPathToTimeNet.setBackground(Color.GREEN);
+        jButtonPathToTimeNet.setText("Reset Path To TimeNet");
+        jButtonStartOptimization.setEnabled(true);
+        this.saveProperties();
             //Try to install "RemoteSystem Client.config"
             try{
             InputStream ddlStream = this.getClass().getClassLoader().getResourceAsStream("timenetexperimentgenerator/RemoteSystem Client.config");
@@ -864,16 +866,18 @@ private int sizeOfDesignSpace;
                         fos.close();
                     }
                 }
-            }catch(Exception e){
+            }catch(IOException e){
             System.out.println("Failed to install RemoteSystem Clent.config");
-            e.printStackTrace();
             }
-            
-        
-        
         }else{
+        //TODO Buttons zur Auswahl des TimeNet-Verzeichnisses ausgrauen
         this.jButtonStartBatchSimulation.setEnabled(false);
-        this.jLabelCheckPathToTimeNet.setVisible(true);
+        //this.jLabelCheckPathToTimeNet.setVisible(true);
+        jButtonPathToTimeNet.setBackground(Color.GRAY);
+        jButtonPathToTimeNet.setText("Enter Path To TimeNet");
+        jButtonStartOptimization.setEnabled(false);
+        
+        
         }
     }
 
@@ -881,7 +885,7 @@ private int sizeOfDesignSpace;
     private void saveProperties(){
     System.out.println("Saving Properties.");
         try{
-    auto.setProperty("timenetpath", this.jTextFieldPathToTimeNet.getText());
+    auto.setProperty("timenetpath", this.getPathToTimeNet());
     auto.setProperty("file", this.jTextFieldSCPNFile.getText().toString());
     
     auto.setProperty("ConfidenceIntervallStart",this.pConfidenceIntervall.getStartValue());
@@ -912,7 +916,7 @@ private int sizeOfDesignSpace;
 
     }
 
-    public String checkIfStringIsNull(String loadedValue, String defaultValue){
+    private String checkIfStringIsNull(String loadedValue, String defaultValue){
         if(loadedValue!=null){
         return loadedValue;
         }else{
@@ -1000,6 +1004,14 @@ private int sizeOfDesignSpace;
             }
         }
     return myTmpList;
+    }
+
+    /**
+     * @param pathToTimeNet the pathToTimeNet to set
+     */
+    private void setPathToTimeNet(String pathToTimeNet) {
+        this.pathToTimeNet = pathToTimeNet;
+        
     }
     
 

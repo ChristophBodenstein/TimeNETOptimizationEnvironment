@@ -5,6 +5,7 @@
 
 package timenetexperimentgenerator;
 
+import javax.swing.LookAndFeel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -20,17 +21,13 @@ public class Main {
     public static void main(String[] args) throws UnsupportedLookAndFeelException {
          try {
                 System.setProperty("apple.laf.useScreenMenuBar", "true");
-                System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Test");
+                System.setProperty("com.apple.mrj.application.apple.menu.about.name", "TimeNet Experiment Generator");
+                
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                
         }
-        catch(ClassNotFoundException e) {
-                System.out.println("ClassNotFoundException: " + e.getMessage());
-        }
-        catch(InstantiationException e) {
-                System.out.println("InstantiationException: " + e.getMessage());
-        }
-        catch(IllegalAccessException e) {
-                System.out.println("IllegalAccessException: " + e.getMessage());
+        catch(Exception e) {
+                e.printStackTrace();
         }
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
         public void run() {
