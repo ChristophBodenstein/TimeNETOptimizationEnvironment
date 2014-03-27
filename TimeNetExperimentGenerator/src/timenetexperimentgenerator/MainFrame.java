@@ -484,7 +484,7 @@ private String pathToLastSimulationCache="";
       System.out.println("No input file chosen!");
       }  
       
-        if(!mySimulationCache.parseSimulationCacheFile(inputFile)){
+        if(!mySimulationCache.parseSimulationCacheFile(inputFile,((MeasurementForm)this.jTabbedPane1.getComponent(0)).getListOfMeasurements(), (parameterTableModel)this.jTableParameterList.getModel())){
             System.out.println("Wrong Simulation cache file for this SCPN!");
         }else{
         this.pathToLastSimulationCache=fileChooser.getSelectedFile().getPath();

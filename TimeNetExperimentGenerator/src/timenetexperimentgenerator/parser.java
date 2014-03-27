@@ -133,6 +133,12 @@ private String xmlFile="";
             tmpP.setValue(segs[i+1]);
             tmpParameterList.add(tmpP);
             }
+            if(segs[i].equals("MaxRelError")){
+            parameter tmpP=new parameter();
+            tmpP.setName("MaxRelError");
+            tmpP.setValue(segs[i+1]);
+            tmpParameterList.add(tmpP);
+            }               
             if(segs[i].equals("simTime")){
             parameter tmpP=new parameter();
             tmpP.setName("Used CPUTime");
