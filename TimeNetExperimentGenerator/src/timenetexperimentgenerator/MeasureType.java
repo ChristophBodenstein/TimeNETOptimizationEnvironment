@@ -1,6 +1,6 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * A MeasureType-object represents one Measure.
+ * It can also represent a whole Simulation-Result for one Measure, if a list of Parameters incl. Values is given
  */
 
 package timenetexperimentgenerator;
@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 /**
  *
- * @author sse
+ * @author Christoph Bodenstein
  */
 public class MeasureType {
 private String MeasureName;

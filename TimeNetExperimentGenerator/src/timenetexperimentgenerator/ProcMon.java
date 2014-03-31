@@ -1,6 +1,5 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * PocessMonitor used for controlling the started TimeNet-Instance
  */
 
 package timenetexperimentgenerator;
@@ -10,7 +9,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author sse
+ * @author Christoph Bodenstein
  */
 public class ProcMon implements Runnable {
 

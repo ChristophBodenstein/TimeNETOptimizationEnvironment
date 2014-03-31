@@ -20,9 +20,9 @@ import org.w3c.dom.*;
 
 /**
  *
- * @author sse
+ * @author Christoph Bodenstein
  */
-public class genericSimulator implements Runnable{
+public class simpleLocalSimulator implements Runnable, Simulator{
 ArrayList<parameter[]> listOfParameterSets;
 ArrayList<parser> listOfCompletedSimulationParsers;
 String originalFilename;
@@ -38,10 +38,15 @@ String actualSimulationLogFile="";//actual log-file for one local simulation
 private String nameOfTempDirectory="14623786483530251523506521233052";
 
     //Constructor
-/*
- if smiulationCounter is set to less then 0, the old value wil be used and continouusly incresed
- */
-    public genericSimulator(ArrayList<parameter[]> listOfParameterSetsTMP, String originalFilenameTMP, String pathToTimeNetTMP, String tmpFilePathTMP,boolean remoteTMP, int simulationCounterTMP){
+    public simpleLocalSimulator(){
+    
+    }
+
+
+    /*
+    if simulationCounter is set to less then 0, the old value wil be used and continouusly increased
+    */
+    public void initSimulator(ArrayList<parameter[]> listOfParameterSetsTMP, String originalFilenameTMP, String pathToTimeNetTMP, String tmpFilePathTMP,boolean remoteTMP, int simulationCounterTMP){
     this.listOfParameterSets=listOfParameterSetsTMP;
     this.originalFilename=originalFilenameTMP;
     this.pathToTimeNet=pathToTimeNetTMP;
@@ -202,7 +207,7 @@ private String nameOfTempDirectory="14623786483530251523506521233052";
                     }
                 
                 //Dateiname bilden
-                String exportFileName=this.tmpFilePath+File.separator+removeExtention(f.getName())+"_n_"+simulationNumber+"_MaxTime_"+MaxTime+"_EndTime_"+EndTime+"_Seed_"+Seed+"_ConfidenceIntervall_"+ConfidenceIntervall+"_MaxRelError_"+MaxRelError+"_.xml";
+                String exportFileName=this.tmpFilePath+File.separator+support.removeExtention(f.getName())+"_n_"+simulationNumber+"_MaxTime_"+MaxTime+"_EndTime_"+EndTime+"_Seed_"+Seed+"_ConfidenceIntervall_"+ConfidenceIntervall+"_MaxRelError_"+MaxRelError+"_.xml";
                 //Exportieren
                 System.out.println("File to export: "+exportFileName);
 
@@ -243,19 +248,19 @@ private String nameOfTempDirectory="14623786483530251523506521233052";
             try {
                 p.waitFor();
             } catch (InterruptedException ex) {
-                Logger.getLogger(genericSimulator.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(simpleLocalSimulator.class.getName()).log(Level.SEVERE, null, ex);
             }
         timeStamp=(Calendar.getInstance().getTimeInMillis()-timeStamp) / 1000;//Time for calculation in seconds
 
 
         //Copy results.log
-        String sourceFile=removeExtention(exportFileName)+".result"+File.separator+"results.log";
-        String sinkFile=removeExtention(exportFileName)+"simTime_"+timeStamp+".log";
+        String sourceFile=support.removeExtention(exportFileName)+".result"+File.separator+"results.log";
+        String sinkFile=support.removeExtention(exportFileName)+"simTime_"+timeStamp+".log";
             if (copyFile(sourceFile, sinkFile, false)){
             System.out.println("Coppied log-file. Now delete the directory and original log-file.");
             File tmpFile=new File(sourceFile);
             tmpFile.delete();
-            tmpFile=new File(removeExtention(exportFileName)+".result");
+            tmpFile=new File(support.removeExtention(exportFileName)+".result");
             tmpFile.delete();
             System.out.println("Deleted original Log-file and directory.");
             this.actualSimulationLogFile=sinkFile;
@@ -304,31 +309,6 @@ private String nameOfTempDirectory="14623786483530251523506521233052";
      */
     private boolean checkTimeNetServerAvailable(){
     return false;
-    }
-
-    public String removeExtention(String filePath) {
-    // These first few lines the same as Justin's
-    File f = new File(filePath);
-
-        // if it's a directory, don't remove the extention
-        if (f.isDirectory()) return filePath;
-
-        String name = f.getName();
-
-        // Now we know it's a file - don't need to do any special hidden
-        // checking or contains() checking because of:
-        final int lastPeriodPos = name.lastIndexOf('.');
-        if (lastPeriodPos <= 0)
-        {
-            // No period after first character - return name as it was passed in
-            return filePath;
-        }
-        else
-        {
-            // Remove the last period and everything after it
-            File renamed = new File(f.getParent(), name.substring(0, lastPeriodPos));
-            return renamed.getPath();
-        }
     }
 
     public ArrayList<parser> getListOfCompletedSimulationParsers(){

@@ -1,15 +1,12 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Exports a list of Experiments as xml-files into a given directory.
  */
 
 package timenetexperimentgenerator;
 
-import java.awt.event.ActionEvent;
 import java.io.File;
 import java.util.ArrayList;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -21,7 +18,7 @@ import org.w3c.dom.*;
 
 /**
  *
- * @author bode
+ * @author Christoph Bodenstein
  */
 public class exporter implements Runnable{
 ArrayList<parameter[]> ListOfParameterSetsToBeWritten;
@@ -92,9 +89,8 @@ MainFrame parent;
                 infoLabel.updateUI();
                 //Dateiname bilden
                 String tmpDirName="";
-                    //if(fileChooser.getSelectedFile())
                 System.out.println("Choosen File: "+fileChooser.getSelectedFile());
-                String exportFileName=fileChooser.getCurrentDirectory()+File.separator+removeExtention(f.getName())+"_n_"+c+"_MaxTime_"+MaxTime+"_EndTime_"+EndTime+"_Seed_"+Seed+"_ConfidenceIntervall_"+ConfidenceIntervall+"_.xml";
+                String exportFileName=fileChooser.getCurrentDirectory()+File.separator+support.removeExtention(f.getName())+"_n_"+c+"_MaxTime_"+MaxTime+"_EndTime_"+EndTime+"_Seed_"+Seed+"_ConfidenceIntervall_"+ConfidenceIntervall+"_.xml";
                 //Exportieren
                 System.out.println("File to export: "+exportFileName);
 
@@ -121,33 +117,6 @@ MainFrame parent;
 
 
     }
-
-
-    public String removeExtention(String filePath) {
-    // These first few lines the same as Justin's
-    File f = new File(filePath);
-
-        // if it's a directory, don't remove the extention
-        if (f.isDirectory()) return filePath;
-
-        String name = f.getName();
-
-        // Now we know it's a file - don't need to do any special hidden
-        // checking or contains() checking because of:
-        final int lastPeriodPos = name.lastIndexOf('.');
-        if (lastPeriodPos <= 0)
-        {
-            // No period after first character - return name as it was passed in
-            return filePath;
-        }
-        else
-        {
-            // Remove the last period and everything after it
-            File renamed = new File(f.getParent(), name.substring(0, lastPeriodPos));
-            return renamed.getPath();
-        }
-    }
-
 }
 
 
@@ -240,6 +209,7 @@ boolean isRunning=false;
 
     public int getSizeOfDesignspace(){
     //Calculate the size of Design space and return just this number
+    System.out.println("Calculating Size of Design Space.");
     int parameterCount=this.jTableParameterList.getModel().getRowCount();
     parameterTableModel tModel=(parameterTableModel) this.jTableParameterList.getModel();
     String [][] parameterArray=tModel.getParameterArray();
@@ -262,7 +232,7 @@ boolean isRunning=false;
             if((end-start)>0 &&(step!=0) ){
                 spaceCounter=(end-start)/step +1;
             }
-        System.out.println(tmpParameter.getName()+"Start: "+start +", End:"+end+", Stepping:"+step+", Counts:"+spaceCounter);
+        System.out.println(tmpParameter.getName()+" Start: "+start +", End:"+end+", Stepping:"+step+", Counts:"+spaceCounter);
         designSpaceSize=designSpaceSize*(spaceCounter);
         }
     return (int)designSpaceSize;

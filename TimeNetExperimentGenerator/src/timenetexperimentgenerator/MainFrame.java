@@ -1,6 +1,6 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Main Frame for TimeNetExperimentGenerator
+ * provides many additional features
  */
 
 /*
@@ -32,7 +32,7 @@ import org.xml.sax.SAXException;
 
 /**
  *
- * @author sse
+ * @author Christoph Bodenstein
  */
 public class MainFrame extends javax.swing.JFrame implements TableModelListener{
 private String propertyFile=System.getProperty("user.home")+File.separatorChar+ ".ExperimentGeneratorprops.prop";
@@ -103,8 +103,6 @@ private String pathToLastSimulationCache="";
 
         this.checkIfTimeNetPathIsCorrect();
         this.deactivateExportButtons();
-        //this.activateReloadButtons();
-
 
         jTableParameterList.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
             @Override
@@ -397,14 +395,10 @@ private String pathToLastSimulationCache="";
         System.out.println("Export-Operation cancled.");
         }
     this.cancelOperation=false;
-
-    //exporter tmpExporter=new exporter(ListOfParameterSetsToBeWritten, fileName, jLabelExportStatus, this);
     }//GEN-LAST:event_jButtonExportActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-
-    this.cancelOperation=true;
-    
+    this.cancelOperation=true;    
     }//GEN-LAST:event_jButton1ActionPerformed
 
     public String getPathToTimeNet(){
@@ -412,16 +406,11 @@ private String pathToLastSimulationCache="";
     }
 
     /**
-     * Start generation of experiments and start of batch simulation
+     * Start of batch simulation
      */
     private void jButtonStartBatchSimulationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonStartBatchSimulationActionPerformed
-    //ArrayList <parameter[]>ListOfParameterSetsToBeWritten=new ArrayList<parameter[]>();//Name, Value
-    //Thread is started automatically
-    //generator myGenerator=new generator(ListOfParameterSetsToBeWritten, fileName, jLabelExportStatus, this, jTableParameterList);
-    //this.restartGenerator();
-    //this.waitForGenerator();
-    //Thread is started automatically
-    batchSimulator mySimulator=new batchSimulator(ListOfParameterSetsToBeWritten, fileName, jLabelExportStatus, this);
+    
+    BatchSimulator mySimulator=new BatchSimulator(ListOfParameterSetsToBeWritten, fileName, jLabelExportStatus, this);
     
     }//GEN-LAST:event_jButtonStartBatchSimulationActionPerformed
 
@@ -433,7 +422,8 @@ private String pathToLastSimulationCache="";
         if(this.sizeOfDesignSpace<=10){
         
         }else   {
-                genericOptimizer myOptimizer=new genericOptimizer(this.jTextFieldSCPNFile.getText(), this, jTabbedPane1, this.getPathToTimeNet(), this.jLabelExportStatus);
+                Optimizer myOptimizer=SimOptiFactory.getOptimizer();
+                myOptimizer.initOptimizer(this.jTextFieldSCPNFile.getText(), this, jTabbedPane1, this.getPathToTimeNet(), this.jLabelExportStatus);
                 }
     }//GEN-LAST:event_jButtonStartOptimizationActionPerformed
 
@@ -464,11 +454,13 @@ private String pathToLastSimulationCache="";
 
     private void jButtonLoadCacheFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLoadCacheFileActionPerformed
     //JFileChooser fileChooser = new JFileChooser(this.getPathToTimeNet());
+    javax.swing.filechooser.FileFilter myFilter=new javax.swing.filechooser.FileNameExtensionFilter("csv file", "csv");
     JFileChooser fileChooser = new JFileChooser(this.pathToLastSimulationCache);
     fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
     fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
     fileChooser.setControlButtonsAreShown(true);
     fileChooser.setDialogTitle(" Choose File with cached simulation files ");
+    fileChooser.setFileFilter(myFilter);
     String inputFile="";
 
 
@@ -482,9 +474,10 @@ private String pathToLastSimulationCache="";
         System.out.println("choosen input file with cached simulation results: "+inputFile);
       }else{
       System.out.println("No input file chosen!");
+      return;
       }  
       
-        if(!mySimulationCache.parseSimulationCacheFile(inputFile,((MeasurementForm)this.jTabbedPane1.getComponent(0)).getListOfMeasurements(), (parameterTableModel)this.jTableParameterList.getModel())){
+        if(!mySimulationCache.parseSimulationCacheFile(inputFile,((MeasurementForm)this.jTabbedPane1.getComponent(0)).getListOfMeasurements(), (parameterTableModel)this.jTableParameterList.getModel(),this )){
             System.out.println("Wrong Simulation cache file for this SCPN!");
         }else{
         this.pathToLastSimulationCache=fileChooser.getSelectedFile().getPath();
@@ -520,9 +513,9 @@ private String pathToLastSimulationCache="";
 
         float start=1, end=1, step=1;
             try{
-            start=Float.parseFloat(loopParameter.getStartValue());
-            end=Float.parseFloat(loopParameter.getEndValue());
-            step=Float.parseFloat(loopParameter.getStepping());
+            start=support.getFloatFromString(loopParameter.getStartValue());
+            end=support.getFloatFromString(loopParameter.getEndValue());
+            step=support.getFloatFromString(loopParameter.getStepping());
             canIterate=true;
             /*    if((end-start)>0){
                     if(((end-start)/step)>0){ //Iteration möglich

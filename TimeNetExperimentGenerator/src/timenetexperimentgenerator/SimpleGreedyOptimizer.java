@@ -17,12 +17,12 @@ import javax.swing.JTabbedPane;
 
 /**
  *
- * @author sse
+ * @author Christoph Bodenstein
  *
  * needs: path to timenet, path for tmp-files, path/filename of original, access to tModel with parameters, access to jTabbedPane with Measurement-forms
  *
  */
-public class genericOptimizer implements Runnable{
+public class SimpleGreedyOptimizer implements Runnable, Optimizer{
 String tmpPath="";
 String filename="";//Original filename
 String pathToTimeNet="";
@@ -36,7 +36,11 @@ boolean optimized=false;//False until Optimization is ended
 JLabel infoLabel;
 
     //Constructor
-    genericOptimizer(String originalFilename, MainFrame parentTMP, JTabbedPane MeasureFormPaneTMP, String pathToTimeNetTMP, JLabel infoLabel){
+    SimpleGreedyOptimizer(){
+    }
+
+
+    public void initOptimizer(String originalFilename, MainFrame parentTMP, JTabbedPane MeasureFormPaneTMP, String pathToTimeNetTMP, JLabel infoLabel){
     this.infoLabel=infoLabel;
     this.pathToTimeNet=pathToTimeNetTMP;
     this.MeasureFormPane=MeasureFormPaneTMP;
@@ -280,7 +284,8 @@ JLabel infoLabel;
         try{
             while(mySimulationList.size()>0){
             //batchSimulator myBatchSimulator = new batchSimulator(mySimulationList, this.filename, this.infoLabel, parent);
-            genericSimulator myGenericSimulator = new genericSimulator(mySimulationList, this.filename, this.pathToTimeNet, tmpPath, false, simulationCounter);
+            Simulator myGenericSimulator=SimOptiFactory.getSimulator();
+            myGenericSimulator.initSimulator(mySimulationList, this.filename, this.pathToTimeNet, tmpPath, false, simulationCounter);
                 while(myGenericSimulator.getStatus()<100){
                 Thread.sleep(500);
                 this.infoLabel.setText("Done "+ myGenericSimulator.getStatus() +"%");

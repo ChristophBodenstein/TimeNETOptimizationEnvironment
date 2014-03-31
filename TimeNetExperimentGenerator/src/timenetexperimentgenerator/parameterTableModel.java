@@ -5,7 +5,6 @@
 
 package timenetexperimentgenerator;
 
-import java.util.ArrayList;
 import javax.swing.table.AbstractTableModel;
 import org.w3c.dom.*;
 
@@ -125,12 +124,17 @@ private String[][] parameterArray;
         fireTableCellUpdated(row, col);
     }
 
-    public String getValueByName(String Name, String col){
-    String returnValue="";
-    int count=-1;
 
+    /**
+     * Sets the Value for StartValue, EndValue or Stepping for one parameter
+     * The fieldname (StartValue, EndValue or Stepping) must be given as String for col
+     */
+    public String getValueByName(String name, String col){
+    String returnValue=null;
+    int count=-1;
+    //Search the row for this parameter
     for(int i=0;i<this.parameterList.getLength()+5;i++){
-        if(parameterArray[i][0].equals(Name)){
+        if(parameterArray[i][0].equals(name)){
         count=i;
         }
     }
@@ -148,8 +152,42 @@ private String[][] parameterArray;
 
     }
 
-    
+    return returnValue;
+    }
+
+    /**
+     * Set the value for StartValue, EndValue or Stepping
+     * The fieldname (StartValue, EndValue or Stepping) must be given as String
+     * Value must also be given as String
+     */
+    public boolean setValueByName(String name, String col, String value){
+    boolean returnValue=false;
+    int count=-1;
+    //Search the row for this parameter
+    for(int i=0;i<this.parameterList.getLength()+5;i++){
+        if(parameterArray[i][0].equals(name)){
+        count=i;
+        }
+    }
+
+    if(count==-1){returnValue=false;}else{
+        if(col.equals("StartValue")){
+        parameterArray[count][1]=value;
+        returnValue=true;
+        }
+        if(col.equals("EndValue")){
+        parameterArray[count][2]=value;
+        returnValue=true;
+        }
+        if(col.equals("Stepping")){
+        parameterArray[count][3]=value;
+        returnValue=true;
+        }
+    }
 
     return returnValue;
     }
+
+
+
 }

@@ -13,30 +13,24 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.xml.parsers.*;
-import javax.xml.transform.*;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import org.w3c.dom.*;
 
 
 /**
  *
  * @author bode
  */
-public class batchSimulator implements Runnable{
+public class BatchSimulator implements Runnable{
 ArrayList<parameter[]> ListOfParameterSetsToBeWritten;
 String filename;
 JLabel infoLabel;
 MainFrame parent;
 
-    batchSimulator(ArrayList<parameter[]> ListOfParameterSetsToBeWritten, String filename, JLabel infoLabel, MainFrame parent){
+    BatchSimulator(ArrayList<parameter[]> ListOfParameterSetsToBeWritten, String filename, JLabel infoLabel, MainFrame parent){
     this.ListOfParameterSetsToBeWritten=ListOfParameterSetsToBeWritten;
     this.filename=filename;
     this.infoLabel=infoLabel;
@@ -66,12 +60,12 @@ MainFrame parent;
         System.out.println("choosen outputdir: "+outputDir);
 
         try{
-            genericSimulator myGenericSimulator=new genericSimulator(ListOfParameterSetsToBeWritten, filename, parent.getPathToTimeNet(), outputDir, false, 0);
-            while(myGenericSimulator.getStatus()<100){//TODO Warten auf das Ende alle Simulationen
-
+            Simulator myGenericSimulator=SimOptiFactory.getSimulator();
+            myGenericSimulator.initSimulator(ListOfParameterSetsToBeWritten, filename, parent.getPathToTimeNet(), outputDir, false, 0);
+            while(myGenericSimulator.getStatus()<100){
+            //Wait for End of all simulations
             Thread.sleep(500);
             this.infoLabel.setText("Done "+ myGenericSimulator.getStatus() +"%");
-            //System.out.print("Simulation status:"+myGenericSimulator.status +"%");
             }
 
         }catch(Exception e){
@@ -95,7 +89,9 @@ MainFrame parent;
     File f = new File(filePath);
 
         // if it's a directory, don't remove the extention
-        if (f.isDirectory()) return filePath;
+        if (f.isDirectory()) {
+            return filePath;
+        }
 
         String name = f.getName();
 

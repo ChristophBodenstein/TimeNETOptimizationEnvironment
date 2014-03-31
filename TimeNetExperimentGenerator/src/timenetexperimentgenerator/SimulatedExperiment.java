@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 /**
  *
- * @author sse
+ * @author Christoph Bodenstein
  */
 public class SimulatedExperiment {
 private ArrayList listOfParameters;

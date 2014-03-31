@@ -1,6 +1,6 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Form for Optimization-targets, its used within a tabbed pane to choose the target-measurements
+ * 
  */
 
 /*
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 /**
  *
- * @author sse
+ * @author Christoph Bodenstein
  */
 public class MeasurementForm extends javax.swing.JPanel {
 private ArrayList<MeasureType> listOfMeasureMents=new ArrayList<MeasureType>();

@@ -1,6 +1,6 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Parser reads one log file of SCPN-Simulation
+ * After Log-File reading it contains all Measurement-data and can be asked for
  */
 
 package timenetexperimentgenerator;
@@ -15,7 +15,7 @@ import org.w3c.dom.*;
 
 /**
  *
- * @author sse
+ * @author Christoph Bodenstein
  */
 public class parser {
 private String logName;
