@@ -132,7 +132,10 @@ private String pathToLastSimulationCache="";
 
         //Reload the last File
         this.readSCPNFile(jTextFieldSCPNFile.getText());
-        
+        support.setStatusLabel(jLabelExportStatus);
+        support.setMainFrame(this);
+        support.setMeasureFormPane(jTabbedPane1);
+        support.setPathToTimeNet(pathToTimeNet);
         
     }
 
@@ -387,10 +390,18 @@ private String pathToLastSimulationCache="";
     }//GEN-LAST:event_jButtonReloadActionPerformed
 
     private void jButtonExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonExportActionPerformed
-
+        
+        //Ask for Export-Path
+        support.setTmpPath(support.getPathToDirByDialog("Dir for export of xml-Files.\n "+"Go INTO the dir to choose it!", null));
+        support.setPathToTimeNet(pathToTimeNet);
+        support.setMainFrame(this);
+        support.setOriginalFilename(fileName);
+        support.setStatusLabel(jLabelExportStatus);
+        support.setMeasureFormPane(jTabbedPane1);
+        
         if(ListOfParameterSetsToBeWritten!=null){
         System.out.println("Length of ParameterSet-List: "+ListOfParameterSetsToBeWritten.size());
-        exporter tmpExporter=new exporter(ListOfParameterSetsToBeWritten, fileName, jLabelExportStatus, this);
+        exporter tmpExporter=new exporter(ListOfParameterSetsToBeWritten);
         }else{
         System.out.println("Export-Operation cancled.");
         }
@@ -409,8 +420,15 @@ private String pathToLastSimulationCache="";
      * Start of batch simulation
      */
     private void jButtonStartBatchSimulationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonStartBatchSimulationActionPerformed
+        //Ask for Tmp-Path
+        support.setTmpPath(support.getPathToDirByDialog("Dir for export TMP-Files and log.\n "+"Go INTO the dir to choose it!", null));
+        support.setPathToTimeNet(pathToTimeNet);
+        support.setMainFrame(this);
+        support.setOriginalFilename(fileName);
+        support.setStatusLabel(jLabelExportStatus);
+        support.setMeasureFormPane(jTabbedPane1);
     
-    BatchSimulator mySimulator=new BatchSimulator(ListOfParameterSetsToBeWritten, fileName, jLabelExportStatus, this);
+        BatchSimulator mySimulator=new BatchSimulator(ListOfParameterSetsToBeWritten);
     
     }//GEN-LAST:event_jButtonStartBatchSimulationActionPerformed
 
@@ -422,8 +440,15 @@ private String pathToLastSimulationCache="";
         if(this.sizeOfDesignSpace<=10){
         
         }else   {
+                //Ask for Tmp-Path
+                support.setTmpPath(support.getPathToDirByDialog("Dir for export TMP-Files and log.\n "+"Go INTO the dir to choose it!", null));
+                support.setPathToTimeNet(pathToTimeNet);
+                support.setMainFrame(this);
+                support.setOriginalFilename(fileName);
+                support.setStatusLabel(jLabelExportStatus);
+                support.setMeasureFormPane(jTabbedPane1);
                 Optimizer myOptimizer=SimOptiFactory.getOptimizer();
-                myOptimizer.initOptimizer(this.jTextFieldSCPNFile.getText(), this, jTabbedPane1, this.getPathToTimeNet(), this.jLabelExportStatus);
+                myOptimizer.initOptimizer();
                 }
     }//GEN-LAST:event_jButtonStartOptimizationActionPerformed
 
@@ -696,6 +721,7 @@ private String pathToLastSimulationCache="";
         
         
         this.fileName=filename;//nach Erfolg, globalen filename setzen
+        support.setOriginalFilename(filename);
         activateGenerateButtons();
         activateReloadButtons();
         }catch(ParserConfigurationException e){
@@ -899,6 +925,8 @@ private String pathToLastSimulationCache="";
         jButtonPathToTimeNet.setBackground(Color.GREEN);
         jButtonPathToTimeNet.setText("Reset Path To TimeNet");
         jButtonStartOptimization.setEnabled(true);
+        support.setPathToTimeNet(path);
+        this.pathToTimeNet=path;
         this.saveProperties();
             //Try to install "RemoteSystem Client.config"
             try{

@@ -40,11 +40,11 @@ JLabel infoLabel;
     }
 
 
-    public void initOptimizer(String originalFilename, MainFrame parentTMP, JTabbedPane MeasureFormPaneTMP, String pathToTimeNetTMP, JLabel infoLabel){
-    this.infoLabel=infoLabel;
-    this.pathToTimeNet=pathToTimeNetTMP;
-    this.MeasureFormPane=MeasureFormPaneTMP;
-    this.parent=parentTMP;
+    public void initOptimizer(){
+    this.infoLabel=support.getStatusLabel();//  infoLabel;
+    this.pathToTimeNet=support.getPathToTimeNet();// pathToTimeNetTMP;
+    this.MeasureFormPane=support.getMeasureFormPane();//MeasureFormPaneTMP;
+    this.parent=support.getMainFrame();// parentTMP;
     this.parameterBase=parent.getParameterBase();
     this.listOfMeasures=parent.getListOfActiveMeasureMentsToOptimize(); //((MeasurementForm)MeasureFormPane.getComponent(0)).getListOfMeasurements();
     System.out.println("# of Measures to be optimized: "+this.listOfMeasures.size());
@@ -76,38 +76,18 @@ JLabel infoLabel;
         }
 
 
-    this.parent=parentTMP;
-    this.filename=originalFilename;
+    
+    this.filename=support.getOriginalFilename();// originalFilename;
     //Ask for Tmp-Path
-    this.tmpPath=getTmpPathByDialog();
+    
+    this.tmpPath=support.getTmpPath();
     //Start this Thread
     new Thread(this).start();
     }
 
 
 
-    /***
-     Asks user for tmp-directory for files, logfiles and master-logfile
-     */
-    private String getTmpPathByDialog(){
-    File f = new File(this.filename);
-    String outputDir="";
-    JFileChooser fileChooser = new JFileChooser(f.getParent());
-    fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-    fileChooser.setDialogType(JFileChooser.SAVE_DIALOG);
-    fileChooser.setControlButtonsAreShown(true);
-    fileChooser.setCurrentDirectory(f);
-    fileChooser.setDialogTitle("Dir for export TMP-Files and log.\n "+"Go INTO the dir to choose it!");
-        if (fileChooser.showSaveDialog(parent) == JFileChooser.APPROVE_OPTION) {
-            if(fileChooser.getSelectedFile().isDirectory() ){
-                outputDir=fileChooser.getSelectedFile().toString();
-            }else{
-                outputDir=fileChooser.getCurrentDirectory().toString();
-            }
-            System.out.println("choosen outputdir: "+outputDir);
-        }
-    return outputDir;
-    }
+    
 
 
     /**
@@ -285,7 +265,7 @@ JLabel infoLabel;
             while(mySimulationList.size()>0){
             //batchSimulator myBatchSimulator = new batchSimulator(mySimulationList, this.filename, this.infoLabel, parent);
             Simulator myGenericSimulator=SimOptiFactory.getSimulator();
-            myGenericSimulator.initSimulator(mySimulationList, this.filename, this.pathToTimeNet, tmpPath, false, simulationCounter);
+            myGenericSimulator.initSimulator(mySimulationList, simulationCounter);
                 while(myGenericSimulator.getStatus()<100){
                 Thread.sleep(500);
                 this.infoLabel.setText("Done "+ myGenericSimulator.getStatus() +"%");

@@ -35,7 +35,7 @@ private int simulationCounter=0;//Startvalue for count of simulations, will be i
 boolean cancelSimulations=false;
 String logFileName;
 String actualSimulationLogFile="";//actual log-file for one local simulation
-private String nameOfTempDirectory="14623786483530251523506521233052";
+private final String nameOfTempDirectory="14623786483530251523506521233052";
 
     //Constructor
     public simpleLocalSimulator(){
@@ -46,12 +46,12 @@ private String nameOfTempDirectory="14623786483530251523506521233052";
     /*
     if simulationCounter is set to less then 0, the old value wil be used and continouusly increased
     */
-    public void initSimulator(ArrayList<parameter[]> listOfParameterSetsTMP, String originalFilenameTMP, String pathToTimeNetTMP, String tmpFilePathTMP,boolean remoteTMP, int simulationCounterTMP){
+    public void initSimulator(ArrayList<parameter[]> listOfParameterSetsTMP, int simulationCounterTMP){
     this.listOfParameterSets=listOfParameterSetsTMP;
-    this.originalFilename=originalFilenameTMP;
-    this.pathToTimeNet=pathToTimeNetTMP;
-    this.remote=remoteTMP;
-    this.tmpFilePath=tmpFilePathTMP;
+    this.originalFilename=support.getOriginalFilename();//  originalFilenameTMP;
+    this.pathToTimeNet=support.getPathToTimeNet();//  pathToTimeNetTMP;
+    //this.remote=remoteTMP;
+    this.tmpFilePath=support.getTmpPath();// tmpFilePathTMP;
         if(simulationCounterTMP>=0){
         this.simulationCounter=simulationCounterTMP;}
 

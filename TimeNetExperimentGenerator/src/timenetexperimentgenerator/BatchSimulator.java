@@ -30,11 +30,11 @@ String filename;
 JLabel infoLabel;
 MainFrame parent;
 
-    BatchSimulator(ArrayList<parameter[]> ListOfParameterSetsToBeWritten, String filename, JLabel infoLabel, MainFrame parent){
+    BatchSimulator(ArrayList<parameter[]> ListOfParameterSetsToBeWritten){
     this.ListOfParameterSetsToBeWritten=ListOfParameterSetsToBeWritten;
-    this.filename=filename;
-    this.infoLabel=infoLabel;
-    this.parent=parent;
+    this.filename=support.getOriginalFilename();// filename;
+    this.infoLabel=support.getStatusLabel();//infoLabel;
+    this.parent=support.getMainFrame();//parent;
     
     new Thread(this).start();
     }
@@ -61,7 +61,7 @@ MainFrame parent;
 
         try{
             Simulator myGenericSimulator=SimOptiFactory.getSimulator();
-            myGenericSimulator.initSimulator(ListOfParameterSetsToBeWritten, filename, parent.getPathToTimeNet(), outputDir, false, 0);
+            myGenericSimulator.initSimulator(ListOfParameterSetsToBeWritten, 0);
             while(myGenericSimulator.getStatus()<100){
             //Wait for End of all simulations
             Thread.sleep(500);
