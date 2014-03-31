@@ -4,9 +4,6 @@
 
 package timenetexperimentgenerator;
 
-import javax.swing.JLabel;
-import javax.swing.JTabbedPane;
-
 /**
  *
  * @author Christoph Bodenstein
