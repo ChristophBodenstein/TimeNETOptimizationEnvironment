@@ -486,7 +486,7 @@ private String pathToLastSimulationCache="";
     fileChooser.setControlButtonsAreShown(true);
     fileChooser.setDialogTitle(" Choose File with cached simulation files ");
     fileChooser.setFileFilter(myFilter);
-    String inputFile="";
+    String inputFile;
 
 
       if (fileChooser.showDialog(this, "Open") == JFileChooser.APPROVE_OPTION) {
