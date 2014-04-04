@@ -11,7 +11,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 
@@ -48,7 +47,7 @@ JLabel infoLabel;
     this.parameterBase=parent.getParameterBase();
     this.listOfMeasures=parent.getListOfActiveMeasureMentsToOptimize(); //((MeasurementForm)MeasureFormPane.getComponent(0)).getListOfMeasurements();
     System.out.println("# of Measures to be optimized: "+this.listOfMeasures.size());
-
+        /*
         for(int i=0;i<MeasureFormPane.getComponentCount();i++){
             if(MeasureFormPane.getComponent(i) instanceof MeasurementForm){
                 if(((MeasurementForm)MeasureFormPane.getComponent(i)).isActive()){
@@ -69,6 +68,7 @@ JLabel infoLabel;
                 }
             }
         }
+        */
     //Alle Steppings auf Standard setzen
     arrayOfIncrements=new float[parameterBase.length];
         for(int i=0;i<parameterBase.length;i++){
@@ -92,7 +92,8 @@ JLabel infoLabel;
 
     /**
       Creates new List of Parametersets to be simulated, based on actual history of simulation-results
-
+     * @param historyOfParsers history of Simulation-runs, stored as parser-objects
+     * @return List of Parametersets to be simulated next
      */
     public ArrayList<parameter[]> getNextSimulations(ArrayList<parser> historyOfParsers){
     ArrayList<parameter[]> returnValue=new ArrayList<parameter[]>();

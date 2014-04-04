@@ -195,5 +195,27 @@ float[] listOfCachedParameterStepping;
 
         }
     }
+    
+    public boolean checkIfAllParameterMatchTable(parameterTableModel myTableModel){
+    if (listOfCachedParameterNames==null){return false;}
+        //Names are equal --> format the table so that Start-,End-,Stepping-Value match
+        for(int i=0;i<listOfCachedParameterNames.length;i++){
+            if(myTableModel.getValueByName(listOfCachedParameterNames[i], "StartValue").equals(Float.toString(listOfCachedParameterMin[i]))){}else{return false;}
+            if(myTableModel.getValueByName(listOfCachedParameterNames[i], "EndValue").equals(Float.toString(listOfCachedParameterMax[i]))){}else{return false;}
+            if(myTableModel.getValueByName(listOfCachedParameterNames[i], "Stepping").equals(Float.toString(listOfCachedParameterStepping[i]))){}else{return false;}
 
+        }
+    return true;
+    }
+    
+    /*
+    * Returns one float value of a Measure, selected by one parameterset(ParameterList)
+    */
+    public float getMeasureValueByParameterList(ArrayList<parameter> parameterList){
+    return (float) 1.0;
+    }
+
+    
+    
+    
 }

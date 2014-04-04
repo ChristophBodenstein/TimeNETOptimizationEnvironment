@@ -137,8 +137,24 @@ private String pathToLastSimulationCache="";
         support.setMeasureFormPane(jTabbedPane1);
         support.setPathToTimeNet(pathToTimeNet);
         
+        this.checkIfCachedSimulationIsPossible();
+        
+        
     }
 
+    private void checkIfCachedSimulationIsPossible(){
+    this.jCheckBoxCachedSimulation.setEnabled(false);
+    this.jCheckBoxCachedSimulation.setSelected(false);
+    
+        if(mySimulationCache!=null){
+            if(mySimulationCache.checkIfAllParameterMatchTable((parameterTableModel)this.jTableParameterList.getModel())){
+            this.jCheckBoxCachedSimulation.setEnabled(true);
+            this.jCheckBoxCachedSimulation.setSelected(true);
+            }
+        }
+    
+    }    
+    
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -168,7 +184,7 @@ private String pathToLastSimulationCache="";
         jButtonPathToTimeNet = new javax.swing.JButton();
         jLabelExportStatus = new javax.swing.JLabel();
         jButtonLoadCacheFile = new javax.swing.JButton();
-        jCheckBox1 = new javax.swing.JCheckBox();
+        jCheckBoxCachedSimulation = new javax.swing.JCheckBox();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
@@ -264,7 +280,7 @@ private String pathToLastSimulationCache="";
             }
         });
 
-        jCheckBox1.setText("Cached Optimization");
+        jCheckBoxCachedSimulation.setText("Cached Optimization");
 
         jMenu1.setText("File");
         jMenuBar1.add(jMenu1);
@@ -294,7 +310,7 @@ private String pathToLastSimulationCache="";
                             .add(org.jdesktop.layout.GroupLayout.TRAILING, jLabelSimulationCount, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .add(layout.createSequentialGroup()
                                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                                    .add(jCheckBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 265, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                    .add(jCheckBoxCachedSimulation, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 265, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                                     .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
                                         .add(org.jdesktop.layout.GroupLayout.LEADING, jTabbedPane1)
                                         .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
@@ -347,7 +363,7 @@ private String pathToLastSimulationCache="";
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jButtonLoadCacheFile)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .add(jCheckBox1)
+                        .add(jCheckBoxCachedSimulation)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jButtonStartOptimization)
                         .add(0, 19, Short.MAX_VALUE)))
@@ -438,18 +454,30 @@ private String pathToLastSimulationCache="";
 
     private void jButtonStartOptimizationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonStartOptimizationActionPerformed
         if(this.sizeOfDesignSpace<=10){
-        
-        }else   {
+        //TODO check , if opti is possible (target chosen etc.)
+        System.out.println("Design space to small, no Optimization posible.");
+        }else{
+                if(this.getListOfActiveMeasureMentsToOptimize().size()>=1){
                 //Ask for Tmp-Path
                 support.setTmpPath(support.getPathToDirByDialog("Dir for export TMP-Files and log.\n "+"Go INTO the dir to choose it!", null));
-                support.setPathToTimeNet(pathToTimeNet);
-                support.setMainFrame(this);
-                support.setOriginalFilename(fileName);
-                support.setStatusLabel(jLabelExportStatus);
-                support.setMeasureFormPane(jTabbedPane1);
-                Optimizer myOptimizer=SimOptiFactory.getOptimizer();
-                myOptimizer.initOptimizer();
+                //TODO if tmpPath is empty or null --> return
+                    if(support.getTmpPath()!=null){
+                    support.setPathToTimeNet(pathToTimeNet);
+                    support.setMainFrame(this);
+                    support.setOriginalFilename(fileName);
+                    support.setStatusLabel(jLabelExportStatus);
+                    support.setMeasureFormPane(jTabbedPane1);
+                    Optimizer myOptimizer=SimOptiFactory.getOptimizer();
+                    myOptimizer.initOptimizer();
+                    }else{
+                    System.out.println("No Tmp-Path given, Optimization not possible.");
+                    }
+                    
+                    
+                }else{
+                System.out.println("No Measurements to optimize for are chosen.");
                 }
+             }
     }//GEN-LAST:event_jButtonStartOptimizationActionPerformed
 
     private void jButtonPathToTimeNetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPathToTimeNetActionPerformed
@@ -508,7 +536,7 @@ private String pathToLastSimulationCache="";
         this.pathToLastSimulationCache=fileChooser.getSelectedFile().getPath();
         this.saveProperties();
         }
-        
+    this.checkIfCachedSimulationIsPossible();    
     }//GEN-LAST:event_jButtonLoadCacheFileActionPerformed
 
     public void calculateDesignSpace(){
@@ -665,7 +693,7 @@ private String pathToLastSimulationCache="";
     private javax.swing.JButton jButtonReload;
     private javax.swing.JButton jButtonStartBatchSimulation;
     private javax.swing.JButton jButtonStartOptimization;
-    private javax.swing.JCheckBox jCheckBox1;
+    private javax.swing.JCheckBox jCheckBoxCachedSimulation;
     private javax.swing.JLabel jLabelExportStatus;
     private javax.swing.JLabel jLabelSimulationCount;
     private javax.swing.JMenu jMenu1;
@@ -858,6 +886,7 @@ private String pathToLastSimulationCache="";
     readStaticParametersFromTable();
     saveProperties();
     calculateDesignSpace();
+    checkIfCachedSimulationIsPossible();
     }
 
     private void readStaticParametersFromTable(){
@@ -923,6 +952,8 @@ private String pathToLastSimulationCache="";
         this.jButtonStartBatchSimulation.setEnabled(true);
         //this.jLabelCheckPathToTimeNet.setVisible(false);
         jButtonPathToTimeNet.setBackground(Color.GREEN);
+        jButtonPathToTimeNet.setOpaque(true);
+        jButtonPathToTimeNet.setBorderPainted(false);
         jButtonPathToTimeNet.setText("Reset Path To TimeNet");
         jButtonStartOptimization.setEnabled(true);
         support.setPathToTimeNet(path);
@@ -952,7 +983,9 @@ private String pathToLastSimulationCache="";
         //TODO Buttons zur Auswahl des TimeNet-Verzeichnisses ausgrauen
         this.jButtonStartBatchSimulation.setEnabled(false);
         //this.jLabelCheckPathToTimeNet.setVisible(true);
-        jButtonPathToTimeNet.setBackground(Color.GRAY);
+        jButtonPathToTimeNet.setBackground(Color.RED);
+        jButtonPathToTimeNet.setOpaque(true);
+        jButtonPathToTimeNet.setBorderPainted(true);
         jButtonPathToTimeNet.setText("Enter Path To TimeNet");
         jButtonStartOptimization.setEnabled(false);
         
@@ -1080,8 +1113,13 @@ private String pathToLastSimulationCache="";
     ArrayList<MeasureType> myTmpList=new ArrayList<MeasureType>();//((MeasurementForm)this.jTabbedPane1.getComponent(0)).getListOfMeasurements();
 
         for(int i=0; i<this.jTabbedPane1.getComponentCount();i++){
-            if(((MeasurementForm)this.jTabbedPane1.getComponent(i)).isActive()){
-            myTmpList.add(((MeasurementForm)this.jTabbedPane1.getComponent(i)).getChosenMeasurement());
+            MeasurementForm tmpMeasurementForm=(MeasurementForm)this.jTabbedPane1.getComponent(i);
+            if(tmpMeasurementForm.isActive()){
+            MeasureType tmpMeasure=tmpMeasurementForm.getChosenMeasurement();
+            float targetValue=tmpMeasurementForm.getCustomTargetValue();
+            String targetKind=tmpMeasurementForm.getOptimizationTarget();
+            tmpMeasure.setTargetValue(targetValue, targetKind);
+            myTmpList.add(tmpMeasure);
             }
         }
     return myTmpList;

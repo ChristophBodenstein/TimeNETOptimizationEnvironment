@@ -138,7 +138,7 @@ private static String tmpPath=null;//The path, where all simulation files (xml),
      */
     public static String getPathToDirByDialog(String title, String startPath){
     
-    String outputDir="";
+    String outputDir=null;
     JFileChooser fileChooser = new JFileChooser();
     fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
     fileChooser.setDialogType(JFileChooser.SAVE_DIALOG);
