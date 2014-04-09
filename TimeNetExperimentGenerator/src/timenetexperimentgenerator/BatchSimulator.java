@@ -40,25 +40,26 @@ MainFrame parent;
     }
 
     public void run() {
-    String outputDir="";
+    String outputDir=support.getTmpPath();
     File f = new File(this.filename);
-    JFileChooser fileChooser = new JFileChooser(f.getParent());
+    /*JFileChooser fileChooser = new JFileChooser(f.getParent());
     fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
     fileChooser.setDialogType(JFileChooser.SAVE_DIALOG);
     fileChooser.setControlButtonsAreShown(true);
     fileChooser.setCurrentDirectory(f);
     fileChooser.setDialogTitle("Dir for export of "+ListOfParameterSetsToBeWritten.size() +" Experiments. Go INTO the dir to choose it!");
+    */
 
 
-
-      if (fileChooser.showSaveDialog(parent) == JFileChooser.APPROVE_OPTION) {
-        if(fileChooser.getSelectedFile().isDirectory() ){
+      //if (fileChooser.showSaveDialog(parent) == JFileChooser.APPROVE_OPTION) {
+    if ((outputDir!=null) &&(!outputDir.equals(""))) {
+     /*   if(fileChooser.getSelectedFile().isDirectory() ){
             outputDir=fileChooser.getSelectedFile().toString();
         }else{
             outputDir=fileChooser.getCurrentDirectory().toString();
         }
         System.out.println("choosen outputdir: "+outputDir);
-
+            */
         try{
             Simulator myGenericSimulator=SimOptiFactory.getSimulator();
             myGenericSimulator.initSimulator(ListOfParameterSetsToBeWritten, 0);
@@ -76,7 +77,7 @@ MainFrame parent;
       infoLabel.setText("");
       }
     else {
-      System.out.println("No Selection ");
+      System.out.println("No TMP Path given.");
       parent.cancelOperation=true;
       }
 
