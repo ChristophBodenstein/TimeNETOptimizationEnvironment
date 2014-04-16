@@ -17,15 +17,15 @@ import java.util.ArrayList;
  * @author Christoph Bodenstein
  */
 public class SimulationCache {
-ArrayList<SimulatedExperiment> ListOfExperiments;
 String[] listOfCachedParameterNames;
 float[] listOfCachedParameterMin;
 float[] listOfCachedParameterMax;
 float[] listOfCachedParameterStepping;
+ArrayList<MeasureType> MeasureList;
 
 
     public SimulationCache() {
-        this.ListOfExperiments = new ArrayList<SimulatedExperiment>();
+        this.MeasureList=new ArrayList<MeasureType>();
     }
     
 
@@ -38,7 +38,7 @@ float[] listOfCachedParameterStepping;
         reader = new BufferedReader(new FileReader(new File(filename)));
         String current = reader.readLine();
         //Number of Experiments, first number of lines is counted
-        int numberOfExperiments=1;//Don` count first line
+        int numberOfExperiments=1;//Don`t count first line
         while (current != null) {
             //processCsvLine(current);
             String[] tmpString=current.split(";");
@@ -76,14 +76,24 @@ float[] listOfCachedParameterStepping;
             listOfCachedParameterMin[i]=Math.min(tmpValue, listOfCachedParameterMin[i]);
                 if(line<listOfStringLines.size()-1){
                     try{
-                    listOfCachedParameterStepping[i]=Math.max(listOfCachedParameterStepping[i], Math.abs(tmpValue-support.getFloatFromString(listOfStringLines.get(line+1)[column])));
+                    //listOfCachedParameterStepping[i]=Math.max(listOfCachedParameterStepping[i], Math.abs(tmpValue-support.getFloatFromString(listOfStringLines.get(line+1)[column])));
+                    float tmpValue2=support.getFloatFromString(listOfStringLines.get(line+1)[column]);
+                    //TODO: Make this a setting in prefernces frame, how many digits to be used!
+                    tmpValue2=(Math.abs(tmpValue-tmpValue2));
+                    tmpValue2=support.round(tmpValue2);
+                    if(tmpValue2>0){
+                    listOfCachedParameterStepping[i]=tmpValue2;
+                    //System.out.println("Result of round: "+tmpValue2);
+                    //System.out.println("Setting new Value for Stepping.");
+                    }
+                    
                     }catch(Exception e){
                     System.out.println("Maybe there was an error getting the stepping from cache file.");
                     }
                 }
             }
-
-        System.out.println("ParameterName " +(i)+" = "+listOfCachedParameterNames[i]+" with Min="+listOfCachedParameterMin[i]+" and Max="+listOfCachedParameterMax[i]+" and Stepping="+listOfCachedParameterStepping[i]);
+        if(listOfCachedParameterStepping[i]<=0.0){listOfCachedParameterStepping[i]=(float)1.0;}
+        //System.out.println("ParameterName " +(i)+" = "+listOfCachedParameterNames[i]+" with Min="+listOfCachedParameterMin[i]+" and Max="+listOfCachedParameterMax[i]+" and Stepping="+listOfCachedParameterStepping[i]);
         }
         
         //Get Names of Measures
@@ -131,11 +141,10 @@ float[] listOfCachedParameterStepping;
         }   System.out.println("All parameters seem available in table.");
 
         
-        
+        this.MeasureList=new ArrayList<MeasureType>();
         //Generate List of Simulated Experiments
-        SimulatedExperiment[] myExperiments=new SimulatedExperiment[numberOfExperiments];
         for(i=0;i<numberOfExperiments;i++){
-            ArrayList<MeasureType> tmpMeasureList=new ArrayList<MeasureType>();
+            
             for(int c=0;c<listOfCachedMeasureNames.size();c++){
             MeasureType tmpMeasure=new MeasureType();
             //Line number in read cache file
@@ -146,7 +155,7 @@ float[] listOfCachedParameterStepping;
             float[] tmpConf={support.getFloatFromString(listOfStringLines.get(lineNumber)[3]),support.getFloatFromString(listOfStringLines.get(lineNumber)[4])};
             tmpMeasure.setConfidenceInterval(tmpConf);
             tmpMeasure.setEpsilon(support.getFloatFromString(listOfStringLines.get(lineNumber)[5]));
-            //TODO Parameterliste erstellen, SimulatedExperiments sind überflüssig
+            
             ArrayList<parameter> tmpParameterList=new ArrayList<parameter>();
                 for(int i1=0;i1<listOfCachedParameterNames.length;i1++){
                 column=i1+7;
@@ -164,7 +173,7 @@ float[] listOfCachedParameterStepping;
 
             tmpMeasure.setParameterList(tmpParameterList);
             
-            tmpMeasureList.add(tmpMeasure);
+            this.MeasureList.add(tmpMeasure);
             
             }
         }
@@ -208,13 +217,69 @@ float[] listOfCachedParameterStepping;
     return true;
     }
     
-    /*
-    * Returns one float value of a Measure, selected by one parameterset(ParameterList)
+    /**
+    * Returns one float value of a Measure(given by name), selected by one parameterset(ParameterList)
+    * @param parameterList given Set of Parameters to by virtually simulated
+    * @param MeasureName given Name of Measure to get the simulaion value (needle)
+    * @return Measure
     */
-    public float getMeasureValueByParameterList(ArrayList<parameter> parameterList){
-    return (float) 1.0;
+    public MeasureType getMeasureValueByParameterList(ArrayList<parameter> parameterList, String MeasureName){
+    MeasureType tmpMeasure;
+        //Go through all Measures, find the one with the same parameterlist
+        for(int i=0;i<this.MeasureList.size();i++){
+        tmpMeasure=this.MeasureList.get(i);
+            if((tmpMeasure.getMeasureName().equals(MeasureName))&&(compareParameterList(parameterList, tmpMeasure.getParameterList()))){
+            return tmpMeasure;
+            }
+        }
+    //TODO: If not found, then find the nearest one
+            
+    //Return null, if not found
+    return null;
     }
 
+    
+    /**
+     * Checks if two parametersets are equal
+     * @param listA will be compered to
+     * @param listB 
+     * @return true if parametersets (only the values and names) are equal, else false
+     */
+    private boolean compareParameterList(ArrayList<parameter> listA, ArrayList<parameter> listB){
+    String nameA="";
+    parameter tmpParameterA, tmpParameterB;
+        if(listA.size()!=listB.size()){
+        return false;
+        }
+        
+        for(int i=0;i<listA.size();i++){
+        tmpParameterA=listA.get(i);
+        nameA=tmpParameterA.getName();
+            tmpParameterB=this.findParameterInListByName(nameA, listB);
+            if(tmpParameterB==null){return false;}
+            //Parameter found, now check the values of this parameter
+            if(tmpParameterA.getValue()!=tmpParameterB.getValue()){return false;}
+        }     
+    return true;
+    }
+    
+    
+    /**
+     * finds a parameter by Name in an ArrayList of parameters
+     * @param name Name of Parameter to search (Needle)
+     * @param list ArrayList of Paramater (Haystack)
+     * @return parameter with the given name or null
+     */
+    private parameter findParameterInListByName(String name, ArrayList<parameter> list){
+    parameter testParameter;
+        for (int i=0;i<list.size();i++){
+            testParameter=list.get(i);
+            if(testParameter.getName().equals(name)){
+            return testParameter;
+            }
+        }
+    return null;
+    }
     
     
     

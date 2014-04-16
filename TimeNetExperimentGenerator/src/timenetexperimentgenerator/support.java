@@ -160,6 +160,16 @@ private static String tmpPath=null;//The path, where all simulation files (xml),
     }
     
     
+    /**
+     * Rounds a float value to x digits
+     * 
+     * @param valueToRound The input Vlaue to be round
+     * @return round Value with x precise digits
+     */
+    public static float round(float valueToRound){
+    return (float)Math.round(valueToRound * 1000) / 1000;        
+    }
+    
 }
 
 
