@@ -133,8 +133,11 @@ private static String tmpPath=null;//The path, where all simulation files (xml),
         tmpPath = aTmpPath;
     }
     
-    /***
-     Asks user for a directory to store data
+    /**
+     * Asks user for a directory to store data
+     * @param title Title of Dialog, which path do you need?
+     * @param startPath starting Path for dialog
+     * @return Chosen path from dialog
      */
     public static String getPathToDirByDialog(String title, String startPath){
     
