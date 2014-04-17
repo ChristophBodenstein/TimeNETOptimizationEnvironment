@@ -34,11 +34,17 @@ float[] arrayOfIncrements;
 boolean optimized=false;//False until Optimization is ended
 JLabel infoLabel;
 
-    //Constructor
+    /**
+     * Constructor
+     * 
+     */
     SimpleGreedyOptimizer(){
     }
 
-
+    /**
+     * Init the optimization, loads the default values and targets from support-class and starts optimization
+     *
+     */
     public void initOptimizer(){
     this.infoLabel=support.getStatusLabel();//  infoLabel;
     this.pathToTimeNet=support.getPathToTimeNet();// pathToTimeNetTMP;
@@ -47,36 +53,13 @@ JLabel infoLabel;
     this.parameterBase=parent.getParameterBase();
     this.listOfMeasures=parent.getListOfActiveMeasureMentsToOptimize(); //((MeasurementForm)MeasureFormPane.getComponent(0)).getListOfMeasurements();
     System.out.println("# of Measures to be optimized: "+this.listOfMeasures.size());
-        /*
-        for(int i=0;i<MeasureFormPane.getComponentCount();i++){
-            if(MeasureFormPane.getComponent(i) instanceof MeasurementForm){
-                if(((MeasurementForm)MeasureFormPane.getComponent(i)).isActive()){
-                String targetName=((MeasurementForm)MeasureFormPane.getComponent(i)).getNameOfChosenMeasurement();
-                float targetValue=((MeasurementForm)MeasureFormPane.getComponent(i)).getCustomTargetValue();
-                String targetKind=((MeasurementForm)MeasureFormPane.getComponent(i)).getOptimizationTarget();
 
-                //Aus Liste der Measurements das richtig raussuchen und das Target setzen
-                    for(int c=0;c<this.listOfMeasures.size();c++){
-                        if(this.listOfMeasures.get(c).getMeasureName().equals(targetName)){
-                        this.listOfMeasures.get(c).setTargetValue(targetValue, targetKind);
-                        }
-                    }
-                System.out.println("Name of Measures to be optimized: "+targetName);
-                System.out.println("Kind of Measures to be optimized: "+targetKind);
-                System.out.println("Value of Measures to be optimized: "+targetValue);
-
-                }
-            }
-        }
-        */
     //Alle Steppings auf Standard setzen
     arrayOfIncrements=new float[parameterBase.length];
         for(int i=0;i<parameterBase.length;i++){
-        arrayOfIncrements[i]=getFloat(parameterBase[i].getStepping());
+        arrayOfIncrements[i]=support.getFloat(parameterBase[i].getStepping());
         }
-
-
-    
+  
     this.filename=support.getOriginalFilename();// originalFilename;
     //Ask for Tmp-Path
     
@@ -86,12 +69,8 @@ JLabel infoLabel;
     }
 
 
-
-    
-
-
     /**
-      Creates new List of Parametersets to be simulated, based on actual history of simulation-results
+     * Creates new List of Parametersets to be simulated, based on actual history of simulation-results
      * @param historyOfParsers history of Simulation-runs, stored as parser-objects
      * @return List of Parametersets to be simulated next
      */
@@ -194,8 +173,8 @@ JLabel infoLabel;
                         for(int i=0;i<newParameterSet.length;i++){
                             if(!newParameterSet[i].isExternalParameter()){
 
-                                if(getFloat(newParameterSet[i].getValue())<getFloat(newParameterSet[i].getEndValue())){                                
-                                arrayOfIncrements[i]=getFloat(newParameterSet[i].getStepping());                                
+                                if(support.getFloat(newParameterSet[i].getValue())<support.getFloat(newParameterSet[i].getEndValue())){                                
+                                arrayOfIncrements[i]=support.getFloat(newParameterSet[i].getStepping());                                
                                 break;//Abbruch nach erstem änderbaren Parameter
                                 }
                             }
@@ -212,21 +191,27 @@ JLabel infoLabel;
     }
 
     /**
-     * Applies a list of increments to a list of parameters, used in creating the next parameter-set
-     */
+    * Applies a list of increments to a list of parameters, used in creating the next parameter-set
+    * the new parameterset is the "global" variable parameterBase
+    * @param arrayOfIncrements Array of values which will be applied to array of parameters
+    * @param newParameterSet Array of parameters which will be increased by values from arrayOfIncrements
+    * 
+    */
     void applyArrayOfIncrements(float[] arrayOfIncrements, parameter[] newParameterSet){
     System.out.println("Applying Array of Increments.");
         for(int i=0;i<newParameterSet.length;i++){
         System.out.print(newParameterSet[i].getName()+"="+newParameterSet[i].getValue()+" will be incremented by: "+arrayOfIncrements[i]+" and is now:");
-        newParameterSet[i].setValue(getString(Math.min(arrayOfIncrements[i]+getFloat(newParameterSet[i].getValue()),getFloat(newParameterSet[i].getEndValue())) ) );
+        newParameterSet[i].setValue(support.getString(Math.min(arrayOfIncrements[i]+support.getFloat(newParameterSet[i].getValue()),support.getFloat(newParameterSet[i].getEndValue())) ) );
         System.out.println(newParameterSet[i].getValue());
         }
     this.parameterBase=newParameterSet;
     }
 
-    /*
+    /**
      * Creates and returns a set of Parameters made by deep-copying
-     **/
+     * @param parameterBase the array of parameters to be dublicated
+     * @return array of parameters, the copy of input
+     */
     parameter[] getCopyOfParameterSet(parameter[] parameterBase){
         parameter[] newParameterSet=new parameter[parameterBase.length];
         for(int i=0;i<parameterBase.length;i++){
@@ -243,21 +228,11 @@ JLabel infoLabel;
     }
 
     
-    /*
-     Some float functions for parameter casting, will be overloaded
+
+
+    /**
+     * Run method, the main optimization loop
      */
-    float getFloat(float f){
-    return f;
-    }
-
-    float getFloat(String s){
-    return Float.parseFloat(s);
-    }
-
-    String getString(float f){
-    return String.valueOf(f);
-    }
-
     public void run() {
     ArrayList<parameter[]> mySimulationList=getNextSimulations(historyOfParsers);
     int simulationCounter=0;
@@ -281,19 +256,22 @@ JLabel infoLabel;
                 }
 
             mySimulationList=getNextSimulations(historyOfParsers);
-            //Warte bis simulation fertig ist (oder TimeOut)
-            //frage nach Ergebnissen und packe sie in History
             }
-        }catch(Exception e){
-        e.printStackTrace();
+        }catch(InterruptedException e){
+        System.out.println("InterruptedException in main loop of optimization. Optimization aborted.");
+        this.infoLabel.setText("Aborted / Error");
         }
         //throw new UnsupportedOperationException("Not supported yet.");
     }
 
-
+    /**
+     * Adds Lines to logfile with the data from given parserlist
+     * @param pList List of parsers, which includes the data from one simulation each
+     * @param logFileName The path and name of the general log file
+     */
     private void addLinesToLogFileFromListOfParser(ArrayList<parser> pList, String logFileName){
     boolean writeHeader=false;
-    String line="";
+    String line;
         try{
         System.out.println("Logfilename is:"+logFileName);
         //Öffnen des Logfiles und Schreiben der ersten Zeile
@@ -312,7 +290,6 @@ JLabel infoLabel;
                         fw.write(line);
                     } catch (IOException ex) {
                         System.out.println("Error writing Header to Summary-log-file.");
-                        ex.printStackTrace();
                     }
             }
 
@@ -324,38 +301,26 @@ JLabel infoLabel;
               //fw.append( System.getProperty("line.separator") );
                 for(int i1=0;i1<myParser.getMeasures().size();i1++){//Alle Measure schreiben
                 MeasureType exportMeasure=myParser.getMeasures().get(i1);
-                line=exportMeasure.getMeasureName()+";"+getCommaFloat(exportMeasure.getMeanValue())+";"+getCommaFloat(exportMeasure.getVariance())+";"+getCommaFloat(exportMeasure.getConfidenceInterval()[0])+";"+getCommaFloat(exportMeasure.getConfidenceInterval()[1])+";"+getCommaFloat(exportMeasure.getEpsilon())+";"+getCommaFloat(myParser.getSimulationTime());
+                line=exportMeasure.getMeasureName()+";"+support.getCommaFloat(exportMeasure.getMeanValue())+";"+support.getCommaFloat(exportMeasure.getVariance())+";"+support.getCommaFloat(exportMeasure.getConfidenceInterval()[0])+";"+support.getCommaFloat(exportMeasure.getConfidenceInterval()[1])+";"+support.getCommaFloat(exportMeasure.getEpsilon())+";"+support.getCommaFloat(myParser.getSimulationTime());
                     for(int c=0;c<exportMeasure.getParameterList().size();c++){
-                    line=line+";"+getCommaFloat(exportMeasure.getParameterList().get(c).getValue());
+                    line=line+";"+support.getCommaFloat(exportMeasure.getParameterList().get(c).getValue());
                     }
                 fw.write(line);
                 fw.append( System.getProperty("line.separator") );
                 }
-              }catch(Exception e){e.printStackTrace();}
+              }catch(IOException e){
+                  System.out.println("IOException while appending lines to summary log-file.");
+              }
 
             }
 
 
         fw.close();
-        }catch(Exception e){e.printStackTrace();}
+        }catch(IOException e){
+            System.out.println("IOException while writing things to summary log-file.");
+        }
 
     }
-
-//Returns a String with float value, where comma is used instead of point as decimal-separator
-    public String getCommaFloat(float f){
-    //System.out.print("UnFormated float is "+f);
-    String returnValue=getCommaFloat( Float.toString(f) ) ;
-    //System.out.println("  --  Formated float is "+returnValue);
-    return returnValue;
-    }
-    public String getCommaFloat(String f){
-    //System.out.print("UnFormated String is "+f);
-    String returnValue=f.replace(".", ",");
-    //System.out.println("  --  Formated String is "+returnValue);
-
-    return returnValue;
-    }
-
 
 
 }

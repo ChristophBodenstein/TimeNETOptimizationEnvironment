@@ -170,6 +170,56 @@ private static String tmpPath=null;//The path, where all simulation files (xml),
     return (float)Math.round(valueToRound * 1000) / 1000;        
     }
     
+     /**
+     * Some float functions for parameter casting, will be overloaded
+     * @param f float to be returned normalized and casted
+     * @return float value
+     */
+    public static float getFloat(float f){
+    return f;
+    }
+    
+    /**
+     * Casts a String to float and returns this float
+     * @param s String to be converted into float
+     * @return float value of input String
+     */
+    public static float getFloat(String s){
+    return Float.parseFloat(s);
+    }
+
+    /**
+     * Converts a float into a String
+     * @param f float value to be converted into String
+     * @return String which represents the input float value
+     */
+    public static String getString(float f){
+    return String.valueOf(f);
+    }
+    
+     /**
+     * Returns a String with float value, where comma is used instead of point as decimal-separator
+     * @param f Float value to be converted into a String with comma as decimal-point
+     * @return String representing the float value with comma as decimal-point
+     */
+    public static String getCommaFloat(float f){
+    //System.out.print("UnFormated float is "+f);
+    String returnValue=getCommaFloat( Float.toString(f) ) ;
+    //System.out.println("  --  Formated float is "+returnValue);
+    return returnValue;
+    }
+    
+    /**
+     * Returns a String with float value, where comma is used as decimal-point
+     * @param f String representing a float with decimal-point
+     * @return String representing the float value with comma as decimal-point
+     */
+    public static String getCommaFloat(String f){
+    //System.out.print("UnFormated String is "+f);
+    String returnValue=f.replace(".", ",");
+    //System.out.println("  --  Formated String is "+returnValue);
+    return returnValue;
+    }
 }
 
 
