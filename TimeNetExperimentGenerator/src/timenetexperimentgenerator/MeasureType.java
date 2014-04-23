@@ -21,6 +21,13 @@ private float Epsilon;
 private ArrayList<parameter> parameterList=new ArrayList<parameter>();
 private float targetValue;
 private String targetKindOf;
+private float SimulationTime;
+private float CPUTime;
+
+    public MeasureType() {
+        this.CPUTime = (float)0.0;
+        this.SimulationTime = (float)0.0;
+    }
 
 
     /**
@@ -146,5 +153,33 @@ private String targetKindOf;
      */
     public void setParameterList(ArrayList<parameter> parameterList) {
         this.parameterList = parameterList;
+    }
+
+    /**
+     * @return the SimulationTime
+     */
+    public float getSimulationTime() {
+        return SimulationTime;
+    }
+
+    /**
+     * @param SimulationTime the SimulationTime to set
+     */
+    public void setSimulationTime(float SimulationTime) {
+        this.SimulationTime = SimulationTime;
+    }
+
+    /**
+     * @return the CPUTime
+     */
+    public float getCPUTime() {
+        return CPUTime;
+    }
+
+    /**
+     * @param CPUTime the CPUTime to set
+     */
+    public void setCPUTime(float CPUTime) {
+        this.CPUTime = CPUTime;
     }
 }

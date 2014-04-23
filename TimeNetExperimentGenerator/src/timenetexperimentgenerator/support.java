@@ -293,7 +293,7 @@ private static boolean cachedSimulationEnabled=false;
             }
         System.out.println("---End of parameterlist---");
         }
-        
+        System.out.println("Used CPU-Time: " +m.getCPUTime());
         System.out.println("***** End of Measure "+m.getMeasureName()+" ******");
         System.out.println(footer);
 

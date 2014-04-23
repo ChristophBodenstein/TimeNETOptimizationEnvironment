@@ -156,6 +156,10 @@ private int localSimulationCounter=0;
             float[] tmpConf={support.getFloat(listOfStringLines.get(lineNumber)[3]),support.getFloat(listOfStringLines.get(lineNumber)[4])};
             tmpMeasure.setConfidenceInterval(tmpConf);
             tmpMeasure.setEpsilon(support.getFloat(listOfStringLines.get(lineNumber)[5]));
+            tmpMeasure.setSimulationTime(support.getFloat(listOfStringLines.get(lineNumber)[6]));
+            //CPU-Time is in last column
+            tmpMeasure.setCPUTime(support.getFloat(listOfStringLines.get(lineNumber)[7+listOfCachedParameterNames.length]));
+            //System.out.println("CPU-Time of "+tmpMeasure.getMeasureName() +" is " +tmpMeasure.getCPUTime()+".");
             
             ArrayList<parameter> tmpParameterList=new ArrayList<parameter>();
                 for(int i1=0;i1<listOfCachedParameterNames.length;i1++){
