@@ -22,6 +22,7 @@ float[] listOfCachedParameterMin;
 float[] listOfCachedParameterMax;
 float[] listOfCachedParameterStepping;
 ArrayList<MeasureType> MeasureList;
+private int localSimulationCounter=0;
 
 
     public SimulationCache() {
@@ -71,13 +72,13 @@ ArrayList<MeasureType> MeasureList;
         listOfCachedParameterStepping[i]=support.DEFAULT_STEPPING;
             //Walk through a column and get Min and Max Values
             for(int line=1;line<listOfStringLines.size();line++){
-            tmpValue=support.getFloatFromString(listOfStringLines.get(line)[column]);
+            tmpValue=support.getFloat(listOfStringLines.get(line)[column]);
             listOfCachedParameterMax[i]=Math.max(tmpValue, listOfCachedParameterMax[i]);
             listOfCachedParameterMin[i]=Math.min(tmpValue, listOfCachedParameterMin[i]);
                 if(line<listOfStringLines.size()-1){
                     try{
                     //listOfCachedParameterStepping[i]=Math.max(listOfCachedParameterStepping[i], Math.abs(tmpValue-support.getFloatFromString(listOfStringLines.get(line+1)[column])));
-                    float tmpValue2=support.getFloatFromString(listOfStringLines.get(line+1)[column]);
+                    float tmpValue2=support.getFloat(listOfStringLines.get(line+1)[column]);
                     //TODO: Make this a setting in prefernces frame, how many digits to be used!
                     tmpValue2=(Math.abs(tmpValue-tmpValue2));
                     tmpValue2=support.round(tmpValue2);
@@ -150,24 +151,26 @@ ArrayList<MeasureType> MeasureList;
             //Line number in read cache file
             int lineNumber=i*listOfCachedMeasureNames.size()+c+1;
             tmpMeasure.setMeasureName(listOfStringLines.get(lineNumber)[0]);
-            tmpMeasure.setMeanValue(support.getFloatFromString(listOfStringLines.get(lineNumber)[1]));
-            tmpMeasure.setVariance(support.getFloatFromString(listOfStringLines.get(lineNumber)[2]));
-            float[] tmpConf={support.getFloatFromString(listOfStringLines.get(lineNumber)[3]),support.getFloatFromString(listOfStringLines.get(lineNumber)[4])};
+            tmpMeasure.setMeanValue(support.getFloat(listOfStringLines.get(lineNumber)[1]));
+            tmpMeasure.setVariance(support.getFloat(listOfStringLines.get(lineNumber)[2]));
+            float[] tmpConf={support.getFloat(listOfStringLines.get(lineNumber)[3]),support.getFloat(listOfStringLines.get(lineNumber)[4])};
             tmpMeasure.setConfidenceInterval(tmpConf);
-            tmpMeasure.setEpsilon(support.getFloatFromString(listOfStringLines.get(lineNumber)[5]));
+            tmpMeasure.setEpsilon(support.getFloat(listOfStringLines.get(lineNumber)[5]));
             
             ArrayList<parameter> tmpParameterList=new ArrayList<parameter>();
                 for(int i1=0;i1<listOfCachedParameterNames.length;i1++){
                 column=i1+7;
                 parameter tmpParameter=new parameter();
-                tmpParameter.setName(listOfCachedParameterNames[i1]);
-                tmpParameter.setEndValue(Float.toString(listOfCachedParameterMax[i1]));
-                tmpParameter.setStartValue(Float.toString(listOfCachedParameterMin[i1]));
-                tmpParameter.setStepping(Float.toString(listOfCachedParameterStepping[i1]));
+                tmpParameter.setName(support.translateParameterNameFromLogFileToTable(listOfCachedParameterNames[i1]));
+                tmpParameter.setEndValue(Float.toString(support.round(listOfCachedParameterMax[i1])));
+                tmpParameter.setStartValue(Float.toString(support.round(listOfCachedParameterMin[i1])));
+                tmpParameter.setStepping(Float.toString(support.round(listOfCachedParameterStepping[i1])));
                 //Get and save Value of this Parameter
                 //It is in the correct Column of the actual line
                 //We did not change the order of Parameters (it`s the same like in the raw file)
-                tmpParameter.setValue(support.translateParameterNameFromLogFileToTable(listOfStringLines.get(lineNumber)[column]));
+                //tmpParameter.setValue(support.translateParameterNameFromLogFileToTable(listOfStringLines.get(lineNumber)[column]));
+                tmpParameter.setValue(Float.toString(support.round(support.getFloat(listOfStringLines.get(lineNumber)[column]))));
+                
                 tmpParameterList.add(tmpParameter);
                 }
 
@@ -218,12 +221,12 @@ ArrayList<MeasureType> MeasureList;
     }
     
     /**
-    * Returns one float value of a Measure(given by name), selected by one parameterset(ParameterList)
+    * Returns one Measure(given by name), selected by one parameterset(ParameterList)
     * @param parameterList given Set of Parameters to by virtually simulated
     * @param MeasureName given Name of Measure to get the simulaion value (needle)
     * @return Measure
     */
-    public MeasureType getMeasureValueByParameterList(ArrayList<parameter> parameterList, String MeasureName){
+    public MeasureType getMeasureByParameterList(ArrayList<parameter> parameterList, String MeasureName){
     MeasureType tmpMeasure;
         //Go through all Measures, find the one with the same parameterlist
         for(int i=0;i<this.MeasureList.size();i++){
@@ -232,12 +235,33 @@ ArrayList<MeasureType> MeasureList;
             return tmpMeasure;
             }
         }
-    //TODO: If not found, then find the nearest one
-            
+    //TODO: If not found, then find the nearest one       
     //Return null, if not found
     return null;
     }
 
+    /**
+    * Returns all Measures, selected by one parameterset(ParameterList)
+    * @param parameterList given Set of Parameters to by virtually simulated
+    * @return ArrayList of MeasureTypes
+    */
+    public ArrayList<MeasureType> getAllMeasuresWithParameterList(ArrayList<parameter> parameterList){
+    MeasureType tmpMeasure;
+    ArrayList<MeasureType> myTmpList=new ArrayList();
+    
+    System.out.println("Size of All Measures from File: "+MeasureList.size());
+        //Go through all Measures, find the one with the same parameterlist
+        for(int i=0;i<this.MeasureList.size();i++){
+        tmpMeasure=this.MeasureList.get(i);
+            if(compareParameterList(parameterList, tmpMeasure.getParameterList())){
+            myTmpList.add(tmpMeasure);
+            }
+        }
+    return myTmpList;
+    //TODO: If not found, then find the nearest one       
+    //Return null, if not found
+    }
+    
     
     /**
      * Checks if two parametersets are equal
@@ -249,16 +273,23 @@ ArrayList<MeasureType> MeasureList;
     String nameA="";
     parameter tmpParameterA, tmpParameterB;
         if(listA.size()!=listB.size()){
+        System.out.println("Size of needle-ParameterList is different from haystack-ParameterList.");
         return false;
         }
         
         for(int i=0;i<listA.size();i++){
         tmpParameterA=listA.get(i);
-        nameA=tmpParameterA.getName();
+        nameA=support.translateParameterNameFromLogFileToTable(tmpParameterA.getName());
             tmpParameterB=this.findParameterInListByName(nameA, listB);
-            if(tmpParameterB==null){return false;}
+                if(tmpParameterB==null){
+                System.out.println("ParameterB is null.");
+                return false;
+                }
             //Parameter found, now check the values of this parameter
-            if(tmpParameterA.getValue()!=tmpParameterB.getValue()){return false;}
+                if(support.round(support.getFloat(tmpParameterA.getValue()))!=support.round(support.getFloat(tmpParameterB.getValue()))){
+                //System.out.println("Parameter Values differ.");
+                return false;
+                }
         }     
     return true;
     }
@@ -281,6 +312,59 @@ ArrayList<MeasureType> MeasureList;
     return null;
     }
     
+    
+    
+    /**
+     * Same function like in real simulator
+     * Given a list of parametersets, it returns a list of Simulation results (parsers)
+     * 
+     * @param parameterListArray List of Parameter-Arrays to be "simulated"
+     * @param simulationCounter Counter of Simulations
+     * @return List of parsers with Simulation-Results, like in real simulation
+     */
+    public ArrayList<parser> getListOfCompletedSimulationParsers(ArrayList<parameter[]> parameterListArray, int simulationCounter){
+    setLocalSimulationCounter(simulationCounter);
+    ArrayList<parser> myParserList=new ArrayList<parser>();
+    
+    
+        for(int i=0;i<parameterListArray.size();i++){
+            //Create Arraylist from aray of parameters
+            ArrayList<parameter> tmpParameterList=new ArrayList<parameter>();
+            for(int c=0;c<parameterListArray.get(i).length;c++){
+            tmpParameterList.add(parameterListArray.get(i)[c]);
+            }
+            
+            //Get local simulation results
+            ArrayList<MeasureType> listOfMeasureWithGivenParameters=this.getAllMeasuresWithParameterList(tmpParameterList);
+            //System.out.println("Size of ParameterList: "+ tmpParameterList.size() + " results in " +listOfMeasureWithGivenParameters.size()+ " Measurements.");
+            
+            //append if listSize is > 0
+            if(listOfMeasureWithGivenParameters.size()>0){
+            parser tmpParser=new parser();
+            tmpParser.setMeasures(listOfMeasureWithGivenParameters);
+            tmpParser.setSimulationTime((float)0.0);
+            myParserList.add(tmpParser);
+            simulationCounter++;
+            }
+            
+        }
+    if(myParserList.size()==0){return null;}
+    return myParserList;
+    }
+
+    /**
+     * @return the localSimulationCounter
+     */
+    public int getLocalSimulationCounter() {
+        return localSimulationCounter;
+    }
+
+    /**
+     * @param localSimulationCounter the localSimulationCounter to set
+     */
+    public void setLocalSimulationCounter(int localSimulationCounter) {
+        this.localSimulationCounter = localSimulationCounter;
+    }
     
     
 }

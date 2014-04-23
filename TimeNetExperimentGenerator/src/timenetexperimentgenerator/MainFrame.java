@@ -150,6 +150,8 @@ private String pathToLastSimulationCache="";
             if(mySimulationCache.checkIfAllParameterMatchTable((parameterTableModel)this.jTableParameterList.getModel())){
             this.jCheckBoxCachedSimulation.setEnabled(true);
             this.jCheckBoxCachedSimulation.setSelected(true);
+            support.setMySimulationCache(mySimulationCache);
+            support.setCachedSimulationEnabled(true);
             }
         }
     
@@ -205,6 +207,7 @@ private String pathToLastSimulationCache="";
             }
         });
 
+        jTableParameterList.setAutoCreateRowSorter(true);
         jTableParameterList.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -224,7 +227,6 @@ private String pathToLastSimulationCache="";
                 return types [columnIndex];
             }
         });
-        jTableParameterList.setAutoCreateRowSorter(true);
         jTableParameterList.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
         jScrollPane1.setViewportView(jTableParameterList);
 
@@ -281,6 +283,11 @@ private String pathToLastSimulationCache="";
         });
 
         jCheckBoxCachedSimulation.setText("Cached Optimization");
+        jCheckBoxCachedSimulation.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jCheckBoxCachedSimulationStateChanged(evt);
+            }
+        });
 
         jMenu1.setText("File");
         jMenuBar1.add(jMenu1);
@@ -539,6 +546,10 @@ private String pathToLastSimulationCache="";
     this.checkIfCachedSimulationIsPossible();    
     }//GEN-LAST:event_jButtonLoadCacheFileActionPerformed
 
+    private void jCheckBoxCachedSimulationStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jCheckBoxCachedSimulationStateChanged
+        support.setCachedSimulationEnabled(jCheckBoxCachedSimulation.isSelected());
+    }//GEN-LAST:event_jCheckBoxCachedSimulationStateChanged
+
     public void calculateDesignSpace(){
         myGenerator=new generator(ListOfParameterSetsToBeWritten, fileName, jLabelExportStatus, this, jTableParameterList);
         this.sizeOfDesignSpace=myGenerator.getSizeOfDesignspace();
@@ -566,9 +577,9 @@ private String pathToLastSimulationCache="";
 
         float start=1, end=1, step=1;
             try{
-            start=support.getFloatFromString(loopParameter.getStartValue());
-            end=support.getFloatFromString(loopParameter.getEndValue());
-            step=support.getFloatFromString(loopParameter.getStepping());
+            start=support.getFloat(loopParameter.getStartValue());
+            end=support.getFloat(loopParameter.getEndValue());
+            step=support.getFloat(loopParameter.getStepping());
             canIterate=true;
             /*    if((end-start)>0){
                     if(((end-start)/step)>0){ //Iteration möglich

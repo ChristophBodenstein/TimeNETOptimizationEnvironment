@@ -303,6 +303,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Cached Optimization"/>
       </Properties>
+      <Events>
+        <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="jCheckBoxCachedSimulationStateChanged"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

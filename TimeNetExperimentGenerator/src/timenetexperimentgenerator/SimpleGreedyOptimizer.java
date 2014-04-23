@@ -76,7 +76,8 @@ JLabel infoLabel;
      */
     public ArrayList<parameter[]> getNextSimulations(ArrayList<parser> historyOfParsers){
     ArrayList<parameter[]> returnValue=new ArrayList<parameter[]>();
-
+    MeasureType activeMeasure=null;
+    MeasureType activeMeasureFromInterface=null;
         //If history is empty, add parameterbase as startValue
         if(historyOfParsers.size()<1){
         returnValue.add(this.parameterBase);
@@ -98,8 +99,8 @@ JLabel infoLabel;
                     for(int measureCount=0;measureCount<listOfMeasures.size();measureCount++){
                     //listOfMeasures.get(i).setMeanValue((float) (   historyOfParsers.get(historyOfParsers.size()-1).getMeasureValueByMeasureName(listOfMeasures.get(i).getMeasureName())) );
                         for(int historyCount=0;historyCount<historyOfParsers.size();historyCount++){
-                        MeasureType activeMeasure=historyOfParsers.get(historyCount).getMeasureByName(listOfMeasures.get(measureCount).getMeasureName());
-                        MeasureType activeMeasureFromInterface=listOfMeasures.get(measureCount);//Contains Optimization targets
+                        activeMeasure=historyOfParsers.get(historyCount).getMeasureByName(listOfMeasures.get(measureCount).getMeasureName());
+                        activeMeasureFromInterface=listOfMeasures.get(measureCount);//Contains Optimization targets
                         //float measureValue=historyOfParsers.get(historyCount).getMeasureValueByMeasureName(activeMeasure.getMeasureName());
                         activeMeasure.setTargetValue(activeMeasureFromInterface.getTargetValue(), activeMeasureFromInterface.getTargetKindOf());
                         float distance=0;
@@ -134,6 +135,7 @@ JLabel infoLabel;
                     }else{
                     //Gesamtdistanz des letzten Wertes ist nicht kleiner --> lokales Minimum gefunden
                     System.out.println("******Local minimum found!*****");
+                    support.printMeasureType(activeMeasure, "", "");
                     optimized=true;//Abbruch der Optimierung
                     }
 
@@ -240,16 +242,21 @@ JLabel infoLabel;
         try{
             while(mySimulationList.size()>0){
             //batchSimulator myBatchSimulator = new batchSimulator(mySimulationList, this.filename, this.infoLabel, parent);
+            System.out.println("Retrieve Simulator.");
             Simulator myGenericSimulator=SimOptiFactory.getSimulator();
+            System.out.println("init Simulator.");
             myGenericSimulator.initSimulator(mySimulationList, simulationCounter);
+            System.out.println("wait for Simulator has 100% completed.");
                 while(myGenericSimulator.getStatus()<100){
                 Thread.sleep(500);
                 this.infoLabel.setText("Done "+ myGenericSimulator.getStatus() +"%");
                 simulationCounter=myGenericSimulator.getSimulationCounter();
                 this.parent.setSimulationCounter(simulationCounter);
-                //System.out.print("Simulation status:"+myGenericSimulator.status +"%");
+                System.out.print("Simulation status:"+myGenericSimulator.getStatus() +"%");
+                System.out.println("Simulation Counter: "+simulationCounter);
                 }
-
+                
+                System.out.println("Size of Simulation-Result-List: "+myGenericSimulator.getListOfCompletedSimulationParsers().size());
                 if(myGenericSimulator.getListOfCompletedSimulationParsers().size()>0){
                 historyOfParsers.addAll(myGenericSimulator.getListOfCompletedSimulationParsers());
                 addLinesToLogFileFromListOfParser(myGenericSimulator.getListOfCompletedSimulationParsers(), logFileName);
@@ -301,6 +308,13 @@ JLabel infoLabel;
               //fw.append( System.getProperty("line.separator") );
                 for(int i1=0;i1<myParser.getMeasures().size();i1++){//Alle Measure schreiben
                 MeasureType exportMeasure=myParser.getMeasures().get(i1);
+                /*System.out.println("Mean Value= "+support.getCommaFloat(exportMeasure.getMeanValue()));
+                System.out.println("Variance= "+support.getCommaFloat(exportMeasure.getVariance()));
+                System.out.println("Confidence-Min= "+support.getCommaFloat(exportMeasure.getConfidenceInterval()[0]));
+                System.out.println("Confidence-Max= "+support.getCommaFloat(exportMeasure.getConfidenceInterval()[1]));
+                System.out.println("Epsilon= "+support.getCommaFloat(exportMeasure.getEpsilon()));
+                System.out.println("Simulation-Time= "+support.getCommaFloat(myParser.getSimulationTime()));
+                */
                 line=exportMeasure.getMeasureName()+";"+support.getCommaFloat(exportMeasure.getMeanValue())+";"+support.getCommaFloat(exportMeasure.getVariance())+";"+support.getCommaFloat(exportMeasure.getConfidenceInterval()[0])+";"+support.getCommaFloat(exportMeasure.getConfidenceInterval()[1])+";"+support.getCommaFloat(exportMeasure.getEpsilon())+";"+support.getCommaFloat(myParser.getSimulationTime());
                     for(int c=0;c<exportMeasure.getParameterList().size();c++){
                     line=line+";"+support.getCommaFloat(exportMeasure.getParameterList().get(c).getValue());

@@ -6,6 +6,7 @@
 package timenetexperimentgenerator;
 
 import java.io.File;
+import java.util.ArrayList;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
@@ -22,11 +23,10 @@ private static MainFrame mainFrame=null;//The Main Frame of the program
 private static JTabbedPane measureFormPane=null;//The tabbed pane with some Measurement-forms inside to select the optimization targets
 private static String pathToTimeNet=null;//The path to TimeNet.jar
 private static String tmpPath=null;//The path, where all simulation files (xml), source files and logs will be stored
-        
+private static SimulationCache mySimulationCache=null;  
+private static boolean cachedSimulationEnabled=false;
 
-    public final static float getFloatFromString(String s){
-    return Float.parseFloat(s.replace(',', '.'));
-    }
+    
 
     public final static String translateParameterNameFromLogFileToTable(String s){
         if(s.equals("Configured-ConfidenceIntervall")){
@@ -188,9 +188,10 @@ private static String tmpPath=null;//The path, where all simulation files (xml),
      * @return float value of input String
      */
     public static float getFloat(String s){
-    return Float.parseFloat(s);
+    return Float.parseFloat(s.replace(',', '.'));
     }
 
+    
     /**
      * Converts a float into a String
      * @param f float value to be converted into String
@@ -222,6 +223,80 @@ private static String tmpPath=null;//The path, where all simulation files (xml),
     String returnValue=f.replace(".", ",");
     //System.out.println("  --  Formated String is "+returnValue);
     return returnValue;
+    }
+
+    
+    /**
+     * Returns a String containing a float with point as decimal delimiter
+     * @param f String containing a Float with commma as decimal delimiter
+     * @return String conaining a Float with point as decimal delimiter
+     */
+    public static String getPointFloat(String f){
+    String returnValue=f.replace(",", ".");
+    //System.out.println("  --  Formated String is "+returnValue);
+    return returnValue;
+    }
+    
+    /**
+     * @return the mySimulationCache
+     */
+    public static SimulationCache getMySimulationCache() {
+        return mySimulationCache;
+    }
+
+    /**
+     * @param aMySimulationCache the mySimulationCache to set
+     */
+    public static void setMySimulationCache(SimulationCache aMySimulationCache) {
+        mySimulationCache = aMySimulationCache;
+    }
+
+    /**
+     * @return the cachedSimulationEnabled
+     */
+    public static boolean isCachedSimulationEnabled() {
+        return cachedSimulationEnabled;
+    }
+
+    /**
+     * @param aCachedSimulationEnabled the cachedSimulationEnabled to set
+     */
+    public static void setCachedSimulationEnabled(boolean aCachedSimulationEnabled) {
+        cachedSimulationEnabled = aCachedSimulationEnabled;
+    }
+    
+    
+    /**
+     * Prints the data from MeasureType to log console
+     * @param m Measure to be printed
+     * @param header will be printed before MeasureType data
+     * @param footer will be printed after MeasureType data
+     */
+    public static void printMeasureType(MeasureType m, String header, String footer){
+    if(m==null){
+    System.out.println("Printing of Measure not possible. Measure is null.");
+        return;
+    }    
+        System.out.println(header);
+        System.out.println("***** Start of Measure "+m.getMeasureName()+" ******");
+        System.out.println("Mean Value: "+support.getCommaFloat(m.getMeanValue()));
+        System.out.println("Variance: "+support.getCommaFloat(m.getVariance()));
+        System.out.println("Confidence-Min: "+support.getCommaFloat(m.getConfidenceInterval()[0]));
+        System.out.println("Confidence-Max: "+support.getCommaFloat(m.getConfidenceInterval()[1]));
+        System.out.println("Epsilon: "+support.getCommaFloat(m.getEpsilon()));
+        
+        if(m.getParameterList()!=null){
+        System.out.println("---Printing parameterlist---");
+        ArrayList<parameter> pList=m.getParameterList();
+            for(int i=0;i<pList.size();i++){
+            System.out.println("Value of "+pList.get(i).getName() +" is: "+pList.get(i).getValue());
+            }
+        System.out.println("---End of parameterlist---");
+        }
+        
+        System.out.println("***** End of Measure "+m.getMeasureName()+" ******");
+        System.out.println(footer);
+
     }
 }
 
