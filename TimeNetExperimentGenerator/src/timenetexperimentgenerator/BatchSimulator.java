@@ -57,7 +57,7 @@ MainFrame parent;
         }else{
             outputDir=fileChooser.getCurrentDirectory().toString();
         }
-        System.out.println("choosen outputdir: "+outputDir);
+        support.log("choosen outputdir: "+outputDir);
             */
         try{
             Simulator myGenericSimulator=SimOptiFactory.getSimulator();
@@ -76,7 +76,7 @@ MainFrame parent;
       infoLabel.setText("");
       }
     else {
-      System.out.println("No TMP Path given.");
+      support.log("No TMP Path given.");
       parent.cancelOperation=true;
       }
 
@@ -132,15 +132,15 @@ MainFrame parent;
           }
           in.close();
           out.close();
-          System.out.println("File copied.");
+          support.log("File copied.");
           return true;
         }
         catch(FileNotFoundException ex){
-          System.out.println(ex.getMessage() + " in the specified directory.");
+          support.log(ex.getMessage() + " in the specified directory.");
           return false;
         }
         catch(IOException e){
-          System.out.println(e.getMessage());
+          support.log(e.getMessage());
           return false;
         }
     }

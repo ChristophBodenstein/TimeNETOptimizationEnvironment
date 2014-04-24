@@ -77,7 +77,7 @@ private String pathToLastSimulationCache="";
         this.jTextFieldSCPNFile.setText(auto.getProperty("file"));
         //this.jTextFieldPathToTimeNet.setText(auto.getProperty("timenetpath"));
         this.setPathToTimeNet(auto.getProperty("timenetpath"));
-        //System.out.println("Read Path to TimeNet:"+auto.getProperty("timenetpath"));
+        //support.log("Read Path to TimeNet:"+auto.getProperty("timenetpath"));
         
         this.pConfidenceIntervall.setStartValue(checkIfStringIsNull(auto.getProperty("ConfidenceIntervallStart"),pConfidenceIntervall.getStartValue()));
         this.pConfidenceIntervall.setEndValue(checkIfStringIsNull(auto.getProperty("ConfidenceIntervallEnd"),pConfidenceIntervall.getEndValue()));
@@ -395,16 +395,16 @@ private String pathToLastSimulationCache="";
 
 
       if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-        System.out.println("getCurrentDirectory(): "
+        support.log("getCurrentDirectory(): "
          +  fileChooser.getCurrentDirectory());
-        System.out.println("getSelectedFile() : "
+        support.log("getSelectedFile() : "
          +  fileChooser.getSelectedFile());
         this.jTextFieldSCPNFile.setText(fileChooser.getSelectedFile().toString());
         this.readSCPNFile(fileChooser.getSelectedFile().toString());
         this.saveProperties();
       }
     else {
-      System.out.println("No Selection ");
+      support.log("No Selection ");
       }
     }//GEN-LAST:event_jButtonOpenSCPNActionPerformed
 
@@ -423,10 +423,10 @@ private String pathToLastSimulationCache="";
         support.setMeasureFormPane(jTabbedPane1);
         
         if(ListOfParameterSetsToBeWritten!=null){
-        System.out.println("Length of ParameterSet-List: "+ListOfParameterSetsToBeWritten.size());
+        support.log("Length of ParameterSet-List: "+ListOfParameterSetsToBeWritten.size());
         exporter tmpExporter=new exporter(ListOfParameterSetsToBeWritten);
         }else{
-        System.out.println("Export-Operation cancled.");
+        support.log("Export-Operation cancled.");
         }
     this.cancelOperation=false;
     }//GEN-LAST:event_jButtonExportActionPerformed
@@ -462,7 +462,7 @@ private String pathToLastSimulationCache="";
     private void jButtonStartOptimizationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonStartOptimizationActionPerformed
         if(this.sizeOfDesignSpace<=10){
         //TODO check , if opti is possible (target chosen etc.)
-        System.out.println("Design space to small, no Optimization posible.");
+        support.log("Design space to small, no Optimization posible.");
         }else{
                 if(this.getListOfActiveMeasureMentsToOptimize().size()>=1){
                 //Ask for Tmp-Path
@@ -477,12 +477,12 @@ private String pathToLastSimulationCache="";
                     Optimizer myOptimizer=SimOptiFactory.getOptimizer();
                     myOptimizer.initOptimizer();
                     }else{
-                    System.out.println("No Tmp-Path given, Optimization not possible.");
+                    support.log("No Tmp-Path given, Optimization not possible.");
                     }
                     
                     
                 }else{
-                System.out.println("No Measurements to optimize for are chosen.");
+                support.log("No Measurements to optimize for are chosen.");
                 }
              }
     }//GEN-LAST:event_jButtonStartOptimizationActionPerformed
@@ -502,11 +502,11 @@ private String pathToLastSimulationCache="";
         }else{
             outputDir=fileChooser.getCurrentDirectory().toString();
         }
-        System.out.println("choosen outputdir: "+outputDir);
+        support.log("choosen outputdir: "+outputDir);
         this.setPathToTimeNet(outputDir);
         this.checkIfTimeNetPathIsCorrect();
       }else{
-      System.out.println("No Path to TimeNet chosen.");
+      support.log("No Path to TimeNet chosen.");
       }  
         
         
@@ -526,19 +526,19 @@ private String pathToLastSimulationCache="";
 
       if (fileChooser.showDialog(this, "Open") == JFileChooser.APPROVE_OPTION) {
         if(fileChooser.getSelectedFile().isDirectory() ){
-            System.out.println("No input file chosen!");
+            support.log("No input file chosen!");
             return;
         }else{
             inputFile=fileChooser.getSelectedFile().toString();
         }
-        System.out.println("choosen input file with cached simulation results: "+inputFile);
+        support.log("choosen input file with cached simulation results: "+inputFile);
       }else{
-      System.out.println("No input file chosen!");
+      support.log("No input file chosen!");
       return;
       }  
       
         if(!mySimulationCache.parseSimulationCacheFile(inputFile,((MeasurementForm)this.jTabbedPane1.getComponent(0)).getListOfMeasurements(), (parameterTableModel)this.jTableParameterList.getModel(),this )){
-            System.out.println("Wrong Simulation cache file for this SCPN!");
+            support.log("Wrong Simulation cache file for this SCPN!");
         }else{
         this.pathToLastSimulationCache=fileChooser.getSelectedFile().getPath();
         this.saveProperties();
@@ -572,7 +572,7 @@ private String pathToLastSimulationCache="";
         ListOfParameterAsFromTable.remove(loopParameter);
 
         String loopName=loopParameter.getName();
-        //System.out.println("Iterating through "+loopName +" with ListSize "+ListOfParameterAsFromTable.size());
+        //support.log("Iterating through "+loopName +" with ListSize "+ListOfParameterAsFromTable.size());
         boolean canIterate=true;
 
         float start=1, end=1, step=1;
@@ -589,7 +589,7 @@ private String pathToLastSimulationCache="";
             */
             }catch(NumberFormatException e){
             //canIterate=false;
-            System.out.println("Could not convert into float, maybe String is used. Will not iterate through parameter "+loopParameter.getName());
+            support.log("Could not convert into float, maybe String is used. Will not iterate through parameter "+loopParameter.getName());
             return;
             }
 
@@ -598,14 +598,14 @@ private String pathToLastSimulationCache="";
             int endCounter=1;
                     if((end-start)>0){
                         endCounter=(int)Math.ceil((end-start)/step) +1 ;
-                        //System.out.println(endCounter +" steps to be made for "+loopName);
+                        //support.log(endCounter +" steps to be made for "+loopName);
                     }
                 //if(start!=end){endCounter++;}
             
                 for(int i=0;i<endCounter;i++){
                 usedValue=start+(float)i*step;
                 String usedValueString=String.valueOf(usedValue);
-                //System.out.println("Setting Value to "+usedValueString+"for "+loopName);
+                //support.log("Setting Value to "+usedValueString+"for "+loopName);
                 
                 
                 parameter[] nextParameterSet=new parameter[lastParameterSet.length];
@@ -613,7 +613,7 @@ private String pathToLastSimulationCache="";
                     for(int c=0;c<lastParameterSet.length;c++){
                         try{nextParameterSet[c]=(parameter) lastParameterSet[c].clone();}
                         catch(CloneNotSupportedException e){
-                        System.out.println("Clone is not Supported:"+e.toString());
+                        support.log("Clone is not Supported:"+e.toString());
                         }
 
                     }
@@ -621,10 +621,10 @@ private String pathToLastSimulationCache="";
                     for(int c=0;c<nextParameterSet.length;c++){
                         if(nextParameterSet[c].getName().equals(loopName)){
                         //modifizierten Parameter setzen
-                        //System.out.println("Alte ID: "+getIDOfParameterSet(nextParameterSet));
+                        //support.log("Alte ID: "+getIDOfParameterSet(nextParameterSet));
                         nextParameterSet[c].setValue(usedValueString);
-                        //System.out.println("Setze "+loopName+" auf "+usedValueString);
-                        //System.out.println("Neue ID: "+getIDOfParameterSet(nextParameterSet));
+                        //support.log("Setze "+loopName+" auf "+usedValueString);
+                        //support.log("Neue ID: "+getIDOfParameterSet(nextParameterSet));
                         }
                     }
 
@@ -634,10 +634,10 @@ private String pathToLastSimulationCache="";
                         long id0,id1;
                         id0=getIDOfParameterSet((parameter[])ListOfParameterSetsToBeWritten.get(d));
                         id1=getIDOfParameterSet(nextParameterSet);
-                        //System.out.println("Old ID0:"+id0);
-                        //System.out.println("New ID1:"+id1);
+                        //support.log("Old ID0:"+id0);
+                        //support.log("New ID1:"+id1);
                         if(id0==id1){
-                        System.out.println("Ids are equal!");
+                        support.log("Ids are equal!");
                         //isAlreadyInExportList=true;
                         }
                     }
@@ -734,7 +734,7 @@ private String pathToLastSimulationCache="";
         NodeList parameterList=doc.getElementsByTagName("parameter");
 
             for(int i=0;i<parameterList.getLength();i++){
-            System.out.println(parameterList.item(i).getAttributes().getNamedItem("name").getNodeValue());
+            support.log(parameterList.item(i).getAttributes().getNamedItem("name").getNodeValue());
             }
         jTableParameterList.setModel(new parameterTableModel(parameterList, this));
         jTableParameterList.getModel().addTableModelListener(this);
@@ -744,9 +744,9 @@ private String pathToLastSimulationCache="";
         NodeList MeasurenameList=doc.getElementsByTagName("measure");
         if(MeasurenameList.getLength()>=1){
         ArrayList<MeasureType> Measures=new ArrayList();
-        System.out.println("****** Measure-Names ******");
+        support.log("****** Measure-Names ******");
             for(int i=0;i<MeasurenameList.getLength();i++){
-            System.out.println(MeasurenameList.item(i).getAttributes().getNamedItem("name").getNodeValue());
+            support.log(MeasurenameList.item(i).getAttributes().getNamedItem("name").getNodeValue());
             MeasureType tmpMeasure=new MeasureType();
             tmpMeasure.setMeasureName(MeasurenameList.item(i).getAttributes().getNamedItem("name").getNodeValue());
             Measures.add(tmpMeasure);
@@ -813,14 +813,14 @@ private String pathToLastSimulationCache="";
                     long tmpParameterSetID=getIDOfParameterSet(tmpParameterSet);
                     long tmpListParameterID=getIDOfParameterSet(tmpListParameter);
                     /*
-                    System.out.println("P1: "+tmpParemeterSetID);
-                    System.out.println("P2: "+tmpListParameterID);
+                    support.log("P1: "+tmpParemeterSetID);
+                    support.log("P2: "+tmpListParameterID);
                     * */
 
                     if(tmpListParameterID==tmpParameterSetID){
                     existsInOutPutList=true;
-                    System.out.println("These Parameters are equal:");
-                    System.out.println(tmpParameterSetID + " and " + tmpListParameterID);
+                    support.log("These Parameters are equal:");
+                    support.log(tmpParameterSetID + " and " + tmpListParameterID);
                     printParameterSetCompare(tmpParameterSet, tmpListParameter);
                     
                     }
@@ -831,9 +831,9 @@ private String pathToLastSimulationCache="";
             }
         }
         /*
-        System.out.println("Size of List without duplicates: "+tmpList.size());
+        support.log("Size of List without duplicates: "+tmpList.size());
         for(int i=0;i<tmpList.size();i++){
-        System.out.println("P-ID: "+ getIDOfParameterSet(tmpList.get(i)) );
+        support.log("P-ID: "+ getIDOfParameterSet(tmpList.get(i)) );
         }
          */
     return tmpList;
@@ -845,7 +845,7 @@ private String pathToLastSimulationCache="";
     //Arrays.sort(parameterset);
         for(int i=0;i<parameterset.length;i++){
         id=id+parameterset[i].getID();
-        //System.out.println("ID of:"+ parameterset[i].getName()+" is " +parameterset[i].getID());
+        //support.log("ID of:"+ parameterset[i].getName()+" is " +parameterset[i].getID());
         tmpString=tmpString+String.valueOf(parameterset[i].getID());
         }
     //return id;
@@ -891,7 +891,7 @@ private String pathToLastSimulationCache="";
      * @param e
      */
     public void tableChanged(TableModelEvent e) {
-    //System.out.println("Editing of Cell stopped, restarting generator.");
+    //support.log("Editing of Cell stopped, restarting generator.");
     //this.restartGenerator();
     jButtonStartBatchSimulation.setEnabled(false);
     readStaticParametersFromTable();
@@ -958,7 +958,7 @@ private String pathToLastSimulationCache="";
     private void checkIfTimeNetPathIsCorrect(){
     String path=this.getPathToTimeNet();//jTextFieldPathToTimeNet.getText();
     File tmpFile=new File(path+File.separator+"TimeNET.jar");
-    System.out.println("TimeNet should be here: "+tmpFile.getAbsolutePath());
+    support.log("TimeNet should be here: "+tmpFile.getAbsolutePath());
         if(tmpFile.exists()){
         this.jButtonStartBatchSimulation.setEnabled(true);
         //this.jLabelCheckPathToTimeNet.setVisible(false);
@@ -988,7 +988,7 @@ private String pathToLastSimulationCache="";
                     }
                 }
             }catch(IOException e){
-            System.out.println("Failed to install RemoteSystem Clent.config");
+            support.log("Failed to install RemoteSystem Clent.config");
             }
         }else{
         //TODO Buttons zur Auswahl des TimeNet-Verzeichnisses ausgrauen
@@ -1006,7 +1006,7 @@ private String pathToLastSimulationCache="";
 
 
     private void saveProperties(){
-    System.out.println("Saving Properties.");
+    support.log("Saving Properties.");
         try{
     auto.setProperty("timenetpath", this.getPathToTimeNet());
     auto.setProperty("file", this.jTextFieldSCPNFile.getText().toString());
@@ -1035,7 +1035,7 @@ private String pathToLastSimulationCache="";
     File parserprops =  new File(propertyFile);
     auto.store(new FileOutputStream(parserprops), "ExperimentGenerator-Properties");
         }catch(IOException e){
-        System.out.println("Problem Saving the properties.");
+        support.log("Problem Saving the properties.");
         }
 
     }
@@ -1054,10 +1054,10 @@ private String pathToLastSimulationCache="";
     }
 
     private void printParameterSetCompare(parameter[] p, parameter[] p1){
-        System.out.println("Printing P-Set:");
+        support.log("Printing P-Set:");
         for(int i=0; i<p.length; i++){
-        System.out.println( ((parameter)p[i]).getName());
-        System.out.println( ((parameter)p[i]).getValue() + " vs "+((parameter)p1[i]).getValue());
+        support.log( ((parameter)p[i]).getName());
+        support.log( ((parameter)p[i]).getValue() + " vs "+((parameter)p1[i]).getValue());
 
         }
     }
@@ -1065,7 +1065,7 @@ private String pathToLastSimulationCache="";
     public void addToListOfParameterSetsToBeWritten(parameter[] p){
 
     //Long tmpId=getIDOfParameterSet(p);
-    //System.out.println("ID to Add: "+tmpId);
+    //support.log("ID to Add: "+tmpId);
         //for(int i=0;i<ListOfParameterSetIds.size();i++){
         //    if(ListOfParameterSetIds.get(i).compareTo(tmpId)==0 ){
             //printParameterSetCompare(ListOfParameterSetsToBeWritten.get(i), p);

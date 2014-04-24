@@ -33,6 +33,8 @@ parameter[] parameterBase;//Base set of parameters, start/end-value, stepping, e
 float[] arrayOfIncrements;
 boolean optimized=false;//False until Optimization is ended
 JLabel infoLabel;
+float simulationTimeSum=0;
+float cpuTimeSum=0;
 
     /**
      * Constructor
@@ -52,7 +54,7 @@ JLabel infoLabel;
     this.parent=support.getMainFrame();// parentTMP;
     this.parameterBase=parent.getParameterBase();
     this.listOfMeasures=parent.getListOfActiveMeasureMentsToOptimize(); //((MeasurementForm)MeasureFormPane.getComponent(0)).getListOfMeasurements();
-    System.out.println("# of Measures to be optimized: "+this.listOfMeasures.size());
+    support.log("# of Measures to be optimized: "+this.listOfMeasures.size());
 
     //Alle Steppings auf Standard setzen
     arrayOfIncrements=new float[parameterBase.length];
@@ -77,7 +79,7 @@ JLabel infoLabel;
     public ArrayList<parameter[]> getNextSimulations(ArrayList<parser> historyOfParsers){
     ArrayList<parameter[]> returnValue=new ArrayList<parameter[]>();
     MeasureType activeMeasure=null;
-    MeasureType activeMeasureFromInterface=null;
+    MeasureType activeMeasureFromInterface;
         //If history is empty, add parameterbase as startValue
         if(historyOfParsers.size()<1){
         returnValue.add(this.parameterBase);
@@ -94,7 +96,7 @@ JLabel infoLabel;
                     }
 
                     //Liste aller Abstände für alle aktiven Measures auslesen
-                    System.out.println("Counting all Distances for "+listOfMeasures.size()+" Measures.");
+                    support.log("Counting all Distances for "+listOfMeasures.size()+" Measures.");
 
                     for(int measureCount=0;measureCount<listOfMeasures.size();measureCount++){
                     //listOfMeasures.get(i).setMeanValue((float) (   historyOfParsers.get(historyOfParsers.size()-1).getMeasureValueByMeasureName(listOfMeasures.get(i).getMeasureName())) );
@@ -121,8 +123,8 @@ JLabel infoLabel;
 
                         arrayOfDistances[measureCount][historyCount]=distance;//Distanz jedes einzelnen Measures jedes einzelnen Historypunktes
                         arrayOfDistanceSums[historyCount]+=distance;//Gesamtdistanz summieren
-                        System.out.println("Distance of Measure # "+measureCount +" at History # "+historyCount +" is:"+distance);
-                        System.out.println("DistanceSum #"+historyCount +":"+arrayOfDistanceSums[historyCount] + " for all Measures.");
+                        support.log("Distance of Measure # "+measureCount +" at History # "+historyCount +" is:"+distance);
+                        support.log("DistanceSum #"+historyCount +":"+arrayOfDistanceSums[historyCount] + " for all Measures.");
                         }
                     }
                     //Jetzt ist für jeden History-Punkt die Distanz aller gewählten Measures berechnet.
@@ -134,7 +136,7 @@ JLabel infoLabel;
                     returnValue.add(newParameterSet);
                     }else{
                     //Gesamtdistanz des letzten Wertes ist nicht kleiner --> lokales Minimum gefunden
-                    System.out.println("******Local minimum found!*****");
+                    support.log("******Local minimum found!*****");
                     support.printMeasureType(activeMeasure, "", "");
                     optimized=true;//Abbruch der Optimierung
                     }
@@ -200,11 +202,11 @@ JLabel infoLabel;
     * 
     */
     void applyArrayOfIncrements(float[] arrayOfIncrements, parameter[] newParameterSet){
-    System.out.println("Applying Array of Increments.");
+    support.log("Applying Array of Increments.");
         for(int i=0;i<newParameterSet.length;i++){
         System.out.print(newParameterSet[i].getName()+"="+newParameterSet[i].getValue()+" will be incremented by: "+arrayOfIncrements[i]+" and is now:");
         newParameterSet[i].setValue(support.getString(Math.min(arrayOfIncrements[i]+support.getFloat(newParameterSet[i].getValue()),support.getFloat(newParameterSet[i].getEndValue())) ) );
-        System.out.println(newParameterSet[i].getValue());
+        support.log(newParameterSet[i].getValue());
         }
     this.parameterBase=newParameterSet;
     }
@@ -242,98 +244,46 @@ JLabel infoLabel;
         try{
             while(mySimulationList.size()>0){
             //batchSimulator myBatchSimulator = new batchSimulator(mySimulationList, this.filename, this.infoLabel, parent);
-            System.out.println("Retrieve Simulator.");
+            support.log("Retrieve Simulator.");
             Simulator myGenericSimulator=SimOptiFactory.getSimulator();
-            System.out.println("init Simulator.");
+            support.log("init Simulator.");
             myGenericSimulator.initSimulator(mySimulationList, simulationCounter);
-            System.out.println("wait for Simulator has 100% completed.");
+            support.log("wait for Simulator has 100% completed.");
+            this.infoLabel.setText("Simulations started.");
                 while(myGenericSimulator.getStatus()<100){
                 Thread.sleep(500);
                 this.infoLabel.setText("Done "+ myGenericSimulator.getStatus() +"%");
                 simulationCounter=myGenericSimulator.getSimulationCounter();
                 this.parent.setSimulationCounter(simulationCounter);
                 System.out.print("Simulation status:"+myGenericSimulator.getStatus() +"%");
-                System.out.println("Simulation Counter: "+simulationCounter);
+                support.log("Simulation Counter: "+simulationCounter);
                 }
-                
-                System.out.println("Size of Simulation-Result-List: "+myGenericSimulator.getListOfCompletedSimulationParsers().size());
+                this.infoLabel.setText("Done "+ myGenericSimulator.getStatus() +"%");
+                support.log("Size of Simulation-Result-List: "+myGenericSimulator.getListOfCompletedSimulationParsers().size());
                 if(myGenericSimulator.getListOfCompletedSimulationParsers().size()>0){
                 historyOfParsers.addAll(myGenericSimulator.getListOfCompletedSimulationParsers());
-                addLinesToLogFileFromListOfParser(myGenericSimulator.getListOfCompletedSimulationParsers(), logFileName);
+                support.addLinesToLogFileFromListOfParser(myGenericSimulator.getListOfCompletedSimulationParsers(), logFileName);
                 }
 
             mySimulationList=getNextSimulations(historyOfParsers);
             }
+            printStatistics();
+            this.infoLabel.setText("Optimization ended. See Log.");
         }catch(InterruptedException e){
-        System.out.println("InterruptedException in main loop of optimization. Optimization aborted.");
+        support.log("InterruptedException in main loop of optimization. Optimization aborted.");
         this.infoLabel.setText("Aborted / Error");
         }
         //throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    /**
-     * Adds Lines to logfile with the data from given parserlist
-     * @param pList List of parsers, which includes the data from one simulation each
-     * @param logFileName The path and name of the general log file
-     */
-    private void addLinesToLogFileFromListOfParser(ArrayList<parser> pList, String logFileName){
-    boolean writeHeader=false;
-    String line;
-        try{
-        System.out.println("Logfilename is:"+logFileName);
-        //Öffnen des Logfiles und Schreiben der ersten Zeile
-
-        File f=new File(logFileName);
-        if(!f.exists()){writeHeader=true;}
-        FileWriter fw= new FileWriter(logFileName, true);
-
-            if(writeHeader){
-                MeasureType exportMeasure=pList.get(0).getMeasures().get(0);//Dummy, es wird das erste Measure abgefragt und die Paramsterliste
-                line="MeasureName;Mean Value; Variance; Conf.Interval-Min;Conf.Interval-Max;Epsilon;"+"Simulation Time";
-                    for(int i1=0;i1<exportMeasure.getParameterList().size();i1++){
-                    line=line+";"+exportMeasure.getParameterList().get(i1).getName();
-                    }
-                    try {
-                        fw.write(line);
-                    } catch (IOException ex) {
-                        System.out.println("Error writing Header to Summary-log-file.");
-                    }
-            }
-
-
-            for(int i=0;i<pList.size();i++){
-            parser myParser=pList.get(i);
-              try{
-              //fw.write(line);
-              //fw.append( System.getProperty("line.separator") );
-                for(int i1=0;i1<myParser.getMeasures().size();i1++){//Alle Measure schreiben
-                MeasureType exportMeasure=myParser.getMeasures().get(i1);
-                /*System.out.println("Mean Value= "+support.getCommaFloat(exportMeasure.getMeanValue()));
-                System.out.println("Variance= "+support.getCommaFloat(exportMeasure.getVariance()));
-                System.out.println("Confidence-Min= "+support.getCommaFloat(exportMeasure.getConfidenceInterval()[0]));
-                System.out.println("Confidence-Max= "+support.getCommaFloat(exportMeasure.getConfidenceInterval()[1]));
-                System.out.println("Epsilon= "+support.getCommaFloat(exportMeasure.getEpsilon()));
-                System.out.println("Simulation-Time= "+support.getCommaFloat(myParser.getSimulationTime()));
-                */
-                line=exportMeasure.getMeasureName()+";"+support.getCommaFloat(exportMeasure.getMeanValue())+";"+support.getCommaFloat(exportMeasure.getVariance())+";"+support.getCommaFloat(exportMeasure.getConfidenceInterval()[0])+";"+support.getCommaFloat(exportMeasure.getConfidenceInterval()[1])+";"+support.getCommaFloat(exportMeasure.getEpsilon())+";"+support.getCommaFloat(myParser.getSimulationTime());
-                    for(int c=0;c<exportMeasure.getParameterList().size();c++){
-                    line=line+";"+support.getCommaFloat(exportMeasure.getParameterList().get(c).getValue());
-                    }
-                fw.write(line);
-                fw.append( System.getProperty("line.separator") );
-                }
-              }catch(IOException e){
-                  System.out.println("IOException while appending lines to summary log-file.");
-              }
-
-            }
-
-
-        fw.close();
-        }catch(IOException e){
-            System.out.println("IOException while writing things to summary log-file.");
+    private void printStatistics() {
+    this.simulationTimeSum=0;
+    this.cpuTimeSum=0;
+        for (parser historyOfParser : historyOfParsers) {
+            this.simulationTimeSum += historyOfParser.getSimulationTime();
+            this.cpuTimeSum += historyOfParser.getCPUTime();
         }
-
+    support.log(this.cpuTimeSum+" sec of CPU-Time used for "+historyOfParsers.size()+" Simulations with "+ this.simulationTimeSum+" Simulation steps.");
     }
 
 

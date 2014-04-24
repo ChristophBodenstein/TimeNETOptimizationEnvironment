@@ -59,9 +59,9 @@ private int localSimulationCounter=0;
 
         //Check length of List of Parameter
         if(listOfCachedParameterNames.length!=myParameterTableModel.getRowCount()){
-            System.out.println("Count of cached Parameters differs from Count of given Parameters.");
+            support.log("Count of cached Parameters differs from Count of given Parameters.");
         return false;
-        }   System.out.println("Count of cached Parameters seems correct.");
+        }   support.log("Count of cached Parameters seems correct.");
 
 
         for(int i=0;i<listOfCachedParameterNames.length;i++){
@@ -84,17 +84,17 @@ private int localSimulationCounter=0;
                     tmpValue2=support.round(tmpValue2);
                     if(tmpValue2>0){
                     listOfCachedParameterStepping[i]=tmpValue2;
-                    //System.out.println("Result of round: "+tmpValue2);
-                    //System.out.println("Setting new Value for Stepping.");
+                    //support.log("Result of round: "+tmpValue2);
+                    //support.log("Setting new Value for Stepping.");
                     }
                     
                     }catch(Exception e){
-                    System.out.println("Maybe there was an error getting the stepping from cache file.");
+                    support.log("Maybe there was an error getting the stepping from cache file.");
                     }
                 }
             }
         if(listOfCachedParameterStepping[i]<=0.0){listOfCachedParameterStepping[i]=(float)1.0;}
-        //System.out.println("ParameterName " +(i)+" = "+listOfCachedParameterNames[i]+" with Min="+listOfCachedParameterMin[i]+" and Max="+listOfCachedParameterMax[i]+" and Stepping="+listOfCachedParameterStepping[i]);
+        //support.log("ParameterName " +(i)+" = "+listOfCachedParameterNames[i]+" with Min="+listOfCachedParameterMin[i]+" and Max="+listOfCachedParameterMax[i]+" and Stepping="+listOfCachedParameterStepping[i]);
         }
         
         //Get Names of Measures
@@ -112,18 +112,18 @@ private int localSimulationCounter=0;
         }
 
         //Debug Output of Measurement Names
-        System.out.println("Name of read Measures are: ");
+        support.log("Name of read Measures are: ");
         for(i=0;i<(listOfCachedMeasureNames.size())-1;i++){
         System.out.print(listOfCachedMeasureNames.get(i)+", ");
         }
-        System.out.println(listOfCachedMeasureNames.get(listOfCachedMeasureNames.size()-1));
+        support.log(listOfCachedMeasureNames.get(listOfCachedMeasureNames.size()-1));
 
         
         //Check Length of List of Measurements
         if(listOfCachedMeasureNames.size()!=listOfMeasures.size()){
-            System.out.println("Count of cached Measures differs from Count of given Measures.");
+            support.log("Count of cached Measures differs from Count of given Measures.");
         return false;
-        }   System.out.println("Count of cached Measures seems correct.");
+        }   support.log("Count of cached Measures seems correct.");
 
         //Calc real number of experiments
         numberOfExperiments=numberOfExperiments/listOfCachedMeasureNames.size();
@@ -132,14 +132,14 @@ private int localSimulationCounter=0;
         
         //So the number of parameters seems ok, let` check the names
         for(i=0;i<listOfCachedParameterNames.length;i++){
-            //System.out.println("Checking  "+listOfCachedParameterNames[i]+" ... number "+i);
+            //support.log("Checking  "+listOfCachedParameterNames[i]+" ... number "+i);
             if((myParameterTableModel.getValueByName(listOfCachedParameterNames[i], "StartValue"))==null){
-            //System.out.println((myParameterTableModel.getValueByName(listOfCachedParameterNames[i], "StartValue"))!=null );
+            //support.log((myParameterTableModel.getValueByName(listOfCachedParameterNames[i], "StartValue"))!=null );
             //One Value is "" --> Parameter is not available --> Exit
-            System.out.println("The parameter "+listOfCachedParameterNames[i]+" seems not available in table.");
+            support.log("The parameter "+listOfCachedParameterNames[i]+" seems not available in table.");
             return false;
             }
-        }   System.out.println("All parameters seem available in table.");
+        }   support.log("All parameters seem available in table.");
 
         
         this.MeasureList=new ArrayList<MeasureType>();
@@ -159,7 +159,7 @@ private int localSimulationCounter=0;
             tmpMeasure.setSimulationTime(support.getFloat(listOfStringLines.get(lineNumber)[6]));
             //CPU-Time is in last column
             tmpMeasure.setCPUTime(support.getFloat(listOfStringLines.get(lineNumber)[7+listOfCachedParameterNames.length]));
-            //System.out.println("CPU-Time of "+tmpMeasure.getMeasureName() +" is " +tmpMeasure.getCPUTime()+".");
+            //support.log("CPU-Time of "+tmpMeasure.getMeasureName() +" is " +tmpMeasure.getCPUTime()+".");
             
             ArrayList<parameter> tmpParameterList=new ArrayList<parameter>();
                 for(int i1=0;i1<listOfCachedParameterNames.length;i1++){
@@ -191,7 +191,7 @@ private int localSimulationCounter=0;
         myParentFrame.calculateDesignSpace();
 
      } catch (IOException ex) {
-        System.out.println("Error while reading the Simulation Cache File.");
+        support.log("Error while reading the Simulation Cache File.");
     }
         //Get all parameters
         //Get all Results
@@ -253,7 +253,7 @@ private int localSimulationCounter=0;
     MeasureType tmpMeasure;
     ArrayList<MeasureType> myTmpList=new ArrayList();
     
-    System.out.println("Size of All Measures from File: "+MeasureList.size());
+    support.log("Size of All Measures from File: "+MeasureList.size());
         //Go through all Measures, find the one with the same parameterlist
         for(int i=0;i<this.MeasureList.size();i++){
         tmpMeasure=this.MeasureList.get(i);
@@ -277,7 +277,7 @@ private int localSimulationCounter=0;
     String nameA="";
     parameter tmpParameterA, tmpParameterB;
         if(listA.size()!=listB.size()){
-        System.out.println("Size of needle-ParameterList is different from haystack-ParameterList.");
+        support.log("Size of needle-ParameterList is different from haystack-ParameterList.");
         return false;
         }
         
@@ -286,12 +286,12 @@ private int localSimulationCounter=0;
         nameA=support.translateParameterNameFromLogFileToTable(tmpParameterA.getName());
             tmpParameterB=this.findParameterInListByName(nameA, listB);
                 if(tmpParameterB==null){
-                System.out.println("ParameterB is null.");
+                support.log("ParameterB is null.");
                 return false;
                 }
             //Parameter found, now check the values of this parameter
                 if(support.round(support.getFloat(tmpParameterA.getValue()))!=support.round(support.getFloat(tmpParameterB.getValue()))){
-                //System.out.println("Parameter Values differ.");
+                //support.log("Parameter Values differ.");
                 return false;
                 }
         }     
@@ -340,13 +340,14 @@ private int localSimulationCounter=0;
             
             //Get local simulation results
             ArrayList<MeasureType> listOfMeasureWithGivenParameters=this.getAllMeasuresWithParameterList(tmpParameterList);
-            //System.out.println("Size of ParameterList: "+ tmpParameterList.size() + " results in " +listOfMeasureWithGivenParameters.size()+ " Measurements.");
+            //support.log("Size of ParameterList: "+ tmpParameterList.size() + " results in " +listOfMeasureWithGivenParameters.size()+ " Measurements.");
             
             //append if listSize is > 0
             if(listOfMeasureWithGivenParameters.size()>0){
             parser tmpParser=new parser();
             tmpParser.setMeasures(listOfMeasureWithGivenParameters);
-            tmpParser.setSimulationTime((float)0.0);
+            tmpParser.setSimulationTime(listOfMeasureWithGivenParameters.get(i).getSimulationTime());
+            tmpParser.setCPUTime(support.getInt(listOfMeasureWithGivenParameters.get(i).getCPUTime()));
             myParserList.add(tmpParser);
             simulationCounter++;
             }

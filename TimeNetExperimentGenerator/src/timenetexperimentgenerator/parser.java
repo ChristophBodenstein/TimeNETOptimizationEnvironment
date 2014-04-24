@@ -45,22 +45,22 @@ private String xmlFile="";
     String[] segs;
 
     if(this.xmlFile.equals("")){
-        System.out.println("Searching corresponding xml-file for: "+filename);
+        support.log("Searching corresponding xml-file for: "+filename);
         String[] tmpFilenameArray=filename.split("simTime");
         xmlFilename=tmpFilenameArray[0]+".xml";
-        System.out.println("XML-Filename is:"+xmlFilename);    
+        support.log("XML-Filename is:"+xmlFilename);    
         }   else{
-            System.out.println("XML-Filename given: "+this.xmlFile);
+            support.log("XML-Filename given: "+this.xmlFile);
             xmlFilename=xmlFile;
             }
 
 
     File xmlFile=new File(xmlFilename);
         if(!xmlFile.exists()){
-        System.out.println("XML-File not found, eject.");
+        support.log("XML-File not found, eject.");
         return false;
         }
-        System.out.println("Parsing XML-File: "+xmlFilename);
+        support.log("Parsing XML-File: "+xmlFilename);
     try{
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 	DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
@@ -70,7 +70,7 @@ private String xmlFile="";
             for(int i=0;i<parameterList.getLength();i++){
             parameter tmpParameter=new parameter();
 
-            System.out.println(parameterList.item(i).getAttributes().getNamedItem("name").getNodeValue());
+            support.log(parameterList.item(i).getAttributes().getNamedItem("name").getNodeValue());
             tmpParameter.setName(parameterList.item(i).getAttributes().getNamedItem("name").getNodeValue());
             tmpParameter.setValue(parameterList.item(i).getAttributes().getNamedItem("defaultValue").getNodeValue());
             tmpParameterList.add(tmpParameter);
@@ -81,13 +81,13 @@ private String xmlFile="";
         }
 
 
-    System.out.println("Parsing log-file: "+filename);
+    support.log("Parsing log-file: "+filename);
     this.logName=filename;
     try {
 		BufferedReader in = new BufferedReader(new FileReader(filename));
 		String line = null;
 		while ((line = in.readLine()) != null) {
-			//System.out.println("Read line: " + line);
+			//support.log("Read line: " + line);
                 tmpStrings.add(line);
 		}
                 in.close();
@@ -103,8 +103,8 @@ private String xmlFile="";
     setSimulationTime(Float.valueOf(segs[2]));
 
 
-    //System.out.println("SimulationType: "+SimulationType);
-    //System.out.println("SimulationTime: "+getSimulationTime().toString()+" seconds.");
+    //support.log("SimulationType: "+SimulationType);
+    //support.log("SimulationTime: "+getSimulationTime().toString()+" seconds.");
     
     //Add all Parameters from logfile-name
     segs=logName.split("_");
@@ -162,7 +162,7 @@ private String xmlFile="";
                 tmpMeasure=new MeasureType();
                 tmpMeasure.setMeasureName(tmpStrings.get(i).split(" ")[1]);
                 parseStatus=1;//Measures found
-                System.out.println("Measures found");
+                support.log("Measures found");
                 }
                 break;
             case 1://Measures found, name exists
@@ -182,7 +182,7 @@ private String xmlFile="";
                 tmpMeasure.setParameterList(tmpParameterList);
                 this.getMeasures().add(tmpMeasure);
                 parseStatus=0;
-                System.out.println("Measures "+tmpMeasure.getMeasureName()+" has Epsilon of "+tmpMeasure.getEpsilon()+" and Mean of "+tmpMeasure.getMeanValue() );
+                support.log("Measures "+tmpMeasure.getMeasureName()+" has Epsilon of "+tmpMeasure.getEpsilon()+" and Mean of "+tmpMeasure.getMeanValue() );
                 }
 
                 if(tmpStrings.get(i).contains("WARNING:")){
@@ -280,5 +280,12 @@ private String xmlFile="";
         }else{
         return 0;
         }
+    }
+
+    /**
+     * @param CPUTime the CPUTime to set
+     */
+    public void setCPUTime(int CPUTime) {
+        this.CPUTime = CPUTime;
     }
 }

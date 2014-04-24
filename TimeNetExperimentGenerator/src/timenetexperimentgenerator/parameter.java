@@ -15,7 +15,7 @@ private String value="0";
 private String startValue="0";
 private String endValue="0";
 private String stepping="1";
-private String[] externalParameters={"ConfidenceIntervall","Seed","EndTime","MaxTime","MaxRelError"};
+private final String[] externalParameters={"ConfidenceIntervall","Seed","EndTime","MaxTime","MaxRelError"};
 private long idHash=0;
 
 
@@ -125,8 +125,8 @@ private long idHash=0;
    //String id="End:"+endValue+"Start:"+startValue+"Step:"+stepping+"Name:"+name+"Value:"+value;
    //long longID=  (long)( Float.valueOf(endValue)*10+Float.valueOf(startValue)*10+Float.valueOf(stepping)*10+Float.valueOf(value)*10+(float)name.hashCode());
    this.idHash=0;//id.hashCode();//Dont create ID, it` useless and costs CPU-Time
-   //System.out.println("ID: "+id);
-   //System.out.println("IDHash: "+idHash);
+   //support.log("ID: "+id);
+   //support.log("IDHash: "+idHash);
    
    }
 

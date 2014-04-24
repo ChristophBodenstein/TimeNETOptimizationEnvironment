@@ -22,7 +22,7 @@ private int simulationCounter=0;
         this.myListOfSimulationParsers=mySimulationCache.getListOfCompletedSimulationParsers(listOfParameterSetsTMP, simulationCounter);
         this.simulationCounter=mySimulationCache.getLocalSimulationCounter();
         }else{
-        System.out.println("No local Simulation file loaded. Simulation not possible.");
+        support.log("No local Simulation file loaded. Simulation not possible.");
         }
         
     }

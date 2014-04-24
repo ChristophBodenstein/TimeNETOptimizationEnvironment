@@ -84,9 +84,9 @@ private final String nameOfTempDirectory="14623786483530251523506521233052";
     int numberOfSimulations=0;
         if(checkTimeNetPath()){
             try{
-            System.out.println("Timenet-Path ok, starting local simulations.");
+            support.log("Timenet-Path ok, starting local simulations.");
             logFileName=tmpFilePath+File.separator+"SimLog"+Calendar.getInstance().getTimeInMillis()+".csv";
-            System.out.println("Logfilename is:"+logFileName);
+            support.log("Logfilename is:"+logFileName);
             //Öffnen des Logfiles und Schreiben der ersten Zeile
             FileWriter fw;
             
@@ -98,13 +98,14 @@ private final String nameOfTempDirectory="14623786483530251523506521233052";
                     if(cancelSimulations) return;
                     parameter[] actualParameterSet=listOfParameterSets.get(i);//Aktuellen Paramstersatz entnehmen
                     String actualParameterFileName=createLocalSimulationFile(actualParameterSet, this.simulationCounter);//Aktuelle xml-file bauen und in tmp-ordner speichern
-                    System.out.println("Simulating file:"+actualParameterFileName);
+                    support.log("Simulating file:"+actualParameterFileName);
                     startLocalSimulation(actualParameterFileName);//Returns, when Simulation has ended
                     parser myParser=new parser();//Neuen Log-Parser anlegen
                     boolean parseResult=myParser.parse(actualSimulationLogFile);//Log-file und xml-file parsen
                         if(parseResult){
-                        System.out.println("Parsing successful.");
-                            if(i==0){
+                        support.log("Parsing successful.");
+                        support.addLinesToLogFile(myParser, logFileName);
+                        /*    if(i==0){
                             //Schreiben der ersten Zeile, vorher check, welche Measures verfügbar sind
                             MeasureType exportMeasure=myParser.getMeasures().get(0);//Dummy, es wird das erste Measure abgefragt und die Paramsterliste
                             line="MeasureName;Mean Value;Variance;Conf.Interval-Min;Conf.Interval-Max;Epsilon;"+"Simulation Time";
@@ -115,7 +116,7 @@ private final String nameOfTempDirectory="14623786483530251523506521233052";
                                     fw.write(line);
                                     fw.append( System.getProperty("line.separator") );
                                 } catch (IOException ex) {
-                                    System.out.println("Error writing line to log-file.");
+                                    support.log("Error writing line to log-file.");
                                     ex.printStackTrace();
                                 }
                             }
@@ -135,10 +136,10 @@ private final String nameOfTempDirectory="14623786483530251523506521233052";
                                 }
 
                              }catch(Exception e){e.printStackTrace();}
-                        
+                        */
                         this.listOfCompletedSimulationParsers.add(myParser);//Parser inkl. gesammelter infos an Ergebnisliste anhängen
                         }else{
-                        System.out.println("Error Parsing the Simulation results. Maybe Simulation failure?");
+                        support.log("Error Parsing the Simulation results. Maybe Simulation failure?");
                         }
                     numberOfSimulations++;//Lokale Simulationsnnummer inkrementieren
                     
@@ -155,7 +156,7 @@ private final String nameOfTempDirectory="14623786483530251523506521233052";
                }
 
         }else{
-        System.out.println("Timenet-Path NOT ok!");
+        support.log("Timenet-Path NOT ok!");
         }
         
     }
@@ -184,7 +185,7 @@ private final String nameOfTempDirectory="14623786483530251523506521233052";
                                 if(parameterList.item(i).getAttributes().getNamedItem("name").getNodeValue().equals(p[parameterNumber].getName())){
                                 parameterList.item(i).getAttributes().getNamedItem("defaultValue").setNodeValue(p[parameterNumber].getValue());
                                 }
-                                //System.out.println(parameterList.item(i).getAttributes().getNamedItem("name").getNodeValue());
+                                //support.log(parameterList.item(i).getAttributes().getNamedItem("name").getNodeValue());
                             }
                         }else{
                             if(p[parameterNumber].getName().equals("MaxTime")){
@@ -209,7 +210,7 @@ private final String nameOfTempDirectory="14623786483530251523506521233052";
                 //Dateiname bilden
                 String exportFileName=this.tmpFilePath+File.separator+support.removeExtention(f.getName())+"_n_"+simulationNumber+"_MaxTime_"+MaxTime+"_EndTime_"+EndTime+"_Seed_"+Seed+"_ConfidenceIntervall_"+ConfidenceIntervall+"_MaxRelError_"+MaxRelError+"_.xml";
                 //Exportieren
-                System.out.println("File to export: "+exportFileName);
+                support.log("File to export: "+exportFileName);
 
                 TransformerFactory tFactory =
                 TransformerFactory.newInstance();
@@ -235,7 +236,7 @@ private final String nameOfTempDirectory="14623786483530251523506521233052";
         // Execute command
         java.lang.ProcessBuilder processBuilder = new java.lang.ProcessBuilder("java","-jar", "TimeNET.jar",exportFileName, "autostart=true", "autostop=true", "secmax="+getIntValueFromFileName(exportFileName, "MaxTime"), "endtime="+getIntValueFromFileName(exportFileName, "EndTime") , "seed="+ getIntValueFromFileName(exportFileName, "Seed"), "confidence="+getIntValueFromFileName(exportFileName, "ConfidenceIntervall"), "epsmax="+getValueFromFileName(exportFileName, "MaxRelError"));
         processBuilder.directory(new java.io.File(this.pathToTimeNet));
-        System.out.println("Command is: "+processBuilder.command().toString());
+        support.log("Command is: "+processBuilder.command().toString());
 
         // Start new process
         long timeStamp=Calendar.getInstance().getTimeInMillis();
@@ -244,7 +245,7 @@ private final String nameOfTempDirectory="14623786483530251523506521233052";
         java.lang.Process p = processBuilder.start();
         
         java.util.Scanner s = new java.util.Scanner( p.getInputStream() ).useDelimiter( "\\Z" );//Scans output of process
-        System.out.println( s.next() );//prints output of process into System.out
+        support.log( s.next() );//prints output of process into System.out
             try {
                 p.waitFor();
             } catch (InterruptedException ex) {
@@ -257,18 +258,18 @@ private final String nameOfTempDirectory="14623786483530251523506521233052";
         String sourceFile=support.removeExtention(exportFileName)+".result"+File.separator+"results.log";
         String sinkFile=support.removeExtention(exportFileName)+"simTime_"+timeStamp+".log";
             if (copyFile(sourceFile, sinkFile, false)){
-            System.out.println("Coppied log-file. Now delete the directory and original log-file.");
+            support.log("Coppied log-file. Now delete the directory and original log-file.");
             File tmpFile=new File(sourceFile);
             tmpFile.delete();
             tmpFile=new File(support.removeExtention(exportFileName)+".result");
             tmpFile.delete();
-            System.out.println("Deleted original Log-file and directory.");
+            support.log("Deleted original Log-file and directory.");
             this.actualSimulationLogFile=sinkFile;
             }
         File file = new File(exportFileName);
         String path=file.getAbsolutePath().substring(0,file.getAbsolutePath().lastIndexOf(File.separator)) +File.separator+nameOfTempDirectory;
     
-        System.out.println("Delete Path to tmp files: "+path);
+        support.log("Delete Path to tmp files: "+path);
         this.del(new File(path));
         
         
@@ -294,7 +295,7 @@ private final String nameOfTempDirectory="14623786483530251523506521233052";
     public boolean checkTimeNetPath(){
 
     File tmpFile=new File(this.pathToTimeNet+File.separator+"TimeNET.jar");
-    System.out.println("Check if Timenet is here:"+tmpFile.toString());
+    support.log("Check if Timenet is here:"+tmpFile.toString());
         if(tmpFile.exists()){
         return true;
         }else{
@@ -393,15 +394,15 @@ private final String nameOfTempDirectory="14623786483530251523506521233052";
           }
           in.close();
           out.close();
-          System.out.println("File copied.");
+          support.log("File copied.");
           return true;
         }
         catch(FileNotFoundException ex){
-          System.out.println(ex.getMessage() + " in the specified directory.");
+          support.log(ex.getMessage() + " in the specified directory.");
           return false;
         }
         catch(IOException e){
-          System.out.println(e.getMessage());
+          support.log(e.getMessage());
           return false;
         }
     }
@@ -419,13 +420,13 @@ private final String nameOfTempDirectory="14623786483530251523506521233052";
     public String getCommaFloat(float f){
     //System.out.print("UnFormated float is "+f);
     String returnValue=getCommaFloat( Float.toString(f) ) ;
-    //System.out.println("  --  Formated float is "+returnValue);
+    //support.log("  --  Formated float is "+returnValue);
     return returnValue;
     }
     public String getCommaFloat(String f){
     //System.out.print("UnFormated String is "+f);
     String returnValue=f.replace(".", ",");
-    //System.out.println("  --  Formated String is "+returnValue);
+    //support.log("  --  Formated String is "+returnValue);
 
     return returnValue;
     }

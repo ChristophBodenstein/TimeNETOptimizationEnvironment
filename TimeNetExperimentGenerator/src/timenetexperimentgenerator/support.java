@@ -6,6 +6,8 @@
 package timenetexperimentgenerator;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -157,7 +159,7 @@ private static boolean cachedSimulationEnabled=false;
             }else{
                 outputDir=fileChooser.getCurrentDirectory().toString();
             }
-            System.out.println("choosen dir: "+outputDir);
+            support.log("choosen dir: "+outputDir);
         }
     return outputDir;
     }
@@ -191,6 +193,24 @@ private static boolean cachedSimulationEnabled=false;
     return Float.parseFloat(s.replace(',', '.'));
     }
 
+    /**
+     * Casts an int to float
+     * @param i int value to cast to float
+     * @return float value of given int
+     */
+    public static float getFloat(int i){
+    return (float)i;
+    }
+    
+    
+    /**
+     * Casts a float to int
+     * @param f float value to cast to int
+     * @return int value of given float
+     */
+    public static int getInt(float f){
+        return (int)f;
+    }
     
     /**
      * Converts a float into a String
@@ -209,7 +229,7 @@ private static boolean cachedSimulationEnabled=false;
     public static String getCommaFloat(float f){
     //System.out.print("UnFormated float is "+f);
     String returnValue=getCommaFloat( Float.toString(f) ) ;
-    //System.out.println("  --  Formated float is "+returnValue);
+    //support.log("  --  Formated float is "+returnValue);
     return returnValue;
     }
     
@@ -221,7 +241,7 @@ private static boolean cachedSimulationEnabled=false;
     public static String getCommaFloat(String f){
     //System.out.print("UnFormated String is "+f);
     String returnValue=f.replace(".", ",");
-    //System.out.println("  --  Formated String is "+returnValue);
+    //support.log("  --  Formated String is "+returnValue);
     return returnValue;
     }
 
@@ -233,7 +253,7 @@ private static boolean cachedSimulationEnabled=false;
      */
     public static String getPointFloat(String f){
     String returnValue=f.replace(",", ".");
-    //System.out.println("  --  Formated String is "+returnValue);
+    //support.log("  --  Formated String is "+returnValue);
     return returnValue;
     }
     
@@ -274,29 +294,109 @@ private static boolean cachedSimulationEnabled=false;
      */
     public static void printMeasureType(MeasureType m, String header, String footer){
     if(m==null){
-    System.out.println("Printing of Measure not possible. Measure is null.");
+    support.log("Printing of Measure not possible. Measure is null.");
         return;
     }    
-        System.out.println(header);
-        System.out.println("***** Start of Measure "+m.getMeasureName()+" ******");
-        System.out.println("Mean Value: "+support.getCommaFloat(m.getMeanValue()));
-        System.out.println("Variance: "+support.getCommaFloat(m.getVariance()));
-        System.out.println("Confidence-Min: "+support.getCommaFloat(m.getConfidenceInterval()[0]));
-        System.out.println("Confidence-Max: "+support.getCommaFloat(m.getConfidenceInterval()[1]));
-        System.out.println("Epsilon: "+support.getCommaFloat(m.getEpsilon()));
+        support.log(header);
+        support.log("***** Start of Measure "+m.getMeasureName()+" ******");
+        support.log("Mean Value: "+support.getCommaFloat(m.getMeanValue()));
+        support.log("Variance: "+support.getCommaFloat(m.getVariance()));
+        support.log("Confidence-Min: "+support.getCommaFloat(m.getConfidenceInterval()[0]));
+        support.log("Confidence-Max: "+support.getCommaFloat(m.getConfidenceInterval()[1]));
+        support.log("Epsilon: "+support.getCommaFloat(m.getEpsilon()));
         
         if(m.getParameterList()!=null){
-        System.out.println("---Printing parameterlist---");
+        support.log("---Printing parameterlist---");
         ArrayList<parameter> pList=m.getParameterList();
             for(int i=0;i<pList.size();i++){
-            System.out.println("Value of "+pList.get(i).getName() +" is: "+pList.get(i).getValue());
+            support.log("Value of "+pList.get(i).getName() +" is: "+pList.get(i).getValue());
             }
-        System.out.println("---End of parameterlist---");
+        support.log("---End of parameterlist---");
         }
-        System.out.println("Used CPU-Time: " +m.getCPUTime());
-        System.out.println("***** End of Measure "+m.getMeasureName()+" ******");
-        System.out.println(footer);
+        support.log("Used CPU-Time: " +m.getCPUTime());
+        support.log("***** End of Measure "+m.getMeasureName()+" ******");
+        support.log(footer);
 
+    }
+    
+     /**
+     * Adds Lines to logfile with the data from given parserlist
+     * @param pList List of parsers, which includes the data from one simulation each
+     * @param logFileName The path and name of the general log file
+     */
+    public static void addLinesToLogFileFromListOfParser(ArrayList<parser> pList, String logFileName){
+    boolean writeHeader=false;
+    String line;
+        try{
+        support.log("Logfilename is:"+logFileName);
+        //Öffnen des Logfiles und Schreiben der ersten Zeile
+
+        File f=new File(logFileName);
+        if(!f.exists()){writeHeader=true;}
+        FileWriter fw= new FileWriter(logFileName, true);
+
+            if(writeHeader){
+                MeasureType exportMeasure=pList.get(0).getMeasures().get(0);//Dummy, es wird das erste Measure abgefragt und die Parameterliste
+                line="MeasureName;Mean Value; Variance; Conf.Interval-Min;Conf.Interval-Max;Epsilon;"+"Simulation Time";
+                    for(int i1=0;i1<exportMeasure.getParameterList().size();i1++){
+                    line=line+";"+exportMeasure.getParameterList().get(i1).getName();
+                    }
+                    try {
+                        fw.write(line);
+                    } catch (IOException ex) {
+                        support.log("Error writing Header to Summary-log-file.");
+                    }
+            }
+
+
+            for(int i=0;i<pList.size();i++){
+            parser myParser=pList.get(i);
+              try{
+              //fw.write(line);
+              //fw.append( System.getProperty("line.separator") );
+                for(int i1=0;i1<myParser.getMeasures().size();i1++){//Alle Measure schreiben
+                MeasureType exportMeasure=myParser.getMeasures().get(i1);
+                /*support.log("Mean Value= "+support.getCommaFloat(exportMeasure.getMeanValue()));
+                support.log("Variance= "+support.getCommaFloat(exportMeasure.getVariance()));
+                support.log("Confidence-Min= "+support.getCommaFloat(exportMeasure.getConfidenceInterval()[0]));
+                support.log("Confidence-Max= "+support.getCommaFloat(exportMeasure.getConfidenceInterval()[1]));
+                support.log("Epsilon= "+support.getCommaFloat(exportMeasure.getEpsilon()));
+                support.log("Simulation-Time= "+support.getCommaFloat(myParser.getSimulationTime()));
+                */
+                line=exportMeasure.getMeasureName()+";"+support.getCommaFloat(exportMeasure.getMeanValue())+";"+support.getCommaFloat(exportMeasure.getVariance())+";"+support.getCommaFloat(exportMeasure.getConfidenceInterval()[0])+";"+support.getCommaFloat(exportMeasure.getConfidenceInterval()[1])+";"+support.getCommaFloat(exportMeasure.getEpsilon())+";"+support.getCommaFloat(myParser.getSimulationTime());
+                    for(int c=0;c<exportMeasure.getParameterList().size();c++){
+                    line=line+";"+support.getCommaFloat(exportMeasure.getParameterList().get(c).getValue());
+                    }
+                fw.write(line);
+                fw.append( System.getProperty("line.separator") );
+                }
+              }catch(IOException e){
+                  support.log("IOException while appending lines to summary log-file.");
+              }
+
+            }
+
+
+        fw.close();
+        }catch(IOException e){
+            support.log("IOException while writing things to summary log-file.");
+        }
+    }
+    
+    public static void addLinesToLogFile(parser p, String logFileName){
+    ArrayList<parser> myParserList=new ArrayList<parser>();
+    myParserList.add(p);
+        addLinesToLogFileFromListOfParser(myParserList, logFileName);
+    }
+    
+    
+    /**
+     * logs the data either to file, System-log, etc.
+     * 
+     * @param s String to be logged.
+     */
+    public static void log(String s){
+    System.out.println(s);
     }
 }
 

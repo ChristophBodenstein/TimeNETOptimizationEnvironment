@@ -24,13 +24,13 @@ public class Main {
                 
         }
         catch(ClassNotFoundException e) {
-             System.out.println("ClassNotFoundException at start.");
+             support.log("ClassNotFoundException at start.");
         } catch (InstantiationException e) {
-            System.out.println("InstantiationException at start.");
+            support.log("InstantiationException at start.");
         } catch (IllegalAccessException e) {
-            System.out.println("IllegalAccessException at start.");
+            support.log("IllegalAccessException at start.");
         } catch (UnsupportedLookAndFeelException e) {
-            System.out.println("UnsupportedLookAndFeelException at start.");
+            support.log("UnsupportedLookAndFeelException at start.");
         }
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
         public void run() {

@@ -119,7 +119,7 @@ private ArrayList<MeasureType> listOfMeasureMents=new ArrayList<MeasureType>();
             return this.listOfMeasureMents.get(i);
             }
         }
-    System.out.println("***Error: No MeasureMent chosen, wil return null!");
+    support.log("***Error: No MeasureMent chosen, wil return null!");
     return null;
     }
 

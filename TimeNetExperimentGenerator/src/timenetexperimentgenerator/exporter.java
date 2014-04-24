@@ -47,9 +47,9 @@ MainFrame parent;
 
 
       if (fileChooser.showSaveDialog(parent) == JFileChooser.APPROVE_OPTION) {
-        System.out.println("getCurrentDirectory(): "
+        support.log("getCurrentDirectory(): "
          +  fileChooser.getCurrentDirectory());
-        System.out.println("getSelectedFile() : "
+        support.log("getSelectedFile() : "
          +  fileChooser.getSelectedFile());
 
                 try{
@@ -67,7 +67,7 @@ MainFrame parent;
                                 if(parameterList.item(i).getAttributes().getNamedItem("name").getNodeValue().equals(tmpParameterSet[parameterNumber].getName())){
                                 parameterList.item(i).getAttributes().getNamedItem("defaultValue").setNodeValue(tmpParameterSet[parameterNumber].getValue());
                                 }
-                                //System.out.println(parameterList.item(i).getAttributes().getNamedItem("name").getNodeValue());
+                                //support.log(parameterList.item(i).getAttributes().getNamedItem("name").getNodeValue());
                             }
                         }else{
                             if(tmpParameterSet[parameterNumber].getName().equals("MaxTime")){
@@ -89,10 +89,10 @@ MainFrame parent;
                 infoLabel.updateUI();
                 //Dateiname bilden
                 String tmpDirName="";
-                System.out.println("Choosen File: "+fileChooser.getSelectedFile());
+                support.log("Choosen File: "+fileChooser.getSelectedFile());
                 String exportFileName=fileChooser.getCurrentDirectory()+File.separator+support.removeExtention(f.getName())+"_n_"+c+"_MaxTime_"+MaxTime+"_EndTime_"+EndTime+"_Seed_"+Seed+"_ConfidenceIntervall_"+ConfidenceIntervall+"_.xml";
                 //Exportieren
-                System.out.println("File to export: "+exportFileName);
+                support.log("File to export: "+exportFileName);
 
                 TransformerFactory tFactory =
                 TransformerFactory.newInstance();
@@ -111,7 +111,7 @@ MainFrame parent;
       infoLabel.setText("");
       }
     else {
-      System.out.println("No Selection ");
+      support.log("No Selection ");
       parent.cancelOperation=true;
       }
 
@@ -194,13 +194,13 @@ boolean isRunning=false;
 
 
 
-    System.out.println("Designspace-Size (incl. duplicates): "+ListOfParameterSetsToBeWritten.size());
+    support.log("Designspace-Size (incl. duplicates): "+ListOfParameterSetsToBeWritten.size());
     infoLabel.setText("Size is about: "+ ListOfParameterSetsToBeWritten.size() +"Removing Duplicates.");
 
     //ListOfParameterSetsToBeWritten=parent.removeDuplicates(ListOfParameterSetsToBeWritten, infoLabel);
         if(ListOfParameterSetsToBeWritten!=null){
         infoLabel.setText("Designspace-Size:"+ListOfParameterSetsToBeWritten.size());
-        System.out.println("Designspace without duplicates: "+ListOfParameterSetsToBeWritten.size());
+        support.log("Designspace without duplicates: "+ListOfParameterSetsToBeWritten.size());
         parent.activateExportButtons();
         }
     isRunning=false;
@@ -209,7 +209,7 @@ boolean isRunning=false;
 
     public int getSizeOfDesignspace(){
     //Calculate the size of Design space and return just this number
-    System.out.println("Calculating Size of Design Space.");
+    support.log("Calculating Size of Design Space.");
     int parameterCount=this.jTableParameterList.getModel().getRowCount();
     parameterTableModel tModel=(parameterTableModel) this.jTableParameterList.getModel();
     String [][] parameterArray=tModel.getParameterArray();
@@ -232,7 +232,7 @@ boolean isRunning=false;
             if((end-start)>0 &&(step!=0) ){
                 spaceCounter=(end-start)/step +1;
             }
-        System.out.println(tmpParameter.getName()+" Start: "+start +", End:"+end+", Stepping:"+step+", Counts:"+spaceCounter);
+        support.log(tmpParameter.getName()+" Start: "+start +", End:"+end+", Stepping:"+step+", Counts:"+spaceCounter);
         designSpaceSize=designSpaceSize*(spaceCounter);
         }
     return (int)designSpaceSize;
