@@ -79,6 +79,7 @@ float cpuTimeSum=0;
     public ArrayList<parameter[]> getNextSimulations(ArrayList<parser> historyOfParsers){
     ArrayList<parameter[]> returnValue=new ArrayList<parameter[]>();
     MeasureType activeMeasure=null;
+    MeasureType lastActiveMeasure=null;
     MeasureType activeMeasureFromInterface;
         //If history is empty, add parameterbase as startValue
         if(historyOfParsers.size()<1){
@@ -101,6 +102,7 @@ float cpuTimeSum=0;
                     for(int measureCount=0;measureCount<listOfMeasures.size();measureCount++){
                     //listOfMeasures.get(i).setMeanValue((float) (   historyOfParsers.get(historyOfParsers.size()-1).getMeasureValueByMeasureName(listOfMeasures.get(i).getMeasureName())) );
                         for(int historyCount=0;historyCount<historyOfParsers.size();historyCount++){
+                        lastActiveMeasure=activeMeasure;
                         activeMeasure=historyOfParsers.get(historyCount).getMeasureByName(listOfMeasures.get(measureCount).getMeasureName());
                         activeMeasureFromInterface=listOfMeasures.get(measureCount);//Contains Optimization targets
                         //float measureValue=historyOfParsers.get(historyCount).getMeasureValueByMeasureName(activeMeasure.getMeasureName());
@@ -130,14 +132,14 @@ float cpuTimeSum=0;
                     //Jetzt ist für jeden History-Punkt die Distanz aller gewählten Measures berechnet.
                         
                     //Greedy, wenn gesamtdistanz jetzt kleiner als eben ist, dann appliziere den gleichen Inkrement-Vektor nochmal
-                    if(arrayOfDistanceSums[arrayOfDistanceSums.length-1]<arrayOfDistanceSums[arrayOfDistanceSums.length-2]){
+                    if(arrayOfDistanceSums[arrayOfDistanceSums.length-1]<=arrayOfDistanceSums[arrayOfDistanceSums.length-2]){
                     parameter[] newParameterSet=getCopyOfParameterSet(parameterBase);
                     applyArrayOfIncrements(arrayOfIncrements, newParameterSet);
                     returnValue.add(newParameterSet);
                     }else{
                     //Gesamtdistanz des letzten Wertes ist nicht kleiner --> lokales Minimum gefunden
                     support.log("******Local minimum found!*****");
-                    support.printMeasureType(activeMeasure, "", "");
+                    support.printMeasureType(lastActiveMeasure, "", "");
                     optimized=true;//Abbruch der Optimierung
                     }
 
