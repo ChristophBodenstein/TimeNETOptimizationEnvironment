@@ -23,13 +23,13 @@ import javax.swing.JOptionPane;
  *
  * @author bode
  */
-public class BatchSimulator implements Runnable{
+public class LocalBatchSimulatorEngine implements Runnable{
 ArrayList<parameter[]> ListOfParameterSetsToBeWritten;
 String filename;
 JLabel infoLabel;
 MainFrame parent;
 
-    BatchSimulator(ArrayList<parameter[]> ListOfParameterSetsToBeWritten){
+    LocalBatchSimulatorEngine(ArrayList<parameter[]> ListOfParameterSetsToBeWritten){
     this.ListOfParameterSetsToBeWritten=ListOfParameterSetsToBeWritten;
     this.filename=support.getOriginalFilename();// filename;
     this.infoLabel=support.getStatusLabel();//infoLabel;

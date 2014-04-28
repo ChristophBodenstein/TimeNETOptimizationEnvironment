@@ -451,7 +451,7 @@ private String pathToLastSimulationCache="";
         support.setStatusLabel(jLabelExportStatus);
         support.setMeasureFormPane(jTabbedPane1);
     
-        BatchSimulator mySimulator=new BatchSimulator(ListOfParameterSetsToBeWritten);
+        LocalBatchSimulatorEngine mySimulator=new LocalBatchSimulatorEngine(ListOfParameterSetsToBeWritten);
     
     }//GEN-LAST:event_jButtonStartBatchSimulationActionPerformed
 
