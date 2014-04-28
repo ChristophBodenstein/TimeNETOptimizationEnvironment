@@ -12,7 +12,7 @@ import java.util.ArrayList;
  *
  * @author sse
  */
-public class LocalSimulator implements Simulator{
+public class CachedSimulator implements Simulator{
 private SimulationCache mySimulationCache=null;
 private ArrayList<parser> myListOfSimulationParsers=null;
 private int simulationCounter=0;
