@@ -40,6 +40,12 @@ private static String remoteAddress=null;
 
     
 
+    /**
+     * Translates Parameternames from logfile to internal used Strings
+     * because in log file some parameters might have other names then internal
+     * @param s Name of the parameter in log file
+     * @return Name of the parameter used internal in this program
+     */
     public final static String translateParameterNameFromLogFileToTable(String s){
         if(s.equals("Configured-ConfidenceIntervall")){
         return "ConfidenceIntervall";
@@ -48,6 +54,11 @@ private static String remoteAddress=null;
     return s;
     }
 
+    /**
+     * Removes the file ending from a given filename/path
+     * @param filePath original name of the file
+     * @return Name of the file without filename-extension
+     */
     public static final String removeExtention(String filePath) {
     File f = new File(filePath);
         if (f.isDirectory()) {return filePath;}
@@ -62,6 +73,7 @@ private static String remoteAddress=null;
     }
 
     /**
+     * Returns reference to status-label
      * @return the statusLabel
      */
     public static JLabel getStatusLabel() {
@@ -69,6 +81,7 @@ private static String remoteAddress=null;
     }
 
     /**
+     * sets the reference to status-label
      * @param aStatusLabel the statusLabel to set
      */
     public static void setStatusLabel(JLabel aStatusLabel) {
@@ -76,6 +89,7 @@ private static String remoteAddress=null;
     }
 
     /**
+     * Returns the filename of the original SCPN to be used for simulations
      * @return the originalFilename
      */
     public static String getOriginalFilename() {
@@ -83,6 +97,7 @@ private static String remoteAddress=null;
     }
 
     /**
+     * Sets the filname of the original SCPN to be used for simulations
      * @param aOriginalFilename the originalFilename to set
      */
     public static void setOriginalFilename(String aOriginalFilename) {
@@ -90,6 +105,7 @@ private static String remoteAddress=null;
     }
 
     /**
+     * Returns reference to MainFrame (sometimes helpful)
      * @return the mainFrame
      */
     public static MainFrame getMainFrame() {
@@ -97,6 +113,7 @@ private static String remoteAddress=null;
     }
 
     /**
+     * Sets the reference to MainFrame
      * @param aMainFrame the mainFrame to set
      */
     public static void setMainFrame(MainFrame aMainFrame) {
@@ -104,20 +121,25 @@ private static String remoteAddress=null;
     }
 
     /**
+     * Returns reference to MeasureFormPane which contains MeasurementForms
      * @return the measureFormPane
+     * @see MeasurementForm
      */
     public static JTabbedPane getMeasureFormPane() {
         return measureFormPane;
     }
 
     /**
+     * Sets reference to MeasureFormPane which contains MeasurementForms
      * @param aMeasureFormPane the measureFormPane to set
+     * @see MeasurementForm
      */
     public static void setMeasureFormPane(JTabbedPane aMeasureFormPane) {
         measureFormPane = aMeasureFormPane;
     }
 
     /**
+     * Returns path to TimeNet executable, needed for local simulations
      * @return the pathToTimeNet
      */
     public static String getPathToTimeNet() {
@@ -125,6 +147,7 @@ private static String remoteAddress=null;
     }
 
     /**
+     * Sets path to TimeNet executable, needed for local simulations
      * @param aPathToTimeNet the pathToTimeNet to set
      */
     public static void setPathToTimeNet(String aPathToTimeNet) {
@@ -132,6 +155,7 @@ private static String remoteAddress=null;
     }
 
     /**
+     * Returns tmp-path for temporary SCNPs, even Main log-file is stored there
      * @return the tmpPath
      */
     public static String getTmpPath() {
@@ -139,6 +163,7 @@ private static String remoteAddress=null;
     }
 
     /**
+     * Sets tmp-path for temporary SCNPs, even Main log-file is stored there
      * @param aTmpPath the tmpPath to set
      */
     public static void setTmpPath(String aTmpPath) {
@@ -393,6 +418,12 @@ private static String remoteAddress=null;
         }
     }
     
+    /**
+     * Adds Lines to logfile with the data from given parser
+     * @see addLinesToLogFileFromListOfParser
+     * @param p parser with data from simgle logfile
+     * @param logFileName name of logfile, data will be appended
+     */
     public static void addLinesToLogFile(parser p, String logFileName){
     ArrayList<parser> myParserList=new ArrayList<parser>();
     myParserList.add(p);
@@ -409,7 +440,13 @@ private static String remoteAddress=null;
     System.out.println(s);
     }
     
-    
+    /**
+     * copies a file from source to sink appending file contents is possible
+     * @param source name/path of source file
+     * @param sink name/path of sin file
+     * @param append true to append file content, else false
+     * @return true if copy process succeeded, else false
+     */
     public static boolean copyFile(String source, String sink, boolean append){
     try{
           File f1 = new File(source);
@@ -444,16 +481,24 @@ private static String remoteAddress=null;
         }
     }
     
-    
+    /**
+     * returns address of simulation server incl. path
+     * @return address url to simulation server as String
+     */
     public static String getReMoteAddress(){
     if(remoteAddress==null)return "";else return remoteAddress;
     }
+    
+    /**
+     * Sets the address of simulation server incl. path
+     * @param address url to simulation server
+     */
     public static void setRemoteAddress(String s){
     remoteAddress=s;
     }
     
     /**
-     * Checks, if Timenet is availabel at giben Path, otherwise simulation run is not possible
+     * Checks, if Timenet is availabel at given Path, otherwise simulation run is not possible
      * @return True, if TimeNet-Path is correct, else return false
     */
     public static boolean checkTimeNetPath(){
