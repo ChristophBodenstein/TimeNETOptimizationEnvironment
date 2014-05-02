@@ -37,6 +37,8 @@ private static String tmpPath=null;//The path, where all simulation files (xml),
 private static SimulationCache mySimulationCache=null;  
 private static boolean cachedSimulationEnabled=false;
 private static String remoteAddress=null;
+private static Integer chosenOptimizerType=0;//0=Greedy, 1=?, 2=?
+private static Integer chosenSimulatorType=0;//0=local, 1=cached, 2=distributed
 
     
 
@@ -553,6 +555,34 @@ private static String remoteAddress=null;
     public static String getIntStringValueFromFileName(String fileName, String needle){
     String tmpString=getValueFromFileName(fileName, needle);
     return String.valueOf(Float.valueOf(tmpString).intValue());
+    }
+
+    /**
+     * @return the chosenOptimizerType
+     */
+    public static Integer getChosenOptimizerType() {
+        return chosenOptimizerType;
+    }
+
+    /**
+     * @param aChosenOptimizerType the chosenOptimizerType to set
+     */
+    public static void setChosenOptimizerType(Integer aChosenOptimizerType) {
+        chosenOptimizerType = aChosenOptimizerType;
+    }
+
+    /**
+     * @return the chosenSimulatorType
+     */
+    public static Integer getChosenSimulatorType() {
+        return chosenSimulatorType;
+    }
+
+    /**
+     * @param aChosenSimulatorType the chosenSimulatorType to set
+     */
+    public static void setChosenSimulatorType(Integer aChosenSimulatorType) {
+        chosenSimulatorType = aChosenSimulatorType;
     }
 }
 

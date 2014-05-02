@@ -11,11 +11,14 @@ package timenetexperimentgenerator;
 import java.awt.Color;
 import java.awt.Component;
 import java.io.*;
-import javax.swing.JFileChooser;
-import java.util.Properties;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Properties;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListSelectionModel;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.event.*;
@@ -48,10 +51,13 @@ private int sizeOfDesignSpace;
 private String pathToTimeNet="";
 private SimulationCache mySimulationCache=new SimulationCache();
 private String pathToLastSimulationCache="";
+private SimulationTypeComboBoxModel mySimulationTypeModel=new SimulationTypeComboBoxModel();
 
 
     /** Creates new form MainFrame */
     public MainFrame() {
+    support.setMainFrame(this);
+    
         initComponents();
         try {
                 FileInputStream in=new FileInputStream(propertyFile);
@@ -135,9 +141,25 @@ private String pathToLastSimulationCache="";
         
         this.checkIfCachedSimulationIsPossible();
         
+        mySimulationTypeModel.addElement("Local Sim.");
+        mySimulationTypeModel.addElement("Cached Sim.");
+        mySimulationTypeModel.addElement("Distributed S.");
+        this.updateComboBoxSimulatioType();
         
     }
 
+    private void updateComboBoxSimulatioType(){
+    DefaultListSelectionModel model = new DefaultListSelectionModel();
+    model.addSelectionInterval(0, 0);
+    if(support.isCachedSimulationEnabled()){
+    model.addSelectionInterval(1, 1);
+    }
+    
+    this.jComboBoxSimulationType.setRenderer(new EnabledJComboBoxRenderer(model));
+    
+    this.jComboBoxSimulationType.setModel(mySimulationTypeModel);
+    }
+    
     private void checkIfCachedSimulationIsPossible(){
     this.jCheckBoxCachedSimulation.setEnabled(false);
     this.jCheckBoxCachedSimulation.setSelected(false);
@@ -183,6 +205,8 @@ private String pathToLastSimulationCache="";
         jLabelExportStatus = new javax.swing.JLabel();
         jButtonLoadCacheFile = new javax.swing.JButton();
         jCheckBoxCachedSimulation = new javax.swing.JCheckBox();
+        jComboBoxSimulationType = new javax.swing.JComboBox();
+        jComboBoxOptimizationType = new javax.swing.JComboBox();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
@@ -285,6 +309,15 @@ private String pathToLastSimulationCache="";
             }
         });
 
+        jComboBoxSimulationType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Local Sim.", "Cached Sim.", "Distributed S." }));
+
+        jComboBoxOptimizationType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Greedy", "Sim. Annealing", "A. Seidel 0", "A. Seidel 1", "A. Seidel 2" }));
+        jComboBoxOptimizationType.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBoxOptimizationTypeActionPerformed(evt);
+            }
+        });
+
         jMenu1.setText("File");
         jMenuBar1.add(jMenu1);
 
@@ -312,25 +345,32 @@ private String pathToLastSimulationCache="";
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(org.jdesktop.layout.GroupLayout.TRAILING, jLabelSimulationCount, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .add(layout.createSequentialGroup()
-                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                                    .add(jCheckBoxCachedSimulation, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 265, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
-                                        .add(org.jdesktop.layout.GroupLayout.LEADING, jTabbedPane1)
-                                        .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
-                                            .add(jButtonOpenSCPN, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 126, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                            .add(59, 59, 59)
-                                            .add(jButtonReload))
-                                        .add(org.jdesktop.layout.GroupLayout.LEADING, jSeparator2)
-                                        .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
-                                            .add(jButtonExport)
-                                            .add(18, 18, 18)
-                                            .add(jButton1))
-                                        .add(org.jdesktop.layout.GroupLayout.LEADING, jButtonGenerateListOfExperiments, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .add(org.jdesktop.layout.GroupLayout.LEADING, jButtonStartBatchSimulation, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .add(org.jdesktop.layout.GroupLayout.LEADING, jSeparator3)
-                                        .add(org.jdesktop.layout.GroupLayout.LEADING, jButtonStartOptimization, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                                    .add(jTabbedPane1)
+                                    .add(layout.createSequentialGroup()
+                                        .add(jButtonOpenSCPN, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 126, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                        .add(59, 59, 59)
+                                        .add(jButtonReload))
+                                    .add(jSeparator2)
+                                    .add(layout.createSequentialGroup()
+                                        .add(jButtonExport)
+                                        .add(18, 18, 18)
+                                        .add(jButton1))
+                                    .add(jButtonGenerateListOfExperiments, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .add(jButtonStartBatchSimulation, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .add(jSeparator3)
+                                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                                         .add(jLabelExportStatus, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .add(jButtonLoadCacheFile, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                        .add(jCheckBoxCachedSimulation, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 265, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jButtonLoadCacheFile, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                                        .add(6, 6, 6)
+                                        .add(jComboBoxSimulationType, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 123, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                        .add(jComboBoxOptimizationType, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 130, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                        .add(6, 6, 6))
+                                    .add(jButtonStartOptimization, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .add(0, 0, Short.MAX_VALUE)))))
                 .addContainerGap())
         );
@@ -366,13 +406,17 @@ private String pathToLastSimulationCache="";
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jButtonLoadCacheFile)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .add(jCheckBoxCachedSimulation)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                            .add(jComboBoxSimulationType, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(jComboBoxOptimizationType, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jButtonStartOptimization)
-                        .add(0, 19, Short.MAX_VALUE)))
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                    .add(jButtonPathToTimeNet, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(jLabelExportStatus, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .add(0, 15, Short.MAX_VALUE)))
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                        .add(jButtonPathToTimeNet, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .add(jLabelExportStatus, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .add(jCheckBoxCachedSimulation))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jLabelSimulationCount, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 24, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
         );
@@ -430,10 +474,6 @@ private String pathToLastSimulationCache="";
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
     this.cancelOperation=true;    
     }//GEN-LAST:event_jButton1ActionPerformed
-
-    public String getPathToTimeNet(){
-    return this.pathToTimeNet;
-    }
 
     /**
      * Start of batch simulation
@@ -541,22 +581,38 @@ private String pathToLastSimulationCache="";
         this.pathToLastSimulationCache=fileChooser.getSelectedFile().getPath();
         this.saveProperties();
         }
-    this.checkIfCachedSimulationIsPossible();    
+    this.checkIfCachedSimulationIsPossible();
+    this.updateComboBoxSimulatioType();
     }//GEN-LAST:event_jButtonLoadCacheFileActionPerformed
 
     private void jCheckBoxCachedSimulationStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jCheckBoxCachedSimulationStateChanged
         support.setCachedSimulationEnabled(jCheckBoxCachedSimulation.isSelected());
     }//GEN-LAST:event_jCheckBoxCachedSimulationStateChanged
 
+    private void jComboBoxOptimizationTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxOptimizationTypeActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBoxOptimizationTypeActionPerformed
+
+    /**
+     * Calculates the design space, number of all permutations of parameters
+     * with respect to the stepping sizes
+     */
     public void calculateDesignSpace(){
         myGenerator=new generator(ListOfParameterSetsToBeWritten, fileName, jLabelExportStatus, this, jTableParameterList);
         this.sizeOfDesignSpace=myGenerator.getSizeOfDesignspace();
         this.jLabelExportStatus.setText("Designspace-Size:"+ sizeOfDesignSpace);
     }
 
+    
+    /**
+     * Builds list of parametersets based on parameters and steppings from table
+     * is used recursive
+     * @param ListOfParameterAsFromTable List of parameters from table
+     * @param ListOfParameterSetsToBeWritten List of parameterset to be simulated, this is the designspace
+     * @param lastParameterSet the last parameterset while generating recursive
+     * @param infoLabel Label to display some information while generating
+     */
     public void buildListOfParameterSetsToExport(ArrayList ListOfParameterSetsToBeWritten, ArrayList ListOfParameterAsFromTable, parameter[] lastParameterSet, JLabel infoLabel){
-    //erstelle Liste der Länge von ListOfParameterAsFromTable, packe alle Parameter rein
-    //Beginne erste Schleife, kopiere deep die ganze Liste
     boolean isAlreadyInExportList=false;
     
     if(cancelOperation){
@@ -565,12 +621,10 @@ private String pathToLastSimulationCache="";
     }
         if(ListOfParameterAsFromTable.size()>0){
         parameter loopParameter=(parameter)ListOfParameterAsFromTable.get(ListOfParameterAsFromTable.size()-1);
-        //ListOfParameterAsFromTable.remove(0);
 
         ListOfParameterAsFromTable.remove(loopParameter);
 
         String loopName=loopParameter.getName();
-        //support.log("Iterating through "+loopName +" with ListSize "+ListOfParameterAsFromTable.size());
         boolean canIterate=true;
 
         float start=1, end=1, step=1;
@@ -579,14 +633,7 @@ private String pathToLastSimulationCache="";
             end=support.getFloat(loopParameter.getEndValue());
             step=support.getFloat(loopParameter.getStepping());
             canIterate=true;
-            /*    if((end-start)>0){
-                    if(((end-start)/step)>0){ //Iteration möglich
-                    canIterate=true;
-                    }
-                }
-            */
             }catch(NumberFormatException e){
-            //canIterate=false;
             support.log("Could not convert into float, maybe String is used. Will not iterate through parameter "+loopParameter.getName());
             return;
             }
@@ -596,18 +643,14 @@ private String pathToLastSimulationCache="";
             int endCounter=1;
                     if((end-start)>0){
                         endCounter=(int)Math.ceil((end-start)/step) +1 ;
-                        //support.log(endCounter +" steps to be made for "+loopName);
                     }
-                //if(start!=end){endCounter++;}
             
                 for(int i=0;i<endCounter;i++){
                 usedValue=start+(float)i*step;
                 String usedValueString=String.valueOf(usedValue);
-                //support.log("Setting Value to "+usedValueString+"for "+loopName);
-                
                 
                 parameter[] nextParameterSet=new parameter[lastParameterSet.length];
-                    //Kopie des Parametersets anlegen
+                    //Get copy of paremeterset
                     for(int c=0;c<lastParameterSet.length;c++){
                         try{nextParameterSet[c]=(parameter) lastParameterSet[c].clone();}
                         catch(CloneNotSupportedException e){
@@ -618,66 +661,25 @@ private String pathToLastSimulationCache="";
 
                     for(int c=0;c<nextParameterSet.length;c++){
                         if(nextParameterSet[c].getName().equals(loopName)){
-                        //modifizierten Parameter setzen
-                        //support.log("Alte ID: "+getIDOfParameterSet(nextParameterSet));
+                        //set modified parameterset
                         nextParameterSet[c].setValue(usedValueString);
-                        //support.log("Setze "+loopName+" auf "+usedValueString);
-                        //support.log("Neue ID: "+getIDOfParameterSet(nextParameterSet));
                         }
                     }
-
-                /*isAlreadyInExportList=false;
-                if(ListOfParameterSetsToBeWritten.size()>0){
-                    for(int d=0; d<ListOfParameterSetsToBeWritten.size();d++){
-                        long id0,id1;
-                        id0=getIDOfParameterSet((parameter[])ListOfParameterSetsToBeWritten.get(d));
-                        id1=getIDOfParameterSet(nextParameterSet);
-                        //support.log("Old ID0:"+id0);
-                        //support.log("New ID1:"+id1);
-                        if(id0==id1){
-                        support.log("Ids are equal!");
-                        //isAlreadyInExportList=true;
-                        }
-                    }
-                }
-                */
-                //modifiziertes Parameterset hinzufügen
-                //if(!isAlreadyInExportList){ListOfParameterSetsToBeWritten.add(nextParameterSet);}
                 if(ListOfParameterAsFromTable.size()==0){
                 addToListOfParameterSetsToBeWritten(nextParameterSet);}
-                //Aufruf mit der aktuellen, reduzierten Parameterliste
+                //call this method again with reduced parameterset
                 buildListOfParameterSetsToExport(ListOfParameterSetsToBeWritten, ListOfParameterAsFromTable, nextParameterSet, infoLabel);
                 }
             }else{
-                //Prüfen, ob dieser Eintrag bereits vorhanden ist
-                isAlreadyInExportList=false;
-                /*if(ListOfParameterSetsToBeWritten.size()>0){
-                    for(int i=0; i<ListOfParameterSetsToBeWritten.size();i++){
-                        long id0,id1;
-                        id0=getIDOfParameterSet((parameter[])ListOfParameterSetsToBeWritten.get(i));
-                        id1=getIDOfParameterSet(lastParameterSet);
-                        if(id0==id1){
-                        isAlreadyInExportList=true;
-                        }
-                    }
-
-
-                }*/
-                //Zur Liste hinzufügen
-                //if(!isAlreadyInExportList){ListOfParameterSetsToBeWritten.add(lastParameterSet);}
-                //addToListOfParameterSetsToBeWritten(lastParameterSet);
-                //Aufruf mit der aktuellen, reduzierten Parameterliste
-                //buildListOfParameterSetsToExport(ListOfParameterSetsToBeWritten, ListOfParameterAsFromTable, lastParameterSet, infoLabel);
-                
+                //check if entry ia already in list
+                //no more used...
+                isAlreadyInExportList=false; 
             }
-            //ListOfParameterAsFromTable.remove(ListOfParameterAsFromTable.size()-1);
         ListOfParameterAsFromTable.add(loopParameter);
         
         }else{
-        //Schleifenabbruch, popup
+        //Exit the loop, popup
         }
-
-        //In Schleife tue dies wieder, rufe Schleife mit Arraylist - Letztem Element auf
     }
 
 
@@ -703,6 +705,8 @@ private String pathToLastSimulationCache="";
     private javax.swing.JButton jButtonStartBatchSimulation;
     private javax.swing.JButton jButtonStartOptimization;
     private javax.swing.JCheckBox jCheckBoxCachedSimulation;
+    private javax.swing.JComboBox jComboBoxOptimizationType;
+    private javax.swing.JComboBox jComboBoxSimulationType;
     private javax.swing.JLabel jLabelExportStatus;
     private javax.swing.JLabel jLabelSimulationCount;
     private javax.swing.JMenu jMenu1;
@@ -722,6 +726,7 @@ private String pathToLastSimulationCache="";
 
     /**
      * Reads the xml-file of SCPN and sets the User Interface
+     * @param filename String name of the SCPN-File to read
      */
     private void readSCPNFile(String filename){
         deactivateExportButtons();
@@ -767,33 +772,14 @@ private String pathToLastSimulationCache="";
         } catch (DOMException e) {
         }
     }
-
-    public String removeExtention(String filePath) {
-    // These first few lines the same as Justin's
-    File f = new File(filePath);
-
-        // if it's a directory, don't remove the extention
-        if (f.isDirectory()){ return filePath;}
-
-        String name = f.getName();
-
-        // Now we know it's a file - don't need to do any special hidden
-        // checking or contains() checking because of:
-        final int lastPeriodPos = name.lastIndexOf('.');
-        if (lastPeriodPos <= 0)
-        {
-            // No period after first character - return name as it was passed in
-            return filePath;
-        }
-        else
-        {
-            // Remove the last period and everything after it
-            File renamed = new File(f.getParent(), name.substring(0, lastPeriodPos));
-            return renamed.getPath();
-        }
-    }
-
-    public ArrayList removeDuplicates(ArrayList ListOfParameterSetsToBeWritten, JLabel infoLabel){
+    
+    /**
+     * removed duplicate parametersets, not used anymore?
+     * @param ListOfParameterSetsToBeWritten List of parametersets to be checked for duplicates
+     * @param infoLabel label to print out some information while checking
+     * @return List of parametersets without duplicates
+     */
+    public ArrayList<parameter[]> removeDuplicates(ArrayList<parameter[]> ListOfParameterSetsToBeWritten, JLabel infoLabel){
     ArrayList<parameter[]> tmpList=new ArrayList();
     boolean existsInOutPutList=false;
         for(int i=0; i<ListOfParameterSetsToBeWritten.size();i++){
@@ -837,6 +823,11 @@ private String pathToLastSimulationCache="";
     return tmpList;
     }
 
+    /**
+     * Returns id of a parameterset to compare with other parametersets
+     * @param parameterset Set of parameters to calculate the id from
+     * @return ID of whole parameterset
+     */
     public long getIDOfParameterSet(parameter[] parameterset){
     long id=0;
     String tmpString="";
@@ -850,6 +841,12 @@ private String pathToLastSimulationCache="";
     return (long)tmpString.hashCode();
     }
 
+    
+    /**
+     * Returns next spinning char for displaying a spinning wheel in a label
+     * @param oldChar actual char in label to calculate the next
+     * @return next char to be displayed in label
+     */
     public String getNextSpinningChar(String oldChar){
     if(oldChar.equals("-")){return "\\";}
     if(oldChar.equals("\\")){return "|";}
@@ -878,14 +875,16 @@ private String pathToLastSimulationCache="";
      */
     public void waitForGenerator(){
         try{
-            wait(100);
-            if (this.myGenerator.isAlive())return;
-        }catch (Exception e){
+            while(this.myGenerator.isAlive()){
+            Thread.currentThread().wait(100);
+            }
+        }catch (InterruptedException e){
+            support.log("Error while waiting for Generator.");
         }
     }
 
     /**
-     * restarts the generator after Table has changed
+     * Restarts the generator after Table has changed
      * @param e
      */
     public void tableChanged(TableModelEvent e) {
@@ -898,6 +897,10 @@ private String pathToLastSimulationCache="";
     checkIfCachedSimulationIsPossible();
     }
 
+    /**
+     * Reads the simulation-parameters from table (not SCPN-Specific parameters)
+     * and stores these parameters in local fields
+     */
     private void readStaticParametersFromTable(){
     
     this.pConfidenceIntervall.setStartValue( ((parameterTableModel)this.jTableParameterList.getModel()).getValueByName("ConfidenceIntervall", "StartValue")) ;
@@ -922,6 +925,9 @@ private String pathToLastSimulationCache="";
 
     }
 
+    /**
+     * Sets the Export-Button for Experiments/Simulations De-active
+     */
     protected final void deactivateExportButtons(){
     this.jButtonExport.setEnabled(false);
     this.jButtonStartBatchSimulation.setEnabled(false);
@@ -930,6 +936,9 @@ private String pathToLastSimulationCache="";
     this.jButtonStartOptimization.setEnabled(false);
     this.jButtonGenerateListOfExperiments.setEnabled(false);
     }
+    /**
+     * Sets the Export-Button for Experiments/Simulations active
+     */
     public void activateExportButtons(){
     this.jButtonExport.setEnabled(true);
     //this.jButtonOpenSCPN.setEnabled(true);
@@ -938,10 +947,16 @@ private String pathToLastSimulationCache="";
     this.jButtonGenerateListOfExperiments.setEnabled(true);
     this.checkIfTimeNetPathIsCorrect();
     }
+    /**
+     * Sets the Reload-SCPN-Button and open-SCPN-Button active
+     */
     public void activateReloadButtons(){
     this.jButtonOpenSCPN.setEnabled(true);
     this.jButtonReload.setEnabled(true);
     }
+    /**
+     * Sets the Generate- and OptimizeButtons active
+     */
     public void activateGenerateButtons(){
     this.jButtonStartOptimization.setEnabled(true);
     this.jButtonGenerateListOfExperiments.setEnabled(true);
@@ -989,7 +1004,7 @@ private String pathToLastSimulationCache="";
             support.log("Failed to install RemoteSystem Clent.config");
             }
         }else{
-        //TODO Buttons zur Auswahl des TimeNet-Verzeichnisses ausgrauen
+        
         this.jButtonStartBatchSimulation.setEnabled(false);
         //this.jLabelCheckPathToTimeNet.setVisible(true);
         jButtonPathToTimeNet.setBackground(Color.RED);
@@ -1002,7 +1017,9 @@ private String pathToLastSimulationCache="";
         }
     }
 
-
+    /**
+     * Saves program-properties to a local file in home-dir
+     */
     private void saveProperties(){
     support.log("Saving Properties.");
         try{
@@ -1030,6 +1047,9 @@ private String pathToLastSimulationCache="";
     
     auto.setProperty("pathToLastSimulationCache", this.pathToLastSimulationCache);
     
+    auto.setProperty("OptimizationType", support.getChosenOptimizerType().toString());
+    auto.setProperty("SimulationType", support.getChosenSimulatorType().toString());
+    
     File parserprops =  new File(propertyFile);
     auto.store(new FileOutputStream(parserprops), "ExperimentGenerator-Properties");
         }catch(IOException e){
@@ -1038,6 +1058,13 @@ private String pathToLastSimulationCache="";
 
     }
 
+    /**
+     * Returns a String, if String is != null, else defaultvalue.
+     * If defaultvalue is null, then returns "0"
+     * @param loadedValue String to be checked and returned
+     * @param defaultValue Defaultvalue to be returned if String is null
+     * @returns loadedValue if != null, else defaultValue or "0"
+     */
     private String checkIfStringIsNull(String loadedValue, String defaultValue){
         if(loadedValue!=null){
         return loadedValue;
@@ -1051,6 +1078,12 @@ private String pathToLastSimulationCache="";
 
     }
 
+    /**
+     * Prints 2 parametersets and it`s values to see the difference
+     * Just used for debug reasons
+     * @param p parameter to be compared with p1
+     * @param p1 parameter to be compared with p
+     */
     private void printParameterSetCompare(parameter[] p, parameter[] p1){
         support.log("Printing P-Set:");
         for(int i=0; i<p.length; i++){
@@ -1060,19 +1093,12 @@ private String pathToLastSimulationCache="";
         }
     }
 
+    /**
+     * Adds a parameterset to the list of parametersets
+     * @param p parameterset to be added
+     */
     public void addToListOfParameterSetsToBeWritten(parameter[] p){
-
-    //Long tmpId=getIDOfParameterSet(p);
-    //support.log("ID to Add: "+tmpId);
-        //for(int i=0;i<ListOfParameterSetIds.size();i++){
-        //    if(ListOfParameterSetIds.get(i).compareTo(tmpId)==0 ){
-            //printParameterSetCompare(ListOfParameterSetsToBeWritten.get(i), p);
-        //    }
-        //}
-    
     ListOfParameterSetsToBeWritten.add(p);
-    //ListOfParameterSetIds.add(tmpId);
-
     this.jLabelExportStatus.setText("Building Parametersets:"+ListOfParameterSetsToBeWritten.size()*100/this.sizeOfDesignSpace +"%");
 
     }
@@ -1103,10 +1129,11 @@ private String pathToLastSimulationCache="";
     return parameterArray;
     }
 
-    /*
+    /**
      * To display the actual Simulation Count
+     * @param i value of simulationcounter to display
      */
-    public void setSimulationCounter(int i){
+    public void updateSimulationCounterLabel(int i){
         if(i>0){
         this.jLabelSimulationCount.setText(String.valueOf(i));
         }else{
@@ -1116,6 +1143,7 @@ private String pathToLastSimulationCache="";
     
     
     /**
+     * Returns list of MeasureTypes to be optimized
      * @return List of MeasureTypes, given by Tabbed-Pane, to which it should be optimized
      */
     public ArrayList<MeasureType> getListOfActiveMeasureMentsToOptimize(){
@@ -1135,13 +1163,19 @@ private String pathToLastSimulationCache="";
     }
 
     /**
+     * Set local variable of path to Timenet
      * @param pathToTimeNet the pathToTimeNet to set
      */
     private void setPathToTimeNet(String pathToTimeNet) {
-        this.pathToTimeNet = pathToTimeNet;
-        
+        this.pathToTimeNet = pathToTimeNet;   
     }
     
+    /**
+     * returns local value of path to TimeNet
+     */
+    private String getPathToTimeNet(){
+    return this.pathToTimeNet;
+    }
     
     
     

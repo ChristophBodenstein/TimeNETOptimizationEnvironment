@@ -253,7 +253,7 @@ float cpuTimeSum=0;
                 Thread.sleep(500);
                 this.infoLabel.setText("Done "+ myGenericSimulator.getStatus() +"%");
                 simulationCounter=myGenericSimulator.getSimulationCounter();
-                this.parent.setSimulationCounter(simulationCounter);
+                this.parent.updateSimulationCounterLabel(simulationCounter);
                 System.out.print("Simulation status:"+myGenericSimulator.getStatus() +"%");
                 support.log("Simulation Counter: "+simulationCounter);
                 }
