@@ -1,5 +1,7 @@
 /*
  * Interface for all Optimizers
+ * Christoph Bodenstein
+ * TU-Ilmenau, FG SSE
  */
 
 package timenetexperimentgenerator;

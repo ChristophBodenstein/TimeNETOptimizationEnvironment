@@ -1,14 +1,13 @@
 /*
  * Generic Optimizer
  * Needs List of Parameter (Table) and step-sizes, Directory for xml and log files, Implementation of Opti-Algorithm, Path to orininal-file, PAth to Timenet
- * 
+ * Christoph Bodenstein
+ * TU-Ilmenau, FG SSE
  */
 
 package timenetexperimentgenerator;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import javax.swing.JLabel;
@@ -21,7 +20,7 @@ import javax.swing.JTabbedPane;
  * needs: path to timenet, path for tmp-files, path/filename of original, access to tModel with parameters, access to jTabbedPane with Measurement-forms
  *
  */
-public class SimpleGreedyOptimizer implements Runnable, Optimizer{
+public class OptimizerGreedy implements Runnable, Optimizer{
 String tmpPath="";
 String filename="";//Original filename
 String pathToTimeNet="";
@@ -40,7 +39,7 @@ float cpuTimeSum=0;
      * Constructor
      * 
      */
-    SimpleGreedyOptimizer(){
+    OptimizerGreedy(){
     }
 
     /**
@@ -233,8 +232,6 @@ float cpuTimeSum=0;
     return newParameterSet;
     }
 
-    
-
 
     /**
      * Run method, the main optimization loop
@@ -278,6 +275,9 @@ float cpuTimeSum=0;
         //throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     * prints some statistics of optimization run
+     */
     private void printStatistics() {
     this.simulationTimeSum=0;
     this.cpuTimeSum=0;

@@ -1,6 +1,9 @@
 /*
  * Christoph Bodenstein
  * Parameter Class for Experiment Parameters
+
+ * Christoph Bodenstein
+ * TU-Ilmenau, FG SSE
  */
 
 package timenetexperimentgenerator;

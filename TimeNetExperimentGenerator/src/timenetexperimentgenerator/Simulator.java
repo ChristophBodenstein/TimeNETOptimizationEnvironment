@@ -1,5 +1,8 @@
 /*
  * Interface for all Simulators
+
+ * Christoph Bodenstein
+ * TU-Ilmenau, FG SSE
  */
 
 package timenetexperimentgenerator;

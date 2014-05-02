@@ -1,6 +1,8 @@
 /*
  * A MeasureType-object represents one Measure.
  * It can also represent a whole Simulation-Result for one Measure, if a list of Parameters incl. Values is given
+ * Christoph Bodenstein
+ * TU-Ilmenau, FG SSE
  */
 
 package timenetexperimentgenerator;

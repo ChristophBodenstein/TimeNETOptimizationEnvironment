@@ -2,6 +2,9 @@
  * Reads the Simulation cache file
  * Checks the data and reformat the parameter table
  * Provides Simulation results
+
+ * Christoph Bodenstein
+ * TU-Ilmenau, FG SSE
  */
 
 package timenetexperimentgenerator;

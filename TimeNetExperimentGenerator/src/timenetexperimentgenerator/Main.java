@@ -1,5 +1,7 @@
 /*
  * Main Class, sets the Look and Feel and inits the MainFrame
+ * Christoph Bodenstein
+ * TU-Ilmenau, FG SSE
  */
 
 package timenetexperimentgenerator;

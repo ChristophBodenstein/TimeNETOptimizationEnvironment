@@ -1,6 +1,9 @@
 /*
  * Christoph Bodenstein
  * Model for Tabel of Parameters
+
+ * Christoph Bodenstein
+ * TU-Ilmenau, FG SSE
  */
 
 package timenetexperimentgenerator;

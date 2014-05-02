@@ -1,5 +1,8 @@
 /*
  * Exports a list of Experiments as xml-files into a given directory.
+
+ * Christoph Bodenstein
+ * TU-Ilmenau, FG SSE
  */
 
 package timenetexperimentgenerator;

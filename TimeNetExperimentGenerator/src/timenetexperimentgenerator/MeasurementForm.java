@@ -1,12 +1,7 @@
 /*
  * Form for Optimization-targets, its used within a tabbed pane to choose the target-measurements
- * 
- */
-
-/*
- * MeasurementForm.java
- *
- * Created on 28.11.2013, 17:01:30
+ * Christoph Bodenstein
+ * TU-Ilmenau, FG SSE
  */
 
 package timenetexperimentgenerator;

@@ -1,7 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Simulator which uses log data from already done simulations and returns them.
+ * 
+ * Christoph Bodenstein
+ * TU-Ilmenau, FG SSE
  */
 
 package timenetexperimentgenerator;
@@ -9,14 +10,20 @@ package timenetexperimentgenerator;
 import java.util.ArrayList;
 
 /**
- *
- * @author sse
+ * Class to simulate real SCPN-Simulation. It uses the SimulationCache with read log-data
+ * @author Christoph Bodenstein
  */
-public class CachedSimulator implements Simulator{
+public class SimulatorCached implements Simulator{
 private SimulationCache mySimulationCache=null;
 private ArrayList<parser> myListOfSimulationParsers=null;
 private int simulationCounter=0;
     
+
+    /**
+     * inits the simulation, this is neccessary and must be implemented
+     * @param listOfParameterSetsTMP List of Parametersets to be simulated
+     * @param simulationCounterTMP actual Number of simulation, will be increased with every simulation-run
+     */
     public void initSimulator(ArrayList<parameter[]> listOfParameterSetsTMP, int simulationCounterTMP) {
         if(mySimulationCache!=null){
         this.myListOfSimulationParsers=mySimulationCache.getListOfCompletedSimulationParsers(listOfParameterSetsTMP, simulationCounter);
@@ -27,22 +34,38 @@ private int simulationCounter=0;
         
     }
 
+    /**
+     * Returns the actual status of all simulations 
+     * @return % of simulatiions that are finished
+     */
     public int getStatus() {
         if (this.myListOfSimulationParsers!=null){
         return 100;
         }else {return 0;}
     }
 
+    
+    /**
+     * Returns the actual simulation Counter
+     * @return actual simulation counter
+     */
     public int getSimulationCounter() {
         return this.simulationCounter;
     }
 
+    
+    
+    /**
+     * Gets the list of completed simulations, should be used only if getStatus() returns 100
+     * @return list of completed simulations (parsers) which contain all data from the log-files
+     */
     public ArrayList<parser> getListOfCompletedSimulationParsers() {
         return this.myListOfSimulationParsers;
     }
 
     
     /**
+     * Returns the data-source for simulated simulation-runs
      * @return the mySimulationCache
      */
     public SimulationCache getMySimulationCache() {
@@ -50,6 +73,7 @@ private int simulationCounter=0;
     }
 
     /**
+     * Sets the data-source for simulated simulation-runs
      * @param mySimulationCache the mySimulationCache to set
      */
     public void setMySimulationCache(SimulationCache mySimulationCache) {

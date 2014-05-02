@@ -1,8 +1,10 @@
 /*
- * Starts simulations
+ * Starts simulations local
  * Needs: Path to timenet, Set of Parameters, Path to original-File
- * Starts Simulations local or remote
  * Returns Set of measurements, corresponding to given Set of Parameters
+
+ * Christoph Bodenstein
+ * TU-Ilmenau, FG SSE
  */
 
 package timenetexperimentgenerator;
@@ -22,13 +24,11 @@ import org.w3c.dom.*;
  *
  * @author Christoph Bodenstein
  */
-public class simpleLocalSimulator implements Runnable, Simulator{
+public class SimulatorLocal implements Runnable, Simulator{
 ArrayList<parameter[]> listOfParameterSets;
 ArrayList<parser> listOfCompletedSimulationParsers;
 String originalFilename;
 String pathToTimeNet;
-boolean remote=false;
-String remoteAddress;
 String tmpFilePath;
 private int status=0; //Status of simulations, 0..100%
 private int simulationCounter=0;//Startvalue for count of simulations, will be in the filename of sim and log
@@ -37,20 +37,22 @@ String logFileName;
 String actualSimulationLogFile="";//actual log-file for one local simulation
 private final String nameOfTempDirectory="14623786483530251523506521233052";
 
-    //Constructor
-    public simpleLocalSimulator(){
-    
+    /**
+     * Constructor
+     */
+    public SimulatorLocal(){
     }
 
-
-    /*
-    if simulationCounter is set to less then 0, the old value wil be used and continouusly increased
+    /**
+     * inits the simulator
+     * If simulationCounter is set to less then 0, the old value wil be used and continouusly increased
+     * @param listOfParameterSetsTMP List of Parameter-sets to be simulated
+     * @param simulationCounterTMP start value of simulation counter
     */
     public void initSimulator(ArrayList<parameter[]> listOfParameterSetsTMP, int simulationCounterTMP){
     this.listOfParameterSets=listOfParameterSetsTMP;
     this.originalFilename=support.getOriginalFilename();//  originalFilenameTMP;
     this.pathToTimeNet=support.getPathToTimeNet();//  pathToTimeNetTMP;
-    //this.remote=remoteTMP;
     this.tmpFilePath=support.getTmpPath();// tmpFilePathTMP;
         if(simulationCounterTMP>=0){
         this.simulationCounter=simulationCounterTMP;}
@@ -60,99 +62,52 @@ private final String nameOfTempDirectory="14623786483530251523506521233052";
 
     }
 
-
-
     /**
-     Run Method to start simulations and collect the data
+     * Run Method to start simulations and collect the data
+     * simulats the SCPNs, main routine
      */
-    public void run() {
-    this.cancelSimulations=false;
-        if(this.remote){
-        this.simulateRemote();
-        }else{
-        this.simulateLocal();
-        }
-
-
-    }
-
-
-    private void simulateLocal(){
+    public void run(){
     this.status=0;
     this.listOfCompletedSimulationParsers=new ArrayList<parser>();
     String line="";
     int numberOfSimulations=0;
-        if(checkTimeNetPath()){
+        if(support.checkTimeNetPath()){
             try{
             support.log("Timenet-Path ok, starting local simulations.");
             logFileName=tmpFilePath+File.separator+"SimLog"+Calendar.getInstance().getTimeInMillis()+".csv";
             support.log("Logfilename is:"+logFileName);
-            //Öffnen des Logfiles und Schreiben der ersten Zeile
+            //Open Logfile and write first line
             FileWriter fw;
-            
-
-
                 if(listOfParameterSets.size()>0){
                     for(int i=0;i<listOfParameterSets.size();i++){
                     fw = new FileWriter(logFileName, true);
                     if(cancelSimulations) return;
-                    parameter[] actualParameterSet=listOfParameterSets.get(i);//Aktuellen Paramstersatz entnehmen
-                    String actualParameterFileName=createLocalSimulationFile(actualParameterSet, this.simulationCounter);//Aktuelle xml-file bauen und in tmp-ordner speichern
+                    parameter[] actualParameterSet=listOfParameterSets.get(i);//get actual parameterset
+                    String actualParameterFileName=createLocalSimulationFile(actualParameterSet, this.simulationCounter);//create actual SCPN xml-file and save it in tmp-folder
                     support.log("Simulating file:"+actualParameterFileName);
                     startLocalSimulation(actualParameterFileName);//Returns, when Simulation has ended
-                    parser myParser=new parser();//Neuen Log-Parser anlegen
-                    boolean parseResult=myParser.parse(actualSimulationLogFile);//Log-file und xml-file parsen
+                    parser myParser=new parser();//create new log-parser
+                    boolean parseResult=myParser.parse(actualSimulationLogFile);//parse Log-file and xml-file
                         if(parseResult){
                         support.log("Parsing successful.");
                         support.addLinesToLogFile(myParser, logFileName);
-                        /*    if(i==0){
-                            //Schreiben der ersten Zeile, vorher check, welche Measures verfügbar sind
-                            MeasureType exportMeasure=myParser.getMeasures().get(0);//Dummy, es wird das erste Measure abgefragt und die Paramsterliste
-                            line="MeasureName;Mean Value;Variance;Conf.Interval-Min;Conf.Interval-Max;Epsilon;"+"Simulation Time";
-                                for(int i1=0;i1<exportMeasure.getParameterList().size();i1++){
-                                line=line+";"+exportMeasure.getParameterList().get(i1).getName();
-                                }
-                                try {
-                                    fw.write(line);
-                                    fw.append( System.getProperty("line.separator") );
-                                } catch (IOException ex) {
-                                    support.log("Error writing line to log-file.");
-                                    ex.printStackTrace();
-                                }
-                            }
 
-                            //Schreiben der nächsten Zeile ins Logfile
-                             try{
-                              //fw.write(line);
-                              //fw.append( System.getProperty("line.separator") );
-                                for(int i1=0;i1<myParser.getMeasures().size();i1++){//Alle Measure schreiben
-                                MeasureType exportMeasure=myParser.getMeasures().get(i1);
-                                line=exportMeasure.getMeasureName()+";"+getCommaFloat(exportMeasure.getMeanValue())+";"+getCommaFloat(exportMeasure.getVariance())+";"+getCommaFloat(exportMeasure.getConfidenceInterval()[0])+";"+getCommaFloat(exportMeasure.getConfidenceInterval()[1])+";"+getCommaFloat(exportMeasure.getEpsilon())+";"+getCommaFloat(myParser.getSimulationTime());
-                                    for(int c=0;c<exportMeasure.getParameterList().size();c++){
-                                    line=line+";"+getCommaFloat(exportMeasure.getParameterList().get(c).getValue());
-                                    }
-                                fw.write(line);
-                                fw.append( System.getProperty("line.separator") );
-                                }
-
-                             }catch(Exception e){e.printStackTrace();}
-                        */
-                        this.listOfCompletedSimulationParsers.add(myParser);//Parser inkl. gesammelter infos an Ergebnisliste anhängen
+                        this.listOfCompletedSimulationParsers.add(myParser);//add parser to local list of completed simulations
                         }else{
                         support.log("Error Parsing the Simulation results. Maybe Simulation failure?");
                         }
-                    numberOfSimulations++;//Lokale Simulationsnnummer inkrementieren
+                    numberOfSimulations++;//increment local simulation counter
                     
-                    this.status=numberOfSimulations*100 / listOfParameterSets.size(); //Prozentsatz der abgearbeiteten Simulationen setzen
-                    this.simulationCounter++;//Simulationscounter erhöhen, wichtig für Dateinamen
+                    this.status=numberOfSimulations*100 / listOfParameterSets.size(); //update status of local simulations (in %)
+                    this.simulationCounter++;//increment given global simulation counter
 
                     fw.close();
                     }
 
                 }
                 
-               }catch(Exception e){
-               e.printStackTrace();
+               }catch(IOException e){
+               support.log("Error while creating local simulation file or log-file.");
                }
 
         }else{
@@ -161,14 +116,12 @@ private final String nameOfTempDirectory="14623786483530251523506521233052";
         
     }
 
-    private void simulateRemote(){
-    if(cancelSimulations) return;
-
-    }
-
 
     /**
-     creates the local file for simulation, including all information in file and filename
+     * Creates the local file for simulation, including all information in file and filename
+     * @param p parameterset to be simulated
+     * @param simulationNumber number of simulation
+     * @return Name of simulation file incl. path
      */
     private String createLocalSimulationFile(parameter[] p, int simulationNumber){
     String fileNameOfLocalSimulationFile="";
@@ -228,13 +181,14 @@ private final String nameOfTempDirectory="14623786483530251523506521233052";
     
     }
 
-    /*
-     starts the local simulation run, returns, when simulation has ended
+    /**
+     * starts the local simulation run, returns, when simulation has ended
+     * @param exportFileName Filename of SCPN to be simulated with TimeNet
      */
     private void startLocalSimulation(String exportFileName){
         try {
         // Execute command
-        java.lang.ProcessBuilder processBuilder = new java.lang.ProcessBuilder("java","-jar", "TimeNET.jar",exportFileName, "autostart=true", "autostop=true", "secmax="+getIntValueFromFileName(exportFileName, "MaxTime"), "endtime="+getIntValueFromFileName(exportFileName, "EndTime") , "seed="+ getIntValueFromFileName(exportFileName, "Seed"), "confidence="+getIntValueFromFileName(exportFileName, "ConfidenceIntervall"), "epsmax="+getValueFromFileName(exportFileName, "MaxRelError"));
+        java.lang.ProcessBuilder processBuilder = new java.lang.ProcessBuilder("java","-jar", "TimeNET.jar",exportFileName, "autostart=true", "autostop=true", "secmax="+support.getIntStringValueFromFileName(exportFileName, "MaxTime"), "endtime="+support.getIntStringValueFromFileName(exportFileName, "EndTime") , "seed="+ support.getIntStringValueFromFileName(exportFileName, "Seed"), "confidence="+support.getIntStringValueFromFileName(exportFileName, "ConfidenceIntervall"), "epsmax="+support.getValueFromFileName(exportFileName, "MaxRelError"));
         processBuilder.directory(new java.io.File(this.pathToTimeNet));
         support.log("Command is: "+processBuilder.command().toString());
 
@@ -249,7 +203,7 @@ private final String nameOfTempDirectory="14623786483530251523506521233052";
             try {
                 p.waitFor();
             } catch (InterruptedException ex) {
-                Logger.getLogger(simpleLocalSimulator.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(SimulatorLocal.class.getName()).log(Level.SEVERE, null, ex);
             }
         timeStamp=(Calendar.getInstance().getTimeInMillis()-timeStamp) / 1000;//Time for calculation in seconds
 
@@ -257,7 +211,7 @@ private final String nameOfTempDirectory="14623786483530251523506521233052";
         //Copy results.log
         String sourceFile=support.removeExtention(exportFileName)+".result"+File.separator+"results.log";
         String sinkFile=support.removeExtention(exportFileName)+"simTime_"+timeStamp+".log";
-            if (copyFile(sourceFile, sinkFile, false)){
+            if (support.copyFile(sourceFile, sinkFile, false)){
             support.log("Coppied log-file. Now delete the directory and original log-file.");
             File tmpFile=new File(sourceFile);
             tmpFile.delete();
@@ -270,143 +224,35 @@ private final String nameOfTempDirectory="14623786483530251523506521233052";
         String path=file.getAbsolutePath().substring(0,file.getAbsolutePath().lastIndexOf(File.separator)) +File.separator+nameOfTempDirectory;
     
         support.log("Delete Path to tmp files: "+path);
-        this.del(new File(path));
-        
-        
-        
+        support.del(new File(path));
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
 
-
-    public String getReMoteAddress(){
-    if(this.remoteAddress==null)return "";else return this.remoteAddress;
-    }
-    public void setRemoteAddress(String s){
-    this.remoteAddress=s;
-    }
-
-
-    /**
-    * Checks, if Timenet is availabel at giben Path, otherwise simulation run is not possible
-    */
-    public boolean checkTimeNetPath(){
-
-    File tmpFile=new File(this.pathToTimeNet+File.separator+"TimeNET.jar");
-    support.log("Check if Timenet is here:"+tmpFile.toString());
-        if(tmpFile.exists()){
-        return true;
-        }else{
-        return false;
-        }
-    }
-
-
-
-    /**
-     Checks, if given TimeNet-Simulation-Deployment-Server Available
-     */
-    private boolean checkTimeNetServerAvailable(){
-    return false;
-    }
-
     public ArrayList<parser> getListOfCompletedSimulationParsers(){
     return this.listOfCompletedSimulationParsers;
     }
 
 
-    /*
-     Delete content of tmp-folder, all xml-files, log-files and generated source-code
+    /**
+     * Delete content of tmp-folder, all xml-files, log-files and generated source-code
      */
     public void deleteTmpFiles(){
     File[] listOfFile=new File(this.tmpFilePath).listFiles();
         for(int i=0;i<listOfFile.length;i++){
-        del(listOfFile[i]);
+        support.del(listOfFile[i]);
         }
     }
 
-    /*
-     Deletes a file or directory recursive
-     */
-    public boolean del(File dir){
-        if (dir.isDirectory()){
-        File[] files = dir.listFiles();
-            for (File aktFile: files){
-            del(aktFile);
-            }
-        }
-    return dir.delete();
-    }
 
     /**
-     *
      * cancels all remaining simulations and aborts the actual one
-     */
+    */
     private void cancelSimulations(){
     this.cancelSimulations=true;
     }
-
-
-
-    /**
-     * searches for values of corresponding parameters, whicht are set in the filename
-     */
-    private String getValueFromFileName(String fileName, String needle){
-    String[] stringList=fileName.split("_");
-
-        for(int i=0; i<stringList.length;i++){
-            if(stringList[i].equals(needle)){
-            return stringList[i+1];
-            }
-        }
-    return "";
-    }
-
-    private String getIntValueFromFileName(String fileName, String needle){
-    String tmpString=getValueFromFileName(fileName, needle);
-    return String.valueOf(Float.valueOf(tmpString).intValue());
-    }
-
-
-    /*
-     *copies a file from source to sink
-     **/
-     public boolean copyFile(String source, String sink, boolean append){
-    try{
-          File f1 = new File(source);
-          File f2 = new File(sink);
-          InputStream in = new FileInputStream(f1);
-          OutputStream out;
-          if(append){
-          //For Append the file.
-          out = new FileOutputStream(f2,true);
-          } else{
-            //For Overwrite the file.
-            out = new FileOutputStream(f2);
-            }
-
-          byte[] buf = new byte[1024];
-          int len;
-          while ((len = in.read(buf)) > 0){
-            out.write(buf, 0, len);
-          }
-          in.close();
-          out.close();
-          support.log("File copied.");
-          return true;
-        }
-        catch(FileNotFoundException ex){
-          support.log(ex.getMessage() + " in the specified directory.");
-          return false;
-        }
-        catch(IOException e){
-          support.log(e.getMessage());
-          return false;
-        }
-    }
-
 
     public static ProcMon createProcMon(Process proc) {
     ProcMon procMon = new ProcMon(proc);
@@ -415,29 +261,27 @@ private final String nameOfTempDirectory="14623786483530251523506521233052";
     return procMon;
     }
 
-    
-    //Returns a String with float value, where comma is used instead of point as decimal-separator
-    public String getCommaFloat(float f){
-    //System.out.print("UnFormated float is "+f);
-    String returnValue=getCommaFloat( Float.toString(f) ) ;
-    //support.log("  --  Formated float is "+returnValue);
-    return returnValue;
-    }
-    public String getCommaFloat(String f){
-    //System.out.print("UnFormated String is "+f);
-    String returnValue=f.replace(".", ",");
-    //support.log("  --  Formated String is "+returnValue);
-
-    return returnValue;
-    }
-
+    /**
+     * Returns actual number of simulation
+     * @return number of actual simulation
+     */
     public int getSimulationCounter(){
     return this.simulationCounter;
     }
+    
+    /**
+     * sets the number of simulation to be started with
+     * @param i number of simulation for simulation counter
+     */
     public void setSimulationCounter(int i){
     this.simulationCounter=i;
     }
 
+    
+    /**
+     * Returns the status of simulations
+     * @return % of simulations that are finished
+     */
     public int getStatus(){
     return this.status;
     }

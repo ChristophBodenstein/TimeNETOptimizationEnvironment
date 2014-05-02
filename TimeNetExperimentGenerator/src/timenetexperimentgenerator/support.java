@@ -1,13 +1,22 @@
 /*
  * Provides some supporting methods to convert things...
  * Stores some references in static fields
+ *
+ * Christoph Bodenstein
+ * TU-Ilmenau, FG SSE
  */
+ 
 
 package timenetexperimentgenerator;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -27,6 +36,7 @@ private static String pathToTimeNet=null;//The path to TimeNet.jar
 private static String tmpPath=null;//The path, where all simulation files (xml), source files and logs will be stored
 private static SimulationCache mySimulationCache=null;  
 private static boolean cachedSimulationEnabled=false;
+private static String remoteAddress=null;
 
     
 
@@ -397,6 +407,107 @@ private static boolean cachedSimulationEnabled=false;
      */
     public static void log(String s){
     System.out.println(s);
+    }
+    
+    
+    public static boolean copyFile(String source, String sink, boolean append){
+    try{
+          File f1 = new File(source);
+          File f2 = new File(sink);
+          InputStream in = new FileInputStream(f1);
+          OutputStream out;
+          if(append){
+          //For Append the file.
+          out = new FileOutputStream(f2,true);
+          } else{
+            //For Overwrite the file.
+            out = new FileOutputStream(f2);
+            }
+
+          byte[] buf = new byte[1024];
+          int len;
+          while ((len = in.read(buf)) > 0){
+            out.write(buf, 0, len);
+          }
+          in.close();
+          out.close();
+          support.log("File copied.");
+          return true;
+        }
+        catch(FileNotFoundException ex){
+          support.log(ex.getMessage() + " in the specified directory.");
+          return false;
+        }
+        catch(IOException e){
+          support.log(e.getMessage());
+          return false;
+        }
+    }
+    
+    
+    public static String getReMoteAddress(){
+    if(remoteAddress==null)return "";else return remoteAddress;
+    }
+    public static void setRemoteAddress(String s){
+    remoteAddress=s;
+    }
+    
+    /**
+     * Checks, if Timenet is availabel at giben Path, otherwise simulation run is not possible
+     * @return True, if TimeNet-Path is correct, else return false
+    */
+    public static boolean checkTimeNetPath(){
+    File tmpFile=new File(pathToTimeNet+File.separator+"TimeNET.jar");
+    support.log("Check if Timenet is here:"+tmpFile.toString());
+        if(tmpFile.exists()){
+        return true;
+        }else{
+        return false;
+        }
+    }
+    
+    /**
+      * Deletes a file or directory recursive
+      * @param dir File or directory to be deleted recursively
+      * @return true if deletion was successful, else false
+    */
+    public static boolean del(File dir){
+        if (dir.isDirectory()){
+        File[] files = dir.listFiles();
+            for (File aktFile: files){
+            del(aktFile);
+            }
+        }
+    return dir.delete();
+    }
+    
+    
+    /**
+     * searches for values of corresponding parameters, whicht are set in the filename
+     * @param fileName String containing parameternames and values, devided by "_"
+     * @param needle String to be found (name of the parameter)
+     * @return String with found value
+    */
+    public static String getValueFromFileName(String fileName, String needle){
+    String[] stringList=fileName.split("_");
+
+        for(int i=0; i<stringList.length;i++){
+            if(stringList[i].equals(needle)){
+            return stringList[i+1];
+            }
+        }
+    return "";
+    }
+
+    /**
+     * searches for values of parameters, encoded in filenames(Strings) and returns integer-value as String
+     * @param fileName String containing parameternames and values, devided by "_"
+     * @param needle String to be found (name of the parameter)
+     * @return String with Integer-value of found parameter (without decimal digits)
+     */
+    public static String getIntStringValueFromFileName(String fileName, String needle){
+    String tmpString=getValueFromFileName(fileName, needle);
+    return String.valueOf(Float.valueOf(tmpString).intValue());
     }
 }
 

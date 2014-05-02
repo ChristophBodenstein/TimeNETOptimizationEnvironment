@@ -1,5 +1,7 @@
 /*
  * PocessMonitor used for controlling the started TimeNet-Instance
+ * Christoph Bodenstein
+ * TU-Ilmenau, FG SSE
  */
 
 package timenetexperimentgenerator;

@@ -1,5 +1,8 @@
 /*
- * Returns Simulator or Optimizer
+ * Factory: Returns Simulator or Optimizer
+
+ * Christoph Bodenstein
+ * TU-Ilmenau, FG SSE
  */
 
 package timenetexperimentgenerator;
@@ -12,15 +15,15 @@ public class SimOptiFactory {
 
     public static Simulator getSimulator(){
         if(support.isCachedSimulationEnabled()&&(support.getMySimulationCache()!=null)){
-        CachedSimulator tmpSimulator=new CachedSimulator();
+        SimulatorCached tmpSimulator=new SimulatorCached();
         tmpSimulator.setMySimulationCache(support.getMySimulationCache());
         return tmpSimulator;
         }
-    return new simpleLocalSimulator();
+    return new SimulatorLocal();
     }
 
     public static Optimizer getOptimizer(){
-    return new SimpleGreedyOptimizer();
+    return new OptimizerGreedy();
     }
 
 }

@@ -1,12 +1,8 @@
 /*
  * Main Frame for TimeNetExperimentGenerator
  * provides many additional features
- */
-
-/*
- * MainFrame.java
- *
- * Created on 08.08.2013, 14:56:21
+ * Christoph Bodenstein
+ * TU-Ilmenau, FG SSE
  */
 
 package timenetexperimentgenerator;
@@ -451,7 +447,9 @@ private String pathToLastSimulationCache="";
         support.setStatusLabel(jLabelExportStatus);
         support.setMeasureFormPane(jTabbedPane1);
     
-        LocalBatchSimulatorEngine mySimulator=new LocalBatchSimulatorEngine(ListOfParameterSetsToBeWritten);
+        //LocalBatchSimulatorEngine mySimulator=new LocalBatchSimulatorEngine(ListOfParameterSetsToBeWritten);
+        SimulatorLocal mySimulator=new SimulatorLocal();
+        mySimulator.initSimulator(ListOfParameterSetsToBeWritten, 0);
     
     }//GEN-LAST:event_jButtonStartBatchSimulationActionPerformed
 

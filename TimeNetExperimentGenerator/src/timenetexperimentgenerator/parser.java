@@ -1,6 +1,9 @@
 /*
  * Parser reads one log file of SCPN-Simulation
  * After Log-File reading it contains all Measurement-data and can be asked for
+
+ * Christoph Bodenstein
+ * TU-Ilmenau, FG SSE
  */
 
 package timenetexperimentgenerator;
