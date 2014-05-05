@@ -206,7 +206,7 @@ float cpuTimeSum=0;
     support.log("Applying Array of Increments.");
         for(int i=0;i<newParameterSet.length;i++){
         System.out.print(newParameterSet[i].getName()+"="+newParameterSet[i].getValue()+" will be incremented by: "+arrayOfIncrements[i]+" and is now:");
-        newParameterSet[i].setValue(support.getString(Math.min(arrayOfIncrements[i]+support.getFloat(newParameterSet[i].getValue()),support.getFloat(newParameterSet[i].getEndValue())) ) );
+        newParameterSet[i].setValue(  support.getString(support.round( Math.min(arrayOfIncrements[i]+support.getFloat(newParameterSet[i].getValue()),support.getFloat(newParameterSet[i].getEndValue()))) ) );
         support.log(newParameterSet[i].getValue());
         }
     this.parameterBase=newParameterSet;
@@ -250,8 +250,8 @@ float cpuTimeSum=0;
             support.log("wait for Simulator has 100% completed.");
             this.infoLabel.setText("Simulations started.");
                 while(myGenericSimulator.getStatus()<100){
-                Thread.sleep(500);
-                this.infoLabel.setText("Done "+ myGenericSimulator.getStatus() +"%");
+                Thread.sleep(1000);
+                this.infoLabel.setText("Done "+ myGenericSimulator.getStatus() +"% ");
                 simulationCounter=myGenericSimulator.getSimulationCounter();
                 this.parent.updateSimulationCounterLabel(simulationCounter);
                 System.out.print("Simulation status:"+myGenericSimulator.getStatus() +"%");

@@ -35,10 +35,14 @@ private static JTabbedPane measureFormPane=null;//The tabbed pane with some Meas
 private static String pathToTimeNet=null;//The path to TimeNet.jar
 private static String tmpPath=null;//The path, where all simulation files (xml), source files and logs will be stored
 private static SimulationCache mySimulationCache=null;  
-private static boolean cachedSimulationEnabled=false;
+private static boolean cachedSimulationAvailable=false;
+private static boolean distributedSimulationAvailable=false;
 private static String remoteAddress=null;
 private static Integer chosenOptimizerType=0;//0=Greedy, 1=?, 2=?
 private static Integer chosenSimulatorType=0;//0=local, 1=cached, 2=distributed
+
+protected static final String[] SIMTYPES={"Local Sim.","Cached Sim.","Distributed S."};
+protected static final String[] OPTITYPES={"GREEDY","Sim. Annealing","A.Seidel-1","A.Seidel-2","A.Seidel-3"};
 
     
 
@@ -309,17 +313,17 @@ private static Integer chosenSimulatorType=0;//0=local, 1=cached, 2=distributed
     }
 
     /**
-     * @return the cachedSimulationEnabled
+     * @return the cachedSimulationAvailable
      */
-    public static boolean isCachedSimulationEnabled() {
-        return cachedSimulationEnabled;
+    public static boolean isCachedSimulationAvailable() {
+        return cachedSimulationAvailable;
     }
 
     /**
-     * @param aCachedSimulationEnabled the cachedSimulationEnabled to set
+     * @param aCachedSimulationEnabled the cachedSimulationAvailable to set
      */
     public static void setCachedSimulationEnabled(boolean aCachedSimulationEnabled) {
-        cachedSimulationEnabled = aCachedSimulationEnabled;
+        cachedSimulationAvailable = aCachedSimulationEnabled;
     }
     
     
@@ -583,6 +587,20 @@ private static Integer chosenSimulatorType=0;//0=local, 1=cached, 2=distributed
      */
     public static void setChosenSimulatorType(Integer aChosenSimulatorType) {
         chosenSimulatorType = aChosenSimulatorType;
+    }
+
+    /**
+     * @return the distributedSimulationAvailable
+     */
+    public static boolean isDistributedSimulationAvailable() {
+        return distributedSimulationAvailable;
+    }
+
+    /**
+     * @param aDistributedSimulationAvailable the distributedSimulationAvailable to set
+     */
+    public static void setDistributedSimulationAvailable(boolean aDistributedSimulationAvailable) {
+        distributedSimulationAvailable = aDistributedSimulationAvailable;
     }
 }
 

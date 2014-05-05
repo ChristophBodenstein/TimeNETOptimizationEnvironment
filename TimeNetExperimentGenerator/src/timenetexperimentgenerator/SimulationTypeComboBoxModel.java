@@ -18,15 +18,22 @@ public class SimulationTypeComboBoxModel extends DefaultComboBoxModel{
 
         if (anObject != null) {
 
-            if (anObject.toString().equals("Local Sim.")) {
-
+            
+            if (anObject.toString().equals(support.SIMTYPES[0])) {
                 super.setSelectedItem(anObject);
-
+                support.setChosenSimulatorType(0);
             }
             
-            if ((anObject.toString().equals("Cached Sim."))&&(support.isCachedSimulationEnabled())) {
+            if ((anObject.toString().equals(support.SIMTYPES[1]))&&(support.isCachedSimulationAvailable())) {
                 super.setSelectedItem(anObject);
+                support.setChosenSimulatorType(1);
             }
+            
+            if ((anObject.toString().equals(support.SIMTYPES[2]))&&(support.isDistributedSimulationAvailable() )) {
+                super.setSelectedItem(anObject);
+                support.setChosenSimulatorType(2);
+            }
+            
 
         } else {
 

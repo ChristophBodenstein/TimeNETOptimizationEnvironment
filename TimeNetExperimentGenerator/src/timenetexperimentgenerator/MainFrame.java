@@ -49,9 +49,10 @@ private int colorClm = -1, colorRow = -1;
 ArrayList <Long>ListOfParameterSetIds=new ArrayList<Long>();
 private int sizeOfDesignSpace;
 private String pathToTimeNet="";
-private SimulationCache mySimulationCache=new SimulationCache();
+private SimulationCache mySimulationCache=null;
 private String pathToLastSimulationCache="";
 private SimulationTypeComboBoxModel mySimulationTypeModel=new SimulationTypeComboBoxModel();
+private DefaultComboBoxModel myOptiTypeModel=new DefaultComboBoxModel();
 
 
     /** Creates new form MainFrame */
@@ -141,17 +142,30 @@ private SimulationTypeComboBoxModel mySimulationTypeModel=new SimulationTypeComb
         
         this.checkIfCachedSimulationIsPossible();
         
-        mySimulationTypeModel.addElement("Local Sim.");
-        mySimulationTypeModel.addElement("Cached Sim.");
-        mySimulationTypeModel.addElement("Distributed S.");
-        this.updateComboBoxSimulatioType();
         
+        for (String SIMTYPES : support.SIMTYPES) {
+        mySimulationTypeModel.addElement(SIMTYPES);
+        }
+
+        for (String OPTITYPES : support.OPTITYPES){
+        myOptiTypeModel.addElement(OPTITYPES);
+        }
+        this.jComboBoxOptimizationType.setModel(myOptiTypeModel);
+
+
+        this.updateComboBoxSimulatioType();
     }
 
+
+    /**
+     * Updates the combobox for selection of Simulation type
+     * if cache is available --> Selection is possible
+     * if server is available --> Selection of Distr. is available
+     */
     private void updateComboBoxSimulatioType(){
     DefaultListSelectionModel model = new DefaultListSelectionModel();
     model.addSelectionInterval(0, 0);
-    if(support.isCachedSimulationEnabled()){
+    if(support.isCachedSimulationAvailable()){
     model.addSelectionInterval(1, 1);
     }
     
@@ -159,20 +173,21 @@ private SimulationTypeComboBoxModel mySimulationTypeModel=new SimulationTypeComb
     
     this.jComboBoxSimulationType.setModel(mySimulationTypeModel);
     }
-    
+
+
+    /**
+     * Check, if cached simulation is possible
+     * if cached simulation is possible, then set some switches etc...
+     */
     private void checkIfCachedSimulationIsPossible(){
-    this.jCheckBoxCachedSimulation.setEnabled(false);
-    this.jCheckBoxCachedSimulation.setSelected(false);
     
         if(mySimulationCache!=null){
             if(mySimulationCache.checkIfAllParameterMatchTable((parameterTableModel)this.jTableParameterList.getModel())){
-            this.jCheckBoxCachedSimulation.setEnabled(true);
-            this.jCheckBoxCachedSimulation.setSelected(true);
             support.setMySimulationCache(mySimulationCache);
             support.setCachedSimulationEnabled(true);
             }
         }
-    
+    this.updateComboBoxSimulatioType();
     }    
     
     /** This method is called from within the constructor to
@@ -204,7 +219,6 @@ private SimulationTypeComboBoxModel mySimulationTypeModel=new SimulationTypeComb
         jButtonPathToTimeNet = new javax.swing.JButton();
         jLabelExportStatus = new javax.swing.JLabel();
         jButtonLoadCacheFile = new javax.swing.JButton();
-        jCheckBoxCachedSimulation = new javax.swing.JCheckBox();
         jComboBoxSimulationType = new javax.swing.JComboBox();
         jComboBoxOptimizationType = new javax.swing.JComboBox();
         jMenuBar1 = new javax.swing.JMenuBar();
@@ -227,7 +241,6 @@ private SimulationTypeComboBoxModel mySimulationTypeModel=new SimulationTypeComb
             }
         });
 
-        jTableParameterList.setAutoCreateRowSorter(true);
         jTableParameterList.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -247,6 +260,7 @@ private SimulationTypeComboBoxModel mySimulationTypeModel=new SimulationTypeComb
                 return types [columnIndex];
             }
         });
+        jTableParameterList.setAutoCreateRowSorter(true);
         jTableParameterList.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
         jScrollPane1.setViewportView(jTableParameterList);
 
@@ -302,16 +316,19 @@ private SimulationTypeComboBoxModel mySimulationTypeModel=new SimulationTypeComb
             }
         });
 
-        jCheckBoxCachedSimulation.setText("Cached Optimization");
-        jCheckBoxCachedSimulation.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                jCheckBoxCachedSimulationStateChanged(evt);
+        jComboBoxSimulationType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Local Sim.", "Cached Sim.", "Distributed S." }));
+        jComboBoxSimulationType.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jComboBoxSimulationTypeItemStateChanged(evt);
             }
         });
 
-        jComboBoxSimulationType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Local Sim.", "Cached Sim.", "Distributed S." }));
-
-        jComboBoxOptimizationType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Greedy", "Sim. Annealing", "A. Seidel 0", "A. Seidel 1", "A. Seidel 2" }));
+        jComboBoxOptimizationType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Greedy", "Sim. Annealing", " " }));
+        jComboBoxOptimizationType.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jComboBoxOptimizationTypeItemStateChanged(evt);
+            }
+        });
         jComboBoxOptimizationType.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBoxOptimizationTypeActionPerformed(evt);
@@ -332,20 +349,26 @@ private SimulationTypeComboBoxModel mySimulationTypeModel=new SimulationTypeComb
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jSeparator1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 752, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                    .add(jSeparator1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 616, Short.MAX_VALUE)
+                    .add(layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                            .add(org.jdesktop.layout.GroupLayout.LEADING, jTextFieldSCPNFile)
+                            .add(org.jdesktop.layout.GroupLayout.LEADING, jTextFieldSCPNFile, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 317, Short.MAX_VALUE)
                             .add(org.jdesktop.layout.GroupLayout.LEADING, jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                             .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
                                 .add(jButtonPathToTimeNet)
-                                .add(0, 0, Short.MAX_VALUE)))
-                        .add(28, 28, 28)
+                                .add(0, 136, Short.MAX_VALUE)))
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(org.jdesktop.layout.GroupLayout.TRAILING, jLabelSimulationCount, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                                .add(34, 34, 34)
+                                .add(jComboBoxSimulationType, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 123, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(jComboBoxOptimizationType, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 130, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                .add(6, 6, 6))
                             .add(layout.createSequentialGroup()
+                                .add(28, 28, 28)
                                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                                    .add(jLabelSimulationCount, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .add(jTabbedPane1)
                                     .add(layout.createSequentialGroup()
                                         .add(jButtonOpenSCPN, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 126, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
@@ -359,20 +382,10 @@ private SimulationTypeComboBoxModel mySimulationTypeModel=new SimulationTypeComb
                                     .add(jButtonGenerateListOfExperiments, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .add(jButtonStartBatchSimulation, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .add(jSeparator3)
-                                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                                        .add(jLabelExportStatus, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                        .add(jCheckBoxCachedSimulation, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 265, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                                     .add(org.jdesktop.layout.GroupLayout.TRAILING, jButtonLoadCacheFile, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                                        .add(6, 6, 6)
-                                        .add(jComboBoxSimulationType, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 123, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                        .add(jComboBoxOptimizationType, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 130, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                        .add(6, 6, 6))
-                                    .add(jButtonStartOptimization, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .add(0, 0, Short.MAX_VALUE)))))
-                .addContainerGap())
+                                    .add(jButtonStartOptimization, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .add(jLabelExportStatus, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))))
+                .add(20, 20, 20))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -412,11 +425,9 @@ private SimulationTypeComboBoxModel mySimulationTypeModel=new SimulationTypeComb
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jButtonStartOptimization)
                         .add(0, 15, Short.MAX_VALUE)))
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                        .add(jButtonPathToTimeNet, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .add(jLabelExportStatus, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .add(jCheckBoxCachedSimulation))
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                    .add(jButtonPathToTimeNet, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(jLabelExportStatus, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jLabelSimulationCount, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 24, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
         );
@@ -574,7 +585,7 @@ private SimulationTypeComboBoxModel mySimulationTypeModel=new SimulationTypeComb
       support.log("No input file chosen!");
       return;
       }  
-      
+      this.mySimulationCache=new SimulationCache();
         if(!mySimulationCache.parseSimulationCacheFile(inputFile,((MeasurementForm)this.jTabbedPane1.getComponent(0)).getListOfMeasurements(), (parameterTableModel)this.jTableParameterList.getModel(),this )){
             support.log("Wrong Simulation cache file for this SCPN!");
         }else{
@@ -582,16 +593,19 @@ private SimulationTypeComboBoxModel mySimulationTypeModel=new SimulationTypeComb
         this.saveProperties();
         }
     this.checkIfCachedSimulationIsPossible();
-    this.updateComboBoxSimulatioType();
     }//GEN-LAST:event_jButtonLoadCacheFileActionPerformed
-
-    private void jCheckBoxCachedSimulationStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jCheckBoxCachedSimulationStateChanged
-        support.setCachedSimulationEnabled(jCheckBoxCachedSimulation.isSelected());
-    }//GEN-LAST:event_jCheckBoxCachedSimulationStateChanged
 
     private void jComboBoxOptimizationTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxOptimizationTypeActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBoxOptimizationTypeActionPerformed
+
+    private void jComboBoxSimulationTypeItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxSimulationTypeItemStateChanged
+        support.setChosenSimulatorType(this.jComboBoxSimulationType.getSelectedIndex());
+    }//GEN-LAST:event_jComboBoxSimulationTypeItemStateChanged
+
+    private void jComboBoxOptimizationTypeItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxOptimizationTypeItemStateChanged
+        support.setChosenOptimizerType(this.jComboBoxOptimizationType.getSelectedIndex());
+    }//GEN-LAST:event_jComboBoxOptimizationTypeItemStateChanged
 
     /**
      * Calculates the design space, number of all permutations of parameters
@@ -704,7 +718,6 @@ private SimulationTypeComboBoxModel mySimulationTypeModel=new SimulationTypeComb
     private javax.swing.JButton jButtonReload;
     private javax.swing.JButton jButtonStartBatchSimulation;
     private javax.swing.JButton jButtonStartOptimization;
-    private javax.swing.JCheckBox jCheckBoxCachedSimulation;
     private javax.swing.JComboBox jComboBoxOptimizationType;
     private javax.swing.JComboBox jComboBoxSimulationType;
     private javax.swing.JLabel jLabelExportStatus;
@@ -876,7 +889,7 @@ private SimulationTypeComboBoxModel mySimulationTypeModel=new SimulationTypeComb
     public void waitForGenerator(){
         try{
             while(this.myGenerator.isAlive()){
-            Thread.currentThread().wait(100);
+            Thread.sleep(500);
             }
         }catch (InterruptedException e){
             support.log("Error while waiting for Generator.");
