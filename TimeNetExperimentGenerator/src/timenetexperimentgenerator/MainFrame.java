@@ -15,7 +15,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Properties;
-import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.JFileChooser;
@@ -71,36 +70,36 @@ private DefaultComboBoxModel myOptiTypeModel=new DefaultComboBoxModel();
         jButtonPathToTimeNet.setBackground(Color.GRAY);
         jButtonPathToTimeNet.setText("Enter Path To TimeNet");
         
-        pConfidenceIntervall.initWithValues("ConfidenceIntervall", "95", "95", "1"); 
-        pSeed.initWithValues("Seed", "0", "0", "1");
-        pEndTime.initWithValues("EndTime","0","0","1");
-        pMaxTime.initWithValues("MaxTime","0","0","1");
-        pMaxError.initWithValues("MaxError","5","5","1");
+        pConfidenceIntervall.initWithValues("ConfidenceIntervall", 95, 95, 1); 
+        pSeed.initWithValues("Seed", 0, 0, 1);
+        pEndTime.initWithValues("EndTime",0,0,1);
+        pMaxTime.initWithValues("MaxTime",0,0,1);
+        pMaxError.initWithValues("MaxError",5,5,1);
 
         this.jTextFieldSCPNFile.setText(auto.getProperty("file"));
         //this.jTextFieldPathToTimeNet.setText(auto.getProperty("timenetpath"));
         this.setPathToTimeNet(auto.getProperty("timenetpath"));
         //support.log("Read Path to TimeNet:"+auto.getProperty("timenetpath"));
         
-        this.pConfidenceIntervall.setStartValue(checkIfStringIsNull(auto.getProperty("ConfidenceIntervallStart"),pConfidenceIntervall.getStartValue()));
-        this.pConfidenceIntervall.setEndValue(checkIfStringIsNull(auto.getProperty("ConfidenceIntervallEnd"),pConfidenceIntervall.getEndValue()));
-        this.pConfidenceIntervall.setStepping(checkIfStringIsNull(auto.getProperty("ConfidenceIntervallStepping"),pConfidenceIntervall.getStepping()));
+        this.pConfidenceIntervall.setStartValue(this.loadDouble("ConfidenceIntervallStart",pConfidenceIntervall.getStartValue()));
+        this.pConfidenceIntervall.setEndValue(this.loadDouble("ConfidenceIntervallEnd",pConfidenceIntervall.getEndValue()));
+        this.pConfidenceIntervall.setStepping(this.loadDouble("ConfidenceIntervallStepping",pConfidenceIntervall.getStepping()));
 
-        this.pEndTime.setStartValue(checkIfStringIsNull(auto.getProperty("EndTimeStart"),pEndTime.getStartValue()));
-        this.pEndTime.setEndValue(checkIfStringIsNull(auto.getProperty("EndTimeEnd"),pEndTime.getEndValue()));
-        this.pEndTime.setStepping(checkIfStringIsNull(auto.getProperty("EndTimeStepping"),pEndTime.getStepping()));
+        this.pEndTime.setStartValue(this.loadDouble("EndTimeStart",pEndTime.getStartValue()));
+        this.pEndTime.setEndValue(this.loadDouble("EndTimeEnd",pEndTime.getEndValue()));
+        this.pEndTime.setStepping(this.loadDouble("EndTimeStepping",pEndTime.getStepping()));
 
-        this.pMaxTime.setStartValue(checkIfStringIsNull(auto.getProperty("MaxTimeStart"),pMaxTime.getStartValue()));
-        this.pMaxTime.setEndValue(checkIfStringIsNull(auto.getProperty("MaxTimeEnd"),pMaxTime.getEndValue()));
-        this.pMaxTime.setStepping(checkIfStringIsNull(auto.getProperty("MaxTimeStepping"),pMaxTime.getStepping()));
+        this.pMaxTime.setStartValue(this.loadDouble("MaxTimeStart",pMaxTime.getStartValue()));
+        this.pMaxTime.setEndValue(this.loadDouble("MaxTimeEnd",pMaxTime.getEndValue()));
+        this.pMaxTime.setStepping(this.loadDouble("MaxTimeStepping",pMaxTime.getStepping()));
 
-        this.pSeed.setStartValue(checkIfStringIsNull(auto.getProperty("SeedStart"),pSeed.getStartValue()));
-        this.pSeed.setEndValue(checkIfStringIsNull(auto.getProperty("SeedEnd"),pSeed.getEndValue()));
-        this.pSeed.setStepping(checkIfStringIsNull(auto.getProperty("SeedStepping"),pSeed.getStepping()));
+        this.pSeed.setStartValue(this.loadDouble("SeedStart",pSeed.getStartValue()));
+        this.pSeed.setEndValue(this.loadDouble("SeedEnd",pSeed.getEndValue()));
+        this.pSeed.setStepping(this.loadDouble("SeedStepping",pSeed.getStepping()));
 
-        this.pMaxError.setStartValue(checkIfStringIsNull(auto.getProperty("MaxErrorStart"),pMaxError.getStartValue()));
-        this.pMaxError.setEndValue(checkIfStringIsNull(auto.getProperty("MaxErrorEnd"),pMaxError.getEndValue()));
-        this.pMaxError.setStepping(checkIfStringIsNull(auto.getProperty("MaxErrorStepping"),pMaxError.getStepping()));
+        this.pMaxError.setStartValue(this.loadDouble("MaxErrorStart",pMaxError.getStartValue()));
+        this.pMaxError.setEndValue(this.loadDouble("MaxErrorEnd",pMaxError.getEndValue()));
+        this.pMaxError.setStepping(this.loadDouble("MaxErrorStepping",pMaxError.getStepping()));
 
         this.pathToLastSimulationCache=auto.getProperty("pathToLastSimulationCache", "");
 
@@ -641,27 +640,26 @@ private DefaultComboBoxModel myOptiTypeModel=new DefaultComboBoxModel();
         String loopName=loopParameter.getName();
         boolean canIterate=true;
 
-        float start=1, end=1, step=1;
+        double start=1, end=1, step=1;
             try{
-            start=support.getFloat(loopParameter.getStartValue());
-            end=support.getFloat(loopParameter.getEndValue());
-            step=support.getFloat(loopParameter.getStepping());
+            start=support.getDouble(loopParameter.getStartValue());
+            end=support.getDouble(loopParameter.getEndValue());
+            step=support.getDouble(loopParameter.getStepping());
             canIterate=true;
             }catch(NumberFormatException e){
-            support.log("Could not convert into float, maybe String is used. Will not iterate through parameter "+loopParameter.getName());
+            support.log("Could not convert into double, maybe String is used. Will not iterate through parameter "+loopParameter.getName());
             return;
             }
 
             if(canIterate){
-            float usedValue;
+            double usedValue;
             int endCounter=1;
                     if((end-start)>0){
                         endCounter=(int)Math.ceil((end-start)/step) +1 ;
                     }
             
                 for(int i=0;i<endCounter;i++){
-                usedValue=start+(float)i*step;
-                String usedValueString=String.valueOf(usedValue);
+                usedValue=start+(double)i*step;
                 
                 parameter[] nextParameterSet=new parameter[lastParameterSet.length];
                     //Get copy of paremeterset
@@ -676,7 +674,7 @@ private DefaultComboBoxModel myOptiTypeModel=new DefaultComboBoxModel();
                     for(int c=0;c<nextParameterSet.length;c++){
                         if(nextParameterSet[c].getName().equals(loopName)){
                         //set modified parameterset
-                        nextParameterSet[c].setValue(usedValueString);
+                        nextParameterSet[c].setValue(usedValue);
                         }
                     }
                 if(ListOfParameterAsFromTable.size()==0){
@@ -916,25 +914,25 @@ private DefaultComboBoxModel myOptiTypeModel=new DefaultComboBoxModel();
      */
     private void readStaticParametersFromTable(){
     
-    this.pConfidenceIntervall.setStartValue( ((parameterTableModel)this.jTableParameterList.getModel()).getValueByName("ConfidenceIntervall", "StartValue")) ;
-    this.pConfidenceIntervall.setEndValue( ((parameterTableModel)this.jTableParameterList.getModel()).getValueByName("ConfidenceIntervall", "EndValue")) ;
-    this.pConfidenceIntervall.setStepping( ((parameterTableModel)this.jTableParameterList.getModel()).getValueByName("ConfidenceIntervall", "Stepping")) ;
+    this.pConfidenceIntervall.setStartValue( ((parameterTableModel)this.jTableParameterList.getModel()).getDoubleValueByName("ConfidenceIntervall", "StartValue")) ;
+    this.pConfidenceIntervall.setEndValue( ((parameterTableModel)this.jTableParameterList.getModel()).getDoubleValueByName("ConfidenceIntervall", "EndValue")) ;
+    this.pConfidenceIntervall.setStepping( ((parameterTableModel)this.jTableParameterList.getModel()).getDoubleValueByName("ConfidenceIntervall", "Stepping")) ;
 
-    this.pEndTime.setStartValue( ((parameterTableModel)this.jTableParameterList.getModel()).getValueByName("EndTime", "StartValue")) ;
-    this.pEndTime.setEndValue( ((parameterTableModel)this.jTableParameterList.getModel()).getValueByName("EndTime", "EndValue")) ;
-    this.pEndTime.setStepping( ((parameterTableModel)this.jTableParameterList.getModel()).getValueByName("EndTime", "Stepping")) ;
+    this.pEndTime.setStartValue( ((parameterTableModel)this.jTableParameterList.getModel()).getDoubleValueByName("EndTime", "StartValue")) ;
+    this.pEndTime.setEndValue( ((parameterTableModel)this.jTableParameterList.getModel()).getDoubleValueByName("EndTime", "EndValue")) ;
+    this.pEndTime.setStepping( ((parameterTableModel)this.jTableParameterList.getModel()).getDoubleValueByName("EndTime", "Stepping")) ;
 
-    this.pMaxTime.setStartValue( ((parameterTableModel)this.jTableParameterList.getModel()).getValueByName("MaxTime", "StartValue")) ;
-    this.pMaxTime.setEndValue( ((parameterTableModel)this.jTableParameterList.getModel()).getValueByName("MaxTime", "EndValue")) ;
-    this.pMaxTime.setStepping( ((parameterTableModel)this.jTableParameterList.getModel()).getValueByName("MaxTime", "Stepping")) ;
+    this.pMaxTime.setStartValue( ((parameterTableModel)this.jTableParameterList.getModel()).getDoubleValueByName("MaxTime", "StartValue")) ;
+    this.pMaxTime.setEndValue( ((parameterTableModel)this.jTableParameterList.getModel()).getDoubleValueByName("MaxTime", "EndValue")) ;
+    this.pMaxTime.setStepping( ((parameterTableModel)this.jTableParameterList.getModel()).getDoubleValueByName("MaxTime", "Stepping")) ;
 
-    this.pSeed.setStartValue( ((parameterTableModel)this.jTableParameterList.getModel()).getValueByName("Seed", "StartValue")) ;
-    this.pSeed.setEndValue( ((parameterTableModel)this.jTableParameterList.getModel()).getValueByName("Seed", "EndValue")) ;
-    this.pSeed.setStepping( ((parameterTableModel)this.jTableParameterList.getModel()).getValueByName("Seed", "Stepping")) ;
+    this.pSeed.setStartValue( ((parameterTableModel)this.jTableParameterList.getModel()).getDoubleValueByName("Seed", "StartValue")) ;
+    this.pSeed.setEndValue( ((parameterTableModel)this.jTableParameterList.getModel()).getDoubleValueByName("Seed", "EndValue")) ;
+    this.pSeed.setStepping( ((parameterTableModel)this.jTableParameterList.getModel()).getDoubleValueByName("Seed", "Stepping")) ;
 
-    this.pMaxError.setStartValue( ((parameterTableModel)this.jTableParameterList.getModel()).getValueByName("MaxRelError", "StartValue")) ;
-    this.pMaxError.setEndValue( ((parameterTableModel)this.jTableParameterList.getModel()).getValueByName("MaxRelError", "EndValue")) ;
-    this.pMaxError.setStepping( ((parameterTableModel)this.jTableParameterList.getModel()).getValueByName("MaxRelError", "Stepping")) ;
+    this.pMaxError.setStartValue( ((parameterTableModel)this.jTableParameterList.getModel()).getDoubleValueByName("MaxRelError", "StartValue")) ;
+    this.pMaxError.setEndValue( ((parameterTableModel)this.jTableParameterList.getModel()).getDoubleValueByName("MaxRelError", "EndValue")) ;
+    this.pMaxError.setStepping( ((parameterTableModel)this.jTableParameterList.getModel()).getDoubleValueByName("MaxRelError", "Stepping")) ;
 
     }
 
@@ -1039,24 +1037,24 @@ private DefaultComboBoxModel myOptiTypeModel=new DefaultComboBoxModel();
     auto.setProperty("timenetpath", this.getPathToTimeNet());
     auto.setProperty("file", this.jTextFieldSCPNFile.getText().toString());
     
-    auto.setProperty("ConfidenceIntervallStart",this.pConfidenceIntervall.getStartValue());
-    auto.setProperty("ConfidenceIntervallEnd",this.pConfidenceIntervall.getEndValue());
-    auto.setProperty("ConfidenceIntervallStepping",this.pConfidenceIntervall.getStepping());
+    auto.setProperty("ConfidenceIntervallStart",support.getString(this.pConfidenceIntervall.getStartValue()));
+    auto.setProperty("ConfidenceIntervallEnd",support.getString(this.pConfidenceIntervall.getEndValue()));
+    auto.setProperty("ConfidenceIntervallStepping",support.getString(this.pConfidenceIntervall.getStepping()));
 
-    auto.setProperty("EndTimeStart",this.pEndTime.getStartValue());
-    auto.setProperty("EndTimeEnd",this.pEndTime.getEndValue());
-    auto.setProperty("EndTimeStepping",this.pEndTime.getStepping());
+    auto.setProperty("EndTimeStart",support.getString(this.pEndTime.getStartValue()));
+    auto.setProperty("EndTimeEnd",support.getString(this.pEndTime.getEndValue()));
+    auto.setProperty("EndTimeStepping",support.getString(this.pEndTime.getStepping()));
         
-    auto.setProperty("MaxTimeStart",this.pMaxTime.getStartValue());
-    auto.setProperty("MaxTimeEnd",this.pMaxTime.getEndValue());
-    auto.setProperty("MaxTimeStepping",this.pMaxTime.getStepping());
-    auto.setProperty("SeedStart",this.pSeed.getStartValue());
-    auto.setProperty("SeedEnd",this.pSeed.getEndValue());
-    auto.setProperty("SeedStepping",this.pSeed.getStepping());
+    auto.setProperty("MaxTimeStart",support.getString(this.pMaxTime.getStartValue()));
+    auto.setProperty("MaxTimeEnd",support.getString(this.pMaxTime.getEndValue()));
+    auto.setProperty("MaxTimeStepping",support.getString(this.pMaxTime.getStepping()));
+    auto.setProperty("SeedStart",support.getString(this.pSeed.getStartValue()));
+    auto.setProperty("SeedEnd",support.getString(this.pSeed.getEndValue()));
+    auto.setProperty("SeedStepping",support.getString(this.pSeed.getStepping()));
         
-    auto.setProperty("MaxErrorStart",this.pMaxError.getStartValue());
-    auto.setProperty("MaxErrorEnd",this.pMaxError.getEndValue());
-    auto.setProperty("MaxErrorStepping",this.pMaxError.getStepping());
+    auto.setProperty("MaxErrorStart",support.getString(this.pMaxError.getStartValue()));
+    auto.setProperty("MaxErrorEnd",support.getString(this.pMaxError.getEndValue()));
+    auto.setProperty("MaxErrorStepping",support.getString(this.pMaxError.getStepping()));
     
     auto.setProperty("pathToLastSimulationCache", this.pathToLastSimulationCache);
     
@@ -1089,6 +1087,22 @@ private DefaultComboBoxModel myOptiTypeModel=new DefaultComboBoxModel();
             }
         }
 
+    }
+
+    /**
+     * Return daouble value of loaded property
+     * If any error occurs, the given default value is returned
+     * @param name Name of the property to be loaded
+     * @param defaultValue The default to be returned, if error occurs
+     * @return double value of property
+     */
+    private double loadDouble(String name, double defaultValue){
+        try{
+        return Double.valueOf(auto.getProperty(name));
+        }catch(Exception e){
+        support.log("Error loading property: "+name);
+        return defaultValue;
+        }
     }
 
     /**
@@ -1132,10 +1146,10 @@ private DefaultComboBoxModel myOptiTypeModel=new DefaultComboBoxModel();
         for (int i=0; i<tModel.getRowCount();i++){
         parameter tmpParameter=new parameter();
         tmpParameter.setName(tModel.getValueAt(i, 0).toString());
-        tmpParameter.setValue(tModel.getValueAt(i, 1).toString());
-        tmpParameter.setStartValue(tModel.getValueAt(i, 1).toString());//=StartValue
-        tmpParameter.setEndValue(tModel.getValueAt(i, 2).toString());
-        tmpParameter.setStepping(tModel.getValueAt(i, 3).toString());
+        tmpParameter.setValue(tModel.getDoubleValueAt(i, 1));
+        tmpParameter.setStartValue(tModel.getDoubleValueAt(i, 1));//=StartValue
+        tmpParameter.setEndValue(tModel.getDoubleValueAt(i, 2));
+        tmpParameter.setStepping(tModel.getDoubleValueAt(i, 3));
         //ListOfParameterAsFromTable.add(tmpParameter);
         parameterArray[i]=tmpParameter;
         }

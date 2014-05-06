@@ -14,10 +14,10 @@ package timenetexperimentgenerator;
  */
 public class parameter implements Cloneable, Comparable<parameter>{
 private String name="0";
-private String value="0";
-private String startValue="0";
-private String endValue="0";
-private String stepping="1";
+private double value=0.0;
+private double startValue=0.0;
+private double endValue=0.0;
+private double stepping=1.0;
 private final String[] externalParameters={"ConfidenceIntervall","Seed","EndTime","MaxTime","MaxRelError"};
 private long idHash=0;
 
@@ -40,29 +40,38 @@ private long idHash=0;
     /**
      * @return the value
      */
-    public String getValue() {
+    public double getValue() {
         return value;
     }
 
     /**
      * @param value the value to set
      */
-    public void setValue(String value) {
+    public void setValue(double value) {
         this.value = value;
         this.calculateID();
     }
 
     /**
+     * Returns the String repesentation of Value
+     */
+    public String getStringValue(){
+    return support.getString(value);
+    }
+
+
+
+    /**
      * @return the startValue
      */
-    public String getStartValue() {
+    public double getStartValue() {
         return startValue;
     }
 
     /**
      * @param startValue the startValue to set
      */
-    public void setStartValue(String startValue) {
+    public void setStartValue(double startValue) {
         this.startValue = startValue;
         this.calculateID();
     }
@@ -70,14 +79,14 @@ private long idHash=0;
     /**
      * @return the endValue
      */
-    public String getEndValue() {
+    public double getEndValue() {
         return endValue;
     }
 
     /**
      * @param endValue the endValue to set
      */
-    public void setEndValue(String endValue) {
+    public void setEndValue(double endValue) {
         this.endValue = endValue;
         this.calculateID();
     }
@@ -85,14 +94,14 @@ private long idHash=0;
     /**
      * @return the stepping
      */
-    public String getStepping() {
+    public double getStepping() {
         return stepping;
     }
 
     /**
      * @param stepping the stepping to set
      */
-    public void setStepping(String stepping) {
+    public void setStepping(double stepping) {
         this.stepping = stepping;
         this.calculateID();
     }
@@ -111,11 +120,11 @@ private long idHash=0;
    public Object clone() throws CloneNotSupportedException
     {
     parameter tmpParameter=new parameter();
-    tmpParameter.setEndValue(new String(endValue));
-    tmpParameter.setStartValue(new String(startValue));
-    tmpParameter.setStepping(new String(stepping));
+    tmpParameter.setEndValue(endValue);
+    tmpParameter.setStartValue(startValue);
+    tmpParameter.setStepping(stepping);
     tmpParameter.setName(new String(name));
-    tmpParameter.setValue(new String(value));
+    tmpParameter.setValue(value);
 
     return tmpParameter;
     }
@@ -138,7 +147,7 @@ private long idHash=0;
     return this.getName().compareTo(o.getName());//Parameter werden nach Namen sortiert
     }
 
-     public void initWithValues(String name, String StartValue, String EndValue, String Stepping){
+     public void initWithValues(String name, double StartValue, double EndValue, double Stepping){
 
     this.setName(name);
     this.setStartValue(StartValue);

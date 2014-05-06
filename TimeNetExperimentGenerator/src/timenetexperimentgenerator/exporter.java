@@ -68,22 +68,22 @@ MainFrame parent;
                         if(!tmpParameterSet[parameterNumber].isExternalParameter()){
                             for(int i=0;i<parameterList.getLength();i++){
                                 if(parameterList.item(i).getAttributes().getNamedItem("name").getNodeValue().equals(tmpParameterSet[parameterNumber].getName())){
-                                parameterList.item(i).getAttributes().getNamedItem("defaultValue").setNodeValue(tmpParameterSet[parameterNumber].getValue());
+                                parameterList.item(i).getAttributes().getNamedItem("defaultValue").setNodeValue(support.getString(tmpParameterSet[parameterNumber].getValue()));
                                 }
                                 //support.log(parameterList.item(i).getAttributes().getNamedItem("name").getNodeValue());
                             }
                         }else{
                             if(tmpParameterSet[parameterNumber].getName().equals("MaxTime")){
-                            MaxTime=tmpParameterSet[parameterNumber].getValue();
+                            MaxTime=support.getString(tmpParameterSet[parameterNumber].getValue());
                             }
                             if(tmpParameterSet[parameterNumber].getName().equals("EndTime")){
-                            EndTime=tmpParameterSet[parameterNumber].getValue();
+                            EndTime=support.getString(tmpParameterSet[parameterNumber].getValue());
                             }
                             if(tmpParameterSet[parameterNumber].getName().equals("Seed")){
-                            Seed=tmpParameterSet[parameterNumber].getValue();
+                            Seed=support.getString(tmpParameterSet[parameterNumber].getValue());
                             }
                             if(tmpParameterSet[parameterNumber].getName().equals("ConfidenceIntervall")){
-                            ConfidenceIntervall=tmpParameterSet[parameterNumber].getValue();
+                            ConfidenceIntervall=support.getString(tmpParameterSet[parameterNumber].getValue());
                             }
                         }
                     }
@@ -156,32 +156,32 @@ boolean isRunning=false;
         for (int i=0; i<tModel.getRowCount();i++){
         parameter tmpParameter=new parameter();
         tmpParameter.setName(tModel.getValueAt(i, 0).toString());
-        tmpParameter.setValue(tModel.getValueAt(i, 1).toString());
-        tmpParameter.setStartValue(tModel.getValueAt(i, 1).toString());//=StartValue
-        tmpParameter.setEndValue(tModel.getValueAt(i, 2).toString());
-        tmpParameter.setStepping(tModel.getValueAt(i, 3).toString());
+        tmpParameter.setValue(tModel.getDoubleValueAt(i, 1));
+        tmpParameter.setStartValue(tModel.getDoubleValueAt(i, 1));//=StartValue
+        tmpParameter.setEndValue(tModel.getDoubleValueAt(i, 2));
+        tmpParameter.setStepping(tModel.getDoubleValueAt(i, 3));
         ListOfParameterAsFromTable.add(tmpParameter);
         }
     //StartParametersatz bilden
     parameter[] lastParameterSet=new parameter[tModel.getRowCount()];
-    float[][] parameterValues=new float[tModel.getRowCount()][4];
+    double[][] parameterValues=new double[tModel.getRowCount()][4];
                 //Je Parameter: 0-> Value, 1->StartValue, 2->EndValue, 3->Stepping
 
         for (int i=0; i<tModel.getRowCount();i++){
         lastParameterSet[i]=new parameter();
         lastParameterSet[i].setName(tModel.getValueAt(i, 0).toString());
-        lastParameterSet[i].setValue(String.valueOf(Float.valueOf(tModel.getValueAt(i, 1).toString())));
-        parameterValues[i][0]=Float.valueOf(tModel.getValueAt(i, 1).toString());
+        lastParameterSet[i].setValue(tModel.getDoubleValueAt(i, 1));
+        parameterValues[i][0]=Double.valueOf(tModel.getValueAt(i, 1).toString());
 
-        lastParameterSet[i].setStartValue(String.valueOf(Float.valueOf(tModel.getValueAt(i, 1).toString())));//=StartValue
-        parameterValues[i][1]=Float.valueOf(tModel.getValueAt(i, 1).toString());
+        lastParameterSet[i].setStartValue(tModel.getDoubleValueAt(i, 1));//=StartValue
+        parameterValues[i][1]=Double.valueOf(tModel.getValueAt(i, 1).toString());
 
 
-        lastParameterSet[i].setEndValue(String.valueOf(Float.valueOf(tModel.getValueAt(i, 2).toString())));
-        parameterValues[i][2]=Float.valueOf(tModel.getValueAt(i, 2).toString());
+        lastParameterSet[i].setEndValue(tModel.getDoubleValueAt(i, 2));
+        parameterValues[i][2]=Double.valueOf(tModel.getValueAt(i, 2).toString());
         
-        lastParameterSet[i].setStepping(String.valueOf(Float.valueOf(tModel.getValueAt(i, 3).toString())));
-        parameterValues[i][3]=Float.valueOf(tModel.getValueAt(i, 3).toString());
+        lastParameterSet[i].setStepping(tModel.getDoubleValueAt(i, 3));
+        parameterValues[i][3]=Double.valueOf(tModel.getValueAt(i, 3).toString());
         }
 
         parameter[] tmpParameterSet=new parameter[tModel.getRowCount()];
@@ -222,10 +222,10 @@ boolean isRunning=false;
         for (int i=0; i<tModel.getRowCount();i++){
         parameter tmpParameter=new parameter();
         tmpParameter.setName(tModel.getValueAt(i, 0).toString());
-        tmpParameter.setValue(tModel.getValueAt(i, 1).toString());
-        tmpParameter.setStartValue(tModel.getValueAt(i, 1).toString());//=StartValue
-        tmpParameter.setEndValue(tModel.getValueAt(i, 2).toString());
-        tmpParameter.setStepping(tModel.getValueAt(i, 3).toString());
+        tmpParameter.setValue(tModel.getDoubleValueAt(i, 1));
+        tmpParameter.setStartValue(tModel.getDoubleValueAt(i, 1));//=StartValue
+        tmpParameter.setEndValue(tModel.getDoubleValueAt(i, 2));
+        tmpParameter.setStepping(tModel.getDoubleValueAt(i, 3));
         //ListOfParameterAsFromTable.add(tmpParameter);
 
         float start,end,step,spaceCounter=1;

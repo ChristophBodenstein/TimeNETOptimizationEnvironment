@@ -3,7 +3,7 @@
  * build SCPNs, upload them, wait for result, download results, return results
 
 
-* To be modified by: 
+* To be modified by: Group studies 2014
 
 
  * Christoph Bodenstein

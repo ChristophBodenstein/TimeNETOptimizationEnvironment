@@ -50,29 +50,29 @@ private String[][] parameterArray;
         }
         int i= parameterList.getLength();
         parameterArray[i][0]="ConfidenceIntervall";
-        parameterArray[i][1]=parent.pConfidenceIntervall.getStartValue();
-        parameterArray[i][2]=parent.pConfidenceIntervall.getEndValue();
-        parameterArray[i][3]=parent.pConfidenceIntervall.getStepping();
+        parameterArray[i][1]=support.getString(parent.pConfidenceIntervall.getStartValue());
+        parameterArray[i][2]=support.getString(parent.pConfidenceIntervall.getEndValue());
+        parameterArray[i][3]=support.getString(parent.pConfidenceIntervall.getStepping());
         i= parameterList.getLength()+1;
         parameterArray[i][0]="Seed";
-        parameterArray[i][1]=parent.pSeed.getStartValue();
-        parameterArray[i][2]=parent.pSeed.getEndValue();
-        parameterArray[i][3]=parent.pSeed.getStepping();
+        parameterArray[i][1]=support.getString(parent.pSeed.getStartValue());
+        parameterArray[i][2]=support.getString(parent.pSeed.getEndValue());
+        parameterArray[i][3]=support.getString(parent.pSeed.getStepping());
         i++;
         parameterArray[i][0]="EndTime";
-        parameterArray[i][1]=parent.pEndTime.getStartValue();
-        parameterArray[i][2]=parent.pEndTime.getEndValue();
-        parameterArray[i][3]=parent.pEndTime.getStepping();
+        parameterArray[i][1]=support.getString(parent.pEndTime.getStartValue());
+        parameterArray[i][2]=support.getString(parent.pEndTime.getEndValue());
+        parameterArray[i][3]=support.getString(parent.pEndTime.getStepping());
         i++;
         parameterArray[i][0]="MaxTime";
-        parameterArray[i][1]=parent.pMaxTime.getStartValue();
-        parameterArray[i][2]=parent.pMaxTime.getEndValue();
-        parameterArray[i][3]=parent.pMaxTime.getStepping();
+        parameterArray[i][1]=support.getString(parent.pMaxTime.getStartValue());
+        parameterArray[i][2]=support.getString(parent.pMaxTime.getEndValue());
+        parameterArray[i][3]=support.getString(parent.pMaxTime.getStepping());
         i++;
         parameterArray[i][0]="MaxRelError";
-        parameterArray[i][1]=parent.pMaxError.getStartValue();
-        parameterArray[i][2]=parent.pMaxError.getEndValue();
-        parameterArray[i][3]=parent.pMaxError.getStepping();
+        parameterArray[i][1]=support.getString(parent.pMaxError.getStartValue());
+        parameterArray[i][2]=support.getString(parent.pMaxError.getEndValue());
+        parameterArray[i][3]=support.getString(parent.pMaxError.getStepping());
     }
 
     public String[][] getParameterArray(){
@@ -95,6 +95,10 @@ private String[][] parameterArray;
 
     public Object getValueAt(int row, int col) {
         return parameterArray[row][col];
+    }
+    
+    public double getDoubleValueAt(int row, int col) {
+        return Double.valueOf(parameterArray[row][col].toString());
     }
 
     @Override
@@ -129,7 +133,7 @@ private String[][] parameterArray;
 
 
     /**
-     * Sets the Value for StartValue, EndValue or Stepping for one parameter
+     * Gets the Value for StartValue, EndValue or Stepping for one parameter as String
      * The fieldname (StartValue, EndValue or Stepping) must be given as String for col
      */
     public String getValueByName(String name, String col){
@@ -157,6 +161,17 @@ private String[][] parameterArray;
 
     return returnValue;
     }
+
+    /**
+     * Gets the Value for StartValue, EndValue or Stepping for one parameter as double
+     * The fieldname (StartValue, EndValue or Stepping) must be given as String for col
+     */
+    public double getDoubleValueByName(String name, String col){
+
+       return Double.valueOf(this.getValueByName(name, col));
+
+    }
+
 
     /**
      * Set the value for StartValue, EndValue or Stepping
@@ -191,6 +206,17 @@ private String[][] parameterArray;
     return returnValue;
     }
 
+
+    /**
+     * Set the value for StartValue, EndValue or Stepping as double
+     * The fieldname (StartValue, EndValue or Stepping) must be given as String
+     * Value must also be given as String
+     */
+    public boolean setValueByName(String name, String col, double value){
+    
+        return this.setValueByName(name, col, Double.toString(value));
+        
+    }
 
 
 }

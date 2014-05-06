@@ -16,26 +16,26 @@ import java.util.ArrayList;
 public class MeasureType {
 private String MeasureName;
 private boolean AccuraryReached=false;
-private float MeanValue;
-private float Variance;
-private float[] ConfidenceInterval;
-private float Epsilon;
+private double MeanValue;
+private double Variance;
+private double[] ConfidenceInterval;
+private double Epsilon;
 private ArrayList<parameter> parameterList=new ArrayList<parameter>();
-private float targetValue;
+private double targetValue;
 private String targetKindOf;
-private float SimulationTime;
-private float CPUTime;
+private double SimulationTime;
+private double CPUTime;
 
     public MeasureType() {
-        this.CPUTime = (float)0.0;
-        this.SimulationTime = (float)0.0;
+        this.CPUTime = (double)0.0;
+        this.SimulationTime = (double)0.0;
     }
 
 
     /**
      * @set targetValue and/or (min/max/value)
      */
-     public void setTargetValue(float value, String kindOfTarget){
+     public void setTargetValue(double value, String kindOfTarget){
 
         if(kindOfTarget.equals("min")||kindOfTarget.equals("max")){
         this.targetKindOf=kindOfTarget;
@@ -46,14 +46,14 @@ private float CPUTime;
      }
 
 
-     public float getDistanceFromTarget(){
+     public double getDistanceFromTarget(){
      return Math.abs(this.MeanValue-this.targetValue);
      }
 
      public String getTargetKindOf(){
      return this.targetKindOf;
      }
-     public float getTargetValue(){
+     public double getTargetValue(){
      return this.targetValue;
      }
 
@@ -90,56 +90,56 @@ private float CPUTime;
     /**
      * @return the MeanValue
      */
-    public float getMeanValue() {
+    public double getMeanValue() {
         return MeanValue;
     }
 
     /**
      * @param MeanValue the MeanValue to set
      */
-    public void setMeanValue(float MeanValue) {
+    public void setMeanValue(double MeanValue) {
         this.MeanValue = MeanValue;
     }
 
     /**
      * @return the Variance
      */
-    public float getVariance() {
+    public double getVariance() {
         return Variance;
     }
 
     /**
      * @param Variance the Variance to set
      */
-    public void setVariance(float Variance) {
+    public void setVariance(double Variance) {
         this.Variance = Variance;
     }
 
     /**
      * @return the ConfidenceInterval
      */
-    public float[] getConfidenceInterval() {
+    public double[] getConfidenceInterval() {
         return ConfidenceInterval;
     }
 
     /**
      * @param ConfidenceInterval the ConfidenceInterval to set
      */
-    public void setConfidenceInterval(float[] ConfidenceInterval) {
+    public void setConfidenceInterval(double[] ConfidenceInterval) {
         this.ConfidenceInterval = ConfidenceInterval;
     }
 
     /**
      * @return the Epsilon
      */
-    public float getEpsilon() {
+    public double getEpsilon() {
         return Epsilon;
     }
 
     /**
      * @param Epsilon the Epsilon to set
      */
-    public void setEpsilon(float Epsilon) {
+    public void setEpsilon(double Epsilon) {
         this.Epsilon = Epsilon;
     }
 
@@ -160,28 +160,28 @@ private float CPUTime;
     /**
      * @return the SimulationTime
      */
-    public float getSimulationTime() {
+    public double getSimulationTime() {
         return SimulationTime;
     }
 
     /**
      * @param SimulationTime the SimulationTime to set
      */
-    public void setSimulationTime(float SimulationTime) {
+    public void setSimulationTime(double SimulationTime) {
         this.SimulationTime = SimulationTime;
     }
 
     /**
      * @return the CPUTime
      */
-    public float getCPUTime() {
+    public double getCPUTime() {
         return CPUTime;
     }
 
     /**
      * @param CPUTime the CPUTime to set
      */
-    public void setCPUTime(float CPUTime) {
+    public void setCPUTime(double CPUTime) {
         this.CPUTime = CPUTime;
     }
 }

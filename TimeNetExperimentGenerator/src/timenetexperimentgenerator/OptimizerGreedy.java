@@ -29,11 +29,11 @@ JTabbedPane MeasureFormPane;
 ArrayList<MeasureType> listOfMeasures=new ArrayList<MeasureType>();//Liste aller Measures, abfragen von MeasureFormPane
 ArrayList<parser> historyOfParsers=new ArrayList<parser>();//History of all simulation runs
 parameter[] parameterBase;//Base set of parameters, start/end-value, stepping, etc.
-float[] arrayOfIncrements;
+double[] arrayOfIncrements;
 boolean optimized=false;//False until Optimization is ended
 JLabel infoLabel;
-float simulationTimeSum=0;
-float cpuTimeSum=0;
+double simulationTimeSum=0;
+double cpuTimeSum=0;
 
     /**
      * Constructor
@@ -56,9 +56,9 @@ float cpuTimeSum=0;
     support.log("# of Measures to be optimized: "+this.listOfMeasures.size());
 
     //Alle Steppings auf Standard setzen
-    arrayOfIncrements=new float[parameterBase.length];
+    arrayOfIncrements=new double[parameterBase.length];
         for(int i=0;i<parameterBase.length;i++){
-        arrayOfIncrements[i]=support.getFloat(parameterBase[i].getStepping());
+        arrayOfIncrements[i]=support.getDouble(parameterBase[i].getStepping());
         }
   
     this.filename=support.getOriginalFilename();// originalFilename;
@@ -87,12 +87,12 @@ float cpuTimeSum=0;
                 //Wenn history mind. 2 lang ist, dann
                 if(historyOfParsers.size()>=3){
                     //ArrayList<MeasureType> listOfLastMeasures=historyOfParsers.get(historyOfParsers.size()-1).getMeasures();
-                    float arrayOfDistances[][]=new float[listOfMeasures.size()][historyOfParsers.size()];
-                    float arrayOfDistanceSums[]=new float[historyOfParsers.size()];
+                    double arrayOfDistances[][]=new double[listOfMeasures.size()][historyOfParsers.size()];
+                    double arrayOfDistanceSums[]=new double[historyOfParsers.size()];
 
                     //Distance-Sum init
                     for(int historyCount=0;historyCount<historyOfParsers.size();historyCount++){
-                        arrayOfDistanceSums[historyCount]=(float)0.0;
+                        arrayOfDistanceSums[historyCount]=0.0;
                     }
 
                     //Liste aller Abstände für alle aktiven Measures auslesen
@@ -106,7 +106,7 @@ float cpuTimeSum=0;
                         activeMeasureFromInterface=listOfMeasures.get(measureCount);//Contains Optimization targets
                         //float measureValue=historyOfParsers.get(historyCount).getMeasureValueByMeasureName(activeMeasure.getMeasureName());
                         activeMeasure.setTargetValue(activeMeasureFromInterface.getTargetValue(), activeMeasureFromInterface.getTargetKindOf());
-                        float distance=0;
+                        double distance=0;
 
                             if(activeMeasure.getTargetKindOf().equals("value")){
                             distance=activeMeasure.getDistanceFromTarget();
@@ -132,7 +132,7 @@ float cpuTimeSum=0;
                         
                     //Greedy, wenn gesamtdistanz jetzt kleiner als eben ist, dann appliziere den gleichen Inkrement-Vektor nochmal
                     if(arrayOfDistanceSums[arrayOfDistanceSums.length-1]<=arrayOfDistanceSums[arrayOfDistanceSums.length-2]){
-                    parameter[] newParameterSet=getCopyOfParameterSet(parameterBase);
+                    parameter[] newParameterSet=support.getCopyOfParameterSet(parameterBase);
                     applyArrayOfIncrements(arrayOfIncrements, newParameterSet);
                     returnValue.add(newParameterSet);
                     }else{
@@ -169,7 +169,7 @@ float cpuTimeSum=0;
                 }   else{
                     // History of Parsers has less then 3 member, create next one
 
-                    parameter[] newParameterSet=getCopyOfParameterSet(this.parameterBase);
+                    parameter[] newParameterSet=support.getCopyOfParameterSet(this.parameterBase);
                     //Für alle Parameter, die keine Externen Parameter sind erhöhe um Step
 
                         for(int i=0;i<newParameterSet.length;i++){
@@ -178,8 +178,8 @@ float cpuTimeSum=0;
                         for(int i=0;i<newParameterSet.length;i++){
                             if(!newParameterSet[i].isExternalParameter()){
 
-                                if(support.getFloat(newParameterSet[i].getValue())<support.getFloat(newParameterSet[i].getEndValue())){                                
-                                arrayOfIncrements[i]=support.getFloat(newParameterSet[i].getStepping());                                
+                                if(support.getDouble(newParameterSet[i].getValue())<support.getDouble(newParameterSet[i].getEndValue())){
+                                arrayOfIncrements[i]=support.getDouble(newParameterSet[i].getStepping());
                                 break;//Abbruch nach erstem änderbaren Parameter
                                 }
                             }
@@ -202,35 +202,17 @@ float cpuTimeSum=0;
     * @param newParameterSet Array of parameters which will be increased by values from arrayOfIncrements
     * 
     */
-    void applyArrayOfIncrements(float[] arrayOfIncrements, parameter[] newParameterSet){
+    void applyArrayOfIncrements(double[] arrayOfIncrements, parameter[] newParameterSet){
     support.log("Applying Array of Increments.");
         for(int i=0;i<newParameterSet.length;i++){
         System.out.print(newParameterSet[i].getName()+"="+newParameterSet[i].getValue()+" will be incremented by: "+arrayOfIncrements[i]+" and is now:");
-        newParameterSet[i].setValue(  support.getString(support.round( Math.min(arrayOfIncrements[i]+support.getFloat(newParameterSet[i].getValue()),support.getFloat(newParameterSet[i].getEndValue()))) ) );
-        support.log(newParameterSet[i].getValue());
+        newParameterSet[i].setValue((support.round( Math.min(arrayOfIncrements[i]+support.getDouble(newParameterSet[i].getValue()),support.getDouble(newParameterSet[i].getEndValue()))) ) );
+        support.log(Double.toString(newParameterSet[i].getValue()));
         }
     this.parameterBase=newParameterSet;
     }
 
-    /**
-     * Creates and returns a set of Parameters made by deep-copying
-     * @param parameterBase the array of parameters to be dublicated
-     * @return array of parameters, the copy of input
-     */
-    parameter[] getCopyOfParameterSet(parameter[] parameterBase){
-        parameter[] newParameterSet=new parameter[parameterBase.length];
-        for(int i=0;i<parameterBase.length;i++){
 
-        newParameterSet[i]=new parameter();
-        newParameterSet[i].setName(parameterBase[i].getName());
-        newParameterSet[i].setStartValue(parameterBase[i].getStartValue());
-        newParameterSet[i].setStepping(parameterBase[i].getStepping());
-        newParameterSet[i].setEndValue(parameterBase[i].getEndValue());
-        //newParameterSet[i].setValue(Float.toString((historyOfParsers.get(historyOfParsers.size()-1)).getMeasureValueByMeasureName(parameterBase[i].getName())));
-        newParameterSet[i].setValue(parameterBase[i].getValue());
-        }
-    return newParameterSet;
-    }
 
 
     /**

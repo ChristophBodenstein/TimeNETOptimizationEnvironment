@@ -136,25 +136,25 @@ private final String nameOfTempDirectory="14623786483530251523506521233052";
                         if(!p[parameterNumber].isExternalParameter()){
                             for(int i=0;i<parameterList.getLength();i++){
                                 if(parameterList.item(i).getAttributes().getNamedItem("name").getNodeValue().equals(p[parameterNumber].getName())){
-                                parameterList.item(i).getAttributes().getNamedItem("defaultValue").setNodeValue(p[parameterNumber].getValue());
+                                parameterList.item(i).getAttributes().getNamedItem("defaultValue").setNodeValue(p[parameterNumber].getStringValue());
                                 }
                                 //support.log(parameterList.item(i).getAttributes().getNamedItem("name").getNodeValue());
                             }
                         }else{
                             if(p[parameterNumber].getName().equals("MaxTime")){
-                            MaxTime=p[parameterNumber].getValue();
+                            MaxTime=p[parameterNumber].getStringValue();
                             }
                             if(p[parameterNumber].getName().equals("EndTime")){
-                            EndTime=p[parameterNumber].getValue();
+                            EndTime=p[parameterNumber].getStringValue();
                             }
                             if(p[parameterNumber].getName().equals("Seed")){
-                            Seed=p[parameterNumber].getValue();
+                            Seed=p[parameterNumber].getStringValue();
                             }
                             if(p[parameterNumber].getName().equals("ConfidenceIntervall")){
-                            ConfidenceIntervall=p[parameterNumber].getValue();
+                            ConfidenceIntervall=p[parameterNumber].getStringValue();
                             }
                             if(p[parameterNumber].getName().equals("MaxRelError")){
-                            MaxRelError=p[parameterNumber].getValue();
+                            MaxRelError=p[parameterNumber].getStringValue();
                             }
 
                         }

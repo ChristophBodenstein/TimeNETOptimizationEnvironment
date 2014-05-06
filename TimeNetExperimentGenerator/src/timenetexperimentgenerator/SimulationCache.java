@@ -21,9 +21,9 @@ import java.util.ArrayList;
  */
 public class SimulationCache {
 String[] listOfCachedParameterNames;
-float[] listOfCachedParameterMin;
-float[] listOfCachedParameterMax;
-float[] listOfCachedParameterStepping;
+double[] listOfCachedParameterMin;
+double[] listOfCachedParameterMax;
+double[] listOfCachedParameterStepping;
 ArrayList<MeasureType> MeasureList;
 private int localSimulationCounter=0;
 
@@ -54,10 +54,10 @@ private int localSimulationCounter=0;
         
         //Get Names of Parameters
         listOfCachedParameterNames=new String[listOfStringLines.get(0).length-8];
-        listOfCachedParameterMin=new float[listOfStringLines.get(0).length-8];
-        listOfCachedParameterMax=new float[listOfStringLines.get(0).length-8];
-        listOfCachedParameterStepping=new float[listOfStringLines.get(0).length-8];
-        float tmpValue=(float)0.0;
+        listOfCachedParameterMin=new double[listOfStringLines.get(0).length-8];
+        listOfCachedParameterMax=new double[listOfStringLines.get(0).length-8];
+        listOfCachedParameterStepping=new double[listOfStringLines.get(0).length-8];
+        double tmpValue=0.0;
         int column=0;
 
         //Check length of List of Parameter
@@ -70,18 +70,18 @@ private int localSimulationCounter=0;
         for(int i=0;i<listOfCachedParameterNames.length;i++){
         column=i+7;
         listOfCachedParameterNames[i]=support.translateParameterNameFromLogFileToTable(listOfStringLines.get(0)[column]);
-        listOfCachedParameterMax[i]=(float)Float.NEGATIVE_INFINITY;
-        listOfCachedParameterMin[i]=(float)Float.POSITIVE_INFINITY;
+        listOfCachedParameterMax[i]=Double.NEGATIVE_INFINITY;
+        listOfCachedParameterMin[i]=Double.POSITIVE_INFINITY;
         listOfCachedParameterStepping[i]=support.DEFAULT_STEPPING;
             //Walk through a column and get Min and Max Values
             for(int line=1;line<listOfStringLines.size();line++){
-            tmpValue=support.getFloat(listOfStringLines.get(line)[column]);
+            tmpValue=support.getDouble(listOfStringLines.get(line)[column]);
             listOfCachedParameterMax[i]=Math.max(tmpValue, listOfCachedParameterMax[i]);
             listOfCachedParameterMin[i]=Math.min(tmpValue, listOfCachedParameterMin[i]);
                 if(line<listOfStringLines.size()-1){
                     try{
                     //listOfCachedParameterStepping[i]=Math.max(listOfCachedParameterStepping[i], Math.abs(tmpValue-support.getFloatFromString(listOfStringLines.get(line+1)[column])));
-                    float tmpValue2=support.getFloat(listOfStringLines.get(line+1)[column]);
+                    double tmpValue2=support.getDouble(listOfStringLines.get(line+1)[column]);
                     //TODO: Make this a setting in prefernces frame, how many digits to be used!
                     tmpValue2=(Math.abs(tmpValue-tmpValue2));
                     tmpValue2=support.round(tmpValue2);
@@ -154,14 +154,14 @@ private int localSimulationCounter=0;
             //Line number in read cache file
             int lineNumber=i*listOfCachedMeasureNames.size()+c+1;
             tmpMeasure.setMeasureName(listOfStringLines.get(lineNumber)[0]);
-            tmpMeasure.setMeanValue(support.getFloat(listOfStringLines.get(lineNumber)[1]));
-            tmpMeasure.setVariance(support.getFloat(listOfStringLines.get(lineNumber)[2]));
-            float[] tmpConf={support.getFloat(listOfStringLines.get(lineNumber)[3]),support.getFloat(listOfStringLines.get(lineNumber)[4])};
+            tmpMeasure.setMeanValue(support.getDouble(listOfStringLines.get(lineNumber)[1]));
+            tmpMeasure.setVariance(support.getDouble(listOfStringLines.get(lineNumber)[2]));
+            double[] tmpConf={support.getDouble(listOfStringLines.get(lineNumber)[3]),support.getDouble(listOfStringLines.get(lineNumber)[4])};
             tmpMeasure.setConfidenceInterval(tmpConf);
-            tmpMeasure.setEpsilon(support.getFloat(listOfStringLines.get(lineNumber)[5]));
-            tmpMeasure.setSimulationTime(support.getFloat(listOfStringLines.get(lineNumber)[6]));
+            tmpMeasure.setEpsilon(support.getDouble(listOfStringLines.get(lineNumber)[5]));
+            tmpMeasure.setSimulationTime(support.getDouble(listOfStringLines.get(lineNumber)[6]));
             //CPU-Time is in last column
-            tmpMeasure.setCPUTime(support.getFloat(listOfStringLines.get(lineNumber)[7+listOfCachedParameterNames.length]));
+            tmpMeasure.setCPUTime(support.getDouble(listOfStringLines.get(lineNumber)[7+listOfCachedParameterNames.length]));
             //support.log("CPU-Time of "+tmpMeasure.getMeasureName() +" is " +tmpMeasure.getCPUTime()+".");
             
             ArrayList<parameter> tmpParameterList=new ArrayList<parameter>();
@@ -169,14 +169,14 @@ private int localSimulationCounter=0;
                 column=i1+7;
                 parameter tmpParameter=new parameter();
                 tmpParameter.setName(support.translateParameterNameFromLogFileToTable(listOfCachedParameterNames[i1]));
-                tmpParameter.setEndValue(Float.toString(support.round(listOfCachedParameterMax[i1])));
-                tmpParameter.setStartValue(Float.toString(support.round(listOfCachedParameterMin[i1])));
-                tmpParameter.setStepping(Float.toString(support.round(listOfCachedParameterStepping[i1])));
+                tmpParameter.setEndValue(support.round(listOfCachedParameterMax[i1]));
+                tmpParameter.setStartValue(support.round(listOfCachedParameterMin[i1]));
+                tmpParameter.setStepping(support.round(listOfCachedParameterStepping[i1]));
                 //Get and save Value of this Parameter
                 //It is in the correct Column of the actual line
                 //We did not change the order of Parameters (it`s the same like in the raw file)
                 //tmpParameter.setValue(support.translateParameterNameFromLogFileToTable(listOfStringLines.get(lineNumber)[column]));
-                tmpParameter.setValue(Float.toString(support.round(support.getFloat(listOfStringLines.get(lineNumber)[column]))));
+                tmpParameter.setValue(support.round(support.getDouble(listOfStringLines.get(lineNumber)[column])));
                 
                 tmpParameterList.add(tmpParameter);
                 }
@@ -208,9 +208,9 @@ private int localSimulationCounter=0;
     if (listOfCachedParameterNames==null){return;}
         //Names are equal --> format the table so that Start-,End-,Stepping-Value match
         for(int i=0;i<listOfCachedParameterNames.length;i++){
-            myTableModel.setValueByName(listOfCachedParameterNames[i], "StartValue", Float.toString(listOfCachedParameterMin[i]));
-            myTableModel.setValueByName(listOfCachedParameterNames[i], "EndValue", Float.toString(listOfCachedParameterMax[i]));
-            myTableModel.setValueByName(listOfCachedParameterNames[i], "Stepping", Float.toString(listOfCachedParameterStepping[i]));
+            myTableModel.setValueByName(listOfCachedParameterNames[i], "StartValue", listOfCachedParameterMin[i]);
+            myTableModel.setValueByName(listOfCachedParameterNames[i], "EndValue", listOfCachedParameterMax[i]);
+            myTableModel.setValueByName(listOfCachedParameterNames[i], "Stepping", listOfCachedParameterStepping[i]);
 
         }
     }
@@ -219,10 +219,9 @@ private int localSimulationCounter=0;
     if (listOfCachedParameterNames==null){return false;}
         //Names are equal --> format the table so that Start-,End-,Stepping-Value match
         for(int i=0;i<listOfCachedParameterNames.length;i++){
-            if(myTableModel.getValueByName(listOfCachedParameterNames[i], "StartValue").equals(Float.toString(listOfCachedParameterMin[i]))){}else{return false;}
-            if(myTableModel.getValueByName(listOfCachedParameterNames[i], "EndValue").equals(Float.toString(listOfCachedParameterMax[i]))){}else{return false;}
-            if(myTableModel.getValueByName(listOfCachedParameterNames[i], "Stepping").equals(Float.toString(listOfCachedParameterStepping[i]))){}else{return false;}
-
+            if(myTableModel.getDoubleValueByName(listOfCachedParameterNames[i], "StartValue") == (listOfCachedParameterMin[i])){}else{return false;}
+            if(myTableModel.getDoubleValueByName(listOfCachedParameterNames[i], "EndValue") == (listOfCachedParameterMax[i])){}else{return false;}
+            if(myTableModel.getDoubleValueByName(listOfCachedParameterNames[i], "Stepping") == (listOfCachedParameterStepping[i])){}else{return false;}
         }
     return true;
     }
@@ -293,7 +292,7 @@ private int localSimulationCounter=0;
                 return false;
                 }
             //Parameter found, now check the values of this parameter
-                if(support.round(support.getFloat(tmpParameterA.getValue()))!=support.round(support.getFloat(tmpParameterB.getValue()))){
+                if(support.round(support.getDouble(tmpParameterA.getValue()))!=support.round(support.getDouble(tmpParameterB.getValue()))){
                 //support.log("Parameter Values differ.");
                 return false;
                 }

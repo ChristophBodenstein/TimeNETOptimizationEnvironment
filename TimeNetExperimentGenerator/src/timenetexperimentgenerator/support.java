@@ -27,7 +27,7 @@ import javax.swing.JTabbedPane;
  * @author Christoph Bodenstein
  */
 public class support {
-public static final float DEFAULT_STEPPING=(float)1.0;
+public static final double DEFAULT_STEPPING=1.0;
 private static JLabel statusLabel=null;//The label for showing status information
 private static String originalFilename=null;//The original SCPN source file to fork for every simulation
 private static MainFrame mainFrame=null;//The Main Frame of the program
@@ -212,8 +212,8 @@ protected static final String[] OPTITYPES={"GREEDY","Sim. Annealing","A.Seidel-1
      * @param valueToRound The input Vlaue to be round
      * @return round Value with x precise digits
      */
-    public static float round(float valueToRound){
-    return (float)Math.round(valueToRound * 1000) / 1000;        
+    public static double round(double valueToRound){
+    return (double)Math.round(valueToRound * 1000) / 1000;
     }
     
      /**
@@ -221,7 +221,7 @@ protected static final String[] OPTITYPES={"GREEDY","Sim. Annealing","A.Seidel-1
      * @param f float to be returned normalized and casted
      * @return float value
      */
-    public static float getFloat(float f){
+    public static double getDouble(double f){
     return f;
     }
     
@@ -230,8 +230,8 @@ protected static final String[] OPTITYPES={"GREEDY","Sim. Annealing","A.Seidel-1
      * @param s String to be converted into float
      * @return float value of input String
      */
-    public static float getFloat(String s){
-    return Float.parseFloat(s.replace(',', '.'));
+    public static double getDouble(String s){
+    return Double.parseDouble(s.replace(',', '.'));
     }
 
     /**
@@ -239,8 +239,8 @@ protected static final String[] OPTITYPES={"GREEDY","Sim. Annealing","A.Seidel-1
      * @param i int value to cast to float
      * @return float value of given int
      */
-    public static float getFloat(int i){
-    return (float)i;
+    public static double getDouble(int i){
+    return (double)i;
     }
     
     
@@ -249,7 +249,7 @@ protected static final String[] OPTITYPES={"GREEDY","Sim. Annealing","A.Seidel-1
      * @param f float value to cast to int
      * @return int value of given float
      */
-    public static int getInt(float f){
+    public static int getInt(double f){
         return (int)f;
     }
     
@@ -258,7 +258,7 @@ protected static final String[] OPTITYPES={"GREEDY","Sim. Annealing","A.Seidel-1
      * @param f float value to be converted into String
      * @return String which represents the input float value
      */
-    public static String getString(float f){
+    public static String getString(double f){
     return String.valueOf(f);
     }
     
@@ -267,9 +267,9 @@ protected static final String[] OPTITYPES={"GREEDY","Sim. Annealing","A.Seidel-1
      * @param f Float value to be converted into a String with comma as decimal-point
      * @return String representing the float value with comma as decimal-point
      */
-    public static String getCommaFloat(float f){
+    public static String getCommaFloat(double f){
     //System.out.print("UnFormated float is "+f);
-    String returnValue=getCommaFloat( Float.toString(f) ) ;
+    String returnValue=getCommaFloat( Double.toString(f) ) ;
     //support.log("  --  Formated float is "+returnValue);
     return returnValue;
     }
@@ -601,6 +601,26 @@ protected static final String[] OPTITYPES={"GREEDY","Sim. Annealing","A.Seidel-1
      */
     public static void setDistributedSimulationAvailable(boolean aDistributedSimulationAvailable) {
         distributedSimulationAvailable = aDistributedSimulationAvailable;
+    }
+
+        /**
+     * Creates and returns a set of Parameters made by deep-copying
+     * @param parameterBase the array of parameters to be dublicated
+     * @return array of parameters, the copy of input
+     */
+    public static parameter[] getCopyOfParameterSet(parameter[] parameterBase){
+        parameter[] newParameterSet=new parameter[parameterBase.length];
+        for(int i=0;i<parameterBase.length;i++){
+
+        newParameterSet[i]=new parameter();
+        newParameterSet[i].setName(parameterBase[i].getName());
+        newParameterSet[i].setStartValue(parameterBase[i].getStartValue());
+        newParameterSet[i].setStepping(parameterBase[i].getStepping());
+        newParameterSet[i].setEndValue(parameterBase[i].getEndValue());
+        //newParameterSet[i].setValue(Float.toString((historyOfParsers.get(historyOfParsers.size()-1)).getMeasureValueByMeasureName(parameterBase[i].getName())));
+        newParameterSet[i].setValue(parameterBase[i].getValue());
+        }
+    return newParameterSet;
     }
 }
 

@@ -23,11 +23,11 @@ import org.w3c.dom.*;
 public class parser {
 private String logName;
 private String SimulationType;
-private Float SimulationTime;
+private double SimulationTime;
 private ArrayList<MeasureType> Measures=new ArrayList();
 private ArrayList<String> tmpStrings=new ArrayList();
 private int parseStatus=0;
-private int CPUTime=0;
+private double CPUTime=0;
 private ArrayList<parameter> parameterList=null;
 private String xmlFile="";
 
@@ -75,7 +75,7 @@ private String xmlFile="";
 
             support.log(parameterList.item(i).getAttributes().getNamedItem("name").getNodeValue());
             tmpParameter.setName(parameterList.item(i).getAttributes().getNamedItem("name").getNodeValue());
-            tmpParameter.setValue(parameterList.item(i).getAttributes().getNamedItem("defaultValue").getNodeValue());
+            tmpParameter.setValue(support.getDouble(parameterList.item(i).getAttributes().getNamedItem("defaultValue").getNodeValue()));
             tmpParameterList.add(tmpParameter);
             }
         
@@ -115,38 +115,38 @@ private String xmlFile="";
             if(segs[i].equals("MaxTime")){
             parameter tmpP=new parameter();
             tmpP.setName("MaxTime");
-            tmpP.setValue(segs[i+1]);
+            tmpP.setValue(support.getDouble(segs[i+1]));
             tmpParameterList.add(tmpP);
             }
             if(segs[i].equals("EndTime")){
             parameter tmpP=new parameter();
             tmpP.setName("EndTime");
-            tmpP.setValue(segs[i+1]);
+            tmpP.setValue(support.getDouble(segs[i+1]));
             tmpParameterList.add(tmpP);
             }
             if(segs[i].equals("Seed")){
             parameter tmpP=new parameter();
             tmpP.setName("Seed");
-            tmpP.setValue(segs[i+1]);
+            tmpP.setValue(support.getDouble(segs[i+1]));
             tmpParameterList.add(tmpP);
             }
             if(segs[i].equals("ConfidenceIntervall")){
             parameter tmpP=new parameter();
             tmpP.setName("Configured-ConfidenceIntervall");
-            tmpP.setValue(segs[i+1]);
+            tmpP.setValue(support.getDouble(segs[i+1]));
             tmpParameterList.add(tmpP);
             }
             if(segs[i].equals("MaxRelError")){
             parameter tmpP=new parameter();
             tmpP.setName("MaxRelError");
-            tmpP.setValue(segs[i+1]);
+            tmpP.setValue(support.getDouble(segs[i+1]));
             tmpParameterList.add(tmpP);
             }               
             if(segs[i].equals("simTime")){
             parameter tmpP=new parameter();
             tmpP.setName("Used CPUTime");
             //String[] tmpSegs=segs[i+1].split(".");
-            tmpP.setValue(segs[i+1].substring(0,segs[i+1].indexOf(".")));
+            tmpP.setValue(support.getDouble(segs[i+1].substring(0,segs[i+1].indexOf("."))));
             tmpParameterList.add(tmpP);
             }
             
@@ -179,7 +179,7 @@ private String xmlFile="";
                 tmpConfidence=tmpConfidence.replaceAll("\\[|\\]", "");
                 segs=tmpConfidence.split(Pattern.quote(";"));
                 //float[] tmpConf={ (segs[0]),Float.valueOf(segs[1])};
-                float[] tmpConf={getFloatString(segs[0]),getFloatString(segs[1])}  ;
+                double[] tmpConf={getFloatString(segs[0]),getFloatString(segs[1])}  ;
                 tmpMeasure.setConfidenceInterval(tmpConf);
                 tmpMeasure.setEpsilon(getFloatString(s.next()));
                 tmpMeasure.setParameterList(tmpParameterList);
@@ -212,12 +212,12 @@ private String xmlFile="";
     /** 
      returns Mean Value of Measure by given Name
      */
-    public float getMeasureValueByMeasureName(String name){
-    float returnValue=(float)0.0;
+    public double getMeasureValueByMeasureName(String name){
+    double returnValue=0.0;
 
         for(int i=0;i<this.Measures.size();i++){
             if(this.Measures.get(i).getMeasureName().equals(name)){
-            returnValue=Float.valueOf(this.Measures.get(i).getMeanValue());
+            returnValue=this.Measures.get(i).getMeanValue();
             }
         }
     return returnValue;
@@ -252,14 +252,14 @@ private String xmlFile="";
     /**
      * @return the SimulationTime
      */
-    public Float getSimulationTime() {
+    public double getSimulationTime() {
         return SimulationTime;
     }
 
     /**
      * @param SimulationTime the SimulationTime to set
      */
-    public void setSimulationTime(Float SimulationTime) {
+    public void setSimulationTime(double SimulationTime) {
         this.SimulationTime = SimulationTime;
     }
 
@@ -273,13 +273,13 @@ private String xmlFile="";
     /**
      * @return the CPUTime
      */
-    public int getCPUTime() {
+    public double getCPUTime() {
         return CPUTime;
     }
 
-    public float getFloatString(String testString){
+    public double getFloatString(String testString){
         if(!testString.equals("nan")){
-        return Float.valueOf(testString);
+        return Double.valueOf(testString);
         }else{
         return 0;
         }
