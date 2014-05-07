@@ -22,6 +22,8 @@ private int stepCountTemp=20;
 private double sizeOfNeighborhood=10;//in percent
 private double Fx=0;//Current Distance
 private double Fy=0;//New Distance?
+private int typeOfNeighbordood=0;
+
 parser currentSolution;
 parser nextSolution;
 String tmpPath="";
@@ -94,10 +96,21 @@ double cpuTimeSum=0;
      * @return next parameterset to be simulated
      */
     private parameter[] getNextParameterset(parameter[] actualParameterset){
-        //Calculate the neighborhood and choose randomly one of the parametersets
+    
         if(actualParameterset==null){
         //Calulate first parameterset, the mean value of all parameters, with respect to stepping
-        parameter[] newParameterset=support.getCopyOfParameterSet(actualParameterset);
+        parameter[] newParameterset=support.getCopyOfParameterSet(parameterBase);
+            if(this.typeOfNeighbordood==0){
+            //For this chooseing strategy, the first element must be minimum
+                for(int i=0;i<newParameterset.length;i++){
+                    parameter p=newParameterset[i];
+                    if(p.getEndValue()>p.getStartValue()){
+                    p.setValue(p.getStartValue());
+                    }
+                }
+            return newParameterset;
+            }
+        
             for(int i=0;i<newParameterset.length;i++){
                 parameter p=newParameterset[i];
                 if(p.getEndValue()>p.getStartValue()){
@@ -108,9 +121,87 @@ double cpuTimeSum=0;
             }
         return newParameterset;
         }else{
-        //Calculate neighborhood for each parameter and choose one of the values randomly
+        parameter[] newParameterset=support.getCopyOfParameterSet(actualParameterset);
+        //TODO: 
+        //1 Calculate neighborhood for each parameter and choose one of the values randomly
+        //2 choose next value randomly from complete design-space
+        
+            switch(typeOfNeighbordood){
+                case 0://0 choose the next neighbor based on stepping forward
+                        for(int i=0;i<newParameterset.length;i++){
+                        parameter p=newParameterset[i];
+                            if(p.getEndValue()>p.getStartValue()){
+                            double nextValue=Math.min(p.getValue()+p.getStepping(),p.getEndValue());
+                            p.setValue(nextValue);
+                            }
+                        }
+                        break;
+                case 1://Step back and forward randomly based on stepping
+                        for(int i=0;i<newParameterset.length;i++){
+                        parameter p=newParameterset[i];
+                            if(p.getEndValue()>p.getStartValue()){
+                            double nextValue=0.0;
+                                if(Math.random()>=0.5){
+                                nextValue=Math.min(p.getValue()+p.getStepping(),p.getEndValue());
+                                }else{
+                                nextValue=Math.max(p.getValue()-p.getStepping(),p.getStartValue());
+                                }
+                            p.setValue(nextValue);
+                            }
+                        }
+                        break;
+                case 2://Calculate neighborhood and choose next value randomly 
+                        for(int i=0;i<newParameterset.length;i++){
+                        parameter p=newParameterset[i];
+                            if(p.getEndValue()>p.getStartValue()){
+                            double nextValue=0.0;
+                            double stepCount=(p.getEndValue()-p.getStartValue())/p.getStepping();
+                            nextValue=p.getStepping()*Math.round(Math.random()*stepCount*this.sizeOfNeighborhood/100);
+                                if(Math.random()>=0.5){
+                                nextValue=Math.min(p.getValue()+nextValue,p.getEndValue());
+                                }else{
+                                nextValue=Math.max(p.getValue()-nextValue,p.getStartValue());
+                                }
+                            p.setValue(nextValue);
+                            }
+                        }
+                        break;
+                case 3://Choose Value randomly out of complete designspace
+                        for(int i=0;i<newParameterset.length;i++){
+                        parameter p=newParameterset[i];
+                            if(p.getEndValue()>p.getStartValue()){
+                            double nextValue=0.0;
+                            double stepCount=(p.getEndValue()-p.getStartValue())/p.getStepping();
+                            nextValue=p.getStartValue() + Math.round(Math.random()*stepCount);
+                            p.setValue(nextValue);
+                            }
+                        }
+                    
+                        break;
+                case 4: //Calculate neighborhood and choose next value randomly, Ignore Stepping!
+                        for(int i=0;i<newParameterset.length;i++){
+                        parameter p=newParameterset[i];
+                            if(p.getEndValue()>p.getStartValue()){
+                            double nextValue=0.0;
+                            double range=(p.getEndValue()-p.getStartValue());
+                            nextValue=Math.round(Math.random()*range*this.sizeOfNeighborhood/100);
+                                if(Math.random()>=0.5){
+                                nextValue=Math.min(p.getValue()+nextValue,p.getEndValue());
+                                }else{
+                                nextValue=Math.max(p.getValue()-nextValue,p.getStartValue());
+                                }
+                            p.setValue(nextValue);
+                            }
+                        }
+                        break;
+                default: 
+                        //Dont change the parameterset
+                        break;
+        
+            }
+        return newParameterset;
         }
-
+    
     }
 
     /**

@@ -48,7 +48,15 @@ private long idHash=0;
      * @param value the value to set
      */
     public void setValue(double value) {
-        this.value = value;
+        if(value<startValue){
+            this.value=startValue;
+        }else{
+            if(value>endValue){
+                this.value=endValue;
+            }else{
+            this.value = value;
+            }
+        }
         this.calculateID();
     }
 
@@ -87,7 +95,11 @@ private long idHash=0;
      * @param endValue the endValue to set
      */
     public void setEndValue(double endValue) {
+        if(endValue<startValue){
+        this.endValue = startValue;
+        }else{
         this.endValue = endValue;
+        }
         this.calculateID();
     }
 
