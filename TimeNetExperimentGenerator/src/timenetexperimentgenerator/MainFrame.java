@@ -52,6 +52,7 @@ private SimulationCache mySimulationCache=null;
 private String pathToLastSimulationCache="";
 private SimulationTypeComboBoxModel mySimulationTypeModel=new SimulationTypeComboBoxModel();
 private DefaultComboBoxModel myOptiTypeModel=new DefaultComboBoxModel();
+SimulatorWebSlave mySlave=new SimulatorWebSlave();
 
 
     /** Creates new form MainFrame */
@@ -103,6 +104,8 @@ private DefaultComboBoxModel myOptiTypeModel=new DefaultComboBoxModel();
 
         this.pathToLastSimulationCache=auto.getProperty("pathToLastSimulationCache", "");
 
+        support.setIsRunningAsSlave(Boolean.parseBoolean(auto.getProperty("isRunningAsSlave")));
+        
         this.checkIfTimeNetPathIsCorrect();
         this.deactivateExportButtons();
 
@@ -153,6 +156,11 @@ private DefaultComboBoxModel myOptiTypeModel=new DefaultComboBoxModel();
 
 
         this.updateComboBoxSimulatioType();
+        
+        if(support.isIsRunningAsSlave()){
+        new Thread(this.mySlave).start();
+        }
+        
     }
 
 
@@ -220,6 +228,8 @@ private DefaultComboBoxModel myOptiTypeModel=new DefaultComboBoxModel();
         jButtonLoadCacheFile = new javax.swing.JButton();
         jComboBoxSimulationType = new javax.swing.JComboBox();
         jComboBoxOptimizationType = new javax.swing.JComboBox();
+        jButtonEnterURLToSimServer = new javax.swing.JButton();
+        jCheckBoxSlaveSimulator = new javax.swing.JCheckBox();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
@@ -334,6 +344,20 @@ private DefaultComboBoxModel myOptiTypeModel=new DefaultComboBoxModel();
             }
         });
 
+        jButtonEnterURLToSimServer.setText("Enter URL of Sim.-Server");
+        jButtonEnterURLToSimServer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonEnterURLToSimServerActionPerformed(evt);
+            }
+        });
+
+        jCheckBoxSlaveSimulator.setText("be a Slave");
+        jCheckBoxSlaveSimulator.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jCheckBoxSlaveSimulatorItemStateChanged(evt);
+            }
+        });
+
         jMenu1.setText("File");
         jMenuBar1.add(jMenu1);
 
@@ -355,8 +379,12 @@ private DefaultComboBoxModel myOptiTypeModel=new DefaultComboBoxModel();
                             .add(org.jdesktop.layout.GroupLayout.LEADING, jTextFieldSCPNFile, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 317, Short.MAX_VALUE)
                             .add(org.jdesktop.layout.GroupLayout.LEADING, jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                             .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
-                                .add(jButtonPathToTimeNet)
-                                .add(0, 136, Short.MAX_VALUE)))
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
+                                    .add(org.jdesktop.layout.GroupLayout.LEADING, jButtonEnterURLToSimServer, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .add(org.jdesktop.layout.GroupLayout.LEADING, jButtonPathToTimeNet, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(jCheckBoxSlaveSimulator)
+                                .add(0, 0, Short.MAX_VALUE)))
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                                 .add(34, 34, 34)
@@ -423,12 +451,16 @@ private DefaultComboBoxModel myOptiTypeModel=new DefaultComboBoxModel();
                             .add(jComboBoxOptimizationType, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jButtonStartOptimization)
-                        .add(0, 15, Short.MAX_VALUE)))
+                        .add(0, 10, Short.MAX_VALUE)))
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
                     .add(jButtonPathToTimeNet, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .add(jLabelExportStatus, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jLabelSimulationCount, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 24, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                    .add(jLabelSimulationCount, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 24, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                        .add(jButtonEnterURLToSimServer)
+                        .add(jCheckBoxSlaveSimulator))))
         );
 
         pack();
@@ -606,6 +638,24 @@ private DefaultComboBoxModel myOptiTypeModel=new DefaultComboBoxModel();
         support.setChosenOptimizerType(this.jComboBoxOptimizationType.getSelectedIndex());
     }//GEN-LAST:event_jComboBoxOptimizationTypeItemStateChanged
 
+    private void jButtonEnterURLToSimServerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEnterURLToSimServerActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtonEnterURLToSimServerActionPerformed
+
+    private void jCheckBoxSlaveSimulatorItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBoxSlaveSimulatorItemStateChanged
+        //set Property for startup
+        //start the Slave-Thread
+        support.setIsRunningAsSlave(this.jCheckBoxSlaveSimulator.isSelected());
+        this.saveProperties();
+        if(support.isIsRunningAsSlave()){
+        
+        new Thread(this.mySlave).start();
+        }else{
+        this.mySlave.setShouldEnd(true);
+        }
+        
+    }//GEN-LAST:event_jCheckBoxSlaveSimulatorItemStateChanged
+
     /**
      * Calculates the design space, number of all permutations of parameters
      * with respect to the stepping sizes
@@ -708,6 +758,7 @@ private DefaultComboBoxModel myOptiTypeModel=new DefaultComboBoxModel();
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButtonEnterURLToSimServer;
     private javax.swing.JButton jButtonExport;
     private javax.swing.JButton jButtonGenerateListOfExperiments;
     private javax.swing.JButton jButtonLoadCacheFile;
@@ -716,6 +767,7 @@ private DefaultComboBoxModel myOptiTypeModel=new DefaultComboBoxModel();
     private javax.swing.JButton jButtonReload;
     private javax.swing.JButton jButtonStartBatchSimulation;
     private javax.swing.JButton jButtonStartOptimization;
+    private javax.swing.JCheckBox jCheckBoxSlaveSimulator;
     private javax.swing.JComboBox jComboBoxOptimizationType;
     private javax.swing.JComboBox jComboBoxSimulationType;
     private javax.swing.JLabel jLabelExportStatus;
@@ -1060,6 +1112,8 @@ private DefaultComboBoxModel myOptiTypeModel=new DefaultComboBoxModel();
     
     auto.setProperty("OptimizationType", support.getChosenOptimizerType().toString());
     auto.setProperty("SimulationType", support.getChosenSimulatorType().toString());
+    
+    auto.setProperty("isRunningAsSlave", Boolean.toString(support.isIsRunningAsSlave()));
     
     File parserprops =  new File(propertyFile);
     auto.store(new FileOutputStream(parserprops), "ExperimentGenerator-Properties");

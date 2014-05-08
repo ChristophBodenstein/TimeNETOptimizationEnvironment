@@ -37,6 +37,7 @@ private static String tmpPath=null;//The path, where all simulation files (xml),
 private static SimulationCache mySimulationCache=null;  
 private static boolean cachedSimulationAvailable=false;
 private static boolean distributedSimulationAvailable=false;
+private static boolean isRunningAsSlave=false;
 private static String remoteAddress=null;
 private static Integer chosenOptimizerType=0;//0=Greedy, 1=?, 2=?
 private static Integer chosenSimulatorType=0;//0=local, 1=cached, 2=distributed
@@ -499,8 +500,18 @@ protected static final String[] OPTITYPES={"GREEDY","Sim. Annealing","A.Seidel-1
      * Sets the address of simulation server incl. path
      * @param address url to simulation server
      */
-    public static void setRemoteAddress(String s){
-    remoteAddress=s;
+    public static void setRemoteAddress(String address){
+    remoteAddress=address;
+    }
+    
+    /**
+     * Checks, if the given remoteAddress (URL to Sim.-Server) is correct
+     * @param urlString The URL as String to be checked, if this is the available Sim.-Server
+     * @return True if URL is correct and server is working, else false
+     * To be modified by: Group studies 2014
+     */
+    public static boolean checkRemoteAddress(String urlString){
+    return true;
     }
     
     /**
@@ -621,6 +632,20 @@ protected static final String[] OPTITYPES={"GREEDY","Sim. Annealing","A.Seidel-1
         newParameterSet[i].setValue(parameterBase[i].getValue());
         }
     return newParameterSet;
+    }
+
+    /**
+     * @return the isRunningAsSlave
+     */
+    public static boolean isIsRunningAsSlave() {
+        return isRunningAsSlave;
+    }
+
+    /**
+     * @param aIsRunningAsSlave the isRunningAsSlave to set
+     */
+    public static void setIsRunningAsSlave(boolean aIsRunningAsSlave) {
+        isRunningAsSlave = aIsRunningAsSlave;
     }
 }
 
