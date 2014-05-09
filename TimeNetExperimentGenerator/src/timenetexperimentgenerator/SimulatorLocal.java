@@ -80,7 +80,7 @@ private final String nameOfTempDirectory="14623786483530251523506521233052";
             FileWriter fw;
                 if(listOfParameterSets.size()>0){
                     for(int i=0;i<listOfParameterSets.size();i++){
-                    fw = new FileWriter(logFileName, true);
+                    //fw = new FileWriter(logFileName, true);
                     if(cancelSimulations) return;
                     parameter[] actualParameterSet=listOfParameterSets.get(i);//get actual parameterset
                     String actualParameterFileName=createLocalSimulationFile(actualParameterSet, this.simulationCounter);//create actual SCPN xml-file and save it in tmp-folder
@@ -101,12 +101,12 @@ private final String nameOfTempDirectory="14623786483530251523506521233052";
                     this.status=numberOfSimulations*100 / listOfParameterSets.size(); //update status of local simulations (in %)
                     this.simulationCounter++;//increment given global simulation counter
 
-                    fw.close();
+                    //fw.close();
                     }
 
                 }
                 
-               }catch(IOException e){
+               }catch(Exception e){
                support.log("Error while creating local simulation file or log-file.");
                }
 

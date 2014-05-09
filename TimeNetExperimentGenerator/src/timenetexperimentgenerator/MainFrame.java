@@ -19,6 +19,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.event.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -639,7 +640,24 @@ SimulatorWebSlave mySlave=new SimulatorWebSlave();
     }//GEN-LAST:event_jComboBoxOptimizationTypeItemStateChanged
 
     private void jButtonEnterURLToSimServerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEnterURLToSimServerActionPerformed
-        // TODO add your handling code here:
+        
+        String s = (String)JOptionPane.showInputDialog(
+                    this,
+                    "Enter URL of Simulation Server:\n",
+                    "URL of Simulation Server",
+                    JOptionPane.PLAIN_MESSAGE,
+                    null,
+                    null,
+                    support.getReMoteAddress());
+
+        //If a string was returned, say so.
+        if ((s != null) && (s.length() > 0)) {
+        support.log("URL of Simulation-Server as given from user is " + s + "!");
+        support.setRemoteAddress(s);
+        this.saveProperties();
+        }else{
+        support.log("URL of Simulation-Server was not entered!");    
+        }
     }//GEN-LAST:event_jButtonEnterURLToSimServerActionPerformed
 
     private void jCheckBoxSlaveSimulatorItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBoxSlaveSimulatorItemStateChanged
