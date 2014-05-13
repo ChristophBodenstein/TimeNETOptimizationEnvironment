@@ -5,11 +5,14 @@
  * TU-Ilmenau, FG SSE
  */
 
-package timenetexperimentgenerator;
+package timenetexperimentgenerator.simulation;
 
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import timenetexperimentgenerator.datamodel.parameter;
+import timenetexperimentgenerator.datamodel.parser;
+import timenetexperimentgenerator.support;
 
 /**
  * Class to simulate real SCPN-Simulation. It uses the SimulationCache with read log-data
@@ -35,7 +38,7 @@ private int simulationCounter=0;
         }
         
         if(this.myListOfSimulationParsers==null){
-        support.log("Simulations not found in local Cache. Starting local simulation.");
+        support.log("Simulations not found in local Cache.  Will take next possible parameterset from cache.");
         Simulator tmpSim=new SimulatorLocal();
         tmpSim.initSimulator(listOfParameterSetsTMP, simulationCounterTMP);
             while(tmpSim.getStatus()<100){

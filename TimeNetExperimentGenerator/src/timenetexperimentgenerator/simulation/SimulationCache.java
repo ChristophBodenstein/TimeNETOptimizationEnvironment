@@ -7,13 +7,18 @@
  * TU-Ilmenau, FG SSE
  */
 
-package timenetexperimentgenerator;
+package timenetexperimentgenerator.simulation;
 
+import timenetexperimentgenerator.helper.parameterTableModel;
+import timenetexperimentgenerator.datamodel.MeasureType;
+import timenetexperimentgenerator.datamodel.parser;
+import timenetexperimentgenerator.datamodel.parameter;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import timenetexperimentgenerator.*;
 
 /**
  *
@@ -34,7 +39,7 @@ private int localSimulationCounter=0;
     
 
    
-    protected boolean parseSimulationCacheFile(String filename, ArrayList<MeasureType> listOfMeasures, parameterTableModel myParameterTableModel, MainFrame myParentFrame){
+    public boolean parseSimulationCacheFile(String filename, ArrayList<MeasureType> listOfMeasures, parameterTableModel myParameterTableModel, MainFrame myParentFrame){
     ArrayList <String[]> listOfStringLines=new ArrayList<String[]>();
         //read file
     BufferedReader reader;
@@ -145,7 +150,7 @@ private int localSimulationCounter=0;
         }   support.log("All parameters seem available in table.");
 
         
-        this.MeasureList=new ArrayList<MeasureType>();
+        
         //Generate List of Simulated Experiments
         for(i=0;i<numberOfExperiments;i++){
             
@@ -264,10 +269,56 @@ private int localSimulationCounter=0;
             }
         }
     return myTmpList;
-    //TODO: If not found, then find the nearest one       
-    //Return null, if not found
     }
     
+    /**
+     * Returns Measure, which is the nearest to the given parameterSet (if exact match doesn`t exist)
+     * @param parameterList given paramegerSet for simulated simulation...
+     * @return Measure which is nearest one to given parameterset
+     * TODO build into getListOfCompletedSimulationParsers()
+     */
+    public ArrayList<MeasureType> getNearestMeasuresWithParameterList(ArrayList<parameter> parameterList){
+    MeasureType tmpMeasure;
+        
+        for(int i=0;i<this.MeasureList.size();i++){
+        tmpMeasure=this.MeasureList.get(i);
+            if(compareParameterList(parameterList, tmpMeasure.getParameterList())){
+            //myTmpList.add(tmpMeasure);
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * Returns distance of whole parameterset (sum of all parameter-Values)
+     * @param listA first list to be compared
+     * @param listB second list to be compared
+     * @return distance of all parameter-values combined. if A<B negative, A>B positive
+     */
+    private double getDistanceOfParameterLists(ArrayList<parameter> listA, ArrayList<parameter> listB){
+    double sum[]=new double[2];
+    ArrayList<parameter> list[]=new ArrayList[2];
+    list[0]=listA;
+    list[1]=listB;
+        for(int i=0;i<2;i++){
+            sum[i]=0;
+            for(int c=0;c<list[i].size();c++){
+            sum[i]+=list[i].get(c).getValue();
+            }
+        }
+    return (sum[0]-sum[1]);
+    }
+    
+    /**
+     * Returns the next matching parser, based on nearest parametervalues
+     * 
+     * @param parameterList List of parameters to be searched for
+     * @param roundUp if true, next parameter with up-rounded value is chosen, else downrounded value
+     * @return one parser with next matching parameterlist
+     */
+    public parser getNearestParser(ArrayList<parameter> parameterList, boolean roundUp){
+    return null;
+    }
     
     /**
      * Checks if two parametersets are equal
@@ -334,7 +385,7 @@ private int localSimulationCounter=0;
     
     
         for(int i=0;i<parameterListArray.size();i++){
-            //Create Arraylist from aray of parameters
+            //Create Arraylist from array of parameters
             ArrayList<parameter> tmpParameterList=new ArrayList<parameter>();
             for(int c=0;c<parameterListArray.get(i).length;c++){
             tmpParameterList.add(parameterListArray.get(i)[c]);
@@ -346,19 +397,40 @@ private int localSimulationCounter=0;
             
             //append if listSize is > 0
             if(listOfMeasureWithGivenParameters.size()>0){
-            parser tmpParser=new parser();
+            /*parser tmpParser=new parser();
             tmpParser.setMeasures(listOfMeasureWithGivenParameters);
             tmpParser.setSimulationTime(listOfMeasureWithGivenParameters.get(i).getSimulationTime());
             tmpParser.setCPUTime(support.getInt(listOfMeasureWithGivenParameters.get(i).getCPUTime()));
-            myParserList.add(tmpParser);
+            */
+            myParserList.add(this.getParserFromListOfMeasures(listOfMeasureWithGivenParameters));
             simulationCounter++;
             }
+            
             
         }
     if(myParserList.size()==0){return null;}
     return myParserList;
     }
 
+    
+    /**
+     * Returns a parser-object containing all given MeasureTypes
+     * @param mList List of MeasureType-Objects to be converted into one parser
+     * @return one parser-object
+     */
+    private parser getParserFromListOfMeasures(ArrayList<MeasureType> mList){
+        if(mList.size()>0){
+        parser tmpParser=new parser();
+            for(int i=0;i<mList.size();i++){
+            tmpParser.setMeasures(mList);
+            tmpParser.setSimulationTime(mList.get(i).getSimulationTime());
+            tmpParser.setCPUTime(support.getInt(mList.get(i).getCPUTime()));
+            }
+        return tmpParser;
+        }
+    return null;
+    }
+    
     /**
      * @return the localSimulationCounter
      */
@@ -373,5 +445,29 @@ private int localSimulationCounter=0;
         this.localSimulationCounter = localSimulationCounter;
     }
     
+    
+    /**
+     * Converts every given parser into List of Measures and adds this to local cache
+     * 
+     * @param parserList List of parsers to be added to local cache
+     */
+    public void addListOfParsersToCache(ArrayList<parser> parserList){
+        for(int i=0; i<parserList.size();i++){
+        parser tmpParser=parserList.get(i);
+            
+            //Convert Array of parameters to ArrayList of parameters
+            ArrayList<parameter> tmpParameterList=new ArrayList<parameter>();
+            for(int d=0;d<tmpParser.getListOfParameters().length;d++){
+            tmpParameterList.add(tmpParser.getListOfParameters()[d]);
+            }
+            
+            //Get List of MeasureTypes, set ParameterList and append it to local MeasureList
+            for(int c=0;c>tmpParser.getMeasures().size();c++){
+            MeasureType tmpMeasure=tmpParser.getMeasures().get(c);
+            tmpMeasure.setParameterList(tmpParameterList);
+            this.MeasureList.add(tmpMeasure);
+            }
+        }
+    }
     
 }

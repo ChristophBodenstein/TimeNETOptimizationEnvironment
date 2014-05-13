@@ -7,7 +7,7 @@
  * TU-Ilmenau, FG SSE
  */
 
-package timenetexperimentgenerator;
+package timenetexperimentgenerator.simulation;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -19,6 +19,10 @@ import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.*;
+import timenetexperimentgenerator.helper.ProcMon;
+import timenetexperimentgenerator.datamodel.parameter;
+import timenetexperimentgenerator.datamodel.parser;
+import timenetexperimentgenerator.support;
 
 /**
  *

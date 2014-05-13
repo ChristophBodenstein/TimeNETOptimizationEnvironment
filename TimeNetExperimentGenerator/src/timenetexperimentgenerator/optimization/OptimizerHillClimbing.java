@@ -5,13 +5,20 @@
  * TU-Ilmenau, FG SSE
  */
 
-package timenetexperimentgenerator;
+package timenetexperimentgenerator.optimization;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
+import timenetexperimentgenerator.MainFrame;
+import timenetexperimentgenerator.datamodel.MeasureType;
+import timenetexperimentgenerator.SimOptiFactory;
+import timenetexperimentgenerator.simulation.Simulator;
+import timenetexperimentgenerator.datamodel.parameter;
+import timenetexperimentgenerator.datamodel.parser;
+import timenetexperimentgenerator.support;
 
 /**
  *
@@ -20,7 +27,7 @@ import javax.swing.JTabbedPane;
  * needs: path to timenet, path for tmp-files, path/filename of original, access to tModel with parameters, access to jTabbedPane with Measurement-forms
  *
  */
-public class OptimizerGreedy implements Runnable, Optimizer{
+public class OptimizerHillClimbing implements Runnable, Optimizer{
 String tmpPath="";
 String filename="";//Original filename
 String pathToTimeNet="";
@@ -39,7 +46,7 @@ double cpuTimeSum=0;
      * Constructor
      * 
      */
-    OptimizerGreedy(){
+    public OptimizerHillClimbing(){
     }
 
     /**

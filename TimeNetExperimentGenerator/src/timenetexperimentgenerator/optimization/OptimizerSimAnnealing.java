@@ -5,11 +5,16 @@
  * TU-Ilmenau, FG SSE
  */
 
-package timenetexperimentgenerator;
+package timenetexperimentgenerator.optimization;
 
 import java.util.ArrayList;
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
+import timenetexperimentgenerator.MainFrame;
+import timenetexperimentgenerator.datamodel.MeasureType;
+import timenetexperimentgenerator.datamodel.parameter;
+import timenetexperimentgenerator.datamodel.parser;
+import timenetexperimentgenerator.support;
 
 /**
  *

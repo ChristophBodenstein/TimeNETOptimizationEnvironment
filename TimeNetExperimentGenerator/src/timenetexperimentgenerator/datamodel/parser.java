@@ -6,7 +6,7 @@
  * TU-Ilmenau, FG SSE
  */
 
-package timenetexperimentgenerator;
+package timenetexperimentgenerator.datamodel;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.*;
+import timenetexperimentgenerator.support;
 
 /**
  *

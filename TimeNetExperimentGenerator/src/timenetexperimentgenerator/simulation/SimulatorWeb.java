@@ -10,9 +10,11 @@
  * TU-Ilmenau, FG SSE
  */
 
-package timenetexperimentgenerator;
+package timenetexperimentgenerator.simulation;
 
 import java.util.ArrayList;
+import timenetexperimentgenerator.datamodel.parameter;
+import timenetexperimentgenerator.datamodel.parser;
 
 /**
  *

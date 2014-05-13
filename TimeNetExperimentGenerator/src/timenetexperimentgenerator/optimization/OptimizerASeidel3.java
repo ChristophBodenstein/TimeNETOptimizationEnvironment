@@ -3,7 +3,7 @@
  *
  */
 
-package timenetexperimentgenerator;
+package timenetexperimentgenerator.optimization;
 
 /**
  *

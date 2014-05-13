@@ -6,10 +6,12 @@
  * TU-Ilmenau, FG SSE
  */
 
-package timenetexperimentgenerator;
+package timenetexperimentgenerator.helper;
 
 import javax.swing.table.AbstractTableModel;
 import org.w3c.dom.*;
+import timenetexperimentgenerator.MainFrame;
+import timenetexperimentgenerator.support;
 
 /**
  *
@@ -22,9 +24,11 @@ private String[] columnNames ={"Name","StartValue","EndValue","Stepping"};
 private String[][] parameterArray;
 
     /**
-     *Constructor
+     * Constructor
+     * @param p Nodelist from XML-File
+     * @param parent Parent Frame to show some information on infoLabel etc.
      */
-    parameterTableModel(NodeList p, MainFrame parent){
+    public parameterTableModel(NodeList p, MainFrame parent){
     this.parameterList=p;
     this.parameterArray=new String[p.getLength()+5][4];
     
@@ -98,7 +102,7 @@ private String[][] parameterArray;
     }
     
     public double getDoubleValueAt(int row, int col) {
-        return Double.valueOf(parameterArray[row][col].toString());
+        return support.round(Double.valueOf(parameterArray[row][col]));
     }
 
     @Override
@@ -112,13 +116,9 @@ private String[][] parameterArray;
      */
     @Override
     public boolean isCellEditable(int row, int col) {
-        //Note that the data/cell address is constant,
-        //no matter where the cell appears onscreen.
-        if (col < 1) {
-            return false;
-        } else {
-            return true;
-        }
+    //Note that the data/cell address is constant,
+    //no matter where the cell appears onscreen.
+    return col >= 1;
     }
 
     /*
@@ -135,6 +135,9 @@ private String[][] parameterArray;
     /**
      * Gets the Value for StartValue, EndValue or Stepping for one parameter as String
      * The fieldname (StartValue, EndValue or Stepping) must be given as String for col
+     * @param name name of the parameter
+     * @param col column of the parameter (StartValue, EndValue, Stepping)
+     * @return The Value of one table cell
      */
     public String getValueByName(String name, String col){
     String returnValue=null;
@@ -165,6 +168,9 @@ private String[][] parameterArray;
     /**
      * Gets the Value for StartValue, EndValue or Stepping for one parameter as double
      * The fieldname (StartValue, EndValue or Stepping) must be given as String for col
+     * @param name name of the parameter
+     * @param col column of the parameter (StartValue, EndValue, Stepping)
+     * @return Double value of table cell
      */
     public double getDoubleValueByName(String name, String col){
 
@@ -177,6 +183,10 @@ private String[][] parameterArray;
      * Set the value for StartValue, EndValue or Stepping
      * The fieldname (StartValue, EndValue or Stepping) must be given as String
      * Value must also be given as String
+     * @param name name of the parameter
+     * @param col column of the parameter (StartValue, EndValue, Stepping)
+     * @param value the value to be set
+     * @return true if successfull, else false
      */
     public boolean setValueByName(String name, String col, String value){
     boolean returnValue=false;
@@ -210,7 +220,11 @@ private String[][] parameterArray;
     /**
      * Set the value for StartValue, EndValue or Stepping as double
      * The fieldname (StartValue, EndValue or Stepping) must be given as String
-     * Value must also be given as String
+     * Value must also be given as Double
+     * @param name name of the parameter
+     * @param col column of the parameter (StartValue, EndValue, Stepping)
+     * @param value the value to be set
+     * @return true if successfull, else false
      */
     public boolean setValueByName(String name, String col, double value){
     

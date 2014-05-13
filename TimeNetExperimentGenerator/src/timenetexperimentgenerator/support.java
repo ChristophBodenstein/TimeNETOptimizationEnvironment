@@ -9,6 +9,10 @@
 
 package timenetexperimentgenerator;
 
+import timenetexperimentgenerator.datamodel.MeasureType;
+import timenetexperimentgenerator.datamodel.parser;
+import timenetexperimentgenerator.datamodel.parameter;
+import timenetexperimentgenerator.simulation.SimulationCache;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -42,8 +46,8 @@ private static String remoteAddress=null;
 private static Integer chosenOptimizerType=0;//0=Greedy, 1=?, 2=?
 private static Integer chosenSimulatorType=0;//0=local, 1=cached, 2=distributed
 
-protected static final String[] SIMTYPES={"Local Sim.","Cached Sim.","Distributed S."};
-protected static final String[] OPTITYPES={"GREEDY","Sim. Annealing","A.Seidel-1","A.Seidel-2","A.Seidel-3"};
+public static final String[] SIMTYPES={"Local Sim.","Cache Only Sim.","Cache & Local","Web Sim."};
+public static final String[] OPTITYPES={"Hillclimbing","Sim. Annealing","A.Seidel-1","A.Seidel-2","A.Seidel-3"};
 
     
 

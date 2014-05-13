@@ -5,7 +5,7 @@
  * TU-Ilmenau, FG SSE
  */
 
-package timenetexperimentgenerator;
+package timenetexperimentgenerator.datamodel;
 
 import java.util.ArrayList;
 

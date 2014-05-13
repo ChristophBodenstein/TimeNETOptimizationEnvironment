@@ -6,6 +6,7 @@
 
 package timenetexperimentgenerator;
 
+import timenetexperimentgenerator.datamodel.MeasureType;
 import java.util.ArrayList;
 
 /**

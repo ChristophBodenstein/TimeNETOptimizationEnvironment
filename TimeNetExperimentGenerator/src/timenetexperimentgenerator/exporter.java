@@ -7,6 +7,8 @@
 
 package timenetexperimentgenerator;
 
+import timenetexperimentgenerator.helper.parameterTableModel;
+import timenetexperimentgenerator.datamodel.parameter;
 import java.io.File;
 import java.util.ArrayList;
 import javax.swing.JFileChooser;
@@ -171,17 +173,17 @@ boolean isRunning=false;
         lastParameterSet[i]=new parameter();
         lastParameterSet[i].setName(tModel.getValueAt(i, 0).toString());
         lastParameterSet[i].setValue(tModel.getDoubleValueAt(i, 1));
-        parameterValues[i][0]=Double.valueOf(tModel.getValueAt(i, 1).toString());
+        parameterValues[i][0]=tModel.getDoubleValueAt(i, 1);
 
         lastParameterSet[i].setStartValue(tModel.getDoubleValueAt(i, 1));//=StartValue
-        parameterValues[i][1]=Double.valueOf(tModel.getValueAt(i, 1).toString());
+        parameterValues[i][1]=tModel.getDoubleValueAt(i, 1);
 
 
         lastParameterSet[i].setEndValue(tModel.getDoubleValueAt(i, 2));
-        parameterValues[i][2]=Double.valueOf(tModel.getValueAt(i, 2).toString());
+        parameterValues[i][2]=tModel.getDoubleValueAt(i, 2);
         
         lastParameterSet[i].setStepping(tModel.getDoubleValueAt(i, 3));
-        parameterValues[i][3]=Double.valueOf(tModel.getValueAt(i, 3).toString());
+        parameterValues[i][3]=tModel.getDoubleValueAt(i, 3);
         }
 
         parameter[] tmpParameterSet=new parameter[tModel.getRowCount()];

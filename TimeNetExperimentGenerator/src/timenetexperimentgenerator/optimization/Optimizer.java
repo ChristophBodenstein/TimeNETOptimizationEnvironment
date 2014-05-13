@@ -4,7 +4,7 @@
  * TU-Ilmenau, FG SSE
  */
 
-package timenetexperimentgenerator;
+package timenetexperimentgenerator.optimization;
 
 /**
  *

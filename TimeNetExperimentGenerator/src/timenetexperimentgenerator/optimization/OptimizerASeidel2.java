@@ -3,13 +3,13 @@
  *
  */
 
-package timenetexperimentgenerator;
+package timenetexperimentgenerator.optimization;
 
 /**
  *
  * @author A. Seidel
  */
-public class OptimizerASeidel1 implements Runnable, Optimizer{
+public class OptimizerASeidel2 implements Runnable, Optimizer{
 
     public void initOptimizer() {
         throw new UnsupportedOperationException("Not supported yet.");

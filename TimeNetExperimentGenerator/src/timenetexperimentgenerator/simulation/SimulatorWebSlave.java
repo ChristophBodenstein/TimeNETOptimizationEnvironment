@@ -10,7 +10,9 @@
  * TU-Ilmenau, FG SSE
  */
 
-package timenetexperimentgenerator;
+package timenetexperimentgenerator.simulation;
+
+import timenetexperimentgenerator.support;
 
 /**
  *

@@ -4,9 +4,10 @@
  * and open the template in the editor.
  */
 
-package timenetexperimentgenerator;
+package timenetexperimentgenerator.helper;
 
 import javax.swing.DefaultComboBoxModel;
+import timenetexperimentgenerator.support;
 
 /**
  *

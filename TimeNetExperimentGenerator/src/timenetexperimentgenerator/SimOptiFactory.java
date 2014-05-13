@@ -7,6 +7,9 @@
 
 package timenetexperimentgenerator;
 
+import timenetexperimentgenerator.simulation.*;
+import timenetexperimentgenerator.optimization.*;
+
 /**
  *
  * @author Christoph Bodenstein
@@ -30,6 +33,11 @@ public class SimOptiFactory {
 
         
         if(support.getChosenSimulatorType().equals(new Integer(2))){
+        //Return Cached/Local simulator, All new Parsers will be stored in local cache
+        return new SimulatorCachedLocal();
+        }
+        
+        if(support.getChosenSimulatorType().equals(new Integer(3))){
         //Return distributed simulator
         return new SimulatorWeb();
         }
@@ -41,7 +49,7 @@ public class SimOptiFactory {
     public static Optimizer getOptimizer(){
         switch (support.getChosenOptimizerType().intValue()){
             case 0:
-                    return new OptimizerGreedy();
+                    return new OptimizerHillClimbing();
             case 1:
                     return new OptimizerSimAnnealing();
             case 2:
@@ -52,7 +60,7 @@ public class SimOptiFactory {
                     return new OptimizerASeidel3();
 
             default: 
-                    return new OptimizerGreedy();
+                    return new OptimizerHillClimbing();
         }
     }
 

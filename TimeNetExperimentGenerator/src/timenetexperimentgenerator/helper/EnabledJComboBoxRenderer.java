@@ -1,7 +1,7 @@
 /**
  * used from http://www.algosome.com/articles/enable-disable-jcombobox.html
  */
-package timenetexperimentgenerator;
+package timenetexperimentgenerator.helper;
 
 
 import java.awt.Color;

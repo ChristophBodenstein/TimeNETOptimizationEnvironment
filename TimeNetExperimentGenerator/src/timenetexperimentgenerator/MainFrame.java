@@ -8,6 +8,10 @@
 package timenetexperimentgenerator;
 
 
+import timenetexperimentgenerator.helper.*;
+import timenetexperimentgenerator.datamodel.*;
+import timenetexperimentgenerator.simulation.*;
+import timenetexperimentgenerator.optimization.*;
 import java.awt.Color;
 import java.awt.Component;
 import java.io.*;
@@ -326,7 +330,7 @@ SimulatorWebSlave mySlave=new SimulatorWebSlave();
             }
         });
 
-        jComboBoxSimulationType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Local Sim.", "Cached Sim.", "Distributed S." }));
+        jComboBoxSimulationType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Sim" }));
         jComboBoxSimulationType.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 jComboBoxSimulationTypeItemStateChanged(evt);
@@ -531,8 +535,10 @@ SimulatorWebSlave mySlave=new SimulatorWebSlave();
         support.setMeasureFormPane(jTabbedPane1);
     
         //LocalBatchSimulatorEngine mySimulator=new LocalBatchSimulatorEngine(ListOfParameterSetsToBeWritten);
-        SimulatorLocal mySimulator=new SimulatorLocal();
+        //SimulatorLocal mySimulator=new SimulatorLocal();
+        Simulator mySimulator=SimOptiFactory.getSimulator();
         mySimulator.initSimulator(ListOfParameterSetsToBeWritten, 0);
+        
     
     }//GEN-LAST:event_jButtonStartBatchSimulationActionPerformed
 
@@ -728,7 +734,7 @@ SimulatorWebSlave mySlave=new SimulatorWebSlave();
             
                 for(int i=0;i<endCounter;i++){
                 usedValue=start+(double)i*step;
-                
+                usedValue=support.round(usedValue);
                 parameter[] nextParameterSet=new parameter[lastParameterSet.length];
                     //Get copy of paremeterset
                     for(int c=0;c<lastParameterSet.length;c++){

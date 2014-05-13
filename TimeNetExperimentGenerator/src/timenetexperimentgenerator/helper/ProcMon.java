@@ -4,7 +4,7 @@
  * TU-Ilmenau, FG SSE
  */
 
-package timenetexperimentgenerator;
+package timenetexperimentgenerator.helper;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
