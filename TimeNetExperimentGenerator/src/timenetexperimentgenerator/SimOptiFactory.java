@@ -7,6 +7,7 @@
 
 package timenetexperimentgenerator;
 
+import timenetexperimentgenerator.optimization.OptimizerChargedSystemSearch;
 import timenetexperimentgenerator.simulation.*;
 import timenetexperimentgenerator.optimization.*;
 
@@ -53,7 +54,7 @@ public class SimOptiFactory {
             case 1:
                     return new OptimizerSimAnnealing();
             case 2:
-                    return new OptimizerASeidel1();
+                    return new OptimizerChargedSystemSearch();
             case 3:
                     return new OptimizerASeidel2();
             case 4:
