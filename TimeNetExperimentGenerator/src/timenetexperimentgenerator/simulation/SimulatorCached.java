@@ -7,7 +7,9 @@
 
 package timenetexperimentgenerator.simulation;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import timenetexperimentgenerator.datamodel.parameter;
@@ -22,7 +24,16 @@ public class SimulatorCached implements Simulator{
 private SimulationCache mySimulationCache=null;
 private ArrayList<parser> myListOfSimulationParsers=null;
 private int simulationCounter=0;
+private String logFileName;
     
+
+    /**
+     * Constructor
+     */
+     public SimulatorCached(){
+     logFileName=support.getTmpPath()+File.separator+"SimLogCached"+Calendar.getInstance().getTimeInMillis()+".csv";
+     support.log("LogfileName:"+logFileName);
+     }
 
     /**
      * inits the simulation, this is neccessary and must be implemented
@@ -37,21 +48,14 @@ private int simulationCounter=0;
         support.log("No local Simulation file loaded. Simulation not possible.");
         }
         
-        if(this.myListOfSimulationParsers==null){
-        support.log("Simulations not found in local Cache.  Will take next possible parameterset from cache.");
-        Simulator tmpSim=new SimulatorLocal();
-        tmpSim.initSimulator(listOfParameterSetsTMP, simulationCounterTMP);
-            while(tmpSim.getStatus()<100){
-                try {
-                    Thread.sleep(500);
-                } catch(InterruptedException ex) {
-                    Thread.currentThread().interrupt();
-                    support.log("Exception while waiting for local simulation.");
-                }
-            
-            }
-        myListOfSimulationParsers=tmpSim.getListOfCompletedSimulationParsers();
+        if((this.myListOfSimulationParsers==null)||(this.myListOfSimulationParsers.size()!=listOfParameterSetsTMP.size())){
+        support.log("Not all Simulations found in local Cache.  Will take next possible parametersets from cache.");
+        myListOfSimulationParsers=this.mySimulationCache.getNearestParserListFromListOfParamaeterSets(listOfParameterSetsTMP);
+        }
         
+        if(this.myListOfSimulationParsers!=null){
+        //Print out a log file    
+        support.addLinesToLogFileFromListOfParser(myListOfSimulationParsers, logFileName);
         }
         
     }

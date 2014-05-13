@@ -18,6 +18,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import timenetexperimentgenerator.*;
 
 /**
@@ -260,7 +262,7 @@ private int localSimulationCounter=0;
     MeasureType tmpMeasure;
     ArrayList<MeasureType> myTmpList=new ArrayList();
     
-    support.log("Size of All Measures from File: "+MeasureList.size());
+    //support.log("Size of All Measures from File: "+MeasureList.size());
         //Go through all Measures, find the one with the same parameterlist
         for(int i=0;i<this.MeasureList.size();i++){
         tmpMeasure=this.MeasureList.get(i);
@@ -272,21 +274,60 @@ private int localSimulationCounter=0;
     }
     
     /**
-     * Returns Measure, which is the nearest to the given parameterSet (if exact match doesn`t exist)
+     * Returns parser, which is the nearest to the given parameterSet (if exact match doesn`t exist)
      * @param parameterList given paramegerSet for simulated simulation...
      * @return Measure which is nearest one to given parameterset
      * TODO build into getListOfCompletedSimulationParsers()
      */
-    public ArrayList<MeasureType> getNearestMeasuresWithParameterList(ArrayList<parameter> parameterList){
-    MeasureType tmpMeasure;
+    public parser getNearestParserWithParameterList(ArrayList<parameter> parameterList){
+    ArrayList<Double[]> distArrayList=new ArrayList<Double[]>();    
         
         for(int i=0;i<this.MeasureList.size();i++){
-        tmpMeasure=this.MeasureList.get(i);
-            if(compareParameterList(parameterList, tmpMeasure.getParameterList())){
-            //myTmpList.add(tmpMeasure);
-            }
+        Double[] tmpDist=new Double[2];//0->Dist, 1->Index
+        tmpDist[0]=getDistanceOfParameterLists(this.MeasureList.get(i).getParameterList(), parameterList);
+        tmpDist[1]= (double)i;
+        distArrayList.add(tmpDist);
         }
-        return null;
+        
+        Collections.sort(distArrayList, new Comparator<Double[]>(){
+            @Override
+            public int compare(Double[] a, Double[] b){
+                return a[0].compareTo(b[0]);
+            }
+        });
+        //Now it`s sorted, we should find the one with distance >= 0
+        int indexOfZeroDistance=0;
+        
+        while(distArrayList.get(indexOfZeroDistance)[0]>0.0){
+        indexOfZeroDistance++;
+        }
+        //indexOfZeroDistance should contain the index of the Distance >=0
+        //TODO: gibt direkt Parserliste zurück!!! ist einfacher
+        ArrayList<MeasureType> listOfMeasureWithGivenParameters=this.getAllMeasuresWithParameterList(this.MeasureList.get(distArrayList.get(indexOfZeroDistance)[1].intValue()).getParameterList());
+        if(listOfMeasureWithGivenParameters.size()>0){
+        
+        this.setLocalSimulationCounter(this.getLocalSimulationCounter()+1);
+        return (this.getParserFromListOfMeasures(listOfMeasureWithGivenParameters));
+        }
+    return null;
+    }
+    
+    /**
+     * Wrapper. Return List of parsers for given list of parametersets (fuzzy-search)
+     * 
+     * @param pList List of Parametersets (ArrayList of Arrays)
+     * @return ArrayList of parsers
+     */
+    public ArrayList<parser> getNearestParserListFromListOfParamaeterSets(ArrayList<parameter[]> pList){
+    ArrayList<parser> returnList=new ArrayList<parser>();
+        for(int i=0;i<pList.size();i++){
+        ArrayList<parameter> tmpPList=new ArrayList();
+            for(int c=0;c<pList.get(i).length;c++){
+            tmpPList.add(pList.get(i)[c]);
+            }
+        returnList.add(getNearestParserWithParameterList(tmpPList));
+        }
+    return returnList;
     }
     
     /**
@@ -309,16 +350,6 @@ private int localSimulationCounter=0;
     return (sum[0]-sum[1]);
     }
     
-    /**
-     * Returns the next matching parser, based on nearest parametervalues
-     * 
-     * @param parameterList List of parameters to be searched for
-     * @param roundUp if true, next parameter with up-rounded value is chosen, else downrounded value
-     * @return one parser with next matching parameterlist
-     */
-    public parser getNearestParser(ArrayList<parameter> parameterList, boolean roundUp){
-    return null;
-    }
     
     /**
      * Checks if two parametersets are equal
