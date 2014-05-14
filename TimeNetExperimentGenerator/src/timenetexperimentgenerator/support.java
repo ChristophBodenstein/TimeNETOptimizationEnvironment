@@ -9,18 +9,9 @@
 
 package timenetexperimentgenerator;
 
-import timenetexperimentgenerator.datamodel.MeasureType;
-import timenetexperimentgenerator.datamodel.parser;
-import timenetexperimentgenerator.datamodel.parameter;
+import timenetexperimentgenerator.datamodel.*;
 import timenetexperimentgenerator.simulation.SimulationCache;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.ArrayList;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;

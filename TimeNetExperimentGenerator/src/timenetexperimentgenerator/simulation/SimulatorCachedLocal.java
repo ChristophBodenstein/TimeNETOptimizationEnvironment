@@ -7,7 +7,9 @@
 
 package timenetexperimentgenerator.simulation;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
 import timenetexperimentgenerator.datamodel.parameter;
 import timenetexperimentgenerator.datamodel.parser;
 import timenetexperimentgenerator.support;
@@ -20,7 +22,16 @@ public class SimulatorCachedLocal implements Simulator{
 private SimulationCache mySimulationCache=null;
 private ArrayList<parser> myListOfSimulationParsers=null;
 private int simulationCounter=0;
+private String logFileName;
     
+
+    /**
+     * Constructor
+     */
+     public SimulatorCachedLocal(){
+     logFileName=support.getTmpPath()+File.separator+"SimLogCachedAndLocal"+Calendar.getInstance().getTimeInMillis()+".csv";
+     support.log("LogfileName:"+logFileName);
+     }
 
     /**
      * inits the simulation, this is neccessary and must be implemented
@@ -50,7 +61,10 @@ private int simulationCounter=0;
             
             }
         myListOfSimulationParsers=tmpSim.getListOfCompletedSimulationParsers();
-        
+        }
+        if(this.myListOfSimulationParsers!=null){
+        //Print out a log file    
+        support.addLinesToLogFileFromListOfParser(myListOfSimulationParsers, logFileName);
         }
         
     }
