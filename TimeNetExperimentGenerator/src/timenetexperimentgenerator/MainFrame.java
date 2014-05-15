@@ -625,7 +625,7 @@ SimulatorWebSlave mySlave=new SimulatorWebSlave();
       support.log("No input file chosen!");
       return;
       }  
-      this.mySimulationCache=new SimulationCache();
+      this.mySimulationCache=SimOptiFactory.getSimulationCache();
         if(!mySimulationCache.parseSimulationCacheFile(inputFile,((MeasurementForm)this.jTabbedPane1.getComponent(0)).getListOfMeasurements(), (parameterTableModel)this.jTableParameterList.getModel(),this )){
             support.log("Wrong Simulation cache file for this SCPN!");
         }else{

@@ -7,7 +7,7 @@
 
 package timenetexperimentgenerator;
 
-import timenetexperimentgenerator.optimization.OptimizerChargedSystemSearch;
+import timenetexperimentgenerator.optimization.*;
 import timenetexperimentgenerator.simulation.*;
 import timenetexperimentgenerator.optimization.*;
 
@@ -16,6 +16,7 @@ import timenetexperimentgenerator.optimization.*;
  * @author Christoph Bodenstein
  */
 public class SimOptiFactory {
+private static SimulationCache singleTonSimulationCache=new SimulationCache();
 
     public static Simulator getSimulator(){
 
@@ -35,7 +36,9 @@ public class SimOptiFactory {
         
         if(support.getChosenSimulatorType().equals(new Integer(2))){
         //Return Cached/Local simulator, All new Parsers will be stored in local cache
-        return new SimulatorCachedLocal();
+        SimulatorCachedLocal mySimulator=new SimulatorCachedLocal();
+        mySimulator.setMySimulationCache(singleTonSimulationCache);
+        return mySimulator;
         }
         
         if(support.getChosenSimulatorType().equals(new Integer(3))){
@@ -65,4 +68,7 @@ public class SimOptiFactory {
         }
     }
 
+    public static SimulationCache getSimulationCache(){
+    return singleTonSimulationCache;
+    }
 }

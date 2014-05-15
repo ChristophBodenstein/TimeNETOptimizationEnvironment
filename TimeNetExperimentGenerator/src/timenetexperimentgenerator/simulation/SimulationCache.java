@@ -40,7 +40,7 @@ private int localSimulationCounter=0;
     }
     
 
-   
+    
     public boolean parseSimulationCacheFile(String filename, ArrayList<MeasureType> listOfMeasures, parameterTableModel myParameterTableModel, MainFrame myParentFrame){
     ArrayList <String[]> listOfStringLines=new ArrayList<String[]>();
         //read file

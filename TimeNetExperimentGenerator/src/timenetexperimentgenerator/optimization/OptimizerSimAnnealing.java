@@ -7,13 +7,17 @@
 
 package timenetexperimentgenerator.optimization;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 import timenetexperimentgenerator.MainFrame;
+import timenetexperimentgenerator.SimOptiFactory;
 import timenetexperimentgenerator.datamodel.MeasureType;
 import timenetexperimentgenerator.datamodel.parameter;
 import timenetexperimentgenerator.datamodel.parser;
+import timenetexperimentgenerator.simulation.Simulator;
 import timenetexperimentgenerator.support;
 
 /**
@@ -29,6 +33,7 @@ private double Fx=0;//Current Distance
 private double Fy=0;//New Distance?
 private int typeOfNeighbordood=0;
 
+private int simulationCounter=0;
 parser currentSolution;
 parser nextSolution;
 String tmpPath="";
@@ -44,12 +49,15 @@ boolean optimized=false;//False until Optimization is ended
 JLabel infoLabel;
 double simulationTimeSum=0;
 double cpuTimeSum=0;
+String logFileName;
 
     /**
      * Constructor
      *
      */
     public OptimizerSimAnnealing() {
+    logFileName=support.getTmpPath()+File.separator+"Optimizing with Sim.Annealing "+Calendar.getInstance().getTimeInMillis()+".csv";
+    support.log("LogfileName:"+logFileName);
     }
 
     
@@ -81,12 +89,40 @@ double cpuTimeSum=0;
     }
 
     public void run() {
+        //Simulator init with initional parameterset
+        Simulator mySimulator=SimOptiFactory.getSimulator();
+        
+        mySimulator.initSimulator(getNextParametersetAsArrayList(null), simulationCounter);
+        //Wait until Simulator has ended
+        support.waitForEndOfSimulator(mySimulator, simulationCounter, 600);
+        support.addLinesToLogFileFromListOfParser(mySimulator.getListOfCompletedSimulationParsers(), logFileName);
+        this.historyOfParsers = support.appendListOfParsers(historyOfParsers, mySimulator.getListOfCompletedSimulationParsers());
+        currentSolution=mySimulator.getListOfCompletedSimulationParsers().get(0);
+        Fx=this.getActualDistance(currentSolution);
+        
+            while(!optimized){
+            mySimulator.initSimulator(getNextParametersetAsArrayList(currentSolution.getListOfParameters()), simulationCounter);
+            support.waitForEndOfSimulator(mySimulator, simulationCounter, 600);
+            support.addLinesToLogFileFromListOfParser(mySimulator.getListOfCompletedSimulationParsers(), logFileName);
+            this.historyOfParsers = support.appendListOfParsers(historyOfParsers, mySimulator.getListOfCompletedSimulationParsers());
+            nextSolution=mySimulator.getListOfCompletedSimulationParsers().get(0);
+            Fy=this.getActualDistance(nextSolution);
+                if(getProbabylity(Fy, Fx)>0.5){
+                support.log("Choosing next solution for Sim Anneling. Probability over 0.5");
+                Fx=Fy;
+                currentSolution=nextSolution;
+                }
+            //TODO: Check if optimization has ended and print out information!
+            }
+            
+        
+        
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
 
     /**
-     * Get propability for chosing the actual parameterset as next solution
+     * Get probability for chosing the actual parameterset as next solution
      * @return probaility that actual Solution Fy is chosen as the next Fx
      */
     private double getProbabylity(double Fy, double Fx){
@@ -209,6 +245,18 @@ double cpuTimeSum=0;
     
     }
 
+    
+    /**
+     * Wrapper, returns next Parameterset as ArrayList with one member
+     * @param actualParameterset Base Parameterset to calculate the next one
+     * @return ArrayList of Parametersets
+     */
+    private ArrayList<parameter[]> getNextParametersetAsArrayList(parameter[] actualParameterset){
+    ArrayList<parameter[]> myParametersetList=new ArrayList<parameter[]>();
+    myParametersetList.add(getNextParameterset(actualParameterset));
+    return myParametersetList;
+    }
+    
     /**
      * Returns the fitness value of actual Paremeterset/Measure
      * Sums up all distances from Measures

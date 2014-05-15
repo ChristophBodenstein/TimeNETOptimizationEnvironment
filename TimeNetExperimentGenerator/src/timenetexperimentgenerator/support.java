@@ -9,13 +9,16 @@
 
 package timenetexperimentgenerator;
 
-import timenetexperimentgenerator.datamodel.*;
-import timenetexperimentgenerator.simulation.SimulationCache;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
+import timenetexperimentgenerator.datamodel.*;
+import timenetexperimentgenerator.simulation.SimulationCache;
+import timenetexperimentgenerator.simulation.Simulator;
 
 /**
  *
@@ -644,6 +647,45 @@ public static final String[] OPTITYPES={"Hillclimbing","Sim. Annealing","A.Seide
     public static void setIsRunningAsSlave(boolean aIsRunningAsSlave) {
         isRunningAsSlave = aIsRunningAsSlave;
     }
+    
+    /**
+     * Blocks the program and waits until the simulation has ended or timeout
+     * 
+     * @param mySimulator Simulator to wait for
+     * @param simulationCounter Simulation counter to show in the info-label
+     * @param timeout Timeout in Seconds!
+     * @return true if simulatio was sucessful. false if timeout
+     */
+    public static boolean waitForEndOfSimulator(Simulator mySimulator, int simulationCounter, long timeout){
+    long timeoutCounter=timeout;
+    support.log("wait for Simulator has 100% completed.");
+            getStatusLabel().setText("Simulations started.");
+                while(mySimulator.getStatus()<100){
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(support.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                getStatusLabel().setText("Done "+ mySimulator.getStatus() +"% ");
+                simulationCounter=mySimulator.getSimulationCounter();
+                getMainFrame().updateSimulationCounterLabel(simulationCounter);
+                System.out.print("Simulation status:"+mySimulator.getStatus() +"%");
+                support.log("Simulation Counter: "+simulationCounter);
+                timeoutCounter--;
+                    //Break if timeout is reached
+                    if (timeoutCounter<=1){return false;}
+                }
+    return true;
+    }
+    
+    
+    public static ArrayList<parser> appendListOfParsers(ArrayList<parser> mainList, ArrayList<parser> listToBeAdded){
+        for(int i=0;i<listToBeAdded.size();i++){
+        mainList.add(listToBeAdded.get(i));
+        }
+    return mainList;
+    }
+    
 }
 
 
