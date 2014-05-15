@@ -125,6 +125,7 @@ SimulatorWebSlave mySlave=new SimulatorWebSlave();
 
                         try{
                             String rowName=(String)table.getValueAt(row, 0);
+                            //TODO: get List of external Parameters from Support-Class!!!
                             if (rowName.equals("Seed")||rowName.equals("MaxTime")||rowName.equals("EndTime")||rowName.equals("ConfidenceIntervall")||rowName.equals("MaxRelError")){
                             //if (row == colorRow && column == colorClm) {
                                 setBackground(Color.LIGHT_GRAY);
@@ -160,7 +161,7 @@ SimulatorWebSlave mySlave=new SimulatorWebSlave();
         this.jComboBoxOptimizationType.setModel(myOptiTypeModel);
 
 
-        this.updateComboBoxSimulatioType();
+        this.updateComboBoxSimulationType();
         
         if(support.isIsRunningAsSlave()){
         new Thread(this.mySlave).start();
@@ -174,9 +175,10 @@ SimulatorWebSlave mySlave=new SimulatorWebSlave();
      * if cache is available --> Selection is possible
      * if server is available --> Selection of Distr. is available
      */
-    private void updateComboBoxSimulatioType(){
+    private void updateComboBoxSimulationType(){
     DefaultListSelectionModel model = new DefaultListSelectionModel();
     model.addSelectionInterval(0, 0);
+    model.addSelectionInterval(2, 2);
     if(support.isCachedSimulationAvailable()){
     model.addSelectionInterval(1, 1);
     }
@@ -199,7 +201,7 @@ SimulatorWebSlave mySlave=new SimulatorWebSlave();
             support.setCachedSimulationEnabled(true);
             }
         }
-    this.updateComboBoxSimulatioType();
+    this.updateComboBoxSimulationType();
     }    
     
     /** This method is called from within the constructor to

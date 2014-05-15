@@ -16,7 +16,7 @@ import timenetexperimentgenerator.support;
 public class SimulationTypeComboBoxModel extends DefaultComboBoxModel{
    @Override
     public void setSelectedItem(Object anObject) {
-
+        //Here is defined, what kind of simulation is possible
         if (anObject != null) {
 
             
@@ -30,9 +30,13 @@ public class SimulationTypeComboBoxModel extends DefaultComboBoxModel{
                 support.setChosenSimulatorType(1);
             }
             
-            if ((anObject.toString().equals(support.SIMTYPES[2]))&&(support.isDistributedSimulationAvailable() )) {
+            if ((anObject.toString().equals(support.SIMTYPES[2]) )) {
                 super.setSelectedItem(anObject);
                 support.setChosenSimulatorType(2);
+            }
+            if ((anObject.toString().equals(support.SIMTYPES[3]))&&(support.isDistributedSimulationAvailable() )) {
+                super.setSelectedItem(anObject);
+                support.setChosenSimulatorType(3);
             }
             
 

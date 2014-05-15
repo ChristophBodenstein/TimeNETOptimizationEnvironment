@@ -597,6 +597,8 @@ public static final String[] OPTITYPES={"Hillclimbing","Sim. Annealing","A.Seide
 
     /**
      * @return the distributedSimulationAvailable
+     * It needs to return true to be able to select this type of Simualtion
+     * Group studies students: this.distributedSimulationAvailable should be true, if URL is correct.
      */
     public static boolean isDistributedSimulationAvailable() {
         return distributedSimulationAvailable;
