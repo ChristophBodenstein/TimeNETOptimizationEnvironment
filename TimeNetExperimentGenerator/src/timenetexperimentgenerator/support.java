@@ -41,7 +41,7 @@ private static Integer chosenOptimizerType=0;//0=Greedy, 1=?, 2=?
 private static Integer chosenSimulatorType=0;//0=local, 1=cached, 2=distributed
 
 public static final String[] SIMTYPES={"Local Sim.","Cache Only Sim.","Cache & Local","Web Sim."};
-public static final String[] OPTITYPES={"Hillclimbing","Sim. Annealing","A.Seidel-1","A.Seidel-2","A.Seidel-3"};
+public static final String[] OPTITYPES={"Hillclimbing","Sim. Annealing","ChargedSystemSearch","A.Seidel-2","A.Seidel-3"};
 
     
 
