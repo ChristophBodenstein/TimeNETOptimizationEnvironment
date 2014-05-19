@@ -238,6 +238,7 @@ private String xmlFile="";
     
     /** 
      returns Array of Parameters incl. actual used Values, with empty fields for start/stop/step
+     * @return Array of parameters
      */
     public parameter[] getListOfParameters(){
     parameter[] pArray=new parameter[parameterList.size()];
@@ -247,6 +248,12 @@ private String xmlFile="";
     return pArray;
     }
 
+    /**
+     * Sets List of parameters, internal stored as ArrayList
+     * Should not be used, if logfile is parsed, only in cached-mode
+     * @param p Array of parameters
+     * @see getListOfParameters
+     */
     public void setListOfParameters(parameter[] p){
     this.parameterList=new ArrayList<parameter>();
         for(int i=0;i<p.length;i++){
