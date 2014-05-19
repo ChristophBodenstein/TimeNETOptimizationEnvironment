@@ -441,7 +441,9 @@ private int localSimulationCounter=0;
             tmpParser.setSimulationTime(listOfMeasureWithGivenParameters.get(i).getSimulationTime());
             tmpParser.setCPUTime(support.getInt(listOfMeasureWithGivenParameters.get(i).getCPUTime()));
             */
-            myParserList.add(this.getParserFromListOfMeasures(listOfMeasureWithGivenParameters));
+            parser tmpParser=this.getParserFromListOfMeasures(listOfMeasureWithGivenParameters);
+            tmpParser.setListOfParameters(parameterListArray.get(i));
+            myParserList.add(tmpParser);
             simulationCounter++;
             }
             

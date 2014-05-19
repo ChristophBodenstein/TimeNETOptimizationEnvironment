@@ -16,6 +16,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.*;
 import timenetexperimentgenerator.support;
+import timenetexperimentgenerator.datamodel.*;
 
 /**
  *
@@ -239,9 +240,19 @@ private String xmlFile="";
      returns Array of Parameters incl. actual used Values, with empty fields for start/stop/step
      */
     public parameter[] getListOfParameters(){
-    return (parameter[])parameterList.toArray();
+    parameter[] pArray=new parameter[parameterList.size()];
+        for(int i=0;i<parameterList.size();i++){
+        pArray[i]=parameterList.get(i);
+        }
+    return pArray;
     }
 
+    public void setListOfParameters(parameter[] p){
+    this.parameterList=new ArrayList<parameter>();
+        for(int i=0;i<p.length;i++){
+        this.parameterList.add((parameter)p[i]);
+        }
+    }
 
     /**
      * @param Measures the Measures to set
