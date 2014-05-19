@@ -275,7 +275,7 @@ private int localSimulationCounter=0;
     
     /**
      * Returns parser, which is the nearest to the given parameterSet (if exact match doesn`t exist)
-     * @param parameterList given paramegerSet for simulated simulation...
+     * @param parameterList given parameterSet for simulated simulation...
      * @return Measure which is nearest one to given parameterset
      * TODO build into getListOfCompletedSimulationParsers()
      */
@@ -298,11 +298,12 @@ private int localSimulationCounter=0;
         //Now it`s sorted, we should find the one with distance >= 0
         int indexOfZeroDistance=0;
         
-        while(distArrayList.get(indexOfZeroDistance)[0]>0.0){
-        indexOfZeroDistance++;
-        }
+        //Debug, output Distance-List
+        //for(int c=0;c<distArrayList.size();c++){
+        //support.log("Distance # "+c + " is "+ distArrayList.get(c)[0]);
+        //}
+        
         //indexOfZeroDistance should contain the index of the Distance >=0
-        //TODO: gibt direkt Parserliste zurück!!! ist einfacher
         ArrayList<MeasureType> listOfMeasureWithGivenParameters=this.getAllMeasuresWithParameterList(this.MeasureList.get(distArrayList.get(indexOfZeroDistance)[1].intValue()).getParameterList());
         if(listOfMeasureWithGivenParameters.size()>0){
         
@@ -345,8 +346,15 @@ private int localSimulationCounter=0;
             sum[i]=0;
             for(int c=0;c<list[i].size();c++){
             sum[i]+=list[i].get(c).getValue();
+            //support.log("Size of List "+i+" is "+list[i].size());
+            //support.log("Value of Parameter "+c+" is "+list[i].get(c).getValue());
+            
             }
         }
+    //support.log("Check For Disctance of parameterset---");
+    //support.log("Distance-A "+sum[0]);
+    //support.log("Distance-B "+sum[1]);
+    
     return (sum[0]-sum[1]);
     }
     

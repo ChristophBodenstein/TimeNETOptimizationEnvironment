@@ -664,7 +664,8 @@ public static final String[] OPTITYPES={"Hillclimbing","Sim. Annealing","Charged
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException ex) {
-                        Logger.getLogger(support.class.getName()).log(Level.SEVERE, null, ex);
+                        support.log("InterruptedException in main loop of optimization. Optimization aborted.");
+                        statusLabel.setText("Aborted / Error");
                     }
                 getStatusLabel().setText("Done "+ mySimulator.getStatus() +"% ");
                 simulationCounter=mySimulator.getSimulationCounter();
@@ -678,13 +679,47 @@ public static final String[] OPTITYPES={"Hillclimbing","Sim. Annealing","Charged
     return true;
     }
     
-    
+    /**
+     * Append a list of parsers to another list of parsers
+     * No dublication chack is made
+     * @param mainList Main List of parsers
+     * @param listToBeAdded List of Parsers to be added to Main List
+     * @return List of parsers containing all elements from both lists
+     */
     public static ArrayList<parser> appendListOfParsers(ArrayList<parser> mainList, ArrayList<parser> listToBeAdded){
         for(int i=0;i<listToBeAdded.size();i++){
         mainList.add(listToBeAdded.get(i));
         }
     return mainList;
     }
+    
+    /**
+     * Prints out info for every Measure in given List (List of Measures to be optimized)
+     * @param p Parser containing all Measures from Simulation
+     * @param measureList List of Measures to be optimized / to print.
+     */
+    public static void printOptimizedMeasures(parser p, ArrayList<MeasureType> measureList){
+    double distance=0;
+        for(int measureCount=0;measureCount<measureList.size();measureCount++){
+                MeasureType activeMeasure=p.getMeasureByName(measureList.get(measureCount).getMeasureName());
+                MeasureType activeMeasureFromInterface=measureList.get(measureCount);//Contains Optimization targets
+                activeMeasure.setTargetValue(activeMeasureFromInterface.getTargetValue(), activeMeasureFromInterface.getTargetKindOf());
+                    if(activeMeasure.getTargetKindOf().equals("value")){
+                    distance=activeMeasure.getDistanceFromTarget();
+                    }else{
+                        if(activeMeasure.getTargetKindOf().equals("min")){
+                        distance=activeMeasure.getMeanValue();
+                        }else{
+                            if(activeMeasure.getTargetKindOf().equals("max")){
+                            distance=0-activeMeasure.getMeanValue();
+                            }
+                        }
+                    }
+                support.printMeasureType(activeMeasure, "**** Optimizd Value for Measure is ****", "---------------------------");
+            }
+    support.log("Whole remaining distance of all Measures is:"+distance);
+    }
+    
     
 }
 

@@ -41,12 +41,16 @@ boolean optimized=false;//False until Optimization is ended
 JLabel infoLabel;
 double simulationTimeSum=0;
 double cpuTimeSum=0;
+String logFileName="";
+int abortLimit=5;//4 time the same calculated distance is allowed, else break and end the optimization
+int abortCounter=abortLimit;
 
     /**
      * Constructor
      * 
      */
     public OptimizerHillClimbing(){
+    logFileName=support.getTmpPath()+File.separator+"Optimizing_with_HillClimbing"+Calendar.getInstance().getTimeInMillis()+"ALL"+".csv";
     }
 
     /**
@@ -66,6 +70,7 @@ double cpuTimeSum=0;
     arrayOfIncrements=new double[parameterBase.length];
         for(int i=0;i<parameterBase.length;i++){
         arrayOfIncrements[i]=support.getDouble(parameterBase[i].getStepping());
+        support.log("Parameterbase for Parameter " + parameterBase[i].getName() + " is " + parameterBase[i].getValue());
         }
   
     this.filename=support.getOriginalFilename();// originalFilename;
@@ -138,12 +143,22 @@ double cpuTimeSum=0;
                     //Jetzt ist für jeden History-Punkt die Distanz aller gewählten Measures berechnet.
                         
                     //Greedy, wenn gesamtdistanz jetzt kleiner als eben ist, dann appliziere den gleichen Inkrement-Vektor nochmal
-                    if(arrayOfDistanceSums[arrayOfDistanceSums.length-1]<=arrayOfDistanceSums[arrayOfDistanceSums.length-2]){
+                    if((arrayOfDistanceSums[arrayOfDistanceSums.length-1]<=arrayOfDistanceSums[arrayOfDistanceSums.length-2])&&(abortCounter>=1)){
                     parameter[] newParameterSet=support.getCopyOfParameterSet(parameterBase);
                     applyArrayOfIncrements(arrayOfIncrements, newParameterSet);
                     returnValue.add(newParameterSet);
+                    
+                        //If sum distance is equal, then count up the abort-counter
+                        if(arrayOfDistanceSums[arrayOfDistanceSums.length-1]==arrayOfDistanceSums[arrayOfDistanceSums.length-2]){
+                        abortCounter--;
+                        }
+                    
                     }else{
                     //Gesamtdistanz des letzten Wertes ist nicht kleiner --> lokales Minimum gefunden
+                    if(abortCounter<abortLimit){
+                    //TODO works only for first Measure to optimize
+                    lastActiveMeasure=this.historyOfParsers.get(this.historyOfParsers.size()-abortLimit-1).getMeasureByName(listOfMeasures.get(0).getMeasureName());
+                    }
                     support.log("******Local minimum found!*****");
                     support.printMeasureType(lastActiveMeasure, "", "");
                     optimized=true;//Abbruch der Optimierung
@@ -228,25 +243,16 @@ double cpuTimeSum=0;
     public void run() {
     ArrayList<parameter[]> mySimulationList=getNextSimulations(historyOfParsers);
     int simulationCounter=0;
-    String logFileName=this.tmpPath+File.separator+"SimLog"+Calendar.getInstance().getTimeInMillis()+"ALL"+".csv";
-        try{
+    
             while(mySimulationList.size()>0){
             //batchSimulator myBatchSimulator = new batchSimulator(mySimulationList, this.filename, this.infoLabel, parent);
-            support.log("Retrieve Simulator.");
             Simulator myGenericSimulator=SimOptiFactory.getSimulator();
-            support.log("init Simulator.");
-            myGenericSimulator.initSimulator(mySimulationList, simulationCounter);
-            support.log("wait for Simulator has 100% completed.");
-            this.infoLabel.setText("Simulations started.");
-                while(myGenericSimulator.getStatus()<100){
-                Thread.sleep(1000);
-                this.infoLabel.setText("Done "+ myGenericSimulator.getStatus() +"% ");
-                simulationCounter=myGenericSimulator.getSimulationCounter();
-                this.parent.updateSimulationCounterLabel(simulationCounter);
-                System.out.print("Simulation status:"+myGenericSimulator.getStatus() +"%");
+            myGenericSimulator.initSimulator(mySimulationList, simulationCounter, false);
+                
+                support.waitForEndOfSimulator(myGenericSimulator, simulationCounter, 6000);
                 support.log("Simulation Counter: "+simulationCounter);
-                }
-                this.infoLabel.setText("Done "+ myGenericSimulator.getStatus() +"%");
+                simulationCounter=myGenericSimulator.getSimulationCounter();
+                
                 support.log("Size of Simulation-Result-List: "+myGenericSimulator.getListOfCompletedSimulationParsers().size());
                 if(myGenericSimulator.getListOfCompletedSimulationParsers().size()>0){
                 historyOfParsers.addAll(myGenericSimulator.getListOfCompletedSimulationParsers());
@@ -257,10 +263,7 @@ double cpuTimeSum=0;
             }
             printStatistics();
             this.infoLabel.setText("Optimization ended. See Log.");
-        }catch(InterruptedException e){
-        support.log("InterruptedException in main loop of optimization. Optimization aborted.");
-        this.infoLabel.setText("Aborted / Error");
-        }
+       
         //throw new UnsupportedOperationException("Not supported yet.");
     }
 

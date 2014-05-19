@@ -31,7 +31,7 @@ private String logFileName;
      * Constructor
      */
      public SimulatorCached(){
-     logFileName=support.getTmpPath()+File.separator+"SimLogCached"+Calendar.getInstance().getTimeInMillis()+".csv";
+     logFileName=support.getTmpPath()+File.separator+"SimLog_LocalSimulation_Only_Cache"+Calendar.getInstance().getTimeInMillis()+".csv";
      support.log("LogfileName:"+logFileName);
      }
 
@@ -40,7 +40,7 @@ private String logFileName;
      * @param listOfParameterSetsTMP List of Parametersets to be simulated
      * @param simulationCounterTMP actual Number of simulation, will be increased with every simulation-run
      */
-    public void initSimulator(ArrayList<parameter[]> listOfParameterSetsTMP, int simulationCounterTMP) {
+    public void initSimulator(ArrayList<parameter[]> listOfParameterSetsTMP, int simulationCounterTMP, boolean log) {
         if(mySimulationCache!=null){
         this.myListOfSimulationParsers=mySimulationCache.getListOfCompletedSimulationParsers(listOfParameterSetsTMP, simulationCounter);
         this.simulationCounter=mySimulationCache.getLocalSimulationCounter();
@@ -54,8 +54,10 @@ private String logFileName;
         }
         
         if(this.myListOfSimulationParsers!=null){
-        //Print out a log file    
-        support.addLinesToLogFileFromListOfParser(myListOfSimulationParsers, logFileName);
+            if(log){
+            //Print out a log file    
+            support.addLinesToLogFileFromListOfParser(myListOfSimulationParsers, logFileName);
+            }
         }
         
     }

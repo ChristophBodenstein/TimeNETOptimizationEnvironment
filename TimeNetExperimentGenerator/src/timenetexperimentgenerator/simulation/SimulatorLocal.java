@@ -40,11 +40,13 @@ boolean cancelSimulations=false;
 String logFileName;
 String actualSimulationLogFile="";//actual log-file for one local simulation
 private final String nameOfTempDirectory="14623786483530251523506521233052";
+boolean log=true;
 
     /**
      * Constructor
      */
     public SimulatorLocal(){
+    logFileName=tmpFilePath+File.separator+"SimLog_LocalSimulation_without_Cache"+Calendar.getInstance().getTimeInMillis()+".csv";
     }
 
     /**
@@ -53,8 +55,9 @@ private final String nameOfTempDirectory="14623786483530251523506521233052";
      * @param listOfParameterSetsTMP List of Parameter-sets to be simulated
      * @param simulationCounterTMP start value of simulation counter
     */
-    public void initSimulator(ArrayList<parameter[]> listOfParameterSetsTMP, int simulationCounterTMP){
+    public void initSimulator(ArrayList<parameter[]> listOfParameterSetsTMP, int simulationCounterTMP, boolean log){
     this.listOfParameterSets=listOfParameterSetsTMP;
+    this.log=log;
     this.originalFilename=support.getOriginalFilename();//  originalFilenameTMP;
     this.pathToTimeNet=support.getPathToTimeNet();//  pathToTimeNetTMP;
     this.tmpFilePath=support.getTmpPath();// tmpFilePathTMP;
@@ -78,7 +81,7 @@ private final String nameOfTempDirectory="14623786483530251523506521233052";
         if(support.checkTimeNetPath()){
             try{
             support.log("Timenet-Path ok, starting local simulations.");
-            logFileName=tmpFilePath+File.separator+"SimLog"+Calendar.getInstance().getTimeInMillis()+".csv";
+            
             support.log("Logfilename is:"+logFileName);
             //Open Logfile and write first line
             FileWriter fw;
@@ -94,8 +97,9 @@ private final String nameOfTempDirectory="14623786483530251523506521233052";
                     boolean parseResult=myParser.parse(actualSimulationLogFile);//parse Log-file and xml-file
                         if(parseResult){
                         support.log("Parsing successful.");
-                        support.addLinesToLogFile(myParser, logFileName);
-
+                            if(this.log){
+                            support.addLinesToLogFile(myParser, logFileName);
+                            }
                         this.listOfCompletedSimulationParsers.add(myParser);//add parser to local list of completed simulations
                         }else{
                         support.log("Error Parsing the Simulation results. Maybe Simulation failure?");

@@ -27,10 +27,10 @@ import timenetexperimentgenerator.support;
 public class OptimizerSimAnnealing implements Runnable, Optimizer{
 private int SimI=1,SimT=0;
 private double maxTemp=20;
-private int stepCountTemp=20;
+private int stepCountTemp=100;
 private double sizeOfNeighborhood=10;//in percent
-private double Fx=0;//Current Distance
-private double Fy=0;//New Distance?
+private double Fx;//Current Distance
+private double Fy;//New Distance?
 private int typeOfNeighbordood=0;
 
 private int simulationCounter=0;
@@ -50,13 +50,14 @@ JLabel infoLabel;
 double simulationTimeSum=0;
 double cpuTimeSum=0;
 String logFileName;
+int wrongSolutionCounter=10;
 
     /**
      * Constructor
      *
      */
     public OptimizerSimAnnealing() {
-    logFileName=support.getTmpPath()+File.separator+"Optimizing with Sim.Annealing "+Calendar.getInstance().getTimeInMillis()+".csv";
+    logFileName=support.getTmpPath()+File.separator+"Optimizing_with_Sim.Annealing"+Calendar.getInstance().getTimeInMillis()+".csv";
     support.log("LogfileName:"+logFileName);
     }
 
@@ -92,7 +93,7 @@ String logFileName;
         //Simulator init with initional parameterset
         Simulator mySimulator=SimOptiFactory.getSimulator();
         
-        mySimulator.initSimulator(getNextParametersetAsArrayList(null), simulationCounter);
+        mySimulator.initSimulator(getNextParametersetAsArrayList(null), simulationCounter, false);
         //Wait until Simulator has ended
         support.waitForEndOfSimulator(mySimulator, simulationCounter, 600);
         support.addLinesToLogFileFromListOfParser(mySimulator.getListOfCompletedSimulationParsers(), logFileName);
@@ -101,23 +102,29 @@ String logFileName;
         Fx=this.getActualDistance(currentSolution);
         
             while(!optimized){
-            mySimulator.initSimulator(getNextParametersetAsArrayList(currentSolution.getListOfParameters()), simulationCounter);
+            mySimulator.initSimulator(getNextParametersetAsArrayList(currentSolution.getListOfParameters()), simulationCounter, false);
             support.waitForEndOfSimulator(mySimulator, simulationCounter, 600);
             support.addLinesToLogFileFromListOfParser(mySimulator.getListOfCompletedSimulationParsers(), logFileName);
             this.historyOfParsers = support.appendListOfParsers(historyOfParsers, mySimulator.getListOfCompletedSimulationParsers());
             nextSolution=mySimulator.getListOfCompletedSimulationParsers().get(0);
             Fy=this.getActualDistance(nextSolution);
-                if(getProbabylity(Fy, Fx)>0.5){
-                support.log("Choosing next solution for Sim Anneling. Probability over 0.5");
+                
+                //If next Solution is better or Probability is above 0.5 then take it as actual best solution
+                if((Fy<Fx)||(getProbabylity(Fy, Fx)>0.5)){
+                support.log("Choosing next solution for Sim Annealing. Probability over 0.5");
                 Fx=Fy;
                 currentSolution=nextSolution;
+                }else{
+                //Count up the Solutions which are not taken
+                //After X wrong solutions exit
+                wrongSolutionCounter--;
+                    if(wrongSolutionCounter<=1){
+                    optimized=true;
+                    }
                 }
-            //TODO: Check if optimization has ended and print out information!
             }
-            
-        
-        
-        throw new UnsupportedOperationException("Not supported yet.");
+        support.log("Simulated Annealing has ended, printing optimal value:");
+        support.printOptimizedMeasures(currentSolution, this.listOfMeasures);    
     }
 
 

@@ -16,7 +16,7 @@ import timenetexperimentgenerator.datamodel.parser;
  * @author Christoph Bodenstein
  */
 public interface Simulator {
-public void initSimulator(ArrayList<parameter[]> listOfParameterSetsTMP, int simulationCounterTMP);
+public void initSimulator(ArrayList<parameter[]> listOfParameterSetsTMP, int simulationCounterTMP, boolean log);
 public int getStatus();
 public int getSimulationCounter();
 public ArrayList<parser> getListOfCompletedSimulationParsers();

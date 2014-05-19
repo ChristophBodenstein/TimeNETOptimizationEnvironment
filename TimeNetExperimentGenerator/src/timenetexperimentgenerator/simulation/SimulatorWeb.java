@@ -12,21 +12,32 @@
 
 package timenetexperimentgenerator.simulation;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
 import timenetexperimentgenerator.datamodel.parameter;
 import timenetexperimentgenerator.datamodel.parser;
+import timenetexperimentgenerator.support;
 
 /**
  *
  * @author Christoph Bodenstein & ...
  */
 public class SimulatorWeb implements Runnable, Simulator{
+String logFileName="";
 
+    /**
+     * Constructor
+     */
+    public SimulatorWeb(){
+    logFileName=support.getTmpPath()+File.separator+"SimLog_DistributedSimulation"+Calendar.getInstance().getTimeInMillis()+".csv";  
+    }
+    
     public void run() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public void initSimulator(ArrayList<parameter[]> listOfParameterSetsTMP, int simulationCounterTMP) {
+    public void initSimulator(ArrayList<parameter[]> listOfParameterSetsTMP, int simulationCounterTMP, boolean log) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

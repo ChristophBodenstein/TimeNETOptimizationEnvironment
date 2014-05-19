@@ -539,7 +539,7 @@ SimulatorWebSlave mySlave=new SimulatorWebSlave();
         //LocalBatchSimulatorEngine mySimulator=new LocalBatchSimulatorEngine(ListOfParameterSetsToBeWritten);
         //SimulatorLocal mySimulator=new SimulatorLocal();
         Simulator mySimulator=SimOptiFactory.getSimulator();
-        mySimulator.initSimulator(ListOfParameterSetsToBeWritten, 0);
+        mySimulator.initSimulator(ListOfParameterSetsToBeWritten, 0, true);
         
     
     }//GEN-LAST:event_jButtonStartBatchSimulationActionPerformed
@@ -1222,13 +1222,14 @@ SimulatorWebSlave mySlave=new SimulatorWebSlave();
     parameter[] parameterArray=new parameter[tModel.getRowCount()];
 
     //ArrayListe aufbauen und Funktion mit dieser Liste aufrufen
-    //ArrayList <parameter>ListOfParameterAsFromTable=new ArrayList();//wird in rekursiver Funktion verkleinert
+    
         for (int i=0; i<tModel.getRowCount();i++){
         parameter tmpParameter=new parameter();
         tmpParameter.setName(tModel.getValueAt(i, 0).toString());
-        tmpParameter.setValue(tModel.getDoubleValueAt(i, 1));
         tmpParameter.setStartValue(tModel.getDoubleValueAt(i, 1));//=StartValue
         tmpParameter.setEndValue(tModel.getDoubleValueAt(i, 2));
+        tmpParameter.setValue(tModel.getDoubleValueAt(i, 1));
+        
         tmpParameter.setStepping(tModel.getDoubleValueAt(i, 3));
         //ListOfParameterAsFromTable.add(tmpParameter);
         parameterArray[i]=tmpParameter;

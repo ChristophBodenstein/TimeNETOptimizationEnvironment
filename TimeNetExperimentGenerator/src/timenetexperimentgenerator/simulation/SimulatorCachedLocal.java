@@ -29,7 +29,7 @@ private String logFileName;
      * Constructor
      */
      public SimulatorCachedLocal(){
-     logFileName=support.getTmpPath()+File.separator+"SimLogCachedAndLocal"+Calendar.getInstance().getTimeInMillis()+".csv";
+     logFileName=support.getTmpPath()+File.separator+"SimLog_LocalSimulation_with_Cache"+Calendar.getInstance().getTimeInMillis()+".csv";
      support.log("LogfileName:"+logFileName);
      }
 
@@ -38,7 +38,7 @@ private String logFileName;
      * @param listOfParameterSetsTMP List of Parametersets to be simulated
      * @param simulationCounterTMP actual Number of simulation, will be increased with every simulation-run
      */
-    public void initSimulator(ArrayList<parameter[]> listOfParameterSetsTMP, int simulationCounterTMP) {
+    public void initSimulator(ArrayList<parameter[]> listOfParameterSetsTMP, int simulationCounterTMP, boolean log) {
         if(mySimulationCache!=null){
         this.myListOfSimulationParsers=mySimulationCache.getListOfCompletedSimulationParsers(listOfParameterSetsTMP, simulationCounter);
         this.simulationCounter=mySimulationCache.getLocalSimulationCounter();
@@ -50,7 +50,7 @@ private String logFileName;
         if(this.myListOfSimulationParsers==null){
         support.log("Simulations not found in local Cache. Starting local simulation.");
         Simulator tmpSim=new SimulatorLocal();
-        tmpSim.initSimulator(listOfParameterSetsTMP, simulationCounterTMP);
+        tmpSim.initSimulator(listOfParameterSetsTMP, simulationCounterTMP, false);
             while(tmpSim.getStatus()<100){
                 try {
                     Thread.sleep(500);
