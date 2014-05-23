@@ -46,7 +46,7 @@ boolean log=true;
      * Constructor
      */
     public SimulatorLocal(){
-    logFileName=tmpFilePath+File.separator+"SimLog_LocalSimulation_without_Cache"+Calendar.getInstance().getTimeInMillis()+".csv";
+    logFileName=support.getTmpPath()+File.separator+"SimLog_LocalSimulation_without_Cache"+Calendar.getInstance().getTimeInMillis()+".csv";
     }
 
     /**
