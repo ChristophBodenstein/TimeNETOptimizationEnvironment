@@ -71,7 +71,7 @@ private String xmlFile="";
 	DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 	Document doc = docBuilder.parse(xmlFilename);
         NodeList parameterList=doc.getElementsByTagName("parameter");
-
+        support.log("***Start List of Available parameters in xml-file***");
             for(int i=0;i<parameterList.getLength();i++){
             parameter tmpParameter=new parameter();
 
@@ -80,13 +80,13 @@ private String xmlFile="";
             tmpParameter.setValue(support.getDouble(parameterList.item(i).getAttributes().getNamedItem("defaultValue").getNodeValue()));
             tmpParameterList.add(tmpParameter);
             }
-        
+        support.log("***End of List of Available parameters in xml-file***");
         }catch(Exception e){
         e.printStackTrace();
+        support.log("Error while parsing xml-file "+ xmlFilename);
         }
 
-
-    support.log("Parsing log-file: "+filename);
+    
     this.logName=filename;
     try {
 		BufferedReader in = new BufferedReader(new FileReader(filename));
@@ -98,6 +98,7 @@ private String xmlFile="";
                 in.close();
 	} catch (IOException e) {
 		//e.printStackTrace();
+            support.log("Error while parsing log-file "+ filename);
 	}
 
 
@@ -153,7 +154,6 @@ private String xmlFile="";
             }
             
         }
-
      this.parameterList=tmpParameterList;
 
     //Begin parsing rest of file
