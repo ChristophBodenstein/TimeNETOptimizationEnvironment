@@ -396,13 +396,13 @@ public static final String[] OPTITYPES={"Hillclimbing","Sim. Annealing","Charged
               //fw.append( System.getProperty("line.separator") );
                 for(int i1=0;i1<myParser.getMeasures().size();i1++){//Alle Measure schreiben
                 MeasureType exportMeasure=myParser.getMeasures().get(i1);
-                support.log("Mean Value= "+support.getCommaFloat(exportMeasure.getMeanValue()));
+                /*support.log("Mean Value= "+support.getCommaFloat(exportMeasure.getMeanValue()));
                 support.log("Variance= "+support.getCommaFloat(exportMeasure.getVariance()));
                 support.log("Confidence-Min= "+support.getCommaFloat(exportMeasure.getConfidenceInterval()[0]));
                 support.log("Confidence-Max= "+support.getCommaFloat(exportMeasure.getConfidenceInterval()[1]));
                 support.log("Epsilon= "+support.getCommaFloat(exportMeasure.getEpsilon()));
                 support.log("Simulation-Time= "+support.getCommaFloat(myParser.getSimulationTime()));
-                
+                */
                 line=exportMeasure.getMeasureName()+";"+support.getCommaFloat(exportMeasure.getMeanValue())+";"+support.getCommaFloat(exportMeasure.getVariance())+";"+support.getCommaFloat(exportMeasure.getConfidenceInterval()[0])+";"+support.getCommaFloat(exportMeasure.getConfidenceInterval()[1])+";"+support.getCommaFloat(exportMeasure.getEpsilon())+";"+support.getCommaFloat(myParser.getSimulationTime());
                     for(int c=0;c<exportMeasure.getParameterList().size();c++){
                     line=line+";"+support.getCommaFloat(exportMeasure.getParameterList().get(c).getValue());
