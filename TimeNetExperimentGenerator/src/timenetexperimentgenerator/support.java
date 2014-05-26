@@ -17,6 +17,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 import timenetexperimentgenerator.datamodel.*;
+import timenetexperimentgenerator.helper.StatisticAggregator;
 import timenetexperimentgenerator.simulation.SimulationCache;
 import timenetexperimentgenerator.simulation.Simulator;
 
@@ -391,6 +392,7 @@ public static final String[] OPTITYPES={"Hillclimbing","Sim. Annealing","Charged
 
             for(int i=0;i<pList.size();i++){
             parser myParser=pList.get(i);
+            StatisticAggregator.addToStatistics(myParser);
               try{
               //fw.write(line);
               //fw.append( System.getProperty("line.separator") );

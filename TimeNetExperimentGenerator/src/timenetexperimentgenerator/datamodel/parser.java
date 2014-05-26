@@ -15,8 +15,7 @@ import java.util.regex.Pattern;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.*;
-import timenetexperimentgenerator.support;
-import timenetexperimentgenerator.datamodel.*;
+import timenetexperimentgenerator.*;
 
 /**
  *
@@ -31,12 +30,13 @@ private ArrayList<String> tmpStrings=new ArrayList();
 private int parseStatus=0;
 private double CPUTime=0;
 private ArrayList<parameter> parameterList=null;
-private String xmlFile="";
-
+private String xmlFileName="";
+private boolean isFromCache=true;//is true, if from cache and false if logfile is parsed
+private boolean isFromDistributedSimulation=false;//Is False, if local simulated, true if simulated via Web
 
     public boolean parse(String filename, String XMLFileName){
         if(!XMLFileName.equals("")){
-        this.xmlFile=XMLFileName;
+        this.xmlFileName=XMLFileName;
         }
     return parse(filename);
     }
@@ -48,15 +48,16 @@ private String xmlFile="";
     String xmlFilename="";
     ArrayList<parameter> tmpParameterList=new ArrayList<parameter>();
     String[] segs;
-
-    if(this.xmlFile.equals("")){
+    this.setIsFromCache(false);
+    
+    if(this.xmlFileName.equals("")){
         support.log("Searching corresponding xml-file for: "+filename);
         String[] tmpFilenameArray=filename.split("simTime");
         xmlFilename=tmpFilenameArray[0]+".xml";
         support.log("XML-Filename is:"+xmlFilename);    
         }   else{
-            support.log("XML-Filename given: "+this.xmlFile);
-            xmlFilename=xmlFile;
+            support.log("XML-Filename given: "+this.xmlFileName);
+            xmlFilename=xmlFileName;
             }
 
 
@@ -82,7 +83,6 @@ private String xmlFile="";
             }
         support.log("***End of List of Available parameters in xml-file***");
         }catch(Exception e){
-        e.printStackTrace();
         support.log("Error while parsing xml-file "+ xmlFilename);
         }
 
@@ -309,5 +309,33 @@ private String xmlFile="";
      */
     public void setCPUTime(int CPUTime) {
         this.CPUTime = CPUTime;
+    }
+
+    /**
+     * @return the isFromCache
+     */
+    public boolean isIsFromCache() {
+        return isFromCache;
+    }
+
+    /**
+     * @param isFromCache the isFromCache to set
+     */
+    public void setIsFromCache(boolean isFromCache) {
+        this.isFromCache = isFromCache;
+    }
+
+    /**
+     * @return the isFromDistributedSimulation
+     */
+    public boolean isIsFromDistributedSimulation() {
+        return isFromDistributedSimulation;
+    }
+
+    /**
+     * @param isFromDistributedSimulation the isFromDistributedSimulation to set
+     */
+    public void setIsFromDistributedSimulation(boolean isFromDistributedSimulation) {
+        this.isFromDistributedSimulation = isFromDistributedSimulation;
     }
 }
