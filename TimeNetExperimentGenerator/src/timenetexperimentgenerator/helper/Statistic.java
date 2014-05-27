@@ -19,7 +19,9 @@ public class Statistic {
 String name="";
 long CPUTimeTheoretical=0;
 long CPUTimeReal=0;//Without cached CPU Time
-long numberOfSimulations=0;
+long numberOfSimulationsTotal=0;
+long numberOfSimulationsFromCache=0;
+long numberOfSimulationsFromWeb=0;
 
 
     public Statistic(String name){
