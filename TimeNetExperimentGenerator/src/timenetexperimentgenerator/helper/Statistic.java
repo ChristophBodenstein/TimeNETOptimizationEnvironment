@@ -16,12 +16,14 @@ import timenetexperimentgenerator.datamodel.parser;
  * @author Christoph Bodenstein
  */
 public class Statistic {
-String name="";
-long CPUTimeTheoretical=0;
-long CPUTimeReal=0;//Without cached CPU Time
+private String name="";
+long CPUTimeFromCache=0;
+long CPUTimeFromLocal=0;
+long CPUTimeFromWeb=0;
 long numberOfSimulationsTotal=0;
 long numberOfSimulationsFromCache=0;
 long numberOfSimulationsFromWeb=0;
+long numberOfSImulationsFromLocal=0;
 
 
     public Statistic(String name){
@@ -29,7 +31,37 @@ long numberOfSimulationsFromWeb=0;
     }
     
     public void addSimulation(parser p){
+    numberOfSimulationsTotal++;
+        if(p.isIsFromCache()){
+        numberOfSimulationsFromCache++;
+        CPUTimeFromCache+=p.getCPUTime();
+        }else{
+            
+            if(p.isIsFromDistributedSimulation()){
+            numberOfSimulationsFromWeb++;
+            CPUTimeFromWeb+=p.getCPUTime();
+            }else{
+                numberOfSImulationsFromLocal++;
+                CPUTimeFromLocal+=p.getCPUTime();
+            }
+        }
+        
+        
     
+    }
+
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @param name the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
     }
     
 }

@@ -392,7 +392,7 @@ public static final String[] OPTITYPES={"Hillclimbing","Sim. Annealing","Charged
 
             for(int i=0;i<pList.size();i++){
             parser myParser=pList.get(i);
-            StatisticAggregator.addToStatistics(myParser);
+            StatisticAggregator.addToStatistics(myParser, logFileName);
               try{
               //fw.write(line);
               //fw.append( System.getProperty("line.separator") );

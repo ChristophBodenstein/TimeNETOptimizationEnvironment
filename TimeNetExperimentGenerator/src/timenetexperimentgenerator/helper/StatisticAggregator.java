@@ -24,8 +24,24 @@ private static ArrayList<Statistic> listOfStatistics;
     listOfStatistics=new ArrayList<Statistic>();
     }
     
-    public static void addToStatistics(parser p){
+    public static void addToStatistics(parser p, String filename){
+    Statistic myStatistic=getStatisticByName(filename);
+        myStatistic.addSimulation(p);
+    }
     
+    
+    static Statistic getStatisticByName(String filename){
+    Statistic returnValue=null;
+        for(int i=0;i<listOfStatistics.size();i++){
+            if(listOfStatistics.get(i).getName().equals(filename)){
+            returnValue=listOfStatistics.get(i);
+            }
+        }
+        if(returnValue==null){
+        returnValue=new Statistic(filename);
+        listOfStatistics.add(returnValue);
+        }
+    return returnValue;
     }
     
 }
