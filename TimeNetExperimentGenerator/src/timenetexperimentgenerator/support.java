@@ -384,6 +384,7 @@ public static final String[] OPTITYPES={"Hillclimbing","Sim. Annealing","Charged
                     }
                     try {
                         fw.write(line);
+                        fw.append( System.getProperty("line.separator") );
                     } catch (IOException ex) {
                         support.log("Error writing Header to Summary-log-file.");
                     }
