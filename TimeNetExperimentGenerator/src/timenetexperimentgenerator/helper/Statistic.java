@@ -9,7 +9,9 @@
 
 package timenetexperimentgenerator.helper;
 
+import timenetexperimentgenerator.datamodel.MeasureType;
 import timenetexperimentgenerator.datamodel.parser;
+import timenetexperimentgenerator.support;
 
 /**
  *
@@ -23,33 +25,70 @@ long CPUTimeFromWeb=0;
 long numberOfSimulationsTotal=0;
 long numberOfSimulationsFromCache=0;
 long numberOfSimulationsFromWeb=0;
-long numberOfSImulationsFromLocal=0;
+long numberOfSimulationsFromLocal=0;
+double simulationTimeTotal=0;
+double simulationTimeFromCache=0;
+double simulationTimeFromWeb=0;
+double simulationTimeFromLocal=0;
 
 
     public Statistic(String name){
     this.name=name;
     }
     
+    
+    /**
+     * adds the relevant data from given parser to statistics (count of Simulations etc.)
+     * @param p parser with data about one simulation
+     */
     public void addSimulation(parser p){
+    MeasureType statisticMeasure=p.getMeasures().get(0);//Take the first Measure as dummy incl. all nec. information    
     numberOfSimulationsTotal++;
+    simulationTimeTotal+=statisticMeasure.getSimulationTime();
         if(p.isIsFromCache()){
         numberOfSimulationsFromCache++;
-        CPUTimeFromCache+=p.getCPUTime();
+        CPUTimeFromCache+=statisticMeasure.getCPUTime();
+        simulationTimeFromCache+=statisticMeasure.getSimulationTime();
         }else{
             
             if(p.isIsFromDistributedSimulation()){
             numberOfSimulationsFromWeb++;
-            CPUTimeFromWeb+=p.getCPUTime();
+            CPUTimeFromWeb+=statisticMeasure.getCPUTime();
+            simulationTimeFromWeb+=statisticMeasure.getSimulationTime();
             }else{
-                numberOfSImulationsFromLocal++;
-                CPUTimeFromLocal+=p.getCPUTime();
+                numberOfSimulationsFromLocal++;
+                CPUTimeFromLocal+=statisticMeasure.getCPUTime();
+                simulationTimeFromLocal+=statisticMeasure.getSimulationTime();
             }
         }
-        
-        
     
     }
 
+    /**
+     * Prints all relevant statistic data to support.log
+     */
+    public void printStatisticToLog(){
+        support.log("-----Statistics of Simulation: "+this.getName()+" ----- Start -----");
+        support.log("Total Number of Simulations: "+ this.numberOfSimulationsTotal);
+        support.log("Number of Cached Simulations: "+ this.numberOfSimulationsFromCache);
+        support.log("Number of Web-Based Simulations: "+ this.numberOfSimulationsFromWeb);
+        support.log("Number of local Simulations: "+ this.numberOfSimulationsFromLocal);
+        support.log("Ratio of Cached Simulations (Cache/Total): "+ ((double)this.numberOfSimulationsFromCache/(double)this.numberOfSimulationsTotal));
+        support.log("Theoretical used CPU-Time: " +(this.CPUTimeFromCache+this.CPUTimeFromLocal+this.CPUTimeFromWeb));
+        support.log("Local used CPU-Time: " +this.CPUTimeFromLocal);
+        support.log("Web-Based CPU-Time: " +this.CPUTimeFromWeb);
+        support.log("Cache CPU-Time: " +this.CPUTimeFromCache);
+        support.log("Total needed SimulationTime: " +this.simulationTimeTotal);
+        support.log("SimulationTime from Web: " + this.simulationTimeFromWeb);
+        support.log("SimulationTime from Cache: " + this.simulationTimeFromCache);
+        support.log("SimulationTime from Local: " + this.simulationTimeFromLocal);
+        
+        
+        
+        support.log("-----Statistics of Simulation: "+this.getName()+" ----- End -----");
+    }
+    
+    
     /**
      * @return the name
      */

@@ -124,7 +124,7 @@ private int localSimulationCounter=0;
         //Debug Output of Measurement Names
         support.log("Name of read Measures are: ");
         for(i=0;i<(listOfCachedMeasureNames.size())-1;i++){
-        System.out.print(listOfCachedMeasureNames.get(i)+", ");
+        support.log(listOfCachedMeasureNames.get(i)+", ");
         }
         support.log(listOfCachedMeasureNames.get(listOfCachedMeasureNames.size()-1));
 
@@ -464,8 +464,8 @@ private int localSimulationCounter=0;
         parser tmpParser=new parser();
             for(int i=0;i<mList.size();i++){
             tmpParser.setMeasures(mList);
-            tmpParser.setSimulationTime(mList.get(i).getSimulationTime());
-            tmpParser.setCPUTime(support.getInt(mList.get(i).getCPUTime()));
+            //tmpParser.setSimulationTime(mList.get(i).getSimulationTime());
+            //tmpParser.setCPUTime(support.getInt(mList.get(i).getCPUTime()));
             }
         return tmpParser;
         }

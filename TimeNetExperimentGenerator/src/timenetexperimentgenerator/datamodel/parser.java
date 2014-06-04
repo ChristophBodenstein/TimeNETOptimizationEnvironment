@@ -106,9 +106,10 @@ private boolean isFromDistributedSimulation=false;//Is False, if local simulated
     segs=tmpStrings.get(0).split(" ");
     SimulationType=segs[2];
     segs = tmpStrings.get(1).split(" ");
-    setSimulationTime(Float.valueOf(segs[2]));
-
-
+    double localSimulationTime=(Float.valueOf(segs[2]));
+    double localCPUTime=0;
+    
+    
     //support.log("SimulationType: "+SimulationType);
     //support.log("SimulationTime: "+getSimulationTime().toString()+" seconds.");
     
@@ -146,11 +147,13 @@ private boolean isFromDistributedSimulation=false;//Is False, if local simulated
             tmpParameterList.add(tmpP);
             }               
             if(segs[i].equals("simTime")){
+            //CPU-Time is called simTime in logfile-Name!
             parameter tmpP=new parameter();
             tmpP.setName("Used CPUTime");
             //String[] tmpSegs=segs[i+1].split(".");
             tmpP.setValue(support.getDouble(segs[i+1].substring(0,segs[i+1].indexOf("."))));
             tmpParameterList.add(tmpP);
+            localCPUTime=(support.getDouble(segs[i+1].substring(0,segs[i+1].indexOf("."))));
             }
             
         }
@@ -158,13 +161,18 @@ private boolean isFromDistributedSimulation=false;//Is False, if local simulated
 
     //Begin parsing rest of file
     MeasureType tmpMeasure=new MeasureType();
+    tmpMeasure.setSimulationTime(localSimulationTime);
     tmpMeasure.setParameterList(tmpParameterList);
+    tmpMeasure.setCPUTime(localCPUTime);
     String tmpConfidence="";
     for(int i=0;i<tmpStrings.size();i++){
         switch(parseStatus){
             case 0:
                 if(tmpStrings.get(i).split(" ")[0].equalsIgnoreCase("Measure:")){
                 tmpMeasure=new MeasureType();
+                tmpMeasure.setParameterList(tmpParameterList);
+                tmpMeasure.setCPUTime(localCPUTime);
+                tmpMeasure.setSimulationTime(localSimulationTime);
                 tmpMeasure.setMeasureName(tmpStrings.get(i).split(" ")[1]);
                 parseStatus=1;//Measures found
                 support.log("Measures found");
@@ -271,16 +279,16 @@ private boolean isFromDistributedSimulation=false;//Is False, if local simulated
     /**
      * @return the SimulationTime
      */
-    public double getSimulationTime() {
-        return SimulationTime;
-    }
+    //public double getSimulationTime() {
+    //    return SimulationTime;
+    //}
 
     /**
      * @param SimulationTime the SimulationTime to set
      */
-    public void setSimulationTime(double SimulationTime) {
-        this.SimulationTime = SimulationTime;
-    }
+    //public void setSimulationTime(double SimulationTime) {
+    //    this.SimulationTime = SimulationTime;
+    //}
 
     /**
      * @return the logName
@@ -292,9 +300,9 @@ private boolean isFromDistributedSimulation=false;//Is False, if local simulated
     /**
      * @return the CPUTime
      */
-    public double getCPUTime() {
-        return CPUTime;
-    }
+    //public double getCPUTime() {
+    //    return CPUTime;
+    //}
 
     public double getFloatString(String testString){
         if(!testString.equals("nan")){
@@ -307,9 +315,9 @@ private boolean isFromDistributedSimulation=false;//Is False, if local simulated
     /**
      * @param CPUTime the CPUTime to set
      */
-    public void setCPUTime(int CPUTime) {
-        this.CPUTime = CPUTime;
-    }
+    //public void setCPUTime(int CPUTime) {
+    //    this.CPUTime = CPUTime;
+    //}
 
     /**
      * @return the isFromCache

@@ -227,7 +227,7 @@ int abortCounter=abortLimit;
     void applyArrayOfIncrements(double[] arrayOfIncrements, parameter[] newParameterSet){
     support.log("Applying Array of Increments.");
         for(int i=0;i<newParameterSet.length;i++){
-        System.out.print(newParameterSet[i].getName()+"="+newParameterSet[i].getValue()+" will be incremented by: "+arrayOfIncrements[i]+" and is now:");
+        support.log(newParameterSet[i].getName()+"="+newParameterSet[i].getValue()+" will be incremented by: "+arrayOfIncrements[i]+" and is now:");
         newParameterSet[i].setValue((support.round( Math.min(arrayOfIncrements[i]+support.getDouble(newParameterSet[i].getValue()),support.getDouble(newParameterSet[i].getEndValue()))) ) );
         support.log(Double.toString(newParameterSet[i].getValue()));
         }
@@ -274,8 +274,8 @@ int abortCounter=abortLimit;
     this.simulationTimeSum=0;
     this.cpuTimeSum=0;
         for (parser historyOfParser : historyOfParsers) {
-            this.simulationTimeSum += historyOfParser.getSimulationTime();
-            this.cpuTimeSum += historyOfParser.getCPUTime();
+            this.simulationTimeSum += historyOfParser.getMeasures().get(0).getSimulationTime();
+            this.cpuTimeSum += historyOfParser.getMeasures().get(0).getCPUTime();
         }
     support.log(this.cpuTimeSum+" sec of CPU-Time used for "+historyOfParsers.size()+" Simulations with "+ this.simulationTimeSum+" Simulation steps.");
     }

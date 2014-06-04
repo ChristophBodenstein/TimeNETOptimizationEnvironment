@@ -40,10 +40,12 @@ private static boolean isRunningAsSlave=false;
 private static String remoteAddress=null;
 private static Integer chosenOptimizerType=0;//0=Greedy, 1=?, 2=?
 private static Integer chosenSimulatorType=0;//0=local, 1=cached, 2=distributed
+private static LogFrame myLogFrame=new LogFrame();
 
 public static final String[] SIMTYPES={"Local Sim.","Cache Only Sim.","Cache & Local","Web Sim."};
 public static final String[] OPTITYPES={"Hillclimbing","Sim. Annealing","ChargedSystemSearch","A.Seidel-2","A.Seidel-3"};
 
+private static boolean logToConsole=false;
     
 
     /**
@@ -406,7 +408,7 @@ public static final String[] OPTITYPES={"Hillclimbing","Sim. Annealing","Charged
                 support.log("Epsilon= "+support.getCommaFloat(exportMeasure.getEpsilon()));
                 support.log("Simulation-Time= "+support.getCommaFloat(myParser.getSimulationTime()));
                 */
-                line=exportMeasure.getMeasureName()+";"+support.getCommaFloat(exportMeasure.getMeanValue())+";"+support.getCommaFloat(exportMeasure.getVariance())+";"+support.getCommaFloat(exportMeasure.getConfidenceInterval()[0])+";"+support.getCommaFloat(exportMeasure.getConfidenceInterval()[1])+";"+support.getCommaFloat(exportMeasure.getEpsilon())+";"+support.getCommaFloat(myParser.getSimulationTime());
+                line=exportMeasure.getMeasureName()+";"+support.getCommaFloat(exportMeasure.getMeanValue())+";"+support.getCommaFloat(exportMeasure.getVariance())+";"+support.getCommaFloat(exportMeasure.getConfidenceInterval()[0])+";"+support.getCommaFloat(exportMeasure.getConfidenceInterval()[1])+";"+support.getCommaFloat(exportMeasure.getEpsilon())+";"+support.getCommaFloat(exportMeasure.getSimulationTime());
                     for(int c=0;c<exportMeasure.getParameterList().size();c++){
                     line=line+";"+support.getCommaFloat(exportMeasure.getParameterList().get(c).getValue());
                     }
@@ -445,7 +447,11 @@ public static final String[] OPTITYPES={"Hillclimbing","Sim. Annealing","Charged
      * @param s String to be logged.
      */
     public static void log(String s){
-    System.out.println(s);
+        if(logToConsole){
+        System.out.println(s);
+        }else{
+        myLogFrame.addText(s);
+        }
     }
     
     /**
@@ -721,6 +727,20 @@ public static final String[] OPTITYPES={"Hillclimbing","Sim. Annealing","Charged
                 support.printMeasureType(activeMeasure, "**** Optimizd Value for Measure is ****", "---------------------------");
             }
     support.log("Whole remaining distance of all Measures is:"+distance);
+    }
+
+    /**
+     * @return the myLogFrame
+     */
+    public static LogFrame getMyLogFrame() {
+        return myLogFrame;
+    }
+
+    /**
+     * @param aMyLogFrame the myLogFrame to set
+     */
+    public static void setMyLogFrame(LogFrame aMyLogFrame) {
+        myLogFrame = aMyLogFrame;
     }
     
     

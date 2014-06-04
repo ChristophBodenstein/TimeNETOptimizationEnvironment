@@ -12,13 +12,14 @@ package timenetexperimentgenerator.helper;
 
 import java.util.ArrayList;
 import timenetexperimentgenerator.datamodel.parser;
+import timenetexperimentgenerator.support;
 
 /**
  *
  * @author Christoph Bodenstein
  */
 public class StatisticAggregator {
-private static ArrayList<Statistic> listOfStatistics;  
+private static ArrayList<Statistic> listOfStatistics=new ArrayList<Statistic>();  
 
     public StatisticAggregator() {
     listOfStatistics=new ArrayList<Statistic>();
@@ -32,6 +33,8 @@ private static ArrayList<Statistic> listOfStatistics;
     
     static Statistic getStatisticByName(String filename){
     Statistic returnValue=null;
+    
+    
         for(int i=0;i<listOfStatistics.size();i++){
             if(listOfStatistics.get(i).getName().equals(filename)){
             returnValue=listOfStatistics.get(i);
@@ -42,6 +45,30 @@ private static ArrayList<Statistic> listOfStatistics;
         listOfStatistics.add(returnValue);
         }
     return returnValue;
+    }
+    
+    /**
+     * Prints all Statistics, available in this Aggregator (collected since program start)
+     */
+    public static void printAllStatistics(){
+        
+        if((listOfStatistics==null)||(listOfStatistics.size()<1)){
+        support.log("No Statistics Available!");    
+        return;
+        }
+        
+        
+        for(int i=0;i<listOfStatistics.size();i++){
+        listOfStatistics.get(i).printStatisticToLog();
+        }
+    }
+    
+    /**
+     * Prints Statistics with specified name (name of log-file)
+     * @param name Name of log-File to identify the statistic
+     */
+    public static void printStatistic(String name){
+        getStatisticByName(name).printStatisticToLog();
     }
     
 }
