@@ -40,23 +40,11 @@ public class LogFrame extends javax.swing.JFrame {
         jTextAreaLog.setColumns(50);
         jTextAreaLog.setFont(new java.awt.Font("Marion", 0, 14)); // NOI18N
         jTextAreaLog.setRows(20);
+        jTextAreaLog.setBounds(bounds());
         jTextAreaLog.setDoubleBuffered(true);
         jScrollPane1.setViewportView(jTextAreaLog);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 644, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 338, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-        );
+        getContentPane().add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
         getAccessibleContext().setAccessibleParent(jTextAreaLog);
 

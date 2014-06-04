@@ -102,7 +102,7 @@ private String[][] parameterArray;
     }
     
     public double getDoubleValueAt(int row, int col) {
-        return support.round(Double.valueOf(parameterArray[row][col]));
+        return support.round(support.getDouble(parameterArray[row][col]));
     }
 
     @Override

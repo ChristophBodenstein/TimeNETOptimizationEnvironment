@@ -27,6 +27,7 @@ import timenetexperimentgenerator.simulation.Simulator;
  */
 public class support {
 public static final double DEFAULT_STEPPING=1.0;
+public static final long DEFAULT_TIMEOUT=10000;
 private static JLabel statusLabel=null;//The label for showing status information
 private static String originalFilename=null;//The original SCPN source file to fork for every simulation
 private static MainFrame mainFrame=null;//The Main Frame of the program
@@ -663,7 +664,7 @@ private static boolean logToConsole=false;
      * @param mySimulator Simulator to wait for
      * @param simulationCounter Simulation counter to show in the info-label
      * @param timeout Timeout in Seconds!
-     * @return true if simulatio was sucessful. false if timeout
+     * @return true if simulation was sucessful. false if timeout
      */
     public static boolean waitForEndOfSimulator(Simulator mySimulator, int simulationCounter, long timeout){
     long timeoutCounter=timeout;
@@ -677,14 +678,18 @@ private static boolean logToConsole=false;
                         statusLabel.setText("Aborted / Error");
                     }
                 getStatusLabel().setText("Done "+ mySimulator.getStatus() +"% ");
-                simulationCounter=mySimulator.getSimulationCounter();
-                getMainFrame().updateSimulationCounterLabel(simulationCounter);
-                System.out.print("Simulation status:"+mySimulator.getStatus() +"%");
-                support.log("Simulation Counter: "+simulationCounter);
+                
+                
                 timeoutCounter--;
                     //Break if timeout is reached
-                    if (timeoutCounter<=1){return false;}
+                    if (timeoutCounter<=1){
+                        support.log("Timeout for simulation reached. Aborting simulation.");
+                        return false;}
                 }
+                simulationCounter=mySimulator.getSimulationCounter();
+                getMainFrame().updateSimulationCounterLabel(simulationCounter);
+                //support.log("Simulation status:"+mySimulator.getStatus() +"%");
+                support.log("Simulation Counter: "+simulationCounter);
     return true;
     }
     

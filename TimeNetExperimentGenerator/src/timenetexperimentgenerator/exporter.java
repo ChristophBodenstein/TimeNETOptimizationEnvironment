@@ -218,7 +218,7 @@ boolean isRunning=false;
     int parameterCount=this.jTableParameterList.getModel().getRowCount();
     parameterTableModel tModel=(parameterTableModel) this.jTableParameterList.getModel();
     String [][] parameterArray=tModel.getParameterArray();
-    float designSpaceSize=1;
+    double designSpaceSize=1;
     //ArrayListe aufbauen und Funktion mit dieser Liste aufrufen
     //ArrayList <parameter>ListOfParameterAsFromTable=new ArrayList();//wird in rekursiver Funktion verkleinert
         for (int i=0; i<tModel.getRowCount();i++){
@@ -230,10 +230,10 @@ boolean isRunning=false;
         tmpParameter.setStepping(tModel.getDoubleValueAt(i, 3));
         //ListOfParameterAsFromTable.add(tmpParameter);
 
-        float start,end,step,spaceCounter=1;
-        start=Float.parseFloat(tModel.getValueAt(i, 1).toString());
-        end=Float.parseFloat(tModel.getValueAt(i, 2).toString());
-        step=Float.parseFloat(tModel.getValueAt(i, 3).toString());
+        double start,end,step,spaceCounter=1;
+        start=support.getDouble(tModel.getValueAt(i, 1).toString());
+        end=support.getDouble(tModel.getValueAt(i, 2).toString());
+        step=support.getDouble(tModel.getValueAt(i, 3).toString());
             if((end-start)>0 &&(step!=0) ){
                 spaceCounter=(end-start)/step +1;
             }
