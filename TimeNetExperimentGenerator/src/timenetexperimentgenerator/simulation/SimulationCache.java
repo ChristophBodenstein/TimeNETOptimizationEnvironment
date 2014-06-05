@@ -355,7 +355,7 @@ private int localSimulationCounter=0;
     //support.log("Distance-A "+sum[0]);
     //support.log("Distance-B "+sum[1]);
     
-    return (sum[0]-sum[1]);
+    return Math.abs(sum[0]-sum[1]);
     }
     
     
