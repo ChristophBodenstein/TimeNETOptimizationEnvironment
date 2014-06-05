@@ -1,5 +1,5 @@
 /*
- * Main Class, sets the Look and Feel and inits the MainFrame
+ * TimeNetController Class, sets the Look and Feel and inits the MainFrame
  * Christoph Bodenstein
  * TU-Ilmenau, FG SSE
  */
@@ -13,7 +13,7 @@ import javax.swing.UnsupportedLookAndFeelException;
  *
  * @author Christoph Bodenstein
  */
-public class Main {
+public class TimeNetController {
 
     /**
      * @param args the command line arguments, no arguments are used

@@ -34,6 +34,10 @@ public class LogFrame extends javax.swing.JFrame {
         setTitle("Log Viewer");
         setAutoRequestFocus(false);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        setLocation(java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode().getWidth()/2 - 325,java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode().getHeight()/2  - this.getHeight()/2);
+        setMaximumSize(java.awt.Toolkit.getDefaultToolkit().getScreenSize());
+        setMinimumSize(new java.awt.Dimension(650, 300));
+        setPreferredSize(new java.awt.Dimension(650, 300));
         setType(java.awt.Window.Type.UTILITY);
 
         jTextAreaLog.setEditable(false);
