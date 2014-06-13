@@ -603,7 +603,7 @@ SimulatorWebSlave mySlave=new SimulatorWebSlave();
      */
     private void jButtonStartBatchSimulationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonStartBatchSimulationActionPerformed
         //Ask for Tmp-Path
-        support.setTmpPath(support.getPathToDirByDialog("Dir for export TMP-Files and log.\n "+"Go INTO the dir to choose it!", null));
+        support.setTmpPath(support.getPathToDirByDialog("Dir for export TMP-Files and log.\n "+"Go INTO the dir to choose it!", new File(support.getOriginalFilename()).getPath() ));
         support.setPathToTimeNet(pathToTimeNet);
         support.setMainFrame(this);
         support.setOriginalFilename(fileName);
