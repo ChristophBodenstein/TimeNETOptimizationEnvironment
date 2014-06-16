@@ -629,7 +629,7 @@ SimulatorWebSlave mySlave=new SimulatorWebSlave();
         }else{
                 if(this.getListOfActiveMeasureMentsToOptimize().size()>=1){
                 //Ask for Tmp-Path
-                support.setTmpPath(support.getPathToDirByDialog("Dir for export TMP-Files and log.\n "+"Go INTO the dir to choose it!", null));
+                support.setTmpPath(support.getPathToDirByDialog("Dir for export TMP-Files and log.\n "+"Go INTO the dir to choose it!",  new File(support.getOriginalFilename()).getPath()) );
                 //TODO if tmpPath is empty or null --> return
                     if(support.getTmpPath()!=null){
                     support.setPathToTimeNet(pathToTimeNet);

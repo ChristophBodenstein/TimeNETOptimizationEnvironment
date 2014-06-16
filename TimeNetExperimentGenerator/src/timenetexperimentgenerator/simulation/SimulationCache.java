@@ -49,12 +49,11 @@ private int localSimulationCounter=0;
         reader = new BufferedReader(new FileReader(new File(filename)));
         String current = reader.readLine();
         //Number of Experiments, first number of lines is counted
-        int numberOfExperiments=1;//Don`t count first line
+        int numberOfExperiments=0;
         while (current != null) {
             //processCsvLine(current);
             String[] tmpString=current.split(";");
             listOfStringLines.add(tmpString);
-            numberOfExperiments++;
             current = reader.readLine();
         }
         reader.close();
@@ -136,8 +135,8 @@ private int localSimulationCounter=0;
         }   support.log("Count of cached Measures seems correct.");
 
         //Calc real number of experiments
-        numberOfExperiments=numberOfExperiments/listOfCachedMeasureNames.size();
-        
+        numberOfExperiments=(listOfStringLines.size()-1)/listOfCachedMeasureNames.size();
+        support.log("Number of experiments:"+numberOfExperiments);
         
         
         //So the number of parameters seems ok, let` check the names
@@ -152,7 +151,7 @@ private int localSimulationCounter=0;
         }   support.log("All parameters seem available in table.");
 
         
-        
+        support.log("Number of Measures:"+listOfCachedMeasureNames.size());
         //Generate List of Simulated Experiments
         for(i=0;i<numberOfExperiments;i++){
             

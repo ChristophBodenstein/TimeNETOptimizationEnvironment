@@ -44,7 +44,6 @@ public class LogFrame extends javax.swing.JFrame {
         jTextAreaLog.setColumns(50);
         jTextAreaLog.setFont(new java.awt.Font("Marion", 0, 14)); // NOI18N
         jTextAreaLog.setRows(20);
-        jTextAreaLog.setBounds(bounds());
         jTextAreaLog.setDoubleBuffered(true);
         jScrollPane1.setViewportView(jTextAreaLog);
 
