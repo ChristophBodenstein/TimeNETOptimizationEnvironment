@@ -249,6 +249,10 @@ private boolean isFromDistributedSimulation=false;//Is False, if local simulated
      * @return Array of parameters
      */
     public parameter[] getListOfParameters(){
+    if (parameterList == null)
+    {
+        return null;
+    }
     parameter[] pArray=new parameter[parameterList.size()];
         for(int i=0;i<parameterList.size();i++){
         pArray[i]=parameterList.get(i);
