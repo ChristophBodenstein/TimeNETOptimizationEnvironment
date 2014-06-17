@@ -1,5 +1,5 @@
 /*
- * Optimizer using the simulated annealing algorithm
+ * Optimizer using the hill climbing algorithm, its a modified and configured version of simmulated annealing
  *
  * Christoph Bodenstein
  * TU-Ilmenau, FG SSE
@@ -24,7 +24,7 @@ import timenetexperimentgenerator.support;
  *
  * @author Christoph Bodenstein
  */
-public class OptimizerSimAnnealing implements Runnable, Optimizer{
+public class OptimizerHill implements Runnable, Optimizer{
 private int SimI=1,SimT=0;
 private double maxTemp=20;
 private int stepCountTemp=100;
@@ -51,13 +51,15 @@ double simulationTimeSum=0;
 double cpuTimeSum=0;
 String logFileName;
 int wrongSolutionCounter=support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW;
+int numberOfLastChangedParameter=0;
+int numberOfChangebleParameters=0;
 
     /**
      * Constructor
      *
      */
-    public OptimizerSimAnnealing() {
-    logFileName=support.getTmpPath()+File.separator+"Optimizing_with_Sim.Annealing"+Calendar.getInstance().getTimeInMillis()+".csv";
+    public OptimizerHill() {
+    logFileName=support.getTmpPath()+File.separator+"Optimizing_with_HillClimbing"+Calendar.getInstance().getTimeInMillis()+".csv";
     support.log("LogfileName:"+logFileName);
     this.wrongSolutionCounter=support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW;
     }
@@ -101,6 +103,7 @@ int wrongSolutionCounter=support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW;
         this.historyOfParsers = support.appendListOfParsers(historyOfParsers, mySimulator.getListOfCompletedSimulationParsers());
         currentSolution=mySimulator.getListOfCompletedSimulationParsers().get(0);
         Fx=this.getActualDistance(currentSolution);
+        nextSolution=null;
         
             while(!optimized){
             mySimulator.initSimulator(getNextParametersetAsArrayList(currentSolution.getListOfParameters()), simulationCounter, false);
@@ -111,31 +114,26 @@ int wrongSolutionCounter=support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW;
             Fy=this.getActualDistance(nextSolution);
                 
                 //If next Solution is better or Probability is above 0.5 then take it as actual best solution
-                if((Fy<Fx)||(getProbabylity(Fy, Fx)>0.5)){
-                support.log("Choosing next solution for Sim Annealing. Probability over 0.5");
+                if((Fy<Fx)){
+                support.log("Choosing next solution for Hill Climbing");
                 Fx=Fy;
                 currentSolution=nextSolution;
+                nextSolution=null;
+                //Reset wrong-solution-counter
                 wrongSolutionCounter=support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW;
                 }else{
                 //Count up the Solutions which are not taken
                 //After X wrong solutions exit
+                support.log("Distance was higher, Solution not chosen. Counting up wrong-solutio-counter.");
                 wrongSolutionCounter--;
                     if(wrongSolutionCounter<=1){
                     optimized=true;
                     }
                 }
+            //nextSolution is not null --> We are on the right way, else we are wron and should change
             }
-        support.log("Simulated Annealing has ended, printing optimal value:");
+        support.log("Hill Climbing has ended, printing optimal value:");
         support.printOptimizedMeasures(currentSolution, this.listOfMeasures);    
-    }
-
-
-    /**
-     * Get probability for chosing the actual parameterset as next solution
-     * @return probaility that actual Solution Fy is chosen as the next Fx
-     */
-    private double getProbabylity(double Fy, double Fx){
-    return Math.exp( -(Fy-Fx)/getNextTemperature(SimT) );
     }
 
 
@@ -146,15 +144,24 @@ int wrongSolutionCounter=support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW;
      * @return next parameterset to be simulated
      */
     private parameter[] getNextParameterset(parameter[] actualParameterset){
+    parameter[] newParameterset=support.getCopyOfParameterSet(parameterBase);
+        //Count the number of changable parameters
+        this.numberOfChangebleParameters=0;
+        for(int i=0;i<newParameterset.length;i++){
+                parameter p=newParameterset[i];
+                if((p.getEndValue()>p.getStartValue())&&(!p.isExternalParameter())){
+                this.numberOfChangebleParameters++;
+                }
+            }
     
         if(actualParameterset==null){
         //Calulate first parameterset, the mean value of all parameters, with respect to stepping
-        parameter[] newParameterset=support.getCopyOfParameterSet(parameterBase);
+        
             if(this.typeOfNeighborhood==0){
             //For this chooseing strategy, the first element must be minimum
                 for(int i=0;i<newParameterset.length;i++){
                     parameter p=newParameterset[i];
-                    if((p.getEndValue()>p.getStartValue())&&(!p.isExternalParameter())){
+                    if(p.getEndValue()>p.getStartValue()){
                     p.setValue(p.getStartValue());
                     }
                 }
@@ -171,7 +178,7 @@ int wrongSolutionCounter=support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW;
             }
         return newParameterset;
         }else{
-        parameter[] newParameterset=support.getCopyOfParameterSet(actualParameterset);
+        //newParameterset=support.getCopyOfParameterSet(actualParameterset);
         //TODO: 
         //1 Calculate neighborhood for each parameter and choose one of the values randomly
         //2 choose next value randomly from complete design-space

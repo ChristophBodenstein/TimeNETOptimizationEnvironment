@@ -53,7 +53,7 @@ private static SimulationCache singleTonSimulationCache=new SimulationCache();
     public static Optimizer getOptimizer(){
         switch (support.getChosenOptimizerType().intValue()){
             case 0:
-                    return new OptimizerHillClimbing();
+                    return new OptimizerHill();
             case 1:
                     return new OptimizerSimAnnealing();
             case 2:
@@ -64,7 +64,7 @@ private static SimulationCache singleTonSimulationCache=new SimulationCache();
                     return new OptimizerASeidel3();
 
             default: 
-                    return new OptimizerHillClimbing();
+                    return new OptimizerHill();
         }
     }
 

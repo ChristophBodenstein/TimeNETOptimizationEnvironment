@@ -28,6 +28,7 @@ import timenetexperimentgenerator.simulation.Simulator;
 public class support {
 public static final double DEFAULT_STEPPING=1.0;
 public static final long DEFAULT_TIMEOUT=10000;
+public static final int DEFAULT_WRONG_SOLUTIONS_IN_A_ROW=10;
 private static JLabel statusLabel=null;//The label for showing status information
 private static String originalFilename=null;//The original SCPN source file to fork for every simulation
 private static MainFrame mainFrame=null;//The Main Frame of the program
