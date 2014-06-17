@@ -8,6 +8,8 @@
 package timenetexperimentgenerator.datamodel;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import timenetexperimentgenerator.support;
 
 /**
  *
@@ -29,6 +31,33 @@ private double CPUTime;
     public MeasureType() {
         this.CPUTime = (double)0.0;
         this.SimulationTime = (double)0.0;
+    }
+    
+    public MeasureType(MeasureType originalMeasure)
+    {
+        this.MeasureName = originalMeasure.MeasureName;
+        this.AccuraryReached = originalMeasure.AccuraryReached;
+        this.MeanValue = originalMeasure.MeanValue;
+        this.Variance = originalMeasure.Variance;
+        this.ConfidenceInterval = Arrays.copyOf(originalMeasure.ConfidenceInterval, originalMeasure.ConfidenceInterval.length);
+        this.Epsilon = originalMeasure.Epsilon;
+        this.parameterList = new ArrayList<parameter>();
+        for (int i = 0; i<originalMeasure.getParameterListSize(); ++i)
+        {
+            try
+            {
+                parameter tmpParameter = (parameter)originalMeasure.getParameterList().get(i).clone();
+                this.parameterList.add(tmpParameter);
+            }
+            catch (CloneNotSupportedException e)
+            {
+                support.log(e.getMessage());
+            }
+        }
+        this.targetValue = originalMeasure.targetValue;
+        this.targetKindOf = originalMeasure.targetKindOf;
+        this.CPUTime = originalMeasure.CPUTime;
+        this.SimulationTime = originalMeasure.CPUTime;
     }
 
 
@@ -155,6 +184,18 @@ private double CPUTime;
      */
     public void setParameterList(ArrayList<parameter> parameterList) {
         this.parameterList = parameterList;
+    }
+    
+     /**
+     * @return the size of the paramterList
+     */
+    public int getParameterListSize()
+    {
+        if (parameterList != null)
+        {
+            return this.parameterList.size();
+        }
+        return 0;
     }
 
     /**

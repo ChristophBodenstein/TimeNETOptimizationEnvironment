@@ -46,10 +46,8 @@ JLabel infoLabel;
 double simulationTimeSum=0;
 double cpuTimeSum=0;
 
-parser solution;
 
 int numberOfCharges = 5; //number of active charges to explore design space
-int numberOfHistoryCharges = 3; //size of memory for known top solutions;
 //ArrayList<MeasureType> historyCharges = new ArrayList<MeasureType>(); //array for the so far known top solutions;
 
 
@@ -59,10 +57,10 @@ double[] distances; //current Distance of all objects
 double[] powerOfCharges; // attraction power of every object
 double[][] speedOfCharges; //current speed vector for all objects with all parameters;
 
-parameter[] topMeasure;//temp top measure before implementing top-List
+parser topMeasure;//temp top measure before implementing top-List
 double topDistance = 0;//temp top distance
 
-final int maxAttraction = 100;
+final int maxAttraction = 100;//limit of attraction-force of 2 charges
 
 public OptimizerChargedSystemSearch()
 {
@@ -297,7 +295,7 @@ public void initOptimizer()
             if(distances[i]<topDistance)
             {
                 topDistance = distances[i];
-                //topMeasure = charges.get(i); //TODO: implement deepcopy
+                topMeasure = new parser(charges.get(i));
             }
         }
     }
@@ -317,22 +315,14 @@ public void initOptimizer()
         System.out.println("NumMeasuresOut: " + mySimulator.getListOfCompletedSimulationParsers().get(0).getMeasures().size());
         charges = mySimulator.getListOfCompletedSimulationParsers();
         
-        //copy back the parameters from the measuers of the parsers,TODO: very bad!
-        for (int i=0; i<charges.size(); ++i)
-        {
-            ArrayList<parameter> parameterList = charges.get(i).getMeasures().get(0).getParameterList();
-            charges.get(i).setListOfParameters(convertArrayListToArray(parameterList));
-        }
         
         calculateDistances();
         printDistances();
-        //charges = solution.getMeasures();
         
         int simulationCounter = 0;
         while(counter<100)
         {
             updatePositions();
-            //createNewRandomPopulation(numberOfCharges,false);
             
             ArrayList<parameter[]> parameterList = getNextParameterSetAsArrayList();
             
@@ -349,14 +339,9 @@ public void initOptimizer()
             simulationCounter = mySimulator.getSimulationCounter();
             System.out.println("NumMeasuresOut: " + mySimulator.getListOfCompletedSimulationParsers().get(0).getMeasures().size());
             charges = mySimulator.getListOfCompletedSimulationParsers();
-            //copy back the parameters from the measuers of the parsers,TODO: very bad!
-            for (int i=0; i<charges.size(); ++i)
-            {
-                ArrayList<parameter> parameterListTemp = charges.get(i).getMeasures().get(0).getParameterList();
-                charges.get(i).setListOfParameters(convertArrayListToArray(parameterListTemp));
-            }
             
             calculateDistances();
+            updateTopMeasure();
             printDistances();
             ++counter;
             
@@ -383,7 +368,7 @@ public void initOptimizer()
         for (parser p : charges)
         {
             ArrayList<MeasureType> measures = p.getMeasures();
-            parameter[] pArray = convertArrayListToArray(measures.get(0).getParameterList());
+            parameter[] pArray = support.convertArrayListToArray(measures.get(0).getParameterList());
             myParamterList.add(pArray);
         }
         return myParamterList;
@@ -406,7 +391,7 @@ public void initOptimizer()
         newMeasure.setVariance(originalMeasure.getVariance());
         
         ArrayList<parameter> newParameterList = new ArrayList<parameter>();
-        for (int i=0; i<originalMeasure.getParameterList().size(); ++i) //TODO: implement paramterListsize
+        for (int i=0; i<originalMeasure.getParameterListSize(); ++i)
         {
             newParameterList.add(originalMeasure.getParameterList().get(i));
         }
@@ -420,7 +405,7 @@ public void initOptimizer()
         parameter pArray[] = charges.get(indexOfCharge).getListOfParameters();
         if (pArray == null)
         {
-            pArray = convertArrayListToArray(charges.get(indexOfCharge).getMeasures().get(0).getParameterList());//cruel coding style... only temp
+            pArray = support.convertArrayListToArray(charges.get(indexOfCharge).getMeasures().get(0).getParameterList());//cruel coding style... only temp
         }
         
         ArrayList<parameter> paraList = new  ArrayList<parameter>();
@@ -444,25 +429,7 @@ public void initOptimizer()
         charges.get(indexOfCharge).setListOfParameters(pArray);        
     }
     
-    private ArrayList<parameter> convertArrayToArrayList(parameter p[])
-    {
-        ArrayList<parameter> paraList = new ArrayList<parameter>();
-        for (int i=0; i<p.length; ++i)
-        {
-            paraList.add(p[i]);
-        }
-        return paraList;
-    }
-    
-    private parameter[] convertArrayListToArray(ArrayList<parameter> list)
-    {
-        parameter pArray[] = new parameter[list.size()];
-        for (int i = 0; i < list.size(); ++i)
-        {
-            pArray[i] = list.get(i);
-        }
-        return pArray;
-    }
+
     
     private void printDistances()
     {

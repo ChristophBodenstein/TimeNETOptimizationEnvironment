@@ -10,6 +10,7 @@ package timenetexperimentgenerator.datamodel;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 import javax.xml.parsers.DocumentBuilder;
@@ -33,6 +34,55 @@ private ArrayList<parameter> parameterList=null;
 private String xmlFileName="";
 private boolean isFromCache=true;//is true, if from cache and false if logfile is parsed
 private boolean isFromDistributedSimulation=false;//Is False, if local simulated, true if simulated via Web
+
+    /**
+     * the default constructor for parser-objects
+     */
+    public parser()
+    {
+        this.logName = "";
+        this.SimulationType = "";
+        this.SimulationTime = 0.0;
+        this.Measures=new ArrayList();
+        this.tmpStrings=new ArrayList();
+        this.parseStatus=0;
+        this.CPUTime=0;
+        this.parameterList=null;
+        this.xmlFileName="";
+        this.isFromCache=true;
+        this.isFromDistributedSimulation=false;
+    }
+
+    /**
+     * the copy-constructor for parser objects
+     * @param originalParser the parser to be copied
+     */
+    public parser(parser originalParser)
+    {
+        this.logName = originalParser.logName;
+        this.SimulationType = originalParser.SimulationType;
+        this.Measures = new ArrayList<MeasureType>();
+        for (int i = 0; i<originalParser.getMeasures().size(); ++i)
+        {
+            MeasureType newMeasure = new MeasureType(originalParser.getMeasures().get(i));
+            this.Measures.add(newMeasure);
+        }
+        this.tmpStrings = originalParser.tmpStrings;
+        this.parseStatus = originalParser.parseStatus;
+        this.CPUTime = originalParser.CPUTime;
+        
+        this.parameterList = new ArrayList<parameter>();
+        parameter[] originalParamterArray = originalParser.getListOfParameters();
+        for (int i = 0; i<originalParamterArray.length; ++i)
+        {
+            parameter[] newParameterArray = Arrays.copyOf(originalParamterArray, originalParamterArray.length);//hoping that makes a copy of parameter, overide clone() exists
+            ArrayList<parameter> newParameterList = support.convertArrayToArrayList(newParameterArray);
+            parameterList = newParameterList;
+        }
+        this.xmlFileName = originalParser.xmlFileName;
+        this.isFromCache = originalParser.isFromCache;
+        this.isFromDistributedSimulation = originalParser.isFromDistributedSimulation;
+    }
 
     public boolean parse(String filename, String XMLFileName){
         if(!XMLFileName.equals("")){

@@ -748,6 +748,36 @@ private static boolean logToConsole=false;
         myLogFrame = aMyLogFrame;
     }
     
+    /**
+     * 
+     * @param p the array to be converted to ArrayList
+     * @return the converted ArrayList
+     */
+    public static ArrayList<parameter> convertArrayToArrayList(parameter p[])
+    {
+        ArrayList<parameter> paraList = new ArrayList<parameter>();
+        for (int i=0; i<p.length; ++i)
+        {
+            paraList.add(p[i]);
+        }
+        return paraList;
+    }
+    
+    /**
+     * 
+     * @param list ArrayList to be converted
+     * @return parameter[] of the list
+     */
+    public static parameter[] convertArrayListToArray(ArrayList<parameter> list)
+    {
+        parameter pArray[] = new parameter[list.size()];
+        for (int i = 0; i < list.size(); ++i)
+        {
+            pArray[i] = list.get(i);
+        }
+        return pArray;
+    }
+    
     
 }
 

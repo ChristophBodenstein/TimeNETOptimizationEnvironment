@@ -14,6 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import timenetexperimentgenerator.datamodel.parameter;
 import timenetexperimentgenerator.datamodel.parser;
+import timenetexperimentgenerator.datamodel.MeasureType;
 import timenetexperimentgenerator.support;
 
 /**
@@ -54,6 +55,29 @@ private String logFileName;
         }
         
         if(this.myListOfSimulationParsers!=null){
+            //copy parameterList of measure to parameter[] of parser for later use
+            if (myListOfSimulationParsers.size() > 0)
+            {
+                //take first measure in parser for list of parameters
+                if (myListOfSimulationParsers.get(0).getMeasures().size() > 0)
+                {
+                    for (int i=0; i<myListOfSimulationParsers.size(); ++i)
+                    {
+                        MeasureType firstMeasure = myListOfSimulationParsers.get(i).getMeasures().get(0);
+                        parameter[] pArray = support.convertArrayListToArray(firstMeasure.getParameterList());
+                        myListOfSimulationParsers.get(i).setListOfParameters(pArray);
+                    }
+                }
+                else
+                {
+                    support.log("No Measures found in parser.");
+                } 
+            }
+            else
+            {
+                support.log("List of parsers is empty.");
+            }
+
             if(log){
             //Print out a log file    
             support.addLinesToLogFileFromListOfParser(myListOfSimulationParsers, logFileName);
