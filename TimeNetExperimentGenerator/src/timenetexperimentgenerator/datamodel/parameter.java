@@ -110,6 +110,12 @@ private long idHash=0;
     }
 
 
+    /**
+     * If the parameter is an external control-parameter, then true
+     * External Parameters are Conf.Intervall, MaxRelError etc.
+     * The List of External control parameters is this.externalParameters
+     * @return true, if it is an external parameter, ales false
+     */
     public boolean isExternalParameter(){
         for(int i=0; i<this.externalParameters.length;i++){
             if(this.name.equals(externalParameters[i])){
@@ -132,32 +138,62 @@ private long idHash=0;
     return tmpParameter;
     }
 
+   /**
+    * returns the id of this parameter, not useful at the moment
+    * @return ID of this parameter
+    */
    public long getID(){
    return this.idHash;
    }
 
+   
+   /**
+    * Calculates the id of this parameter, at the moment deactiviated. Was used to detect duplicates
+    */
    public void calculateID(){
    //String id="End:"+endValue+"Start:"+startValue+"Step:"+stepping+"Name:"+name+"Value:"+value;
    //long longID=  (long)( Float.valueOf(endValue)*10+Float.valueOf(startValue)*10+Float.valueOf(stepping)*10+Float.valueOf(value)*10+(float)name.hashCode());
-   this.idHash=0;//id.hashCode();//Dont create ID, it` useless and costs CPU-Time
+   this.idHash=0;//id.hashCode();//Dont create ID, it`s useless and costs CPU-Time
    //support.log("ID: "+id);
    //support.log("IDHash: "+idHash);
    
    }
 
+   
+   /**
+    * Compare Method simailar to String compareision. It`s based on the names of Parameters
+    * @param o other Parameter to be compared with
+    * @return integer-value of compariosion result
+    */
     public int compareTo(parameter o) {
-    //return this.getID().compareTo(o.getID());//Parameter werden nach ID sortiert
     return this.getName().compareTo(o.getName());//Parameter werden nach Namen sortiert
     }
 
-     public void initWithValues(String name, double StartValue, double EndValue, double Stepping){
-
+    
+    /**
+     * init the parameter with given values
+     * @param name Name of this paramater
+     * @param StartValue Start-Value of this parameter (double)
+     * @param EndValue End-Value of this parameter (double)
+     * @param Stepping Iteration-Stepping for this parameter (double)
+     */
+    public void initWithValues(String name, double StartValue, double EndValue, double Stepping){
     this.setName(name);
     this.setStartValue(StartValue);
     this.setEndValue(EndValue);
     this.setStepping(Stepping);
-
-
     }
 
+     
+    /**
+     * Returns true, if this parameter has different start/endValue and Stepping is smaller then this difference
+     * @return true, if parameter can be iterated
+     */ 
+    public boolean isIteratable(){
+        if((this.endValue>this.startValue)&&(this.stepping<=(this.endValue-this.startValue))){
+        return true;
+        }else{
+        return false;
+        }
+    }
 }
