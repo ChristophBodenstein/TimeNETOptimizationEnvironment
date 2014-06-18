@@ -196,4 +196,12 @@ private long idHash=0;
         return false;
         }
     }
+    
+    /**
+     * Same as isIteratable but only true, if parameter is not external
+     * @return true, if parameter is internal and iteratable
+     */
+    public boolean isIteratableAndItern(){
+    return ((!this.isExternalParameter())&&(this.isIteratable())); 
+    }
 }
