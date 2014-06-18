@@ -52,7 +52,7 @@ double cpuTimeSum=0;
 String logFileName;
 int wrongSolutionCounter=support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW;
 int numberOfLastChangedParameter=0;
-int numberOfChangebleParameters=0;
+int numberOfChangableParameters=0;
 
     /**
      * Constructor
@@ -124,13 +124,13 @@ int numberOfChangebleParameters=0;
                 }else{
                 //Count up the Solutions which are not taken
                 //After X wrong solutions exit
-                support.log("Distance was higher, Solution not chosen. Counting up wrong-solutio-counter.");
+                support.log("Distance was higher, Solution not chosen. Counting up wrong-solution-counter.");
                 wrongSolutionCounter--;
                     if(wrongSolutionCounter<=1){
                     optimized=true;
                     }
                 }
-            //nextSolution is not null --> We are on the right way, else we are wron and should change
+            //nextSolution is not null --> We are on the right way, else we are wrong and should change
             }
         support.log("Hill Climbing has ended, printing optimal value:");
         support.printOptimizedMeasures(currentSolution, this.listOfMeasures);    
@@ -146,11 +146,11 @@ int numberOfChangebleParameters=0;
     private parameter[] getNextParameterset(parameter[] actualParameterset){
     parameter[] newParameterset=support.getCopyOfParameterSet(parameterBase);
         //Count the number of changable parameters
-        this.numberOfChangebleParameters=0;
+        this.numberOfChangableParameters=0;
         for(int i=0;i<newParameterset.length;i++){
                 parameter p=newParameterset[i];
-                if((p.getEndValue()>p.getStartValue())&&(!p.isExternalParameter())){
-                this.numberOfChangebleParameters++;
+                if((p.isIteratable())&&(!p.isExternalParameter())){
+                this.numberOfChangableParameters++;
                 }
             }
     
@@ -158,10 +158,10 @@ int numberOfChangebleParameters=0;
         //Calulate first parameterset, the mean value of all parameters, with respect to stepping
         
             if(this.typeOfNeighborhood==0){
-            //For this chooseing strategy, the first element must be minimum
+            //For this choosing strategy, the first element must be minimum
                 for(int i=0;i<newParameterset.length;i++){
                     parameter p=newParameterset[i];
-                    if(p.getEndValue()>p.getStartValue()){
+                    if(p.isIteratableAndItern()){
                     p.setValue(p.getStartValue());
                     }
                 }
@@ -170,7 +170,7 @@ int numberOfChangebleParameters=0;
         
             for(int i=0;i<newParameterset.length;i++){
                 parameter p=newParameterset[i];
-                if((p.getEndValue()>p.getStartValue())&&(!p.isExternalParameter())){
+                if(p.isIteratableAndItern()){
                 double distance=p.getEndValue()-p.getStartValue();
                 distance=Math.round(0.5*distance/p.getStepping())*p.getStepping()+p.getStartValue();
                 p.setValue(distance);
@@ -182,12 +182,25 @@ int numberOfChangebleParameters=0;
         //TODO: 
         //1 Calculate neighborhood for each parameter and choose one of the values randomly
         //2 choose next value randomly from complete design-space
+        int numberOfParameterToBeChanged=0;//Default, change the first changeable parameter
         
+            //Check, which parameters can be changed
+            if(numberOfChangableParameters>1){
+            //TODO: Sort List of Parameters (new method in support)    
+                
+                
+            //get numberOfLastChangedParameter !
+            //If numberOfChangableParameters>=2 then (else numberOfParameterToBeChanged=0;)
+            //load last parser and check, which parameter has been changed (numberOfParameterToBeChanged=other;)
+            //If nextSolution == null --> go back for last changed parameter? change other parameter
+            
+            }
+            
             switch(typeOfNeighborhood){
                 case 0://0 choose the next neighbor based on stepping forward
                         for(int i=0;i<newParameterset.length;i++){
                         parameter p=newParameterset[i];
-                            if((p.getEndValue()>p.getStartValue())&&(!p.isExternalParameter())){
+                            if(p.isIteratableAndItern()){
                             double nextValue=Math.min(p.getValue()+p.getStepping(),p.getEndValue());
                             p.setValue(nextValue);
                             }
@@ -196,7 +209,7 @@ int numberOfChangebleParameters=0;
                 case 1://Step back and forward randomly based on stepping
                         for(int i=0;i<newParameterset.length;i++){
                         parameter p=newParameterset[i];
-                            if((p.getEndValue()>p.getStartValue())&&(!p.isExternalParameter())){
+                            if(p.isIteratableAndItern()){
                             double nextValue=0.0;
                                 if(Math.random()>=0.5){
                                 nextValue=Math.min(p.getValue()+p.getStepping(),p.getEndValue());
@@ -210,7 +223,7 @@ int numberOfChangebleParameters=0;
                 case 2://Calculate neighborhood and choose next value randomly 
                         for(int i=0;i<newParameterset.length;i++){
                         parameter p=newParameterset[i];
-                            if((p.getEndValue()>p.getStartValue())&&(!p.isExternalParameter())){
+                            if(p.isIteratableAndItern()){
                             double nextValue=0.0;
                             double stepCount=(p.getEndValue()-p.getStartValue())/p.getStepping();
                             nextValue=p.getStepping()*Math.round(Math.random()*stepCount*this.sizeOfNeighborhood/100);
@@ -226,7 +239,7 @@ int numberOfChangebleParameters=0;
                 case 3://Choose Value randomly out of complete designspace
                         for(int i=0;i<newParameterset.length;i++){
                         parameter p=newParameterset[i];
-                            if((p.getEndValue()>p.getStartValue())&&(!p.isExternalParameter())){
+                            if(p.isIteratableAndItern()){
                             double nextValue=0.0;
                             double stepCount=(p.getEndValue()-p.getStartValue())/p.getStepping();
                             nextValue=p.getStartValue() + Math.round(Math.random()*stepCount);
@@ -238,7 +251,7 @@ int numberOfChangebleParameters=0;
                 case 4: //Calculate neighborhood and choose next value randomly, Ignore Stepping!
                         for(int i=0;i<newParameterset.length;i++){
                         parameter p=newParameterset[i];
-                            if((p.getEndValue()>p.getStartValue())&&(!p.isExternalParameter())){
+                            if(p.isIteratableAndItern()){
                             double nextValue=0.0;
                             double range=(p.getEndValue()-p.getStartValue());
                             nextValue=Math.round(Math.random()*range*this.sizeOfNeighborhood/100);

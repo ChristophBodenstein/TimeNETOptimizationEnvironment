@@ -154,7 +154,7 @@ int wrongSolutionCounter=support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW;
             //For this chooseing strategy, the first element must be minimum
                 for(int i=0;i<newParameterset.length;i++){
                     parameter p=newParameterset[i];
-                    if((p.getEndValue()>p.getStartValue())&&(!p.isExternalParameter())){
+                    if(p.isIteratableAndItern()){
                     p.setValue(p.getStartValue());
                     }
                 }
@@ -163,7 +163,7 @@ int wrongSolutionCounter=support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW;
         
             for(int i=0;i<newParameterset.length;i++){
                 parameter p=newParameterset[i];
-                if((p.getEndValue()>p.getStartValue())&&(!p.isExternalParameter())){
+                if(p.isIteratableAndItern()){
                 double distance=p.getEndValue()-p.getStartValue();
                 distance=Math.round(0.5*distance/p.getStepping())*p.getStepping()+p.getStartValue();
                 p.setValue(distance);
@@ -180,7 +180,7 @@ int wrongSolutionCounter=support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW;
                 case 0://0 choose the next neighbor based on stepping forward
                         for(int i=0;i<newParameterset.length;i++){
                         parameter p=newParameterset[i];
-                            if((p.getEndValue()>p.getStartValue())&&(!p.isExternalParameter())){
+                            if(p.isIteratableAndItern()){
                             double nextValue=Math.min(p.getValue()+p.getStepping(),p.getEndValue());
                             p.setValue(nextValue);
                             }
@@ -189,7 +189,7 @@ int wrongSolutionCounter=support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW;
                 case 1://Step back and forward randomly based on stepping
                         for(int i=0;i<newParameterset.length;i++){
                         parameter p=newParameterset[i];
-                            if((p.getEndValue()>p.getStartValue())&&(!p.isExternalParameter())){
+                            if(p.isIteratableAndItern()){
                             double nextValue=0.0;
                                 if(Math.random()>=0.5){
                                 nextValue=Math.min(p.getValue()+p.getStepping(),p.getEndValue());
@@ -203,7 +203,7 @@ int wrongSolutionCounter=support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW;
                 case 2://Calculate neighborhood and choose next value randomly 
                         for(int i=0;i<newParameterset.length;i++){
                         parameter p=newParameterset[i];
-                            if((p.getEndValue()>p.getStartValue())&&(!p.isExternalParameter())){
+                            if(p.isIteratableAndItern()){
                             double nextValue=0.0;
                             double stepCount=(p.getEndValue()-p.getStartValue())/p.getStepping();
                             nextValue=p.getStepping()*Math.round(Math.random()*stepCount*this.sizeOfNeighborhood/100);
@@ -219,7 +219,7 @@ int wrongSolutionCounter=support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW;
                 case 3://Choose Value randomly out of complete designspace
                         for(int i=0;i<newParameterset.length;i++){
                         parameter p=newParameterset[i];
-                            if((p.getEndValue()>p.getStartValue())&&(!p.isExternalParameter())){
+                            if(p.isIteratableAndItern()){
                             double nextValue=0.0;
                             double stepCount=(p.getEndValue()-p.getStartValue())/p.getStepping();
                             nextValue=p.getStartValue() + Math.round(Math.random()*stepCount);
@@ -231,7 +231,7 @@ int wrongSolutionCounter=support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW;
                 case 4: //Calculate neighborhood and choose next value randomly, Ignore Stepping!
                         for(int i=0;i<newParameterset.length;i++){
                         parameter p=newParameterset[i];
-                            if((p.getEndValue()>p.getStartValue())&&(!p.isExternalParameter())){
+                            if(p.isIteratableAndItern()){
                             double nextValue=0.0;
                             double range=(p.getEndValue()-p.getStartValue());
                             nextValue=Math.round(Math.random()*range*this.sizeOfNeighborhood/100);
