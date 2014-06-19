@@ -457,6 +457,15 @@ private static boolean logToConsole=false;
     }
     
     /**
+     * determines if log to console or somewhere else
+     * @param logToConsole_ logging to console or not
+     */
+    public static void setLogToConsole(boolean logToConsole_)
+    {
+        logToConsole = logToConsole_;
+    }
+    
+    /**
      * copies a file from source to sink appending file contents is possible
      * @param source name/path of source file
      * @param sink name/path of sin file

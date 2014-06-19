@@ -59,7 +59,7 @@ private static SimulationCache singleTonSimulationCache=new SimulationCache();
             case 2:
                     return new OptimizerChargedSystemSearch();
             case 3:
-                    return new OptimizerASeidel2();
+                    return new OptimizerGenetic();
             case 4:
                     return new OptimizerASeidel3();
 

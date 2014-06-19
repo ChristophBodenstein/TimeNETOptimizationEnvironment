@@ -31,39 +31,37 @@ import timenetexperimentgenerator.support;
 public class OptimizerChargedSystemSearch implements Runnable, Optimizer{
 
 
-String tmpPath="";
-String filename="";//Original filename
-String pathToTimeNet="";
-String logFileName="";
-MainFrame parent=null;
-JTabbedPane MeasureFormPane;
-ArrayList<MeasureType> listOfMeasures=new ArrayList<MeasureType>();//Liste aller Measures, abfragen von MeasureFormPane
-ArrayList<parser> charges=new ArrayList<parser>();//History of all simulation runs
-parameter[] parameterBase;//Base set of parameters, start/end-value, stepping, etc.
-double[] arrayOfIncrements;
-boolean optimized=false;//False until Optimization is ended
-JLabel infoLabel;
-double simulationTimeSum=0;
-double cpuTimeSum=0;
+private String tmpPath = "";
+private String filename = "";//Original filename
+private String pathToTimeNet = "";
+private String logFileName = "";
+private MainFrame parent = null;
+private JTabbedPane MeasureFormPane;
+private ArrayList<MeasureType> listOfMeasures = new ArrayList<MeasureType>();//Liste aller Measures, abfragen von MeasureFormPane
+private parameter[] parameterBase;//Base set of parameters, start/end-value, stepping, etc.
+private JLabel infoLabel;
+private double simulationTimeSum = 0;
+private double cpuTimeSum = 0;
 
+private ArrayList<parser> charges = new ArrayList<parser>();//History of all simulation runs
 
-int numberOfCharges = 5; //number of active charges to explore design space
-//ArrayList<MeasureType> historyCharges = new ArrayList<MeasureType>(); //array for the so far known top solutions;
+private int numberOfCharges = 5; //number of active charges to explore design space
+private int maxNumberOfOptiCycles = 100; //maximum number of cycles, before optimization terminates
+private int maxNumberOfOptiCyclesWithoutImprovement = 10; //how many cycles without improvement until break optimization loop
+private int currentNumberOfOptiCyclesWithoutImprovement = 0;
 
+private double[] distances; //current Distance of all objects
+private double[] powerOfCharges; // attraction power of every object
+private double[][] speedOfCharges; //current speed vector for all objects with all parameters;
 
-//ArrayList<ArrayList<MeasureType>> chargeMeasures = new ArrayList<ArrayList<MeasureType>>();
-//ArrayList<parameter[]> charges = new ArrayList<parameter[]>(); //the current space of objects
-double[] distances; //current Distance of all objects
-double[] powerOfCharges; // attraction power of every object
-double[][] speedOfCharges; //current speed vector for all objects with all parameters;
+private parser topMeasure;//temp top measure before implementing top-List
+private double topDistance = Double.POSITIVE_INFINITY;//temp top distance
 
-parser topMeasure;//temp top measure before implementing top-List
-double topDistance = 0;//temp top distance
-
-final int maxAttraction = 100;//limit of attraction-force of 2 charges
+private final int maxAttraction;//limit of attraction-force of 2 charges
 
 public OptimizerChargedSystemSearch()
 {
+    this.maxAttraction = 100;
     logFileName=support.getTmpPath()+File.separator+"Optimizing_with_CSS_"+Calendar.getInstance().getTimeInMillis()+"_ALL"+".csv";
 }
     
@@ -76,14 +74,7 @@ public void initOptimizer()
     this.parameterBase=parent.getParameterBase();
     this.listOfMeasures=parent.getListOfActiveMeasureMentsToOptimize(); //((MeasurementForm)MeasureFormPane.getComponent(0)).getListOfMeasurements();
     support.log("# of Measures to be optimized: "+this.listOfMeasures.size());
-
-    //Alle Steppings auf Standard setzen
-    arrayOfIncrements=new double[parameterBase.length];
-    for(int i=0; i<parameterBase.length; i++)
-    {
-        arrayOfIncrements[i]=support.getDouble(parameterBase[i].getStepping());
-    }
-        
+       
     charges = new ArrayList<parser>();
     distances = new double[numberOfCharges];
     powerOfCharges = new double[numberOfCharges];
@@ -255,7 +246,9 @@ public void initOptimizer()
                     
                     for (int parameterNumber = 0; parameterNumber<speedOfCharges[currentChargeNumber].length; ++parameterNumber)
                     {
-                        double currentValue = currentMeasure.get(parameterNumber).getValue();
+                        if (currentMeasure.get(parameterNumber).isIteratableAndItern())
+                        {
+                            double currentValue = currentMeasure.get(parameterNumber).getValue();
                         double compareValue = compareMeasure.get(parameterNumber).getValue();
                         double currentSpeed = speedOfCharges[currentChargeNumber][parameterNumber];
                         
@@ -263,6 +256,7 @@ public void initOptimizer()
                         currentSpeed += diffSpeed;
                         currentValue += currentSpeed;
                         
+                        //safety check to prevent charges to "fly" over the border
                         if (currentValue < currentMeasure.get(parameterNumber).getStartValue())
                         {
                             currentValue = currentMeasure.get(parameterNumber).getStartValue();
@@ -274,6 +268,7 @@ public void initOptimizer()
                         
                         speedOfCharges[currentChargeNumber][parameterNumber] = currentSpeed;
                         currentMeasure.get(parameterNumber).setValue(currentValue);
+                        } 
                     }
                 }
             }
@@ -290,25 +285,35 @@ public void initOptimizer()
     
     private void updateTopMeasure()
     {
+        boolean newTopMeasurefound = false;
         for (int i=0; i<distances.length; ++i)
         {
             if(distances[i]<topDistance)
             {
                 topDistance = distances[i];
                 topMeasure = new parser(charges.get(i));
+                newTopMeasurefound = true;
             }
+        }
+        if (newTopMeasurefound)
+        {
+            currentNumberOfOptiCyclesWithoutImprovement = 0;
+        }
+        else
+        {
+            ++currentNumberOfOptiCyclesWithoutImprovement;
         }
     }
 
     public void run()
     {
-        int counter=0;
+        int optiCycleCounter=0;
         createNewRandomPopulation(numberOfCharges,false);
         
         Simulator mySimulator = SimOptiFactory.getSimulator();
         
-        mySimulator.initSimulator(getNextParameterSetAsArrayList(), counter, false);
-        support.waitForEndOfSimulator(mySimulator, counter, 600);
+        mySimulator.initSimulator(getNextParameterSetAsArrayList(), optiCycleCounter, false);
+        support.waitForEndOfSimulator(mySimulator, optiCycleCounter, 600);
         //support.addLinesToLogFileFromListOfParser(mySimulator.getListOfCompletedSimulationParsers(), logFileName);
                 
 
@@ -320,9 +325,15 @@ public void initOptimizer()
         printDistances();
         
         int simulationCounter = 0;
-        while(counter<100)
+        while(optiCycleCounter < this.maxNumberOfOptiCycles)
         {
             updatePositions();
+            if (currentNumberOfOptiCyclesWithoutImprovement >= maxNumberOfOptiCyclesWithoutImprovement)
+            {
+                support.setLogToConsole(true);
+                support.log("Too many optimization cycles without improvement. Ending optimization.");
+                break;
+            }
             
             ArrayList<parameter[]> parameterList = getNextParameterSetAsArrayList();
             
@@ -343,11 +354,16 @@ public void initOptimizer()
             calculateDistances();
             updateTopMeasure();
             printDistances();
-            ++counter;
-            
-
+            ++optiCycleCounter;
+        }
+        for(int measureCount=0;measureCount<listOfMeasures.size();measureCount++)
+        {
+            String measureName  = listOfMeasures.get(measureCount).getMeasureName();
+            MeasureType activeMeasure = topMeasure.getMeasureByName(measureName);
+            System.out.println(activeMeasure.getStateAsString());
         }
         support.log("CCS Finished");
+        
     }
     
     //TODO: make only one function-->init charges with parameter, so could leave paramter of parser blank (Why we need parameter[] in parser?
@@ -372,32 +388,6 @@ public void initOptimizer()
             myParamterList.add(pArray);
         }
         return myParamterList;
-    }
-    
-    private MeasureType getDeepCopy(MeasureType originalMeasure)//TODO: implement deepCopy/clone in MeasureType-Class
-    {
-        MeasureType newMeasure = new MeasureType();
-        
-        newMeasure.setCPUTime(originalMeasure.getCPUTime());
-        if (originalMeasure.getConfidenceInterval() != null)
-        {
-            newMeasure.setConfidenceInterval(Arrays.copyOf(originalMeasure.getConfidenceInterval(),originalMeasure.getConfidenceInterval().length));
-        }
-        newMeasure.setEpsilon(originalMeasure.getEpsilon());
-        newMeasure.setMeanValue(originalMeasure.getMeanValue());
-        newMeasure.setMeasureName(originalMeasure.getMeasureName());
-        newMeasure.setSimulationTime(originalMeasure.getSimulationTime());
-        newMeasure.setTargetValue(originalMeasure.getTargetValue(), originalMeasure.getTargetKindOf());
-        newMeasure.setVariance(originalMeasure.getVariance());
-        
-        ArrayList<parameter> newParameterList = new ArrayList<parameter>();
-        for (int i=0; i<originalMeasure.getParameterListSize(); ++i)
-        {
-            newParameterList.add(originalMeasure.getParameterList().get(i));
-        }
-        newMeasure.setParameterList(newParameterList);
-               
-        return newMeasure;
     }
     
     private ArrayList<parameter> getParameters(int indexOfCharge)
@@ -438,6 +428,69 @@ public void initOptimizer()
             String message = "Charge " + i + ": " + distances[i];
             //support.log(message);
             System.out.println(message);
+        }
+    }
+    
+    /**
+     * returnes the number of charges used for optimization
+     * @return the number of charges
+     */
+    public int getNumberOfCharges()
+    {
+        return this.numberOfCharges;
+    }
+    
+    /**
+     * sets the number of charges, if its a least one. zero or negative values are ignored
+     * @param newNumberOfCharges the new number of charges
+     */
+    public void setNumberOfCharges(int newNumberOfCharges)
+    {
+        if (newNumberOfCharges > 0)
+        {
+            this.numberOfCharges = newNumberOfCharges;
+        }
+    }
+    
+    /**
+     * return maximum number of optimization cycles before breaking up
+     * @return the current maximum number of optimization cycles
+     */
+    public int getMaxNumberOfOptiCycles()
+    {
+        return this.maxNumberOfOptiCycles;
+    }
+    
+    /**
+     * sets maximum number of optimization cycles. Has to be at least 1, otherwise it is ignored.
+     * @param newMaxNumberOfOtpiCycles the new maximum number of optimization cycles
+     */
+    public void setMaxNumberOfOptiCycles(int newMaxNumberOfOtpiCycles)
+    {
+        if (newMaxNumberOfOtpiCycles > 0)
+        {
+            this.maxNumberOfOptiCycles = newMaxNumberOfOtpiCycles;
+        }
+    }
+    
+    /**
+     * gets maximum number of optimization cycles without improvement, before breaking optimization loop.
+     * @return the maximum number of optimization cycles without improvemet
+     */
+    public int getMaxNumberOfOptiCyclesWithoutImprovement()
+    {
+        return this.maxNumberOfOptiCyclesWithoutImprovement;
+    }
+    
+    /**
+     * sets maximum number of optimization cycles without improvement. Has to be at least 1, otherwise it is ignored.
+     * @param newMaxNumberOfOptiCyclesWithoutImprovement the new maximum number of optimization cycles without improvement
+     */
+    public void setMaxNumberOfOptiCyclesWithoutImprovement(int newMaxNumberOfOptiCyclesWithoutImprovement)
+    {
+        if (newMaxNumberOfOptiCyclesWithoutImprovement > 0)
+        {
+            this.maxNumberOfOptiCyclesWithoutImprovement = newMaxNumberOfOptiCyclesWithoutImprovement;
         }
     }
 

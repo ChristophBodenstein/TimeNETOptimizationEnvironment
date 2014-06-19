@@ -225,4 +225,20 @@ private double CPUTime;
     public void setCPUTime(double CPUTime) {
         this.CPUTime = CPUTime;
     }
+    
+    public String getStateAsString()
+    {
+        String state = "";
+        state += "MeasureName\tMeanValue\tVariance\tTargetValue\tTargetKindOf\n";
+        state += this.MeasureName + " \t" + this.MeanValue + " \t" + this.Variance + " \t" + this.targetValue + " \t" + this.targetKindOf + "\n\n";
+        
+        state += "ParameterName\tCurrentValue\tStartValue\tEndValue\tStepping\n";
+        for (int i = 0; i<this.parameterList.size(); ++i)
+        {
+            parameter p = this.parameterList.get(i);
+            state += p.getName() + " \t" + p.getValue() + " \t" + p.getStartValue() + " \t" + p.getEndValue() + " \t" + p.getStepping() + "\n";
+        }
+        
+        return state;
+    }
 }
