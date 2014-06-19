@@ -187,8 +187,31 @@ int numberOfChangableParameters=0;
             //Check, which parameters can be changed
             if(numberOfChangableParameters>1){
             //TODO: Sort List of Parameters (new method in support)    
-                
-                
+            parser lastParser=this.historyOfParsers.get(this.historyOfParsers.size()-1);
+            
+            parameter[] lastParameterList=lastParser.getListOfParameters();
+            //For ever Parameter check if it is iteratable and if it was changed last time
+            int i=0;
+            int numberOfLastParameter=0;
+            for(i=0;i<lastParameterList.length;i++){
+                if(lastParameterList[i].isIteratableAndItern()){
+                numberOfLastParameter++;
+                }
+                /*if it was changed, then break, and numberOfLastParameter contains the number of last changed parameter in array of changable parameters*/
+                if(lastParameterList[i]!=actualParameterset[i]){
+                break;
+                }
+            }
+            // At this point, numberOfLastParameter contains the number of last changed parameter in an array of all changeable parameters
+            
+            support.log("Last changed parameter was: "+lastParameterList[i].getName()+" with number "+ numberOfLastParameter+" in changable-Array.");
+            
+            if(nextSolution==null){
+            //Select next Parameter to be changed with round-robin
+            }else{
+            //Select old parameter to be changed again
+            }
+            
             //get numberOfLastChangedParameter !
             //If numberOfChangableParameters>=2 then (else numberOfParameterToBeChanged=0;)
             //load last parser and check, which parameter has been changed (numberOfParameterToBeChanged=other;)
