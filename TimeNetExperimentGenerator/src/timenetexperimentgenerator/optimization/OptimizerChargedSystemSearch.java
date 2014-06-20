@@ -246,7 +246,7 @@ public void initOptimizer()
                     
                     for (int parameterNumber = 0; parameterNumber<speedOfCharges[currentChargeNumber].length; ++parameterNumber)
                     {
-                        if (currentMeasure.get(parameterNumber).isIteratableAndItern())
+                        if (currentMeasure.get(parameterNumber).isIteratableAndIntern())
                         {
                             double currentValue = currentMeasure.get(parameterNumber).getValue();
                         double compareValue = compareMeasure.get(parameterNumber).getValue();
