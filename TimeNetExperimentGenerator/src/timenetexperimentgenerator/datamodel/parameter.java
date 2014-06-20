@@ -190,7 +190,7 @@ private long idHash=0;
      * @return true, if parameter can be iterated
      */ 
     public boolean isIteratable(){
-        if((this.endValue>this.startValue)&&(this.stepping<=(this.endValue-this.startValue))){
+        if((this.endValue>this.startValue)&&(this.stepping<=(this.endValue-this.startValue))&&(this.value<this.endValue)){
         return true;
         }else{
         return false;
@@ -201,7 +201,35 @@ private long idHash=0;
      * Same as isIteratable but only true, if parameter is not external
      * @return true, if parameter is internal and iteratable
      */
-    public boolean isIteratableAndItern(){
-    return ((!this.isExternalParameter())&&(this.isIteratable())); 
+    public boolean isIteratableAndIntern(){
+    return ((!this.isExternalParameter())&&(this.isIteratable()) ); 
+    }
+    
+    /**
+     * Increments the value of this parameter by stepping
+     * @return true if it was possible to increment the parameter
+     */
+    public boolean incValue(){
+    double newValue=this.value+this.stepping;
+        if(newValue<=this.endValue){
+        this.value=newValue;
+        return true;
+        }else{
+        return false;
+        }
+    }
+    
+    /**
+     * decrements Value of this parameter by stepping
+     * @return true if it was possible to decrement the parameter
+     */
+    public boolean decValue(){
+    double newValue=this.value-this.stepping;
+        if(newValue>=this.startValue){
+        this.value=newValue;
+        return true;
+        }else{
+        return false;
+        }
     }
 }

@@ -11,8 +11,6 @@ package timenetexperimentgenerator;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
@@ -788,6 +786,22 @@ private static boolean logToConsole=false;
         return pArray;
     }
     
+    /**
+     * Selects the parameter with given name from Array of parameters
+     * @return parameter with given name (first finding) or null, if not found
+     * @param pList Array of parameter
+     * @param name Name of parameter to be found in array
+     */
+    public static parameter getParameterByName(parameter[] pList, String name){
+    parameter outputValue=null;
+    
+        for(int i=0;i<pList.length;i++){
+            if(pList[i].getName().equals(name)){
+            outputValue=pList[i];
+            }
+        }
+    return outputValue;
+    }
     
 }
 

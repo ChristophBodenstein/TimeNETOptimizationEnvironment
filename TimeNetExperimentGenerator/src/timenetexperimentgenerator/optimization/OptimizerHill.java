@@ -145,12 +145,14 @@ int numberOfChangableParameters=0;
      */
     private parameter[] getNextParameterset(parameter[] actualParameterset){
     parameter[] newParameterset=support.getCopyOfParameterSet(parameterBase);
+    ArrayList<parameter> listOfChangableParameters=new ArrayList<parameter>(); 
         //Count the number of changable parameters
         this.numberOfChangableParameters=0;
         for(int i=0;i<newParameterset.length;i++){
                 parameter p=newParameterset[i];
-                if((p.isIteratable())&&(!p.isExternalParameter())){
+                if(p.isIteratableAndIntern()){
                 this.numberOfChangableParameters++;
+                listOfChangableParameters.add(p);
                 }
             }
     
@@ -161,7 +163,7 @@ int numberOfChangableParameters=0;
             //For this choosing strategy, the first element must be minimum
                 for(int i=0;i<newParameterset.length;i++){
                     parameter p=newParameterset[i];
-                    if(p.isIteratableAndItern()){
+                    if(p.isIteratableAndIntern()){
                     p.setValue(p.getStartValue());
                     }
                 }
@@ -170,74 +172,76 @@ int numberOfChangableParameters=0;
         
             for(int i=0;i<newParameterset.length;i++){
                 parameter p=newParameterset[i];
-                if(p.isIteratableAndItern()){
+                if(p.isIteratableAndIntern()){
                 double distance=p.getEndValue()-p.getStartValue();
                 distance=Math.round(0.5*distance/p.getStepping())*p.getStepping()+p.getStartValue();
                 p.setValue(distance);
                 }
             }
         return newParameterset;
-        }else{
-        //newParameterset=support.getCopyOfParameterSet(actualParameterset);
+        }else{    
+        newParameterset=support.getCopyOfParameterSet(actualParameterset);
         //TODO: 
         //1 Calculate neighborhood for each parameter and choose one of the values randomly
         //2 choose next value randomly from complete design-space
         int numberOfParameterToBeChanged=0;//Default, change the first changeable parameter
         
             //Check, which parameters can be changed
-            if(numberOfChangableParameters>1){
+            if(listOfChangableParameters.size()>1){
             //TODO: Sort List of Parameters (new method in support)    
             parser lastParser=this.historyOfParsers.get(this.historyOfParsers.size()-1);
             
             parameter[] lastParameterList=lastParser.getListOfParameters();
             //For ever Parameter check if it is iteratable and if it was changed last time
             int i=0;
-            int numberOfLastParameter=0;
-            for(i=0;i<lastParameterList.length;i++){
-                if(lastParameterList[i].isIteratableAndItern()){
-                numberOfLastParameter++;
+            int numberOfLastParameter=0;//Number of last parameter that was changed(in an Array of changable parameters)
+                for(i=0;i<lastParameterList.length;i++){
+                    if(lastParameterList[i].isIteratableAndIntern()){
+                    numberOfLastParameter++;
+                    }
+                    /*if it was changed, then break, and numberOfLastParameter contains the number of last changed parameter in array of changable parameters*/
+                    if(lastParameterList[i]!=actualParameterset[i]){
+                    break;
+                    }
                 }
-                /*if it was changed, then break, and numberOfLastParameter contains the number of last changed parameter in array of changable parameters*/
-                if(lastParameterList[i]!=actualParameterset[i]){
-                break;
-                }
-            }
             // At this point, numberOfLastParameter contains the number of last changed parameter in an array of all changeable parameters
             
             support.log("Last changed parameter was: "+lastParameterList[i].getName()+" with number "+ numberOfLastParameter+" in changable-Array.");
             
-            if(nextSolution==null){
-            //Select next Parameter to be changed with round-robin
+                if(nextSolution==null){
+                //Select next Parameter to be changed with round-robin
+                    numberOfParameterToBeChanged=numberOfLastParameter+1;
+                    if(numberOfParameterToBeChanged>=listOfChangableParameters.size()){
+                    numberOfParameterToBeChanged=0;
+                    }
+                }else{
+                //Select old parameter to be changed again
+                    numberOfParameterToBeChanged=numberOfLastParameter;
+                }
+            
             }else{
-            //Select old parameter to be changed again
+            numberOfParameterToBeChanged=0;
             }
             
-            //get numberOfLastChangedParameter !
-            //If numberOfChangableParameters>=2 then (else numberOfParameterToBeChanged=0;)
-            //load last parser and check, which parameter has been changed (numberOfParameterToBeChanged=other;)
-            //If nextSolution == null --> go back for last changed parameter? change other parameter
-            
-            }
+            //Select new Parameter to be changed and change it!
+            //Get Parameter by name
+            String nameOfParameterToBeChanged=listOfChangableParameters.get(numberOfParameterToBeChanged).getName();
+            boolean incResult=false;
             
             switch(typeOfNeighborhood){
                 case 0://0 choose the next neighbor based on stepping forward
-                        for(int i=0;i<newParameterset.length;i++){
-                        parameter p=newParameterset[i];
-                            if(p.isIteratableAndItern()){
-                            double nextValue=Math.min(p.getValue()+p.getStepping(),p.getEndValue());
-                            p.setValue(nextValue);
-                            }
-                        }
+                        //Inc this parameter by standard-increment
+                        incResult=support.getParameterByName(newParameterset, nameOfParameterToBeChanged).incValue();
                         break;
                 case 1://Step back and forward randomly based on stepping
                         for(int i=0;i<newParameterset.length;i++){
                         parameter p=newParameterset[i];
-                            if(p.isIteratableAndItern()){
+                            if(p.isIteratableAndIntern()){
                             double nextValue=0.0;
                                 if(Math.random()>=0.5){
-                                nextValue=Math.min(p.getValue()+p.getStepping(),p.getEndValue());
+                                incResult=support.getParameterByName(newParameterset, nameOfParameterToBeChanged).incValue();
                                 }else{
-                                nextValue=Math.max(p.getValue()-p.getStepping(),p.getStartValue());
+                                incResult=support.getParameterByName(newParameterset, nameOfParameterToBeChanged).decValue();
                                 }
                             p.setValue(nextValue);
                             }
@@ -246,7 +250,7 @@ int numberOfChangableParameters=0;
                 case 2://Calculate neighborhood and choose next value randomly 
                         for(int i=0;i<newParameterset.length;i++){
                         parameter p=newParameterset[i];
-                            if(p.isIteratableAndItern()){
+                            if(p.isIteratableAndIntern()){
                             double nextValue=0.0;
                             double stepCount=(p.getEndValue()-p.getStartValue())/p.getStepping();
                             nextValue=p.getStepping()*Math.round(Math.random()*stepCount*this.sizeOfNeighborhood/100);
@@ -262,7 +266,7 @@ int numberOfChangableParameters=0;
                 case 3://Choose Value randomly out of complete designspace
                         for(int i=0;i<newParameterset.length;i++){
                         parameter p=newParameterset[i];
-                            if(p.isIteratableAndItern()){
+                            if(p.isIteratableAndIntern()){
                             double nextValue=0.0;
                             double stepCount=(p.getEndValue()-p.getStartValue())/p.getStepping();
                             nextValue=p.getStartValue() + Math.round(Math.random()*stepCount);
@@ -274,7 +278,7 @@ int numberOfChangableParameters=0;
                 case 4: //Calculate neighborhood and choose next value randomly, Ignore Stepping!
                         for(int i=0;i<newParameterset.length;i++){
                         parameter p=newParameterset[i];
-                            if(p.isIteratableAndItern()){
+                            if(p.isIteratableAndIntern()){
                             double nextValue=0.0;
                             double range=(p.getEndValue()-p.getStartValue());
                             nextValue=Math.round(Math.random()*range*this.sizeOfNeighborhood/100);
@@ -291,6 +295,12 @@ int numberOfChangableParameters=0;
                         //Dont change the parameterset
                         break;
         
+            }
+        
+            if(incResult){
+            support.log("Parameter could be incremented.(or decremented)");
+            }else{
+            support.log("Parameter could NOT be incremented.(or decremented)");
             }
         return newParameterset;
         }
