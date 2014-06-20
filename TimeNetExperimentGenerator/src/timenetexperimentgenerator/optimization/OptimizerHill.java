@@ -198,15 +198,17 @@ int numberOfChangableParameters=0;
                 for(i=0;i<lastParameterList.length;i++){
                     if(lastParameterList[i].isIteratableAndIntern()){
                     numberOfLastParameter++;
+                    support.log("Iteratable Parameter with number "+i+" found.");
+                        /*if it was changed, then break, and numberOfLastParameter contains the number of last changed parameter in array of changable parameters*/
+                        if(lastParameterList[i]!=actualParameterset[i]){
+                        break;
+                        }
                     }
-                    /*if it was changed, then break, and numberOfLastParameter contains the number of last changed parameter in array of changable parameters*/
-                    if(lastParameterList[i]!=actualParameterset[i]){
-                    break;
-                    }
+                    
                 }
             // At this point, numberOfLastParameter contains the number of last changed parameter in an array of all changeable parameters
+            support.log("Number of Last changed Parameter is "+numberOfLastParameter);
             
-            support.log("Last changed parameter was: "+lastParameterList[i].getName()+" with number "+ numberOfLastParameter+" in changable-Array.");
             
                 if(nextSolution==null){
                 //Select next Parameter to be changed with round-robin
