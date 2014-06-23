@@ -53,6 +53,7 @@ String logFileName;
 int wrongSolutionCounter=support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW;
 int numberOfLastChangedParameter=0;
 int numberOfChangableParameters=0;
+boolean directionOfOptimization=true;//true->increment parameters, false->decrement parameters
 
     /**
      * Constructor
@@ -103,11 +104,12 @@ int numberOfChangableParameters=0;
         this.historyOfParsers = support.appendListOfParsers(historyOfParsers, mySimulator.getListOfCompletedSimulationParsers());
         currentSolution=mySimulator.getListOfCompletedSimulationParsers().get(0);
         Fx=this.getActualDistance(currentSolution);
-        nextSolution=null;
+        nextSolution=currentSolution;
         
             while(!optimized){
             mySimulator.initSimulator(getNextParametersetAsArrayList(currentSolution.getListOfParameters()), simulationCounter, false);
             support.waitForEndOfSimulator(mySimulator, simulationCounter, 600);
+            this.simulationCounter=mySimulator.getSimulationCounter();
             support.addLinesToLogFileFromListOfParser(mySimulator.getListOfCompletedSimulationParsers(), logFileName);
             this.historyOfParsers = support.appendListOfParsers(historyOfParsers, mySimulator.getListOfCompletedSimulationParsers());
             nextSolution=mySimulator.getListOfCompletedSimulationParsers().get(0);
@@ -118,10 +120,10 @@ int numberOfChangableParameters=0;
                 support.log("Choosing next solution for Hill Climbing");
                 Fx=Fy;
                 currentSolution=nextSolution;
-                nextSolution=null;
                 //Reset wrong-solution-counter
                 wrongSolutionCounter=support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW;
                 }else{
+                nextSolution=null;
                 //Count up the Solutions which are not taken
                 //After X wrong solutions exit
                 support.log("Distance was higher, Solution not chosen. Counting up wrong-solution-counter.");
@@ -194,11 +196,11 @@ int numberOfChangableParameters=0;
             parameter[] lastParameterList=lastParser.getListOfParameters();
             //For ever Parameter check if it is iteratable and if it was changed last time
             int i=0;
-            int numberOfLastParameter=0;//Number of last parameter that was changed(in an Array of changable parameters)
+            int numberOfLastParameter=-1;//Number of last parameter that was changed(in an Array of changable parameters)
                 for(i=0;i<lastParameterList.length;i++){
                     if(lastParameterList[i].isIteratableAndIntern()){
                     numberOfLastParameter++;
-                    support.log("Iteratable Parameter with number "+i+" found.");
+                    support.log("Iteratable Parameter with number "+numberOfLastParameter+" found.");
                         /*if it was changed, then break, and numberOfLastParameter contains the number of last changed parameter in array of changable parameters*/
                         if(lastParameterList[i]!=actualParameterset[i]){
                         break;
@@ -211,13 +213,24 @@ int numberOfChangableParameters=0;
             
             
                 if(nextSolution==null){
-                //Select next Parameter to be changed with round-robin
-                    numberOfParameterToBeChanged=numberOfLastParameter+1;
-                    if(numberOfParameterToBeChanged>=listOfChangableParameters.size()){
-                    numberOfParameterToBeChanged=0;
+                support.log("NextSolution is null->last Solution was not better then the overlast solution.");
+                    if(this.directionOfOptimization){
+                    //Switch direction of Optimization but chnge the same old parameter
+                    support.log("Changing direction of Optimization to false(backwards).");
+                    this.directionOfOptimization=false;
+                    numberOfParameterToBeChanged=numberOfLastParameter;
+                    }   else{
+                        support.log("Changing direction of Optimization back to true(forward). Taking next parameter to change.");
+                        this.directionOfOptimization=true;
+                        //Select next Parameter to be changed with round-robin
+                        numberOfParameterToBeChanged=numberOfLastParameter+1;
+                        if(numberOfParameterToBeChanged>=listOfChangableParameters.size()){
+                        numberOfParameterToBeChanged=0;
+                        }
                     }
                 }else{
                 //Select old parameter to be changed again
+                    support.log("Last Solution was better then overlast solution. Chaning again parameter "+ numberOfLastParameter);
                     numberOfParameterToBeChanged=numberOfLastParameter;
                 }
             
@@ -229,11 +242,11 @@ int numberOfChangableParameters=0;
             //Get Parameter by name
             String nameOfParameterToBeChanged=listOfChangableParameters.get(numberOfParameterToBeChanged).getName();
             boolean incResult=false;
-            
+            support.log("Name of Parameter to be changed: "+nameOfParameterToBeChanged);
             switch(typeOfNeighborhood){
                 case 0://0 choose the next neighbor based on stepping forward
                         //Inc this parameter by standard-increment
-                        incResult=support.getParameterByName(newParameterset, nameOfParameterToBeChanged).incValue();
+                        incResult=support.getParameterByName(newParameterset, nameOfParameterToBeChanged).incDecValue(this.directionOfOptimization);
                         break;
                 case 1://Step back and forward randomly based on stepping
                         for(int i=0;i<newParameterset.length;i++){

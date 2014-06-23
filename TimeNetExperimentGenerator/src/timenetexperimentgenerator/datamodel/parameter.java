@@ -232,4 +232,16 @@ private long idHash=0;
         return false;
         }
     }
+    
+    /**
+     * Increments or decrements Value based on given boolean
+     * @param direction if true-> increment, false->decrement
+     */
+    public boolean incDecValue(boolean direction){
+        if(direction){
+        return this.incValue();
+        }else{
+        return this.decValue();
+        }
+    }
 }
