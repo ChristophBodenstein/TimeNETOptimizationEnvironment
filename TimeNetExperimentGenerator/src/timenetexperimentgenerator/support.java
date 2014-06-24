@@ -45,8 +45,25 @@ private static LogFrame myLogFrame=new LogFrame();
 public static final String[] SIMTYPES={"Local Sim.","Cache Only Sim.","Cache & Local","Web Sim."};
 public static final String[] OPTITYPES={"Hillclimbing","Sim. Annealing","ChargedSystemSearch","A.Seidel-2","A.Seidel-3"};
 
+    /**
+     * @return the typeOfStartValue
+     */
+    public static typeOfStartValueEnum getTypeOfStartValue() {
+        return typeOfStartValue;
+    }
+
+    /**
+     * @param aTypeOfStartValue the typeOfStartValue to set
+     */
+    public static void setTypeOfStartValue(typeOfStartValueEnum aTypeOfStartValue) {
+        typeOfStartValue = aTypeOfStartValue;
+    }
+
+public enum typeOfStartValueEnum{start, end, middle, random};
+
 private static boolean logToConsole=false;
-    
+ 
+private static typeOfStartValueEnum typeOfStartValue=typeOfStartValueEnum.start;
 
     /**
      * Translates Parameternames from logfile to internal used Strings

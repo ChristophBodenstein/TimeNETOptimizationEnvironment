@@ -19,6 +19,7 @@ import timenetexperimentgenerator.datamodel.parameter;
 import timenetexperimentgenerator.datamodel.parser;
 import timenetexperimentgenerator.simulation.Simulator;
 import timenetexperimentgenerator.support;
+import timenetexperimentgenerator.support.*;
 
 /**
  *
@@ -159,29 +160,63 @@ boolean directionOfOptimization=true;//true->increment parameters, false->decrem
             }
     
         if(actualParameterset==null){
-        //Calulate first parameterset, the mean value of all parameters, with respect to stepping
-        
-            if(this.typeOfNeighborhood==0){
-            //For this choosing strategy, the first element must be minimum
-                for(int i=0;i<newParameterset.length;i++){
-                    parameter p=newParameterset[i];
-                    if(p.isIteratableAndIntern()){
-                    p.setValue(p.getStartValue());
-                    }
-                }
+            //calculate the first parameterset
+            switch(support.getTypeOfStartValue()){
+            
+                case start:
+                        support.log("Taking Min-Values as Start for every Parameter.");
+                            //Calculate first parameterset, set every parameter to start-value
+                            //For this choosing strategy, the first element must be minimum
+                            for(int i=0;i<newParameterset.length;i++){
+                            parameter p=newParameterset[i];
+                                if(p.isIteratableAndIntern()){
+                                p.setValue(p.getStartValue());
+                                }
+                            }
+                            break;
+                case middle:
+                        support.log("Taking Middle-Values as Start for every Parameter.");
+                            //Calulate first parameterset, the mean value of all parameters, with respect to stepping
+                            for(int i=0;i<newParameterset.length;i++){
+                                parameter p=newParameterset[i];
+                                if(p.isIteratableAndIntern()){
+                                double distance=p.getEndValue()-p.getStartValue();
+                                distance=Math.round(0.5*distance/p.getStepping())*p.getStepping()+p.getStartValue();
+                                p.setValue(distance);
+                                }
+                            }
+                            break;
+                case end:
+                        support.log("Taking Max-Values as Start for every Parameter.");
+                            //Calculate first parameterset, set every parameter to end-value
+                            //For this choosing strategy, the first element must be minimum
+                            for(int i=0;i<newParameterset.length;i++){
+                            parameter p=newParameterset[i];
+                                if(p.isIteratableAndIntern()){
+                                p.setValue(p.getEndValue());
+                                }
+                            }
+                            break;
+                case random:
+                        support.log("Taking Random-Values as Start for every Parameter.");
+                            //Calulate first parameterset, the random value of all parameters, with respect to stepping
+                            for(int i=0;i<newParameterset.length;i++){
+                                parameter p=newParameterset[i];
+                                if(p.isIteratableAndIntern()){
+                                double distance=p.getEndValue()-p.getStartValue();
+                                double rnd=Math.random();
+                                distance=Math.round(rnd*distance/p.getStepping())*p.getStepping()+p.getStartValue();
+                                p.setValue(distance);
+                                }
+                            }
+                            break;
+            
+            }
             return newParameterset;
-            }
+            
         
-            for(int i=0;i<newParameterset.length;i++){
-                parameter p=newParameterset[i];
-                if(p.isIteratableAndIntern()){
-                double distance=p.getEndValue()-p.getStartValue();
-                distance=Math.round(0.5*distance/p.getStepping())*p.getStepping()+p.getStartValue();
-                p.setValue(distance);
-                }
-            }
-        return newParameterset;
-        }else{    
+        }else{
+        //First parameterset exists, calculate the next
         newParameterset=support.getCopyOfParameterSet(actualParameterset);
         //TODO: 
         //1 Calculate neighborhood for each parameter and choose one of the values randomly
