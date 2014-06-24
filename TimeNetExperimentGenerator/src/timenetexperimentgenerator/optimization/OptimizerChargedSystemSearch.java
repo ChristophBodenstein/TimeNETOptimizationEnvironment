@@ -178,38 +178,11 @@ public void initOptimizer()
     {            
         for (int parserCount = 0; parserCount < charges.size(); ++ parserCount)
         {
-            distances[parserCount] = getActualDistance(charges.get(parserCount));
+            distances[parserCount] = charges.get(parserCount).getDistance();
         }        
     }
     
-    private double getActualDistance(parser p)
-    {
-        double distance=0;
-        for(int measureCount=0;measureCount<listOfMeasures.size();measureCount++)
-        {
-            MeasureType activeMeasure = p.getMeasureByName(listOfMeasures.get(measureCount).getMeasureName());
-            MeasureType activeMeasureFromInterface = listOfMeasures.get(measureCount);//Contains Optimization targets
-            activeMeasure.setTargetValue(activeMeasureFromInterface.getTargetValue(), activeMeasureFromInterface.getTargetKindOf());
-            
-            if(activeMeasure.getTargetKindOf().equals("value"))
-            {
-                distance=activeMeasure.getDistanceFromTarget();
-            }
-            else if(activeMeasure.getTargetKindOf().equals("min"))
-            {
-                distance=activeMeasure.getMeanValue();
-            }
-            else if(activeMeasure.getTargetKindOf().equals("max"))
-            {
-                distance=0-activeMeasure.getMeanValue();
-            }
-            else
-            {
-                //TODO error handling for unknown target-type
-            }
-        }
-        return distance;
-    }
+
     
     private void calculatePower()
     {
@@ -249,25 +222,25 @@ public void initOptimizer()
                         if (currentMeasure.get(parameterNumber).isIteratableAndIntern())
                         {
                             double currentValue = currentMeasure.get(parameterNumber).getValue();
-                        double compareValue = compareMeasure.get(parameterNumber).getValue();
-                        double currentSpeed = speedOfCharges[currentChargeNumber][parameterNumber];
+                            double compareValue = compareMeasure.get(parameterNumber).getValue();
+                            double currentSpeed = speedOfCharges[currentChargeNumber][parameterNumber];
                         
-                        double diffSpeed = (compareValue - currentValue) * attraction / maxAttraction;
-                        currentSpeed += diffSpeed;
-                        currentValue += currentSpeed;
+                            double diffSpeed = (compareValue - currentValue) * attraction / maxAttraction;
+                            currentSpeed += diffSpeed;
+                            currentValue += currentSpeed;
                         
-                        //safety check to prevent charges to "fly" over the border
-                        if (currentValue < currentMeasure.get(parameterNumber).getStartValue())
-                        {
-                            currentValue = currentMeasure.get(parameterNumber).getStartValue();
-                        }
-                        else if (currentValue > currentMeasure.get(parameterNumber).getEndValue())
-                        {
+                            //safety check to prevent charges to "fly" over the border
+                            if (currentValue < currentMeasure.get(parameterNumber).getStartValue())
+                            {
+                                currentValue = currentMeasure.get(parameterNumber).getStartValue();
+                            }
+                            else if (currentValue > currentMeasure.get(parameterNumber).getEndValue())
+                            {
                             currentValue = currentMeasure.get(parameterNumber).getEndValue();
-                        }
+                            }
                         
-                        speedOfCharges[currentChargeNumber][parameterNumber] = currentSpeed;
-                        currentMeasure.get(parameterNumber).setValue(currentValue);
+                            speedOfCharges[currentChargeNumber][parameterNumber] = currentSpeed;
+                            currentMeasure.get(parameterNumber).setValue(currentValue);
                         } 
                     }
                 }
@@ -310,8 +283,7 @@ public void initOptimizer()
         int optiCycleCounter=0;
         createNewRandomPopulation(numberOfCharges,false);
         
-        Simulator mySimulator = SimOptiFactory.getSimulator();
-        
+        Simulator mySimulator = SimOptiFactory.getSimulator();       
         mySimulator.initSimulator(getNextParameterSetAsArrayList(), optiCycleCounter, false);
         support.waitForEndOfSimulator(mySimulator, optiCycleCounter, 600);
         //support.addLinesToLogFileFromListOfParser(mySimulator.getListOfCompletedSimulationParsers(), logFileName);
@@ -330,7 +302,6 @@ public void initOptimizer()
             updatePositions();
             if (currentNumberOfOptiCyclesWithoutImprovement >= maxNumberOfOptiCyclesWithoutImprovement)
             {
-                support.setLogToConsole(true);
                 support.log("Too many optimization cycles without improvement. Ending optimization.");
                 break;
             }
