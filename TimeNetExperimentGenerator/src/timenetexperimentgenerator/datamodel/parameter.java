@@ -190,7 +190,7 @@ private long idHash=0;
      * @return true, if parameter can be iterated
      */ 
     public boolean isIteratable(){
-        if((this.endValue>this.startValue)&&(this.stepping<=(this.endValue-this.startValue))&&(this.value<this.endValue)){
+        if((this.endValue>this.startValue)&&(this.stepping<=(this.endValue-this.startValue))&&(this.value<=this.endValue)){
         return true;
         }else{
         return false;

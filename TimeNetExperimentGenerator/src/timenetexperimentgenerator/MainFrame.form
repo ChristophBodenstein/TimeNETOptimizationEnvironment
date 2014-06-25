@@ -121,7 +121,7 @@
                           <Group type="103" alignment="0" groupAlignment="0" attributes="0">
                               <Group type="102" attributes="0">
                                   <Component id="jScrollPane1" min="-2" pref="373" max="-2" attributes="0"/>
-                                  <EmptySpace max="32767" attributes="0"/>
+                                  <EmptySpace pref="26" max="32767" attributes="0"/>
                               </Group>
                               <Group type="102" attributes="0">
                                   <Component id="jTextFieldSCPNFile" max="32767" attributes="0"/>
@@ -130,12 +130,6 @@
                           </Group>
                       </Group>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="1" attributes="0">
-                              <Component id="jComboBoxSimulationType" pref="115" max="32767" attributes="0"/>
-                              <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
-                              <Component id="jComboBoxOptimizationType" min="-2" pref="121" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
-                          </Group>
                           <Component id="jLabelSimulationCount" max="32767" attributes="0"/>
                           <Component id="jTabbedPane1" alignment="0" pref="0" max="32767" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
@@ -152,9 +146,27 @@
                           <Component id="jButtonGenerateListOfExperiments" alignment="0" max="32767" attributes="1"/>
                           <Component id="jButtonStartBatchSimulation" alignment="0" max="32767" attributes="1"/>
                           <Component id="jSeparator3" alignment="0" max="32767" attributes="1"/>
-                          <Component id="jButtonLoadCacheFile" alignment="1" max="32767" attributes="0"/>
-                          <Component id="jButtonStartOptimization" alignment="0" max="32767" attributes="1"/>
-                          <Component id="jLabelExportStatus" alignment="0" max="32767" attributes="0"/>
+                          <Component id="jButtonLoadCacheFile" alignment="1" pref="266" max="32767" attributes="0"/>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="jLabelExportStatus" min="-2" pref="14" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="jButtonStartOptimization" max="32767" attributes="1"/>
+                          </Group>
+                          <Group type="102" alignment="1" attributes="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="jComboBoxSimulationType" pref="135" max="32767" attributes="0"/>
+                                  <Group type="102" attributes="0">
+                                      <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
+                                      <Component id="jLabel1" max="32767" attributes="0"/>
+                                  </Group>
+                              </Group>
+                              <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                  <Component id="jComboBoxTypeOfStartValue" max="32767" attributes="0"/>
+                                  <Component id="jComboBoxOptimizationType" min="-2" pref="121" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
                   </Group>
               </Group>
@@ -196,9 +208,12 @@
                           <Component id="jComboBoxSimulationType" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jComboBoxOptimizationType" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
-                      <Component id="jButtonStartOptimization" min="-2" pref="32" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="jComboBoxTypeOfStartValue" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace pref="9" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
@@ -208,7 +223,10 @@
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
-                      <Component id="jButtonPathToTimeNet" min="-2" pref="20" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Component id="jButtonPathToTimeNet" min="-2" pref="20" max="-2" attributes="0"/>
+                          <Component id="jButtonStartOptimization" min="-2" pref="32" max="-2" attributes="0"/>
+                      </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jButtonEnterURLToSimServer" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
@@ -451,6 +469,18 @@
       <Events>
         <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="jCheckBoxSlaveSimulatorItemStateChanged"/>
       </Events>
+    </Component>
+    <Component class="javax.swing.JComboBox" name="jComboBoxTypeOfStartValue">
+      <Properties>
+        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="new DefaultComboBoxModel(support.typeOfStartValueEnum.values())" type="code"/>
+        </Property>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabel1">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Start at"/>
+      </Properties>
     </Component>
   </SubComponents>
 </Form>

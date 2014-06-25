@@ -225,8 +225,10 @@ boolean directionOfOptimization=true;//true->increment parameters, false->decrem
         
             //Check, which parameters can be changed
             if(listOfChangableParameters.size()>1){
+            //support.log("List of Changable Parameters has size: "+listOfChangableParameters.size());
             //TODO: Sort List of Parameters (new method in support)    
             parser lastParser=this.historyOfParsers.get(this.historyOfParsers.size()-1);
+            //support.log("History of Parsers has size: "+this.historyOfParsers.size());
             
             parameter[] lastParameterList=lastParser.getListOfParameters();
             //For ever Parameter check if it is iteratable and if it was changed last time
@@ -265,7 +267,7 @@ boolean directionOfOptimization=true;//true->increment parameters, false->decrem
                     }
                 }else{
                 //Select old parameter to be changed again
-                    support.log("Last Solution was better then overlast solution. Chaning again parameter "+ numberOfLastParameter);
+                    support.log("Last Solution was better then overlast solution. Changing again parameter "+ numberOfLastParameter);
                     numberOfParameterToBeChanged=numberOfLastParameter;
                 }
             
