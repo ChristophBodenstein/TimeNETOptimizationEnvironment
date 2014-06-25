@@ -46,10 +46,11 @@ public class OptimizerGenetic implements Runnable, Optimizer{
     private int maxNumberOfOptiCyclesWithoutImprovement = 10; //how many cycles without improvement until break optimization loop
     private int currentNumberOfOptiCyclesWithoutImprovement = 0;
     
-    private double mutationChance = 0.2; // chance of genes to Mutate 
+    private double mutationChance = 0.2; // chance of genes to Mutate
+    private boolean mutateTopMeasure = false;
     
     private ArrayList<parser> population;
-    private parser bestKnownSolution;
+    private parser bestKnownSolution = null;
     
     Random randomGenerator;
 
@@ -193,6 +194,7 @@ public class OptimizerGenetic implements Runnable, Optimizer{
             
             //evaluation phase --------------------------------------------------------------------------
             population = cutPopulation(population);
+            updateTopMeasure();
             printPopulationDistances();
             
             ++optiCycleCounter;
@@ -262,8 +264,13 @@ public class OptimizerGenetic implements Runnable, Optimizer{
     
     private ArrayList<parser> mutatePopulation(ArrayList<parser> population, double mutationProbability)
     {
-        for (parser p : population)
+        int mutationStart = 1;
+        if (mutateTopMeasure)
+            mutationStart = 0;
+        
+        for (int popCounter = mutationStart; popCounter< population.size(); ++popCounter)
         {
+            parser p = population.get(popCounter);
             parameter[] pArray = p.getListOfParameters();
             for (int i = 0; i<pArray.length; ++i)
             {
@@ -355,7 +362,7 @@ public class OptimizerGenetic implements Runnable, Optimizer{
         
         int oldPopulationSize = oldPopulation.size();
         
-        for (int i = 0; i < oldPopulationSize; ++i)
+        for (int i = 0; i < (oldPopulationSize - populationSize); ++i)
         {
             newPopulation.remove(populationSize); //keep removing first entry over population maximum
         }
@@ -405,6 +412,7 @@ public class OptimizerGenetic implements Runnable, Optimizer{
     
     private ArrayList<parser> sortPopulationByDistance(ArrayList<parser> originalPopulation)
     {
+        setMeasureTargets(originalPopulation);
         Collections.sort(originalPopulation, new Comparator<parser>()
         {
             @Override
@@ -417,12 +425,55 @@ public class OptimizerGenetic implements Runnable, Optimizer{
         return originalPopulation;
     }
     
+    private void updateTopMeasure()
+    {
+        boolean newTopMeasurefound = false;
+        
+        if (bestKnownSolution == null) //no top solution found until know, so take the next you can get
+        {
+            bestKnownSolution = new parser(population.get(0));
+        }
+        
+        for (parser p : population)
+        {
+            if(p.getDistance() < bestKnownSolution.getDistance())
+            {
+                bestKnownSolution = new parser(p);
+                newTopMeasurefound = true;
+            }
+        }
+        if (newTopMeasurefound)
+        {
+            currentNumberOfOptiCyclesWithoutImprovement = 0;
+        }
+        else
+        {
+            ++currentNumberOfOptiCyclesWithoutImprovement;
+        }
+    }
+    
+    private void setMeasureTargets(ArrayList<parser> pList)
+    {
+        MeasureType activeMeasure = null;
+        MeasureType activeMeasureFromInterface = null;
+        for(int measureCount=0;measureCount<listOfMeasures.size();measureCount++)
+        {
+            for(int populationCount = 0; populationCount < pList.size() ; populationCount++)
+            {
+                activeMeasure=pList.get(populationCount).getMeasureByName(listOfMeasures.get(measureCount).getMeasureName());
+                activeMeasureFromInterface=listOfMeasures.get(measureCount);//Contains Optimization targets
+                activeMeasure.setTargetValue(activeMeasureFromInterface.getTargetValue(), activeMeasureFromInterface.getTargetKindOf());
+            }
+        }
+    }
+    
     public void printPopulationDistances()
     {
         for (int i = 0; i<population.size(); ++i)
         {
             support.setLogToConsole(true);
-            String logString = "Distance " + i + " \t: " + population.get(i).getDistance() + "\n";
+            String logString = "Distance " + i + " \t: " + population.get(i).getDistance();
+            support.log(logString);
         }
     }
 

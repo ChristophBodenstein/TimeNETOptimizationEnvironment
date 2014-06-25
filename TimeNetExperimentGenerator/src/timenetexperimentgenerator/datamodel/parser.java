@@ -268,24 +268,24 @@ private boolean isFromDistributedSimulation=false;//Is False, if local simulated
         for(int measureCount=0;measureCount<Measures.size();measureCount++)
         {
             MeasureType activeMeasure = getMeasureByName(Measures.get(measureCount).getMeasureName());
-            MeasureType activeMeasureFromInterface = Measures.get(measureCount);//Contains Optimization targets
-            activeMeasure.setTargetValue(activeMeasureFromInterface.getTargetValue(), activeMeasureFromInterface.getTargetKindOf());
-            
-            if(activeMeasure.getTargetKindOf().equals("value"))
+            if (activeMeasure.getTargetKindOf() != null)
             {
-                distance=activeMeasure.getDistanceFromTarget();
-            }
-            else if(activeMeasure.getTargetKindOf().equals("min"))
-            {
-                distance=activeMeasure.getMeanValue();
-            }
-            else if(activeMeasure.getTargetKindOf().equals("max"))
-            {
-                distance=0-activeMeasure.getMeanValue();
-            }
-            else
-            {
-                //TODO error handling for unknown target-type
+                if(activeMeasure.getTargetKindOf().equals("value"))
+                {
+                    distance=activeMeasure.getDistanceFromTarget();
+                }
+                else if(activeMeasure.getTargetKindOf().equals("min"))
+                {
+                    distance=activeMeasure.getMeanValue();
+                }
+                else if(activeMeasure.getTargetKindOf().equals("max"))
+                {
+                    distance=0-activeMeasure.getMeanValue();
+                }
+                else
+                {
+                    //TODO error handling for unknown target-type
+                }
             }
         }
         return distance;
