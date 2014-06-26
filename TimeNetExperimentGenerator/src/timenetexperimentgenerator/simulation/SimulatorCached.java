@@ -13,7 +13,7 @@ import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import timenetexperimentgenerator.datamodel.parameter;
-import timenetexperimentgenerator.datamodel.parser;
+import timenetexperimentgenerator.datamodel.SimulationType;
 import timenetexperimentgenerator.datamodel.MeasureType;
 import timenetexperimentgenerator.support;
 
@@ -23,7 +23,7 @@ import timenetexperimentgenerator.support;
  */
 public class SimulatorCached implements Simulator{
 private SimulationCache mySimulationCache=null;
-private ArrayList<parser> myListOfSimulationParsers=null;
+private ArrayList<SimulationType> myListOfSimulationParsers=null;
 private int simulationCounter=0;
 private String logFileName;
     
@@ -41,7 +41,7 @@ private String logFileName;
      * @param listOfParameterSetsTMP List of Parametersets to be simulated
      * @param simulationCounterTMP actual Number of simulation, will be increased with every simulation-run
      */
-    public void initSimulator(ArrayList<parameter[]> listOfParameterSetsTMP, int simulationCounterTMP, boolean log) {
+    public void initSimulator(ArrayList<ArrayList <parameter> > listOfParameterSetsTMP, int simulationCounterTMP, boolean log) {
         if(mySimulationCache!=null){
         this.myListOfSimulationParsers=mySimulationCache.getListOfCompletedSimulationParsers(listOfParameterSetsTMP, simulationCounter);
         this.simulationCounter=mySimulationCache.getLocalSimulationCounter();
@@ -55,17 +55,16 @@ private String logFileName;
         }
         
         if(this.myListOfSimulationParsers!=null){
-            //copy parameterList of measure to parameter[] of parser for later use
+            //copy parameterList of measure to parameter[] of SimulationType for later use
             if (myListOfSimulationParsers.size() > 0)
             {
-                //take first measure in parser for list of parameters
+                //take first measure in SimulationType for list of parameters
                 if (myListOfSimulationParsers.get(0).getMeasures().size() > 0)
                 {
                     for (int i=0; i<myListOfSimulationParsers.size(); ++i)
                     {
                         MeasureType firstMeasure = myListOfSimulationParsers.get(i).getMeasures().get(0);
-                        parameter[] pArray = support.convertArrayListToArray(firstMeasure.getParameterList());
-                        myListOfSimulationParsers.get(i).setListOfParameters(pArray);
+                        myListOfSimulationParsers.get(i).setListOfParameters(firstMeasure.getParameterList());
                     }
                 }
                 else
@@ -111,7 +110,7 @@ private String logFileName;
      * Gets the list of completed simulations, should be used only if getStatus() returns 100
      * @return list of completed simulations (parsers) which contain all data from the log-files
      */
-    public ArrayList<parser> getListOfCompletedSimulationParsers() {
+    public ArrayList<SimulationType> getListOfCompletedSimulationParsers() {
         return this.myListOfSimulationParsers;
     }
 

@@ -11,7 +11,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import timenetexperimentgenerator.datamodel.parameter;
-import timenetexperimentgenerator.datamodel.parser;
+import timenetexperimentgenerator.datamodel.SimulationType;
 import timenetexperimentgenerator.support;
 
 /**
@@ -20,7 +20,7 @@ import timenetexperimentgenerator.support;
  */
 public class SimulatorCachedLocal implements Simulator{
 private SimulationCache mySimulationCache=null;
-private ArrayList<parser> myListOfSimulationParsers=null;
+private ArrayList<SimulationType> myListOfSimulationParsers=null;
 private int simulationCounter=0;
 private String logFileName;
     
@@ -38,7 +38,7 @@ private String logFileName;
      * @param listOfParameterSetsTMP List of Parametersets to be simulated
      * @param simulationCounterTMP actual Number of simulation, will be increased with every simulation-run
      */
-    public void initSimulator(ArrayList<parameter[]> listOfParameterSetsTMP, int simulationCounterTMP, boolean log) {
+    public void initSimulator(ArrayList< ArrayList<parameter> > listOfParameterSetsTMP, int simulationCounterTMP, boolean log) {
     Simulator myLocalSimulator=null;
     this.myListOfSimulationParsers=null;
     this.simulationCounter=simulationCounterTMP;
@@ -95,7 +95,7 @@ private String logFileName;
      * Gets the list of completed simulations, should be used only if getStatus() returns 100
      * @return list of completed simulations (parsers) which contain all data from the log-files
      */
-    public ArrayList<parser> getListOfCompletedSimulationParsers() {
+    public ArrayList<SimulationType> getListOfCompletedSimulationParsers() {
         return this.myListOfSimulationParsers;
     }
 

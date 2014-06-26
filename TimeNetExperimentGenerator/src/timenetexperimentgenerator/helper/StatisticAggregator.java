@@ -11,7 +11,8 @@
 package timenetexperimentgenerator.helper;
 
 import java.util.ArrayList;
-import timenetexperimentgenerator.datamodel.parser;
+import timenetexperimentgenerator.Parser;
+import timenetexperimentgenerator.datamodel.SimulationType;
 import timenetexperimentgenerator.support;
 
 /**
@@ -25,7 +26,7 @@ private static ArrayList<Statistic> listOfStatistics=new ArrayList<Statistic>();
     listOfStatistics=new ArrayList<Statistic>();
     }
     
-    public static void addToStatistics(parser p, String filename){
+    public static void addToStatistics(SimulationType p, String filename){
     Statistic myStatistic=getStatisticByName(filename);
         myStatistic.addSimulation(p);
     }

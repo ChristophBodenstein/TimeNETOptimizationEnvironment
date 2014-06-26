@@ -384,7 +384,7 @@ private static typeOfStartValueEnum typeOfStartValue=typeOfStartValueEnum.start;
      * @param pList List of parsers, which includes the data from one simulation each
      * @param logFileName The path and name of the general log file
      */
-    public static void addLinesToLogFileFromListOfParser(ArrayList<parser> pList, String logFileName){
+    public static void addLinesToLogFileFromListOfParser(ArrayList<SimulationType> pList, String logFileName){
     boolean writeHeader=false;
     String line;
         try{
@@ -411,7 +411,7 @@ private static typeOfStartValueEnum typeOfStartValue=typeOfStartValueEnum.start;
 
 
             for(int i=0;i<pList.size();i++){
-            parser myParser=pList.get(i);
+            SimulationType myParser=pList.get(i);
             StatisticAggregator.addToStatistics(myParser, logFileName);
               try{
               //fw.write(line);
@@ -446,13 +446,13 @@ private static typeOfStartValueEnum typeOfStartValue=typeOfStartValueEnum.start;
     }
     
     /**
-     * Adds Lines to logfile with the data from given parser
+     * Adds Lines to logfile with the data from given SimulationType
      * @see addLinesToLogFileFromListOfParser
-     * @param p parser with data from simgle logfile
+     * @param p SimulationType with data from simgle logfile
      * @param logFileName name of logfile, data will be appended
      */
-    public static void addLinesToLogFile(parser p, String logFileName){
-    ArrayList<parser> myParserList=new ArrayList<parser>();
+    public static void addLinesToLogFile(SimulationType p, String logFileName){
+    ArrayList<SimulationType> myParserList=new ArrayList<SimulationType>();
     myParserList.add(p);
         addLinesToLogFileFromListOfParser(myParserList, logFileName);
     }
@@ -654,17 +654,18 @@ private static typeOfStartValueEnum typeOfStartValue=typeOfStartValueEnum.start;
      * @param parameterBase the array of parameters to be dublicated
      * @return array of parameters, the copy of input
      */
-    public static parameter[] getCopyOfParameterSet(parameter[] parameterBase){
-        parameter[] newParameterSet=new parameter[parameterBase.length];
-        for(int i=0;i<parameterBase.length;i++){
+    public static ArrayList<parameter> getCopyOfParameterSet(ArrayList<parameter> parameterBase){
+        ArrayList<parameter> newParameterSet = new ArrayList<parameter>();
+        for(int i=0;i<parameterBase.size();i++){
 
-        newParameterSet[i]=new parameter();
-        newParameterSet[i].setName(parameterBase[i].getName());
-        newParameterSet[i].setStartValue(parameterBase[i].getStartValue());
-        newParameterSet[i].setStepping(parameterBase[i].getStepping());
-        newParameterSet[i].setEndValue(parameterBase[i].getEndValue());
+        parameter p = new parameter();
+        p.setName(parameterBase.get(i).getName());
+        p.setStartValue(parameterBase.get(i).getStartValue());
+        p.setStepping(parameterBase.get(i).getStepping());
+        p.setEndValue(parameterBase.get(i).getEndValue());
         //newParameterSet[i].setValue(Float.toString((historyOfParsers.get(historyOfParsers.size()-1)).getMeasureValueByMeasureName(parameterBase[i].getName())));
-        newParameterSet[i].setValue(parameterBase[i].getValue());
+        p.setValue(parameterBase.get(i).getValue());
+        newParameterSet.add(p);
         }
     return newParameterSet;
     }
@@ -725,7 +726,7 @@ private static typeOfStartValueEnum typeOfStartValue=typeOfStartValueEnum.start;
      * @param listToBeAdded List of Parsers to be added to Main List
      * @return List of parsers containing all elements from both lists
      */
-    public static ArrayList<parser> appendListOfParsers(ArrayList<parser> mainList, ArrayList<parser> listToBeAdded){
+    public static ArrayList<SimulationType> appendListOfParsers(ArrayList<SimulationType> mainList, ArrayList<SimulationType> listToBeAdded){
         for(int i=0;i<listToBeAdded.size();i++){
         mainList.add(listToBeAdded.get(i));
         }
@@ -737,7 +738,7 @@ private static typeOfStartValueEnum typeOfStartValue=typeOfStartValueEnum.start;
      * @param p Parser containing all Measures from Simulation
      * @param measureList List of Measures to be optimized / to print.
      */
-    public static void printOptimizedMeasures(parser p, ArrayList<MeasureType> measureList){
+    public static void printOptimizedMeasures(SimulationType p, ArrayList<MeasureType> measureList){
     double distance=0;
         for(int measureCount=0;measureCount<measureList.size();measureCount++){
                 MeasureType activeMeasure=p.getMeasureByName(measureList.get(measureCount).getMeasureName());
@@ -809,12 +810,12 @@ private static typeOfStartValueEnum typeOfStartValue=typeOfStartValueEnum.start;
      * @param pList Array of parameter
      * @param name Name of parameter to be found in array
      */
-    public static parameter getParameterByName(parameter[] pList, String name){
+    public static parameter getParameterByName(ArrayList<parameter> pList, String name){
     parameter outputValue=null;
     
-        for(int i=0;i<pList.length;i++){
-            if(pList[i].getName().equals(name)){
-            outputValue=pList[i];
+        for(int i=0;i<pList.size();i++){
+            if(pList.get(i).getName().equals(name)){
+            outputValue=pList.get(i);
             }
         }
     return outputValue;

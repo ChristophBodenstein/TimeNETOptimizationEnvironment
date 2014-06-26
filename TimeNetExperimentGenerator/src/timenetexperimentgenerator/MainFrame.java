@@ -42,7 +42,7 @@ private String propertyFile=System.getProperty("user.home")+File.separatorChar+ 
 Properties auto = new Properties();
 private String fileName="";
 public boolean cancelOperation=false;
-ArrayList <parameter[]>ListOfParameterSetsToBeWritten=new ArrayList<parameter[]>();//Name, Value
+ArrayList < ArrayList<parameter> >ListOfParameterSetsToBeWritten=new ArrayList< ArrayList<parameter> >();//Name, Value
 generator myGenerator;
 public parameter pConfidenceIntervall=new parameter();
 public parameter pSeed=new parameter();
@@ -803,7 +803,7 @@ SimulatorWebSlave mySlave=new SimulatorWebSlave();
      * @param lastParameterSet the last parameterset while generating recursive
      * @param infoLabel Label to display some information while generating
      */
-    public void buildListOfParameterSetsToExport(ArrayList ListOfParameterSetsToBeWritten, ArrayList ListOfParameterAsFromTable, parameter[] lastParameterSet, JLabel infoLabel){
+    public void buildListOfParameterSetsToExport(ArrayList ListOfParameterSetsToBeWritten, ArrayList ListOfParameterAsFromTable, ArrayList<parameter> lastParameterSet, JLabel infoLabel){
     boolean isAlreadyInExportList=false;
     
     if(cancelOperation){
@@ -839,20 +839,20 @@ SimulatorWebSlave mySlave=new SimulatorWebSlave();
                 for(int i=0;i<endCounter;i++){
                 usedValue=start+(double)i*step;
                 usedValue=support.round(usedValue);
-                parameter[] nextParameterSet=new parameter[lastParameterSet.length];
+                ArrayList<parameter> nextParameterSet = new ArrayList<parameter>();
                     //Get copy of paremeterset
-                    for(int c=0;c<lastParameterSet.length;c++){
-                        try{nextParameterSet[c]=(parameter) lastParameterSet[c].clone();}
+                    for(int c=0;c<lastParameterSet.size();c++){
+                        try{nextParameterSet.add((parameter) lastParameterSet.get(c).clone());}
                         catch(CloneNotSupportedException e){
                         support.log("Clone is not Supported:"+e.toString());
                         }
 
                     }
 
-                    for(int c=0;c<nextParameterSet.length;c++){
-                        if(nextParameterSet[c].getName().equals(loopName)){
+                    for(int c=0;c<nextParameterSet.size();c++){
+                        if(nextParameterSet.get(i).getName().equals(loopName)){
                         //set modified parameterset
-                        nextParameterSet[c].setValue(usedValue);
+                        nextParameterSet.get(i).setValue(usedValue);
                         }
                     }
                 if(ListOfParameterAsFromTable.size()==0){
@@ -1062,7 +1062,7 @@ SimulatorWebSlave mySlave=new SimulatorWebSlave();
     this.cancelOperation=false;
     myGenerator=null;
     ListOfParameterSetIds=new ArrayList<Long>();
-    ListOfParameterSetsToBeWritten=new ArrayList<parameter[]>();
+    ListOfParameterSetsToBeWritten=new ArrayList<ArrayList<parameter>>();
     myGenerator=new generator(ListOfParameterSetsToBeWritten, fileName, jLabelExportStatus, this, jTableParameterList);
     myGenerator.start();
     this.waitForGenerator();
@@ -1315,7 +1315,7 @@ SimulatorWebSlave mySlave=new SimulatorWebSlave();
      * Adds a parameterset to the list of parametersets
      * @param p parameterset to be added
      */
-    public void addToListOfParameterSetsToBeWritten(parameter[] p){
+    public void addToListOfParameterSetsToBeWritten(ArrayList<parameter> p){
     ListOfParameterSetsToBeWritten.add(p);
     this.jLabelExportStatus.setText("Building Parametersets:"+ListOfParameterSetsToBeWritten.size()*100/this.sizeOfDesignSpace +"%");
 
@@ -1326,11 +1326,11 @@ SimulatorWebSlave mySlave=new SimulatorWebSlave();
      * this is the base list with start/end/stepping values
      * @return List of Parameters from Table (Base of Parameter Iterations)
      **/
-    public parameter[] getParameterBase(){
+    public ArrayList<parameter> getParameterBase(){
     //int parameterCount=this.jTableParameterList.getModel().getRowCount();
     parameterTableModel tModel=(parameterTableModel) this.jTableParameterList.getModel();
     //String [][] parameterArray=tModel.getParameterArray();
-    parameter[] parameterArray=new parameter[tModel.getRowCount()];
+    ArrayList<parameter> parameterArray = new ArrayList<parameter>();
 
     //ArrayListe aufbauen und Funktion mit dieser Liste aufrufen
     
@@ -1343,7 +1343,7 @@ SimulatorWebSlave mySlave=new SimulatorWebSlave();
         
         tmpParameter.setStepping(tModel.getDoubleValueAt(i, 3));
         //ListOfParameterAsFromTable.add(tmpParameter);
-        parameterArray[i]=tmpParameter;
+        parameterArray.add(tmpParameter);
         }
     return parameterArray;
     }

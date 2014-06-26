@@ -9,8 +9,9 @@
 
 package timenetexperimentgenerator.helper;
 
+import timenetexperimentgenerator.Parser;
 import timenetexperimentgenerator.datamodel.MeasureType;
-import timenetexperimentgenerator.datamodel.parser;
+import timenetexperimentgenerator.datamodel.SimulationType;
 import timenetexperimentgenerator.support;
 
 /**
@@ -38,10 +39,10 @@ double simulationTimeFromLocal=0;
     
     
     /**
-     * adds the relevant data from given parser to statistics (count of Simulations etc.)
-     * @param p parser with data about one simulation
+     * adds the relevant data from given SimulationType to statistics (count of Simulations etc.)
+     * @param p SimulationType with data about one simulation
      */
-    public void addSimulation(parser p){
+    public void addSimulation(SimulationType p){
     MeasureType statisticMeasure=p.getMeasures().get(0);//Take the first Measure as dummy incl. all nec. information    
     numberOfSimulationsTotal++;
     simulationTimeTotal+=statisticMeasure.getSimulationTime();

@@ -16,7 +16,7 @@ import timenetexperimentgenerator.MainFrame;
 import timenetexperimentgenerator.SimOptiFactory;
 import timenetexperimentgenerator.datamodel.MeasureType;
 import timenetexperimentgenerator.datamodel.parameter;
-import timenetexperimentgenerator.datamodel.parser;
+import timenetexperimentgenerator.datamodel.SimulationType;
 import timenetexperimentgenerator.simulation.Simulator;
 import timenetexperimentgenerator.support;
 import timenetexperimentgenerator.support.*;
@@ -35,16 +35,16 @@ private double Fy;//New Distance?
 private int typeOfNeighborhood=0;
 
 private int simulationCounter=0;
-parser currentSolution;
-parser nextSolution;
+SimulationType currentSolution;
+SimulationType nextSolution;
 String tmpPath="";
 String filename="";//Original filename
 String pathToTimeNet="";
 MainFrame parent=null;
 JTabbedPane MeasureFormPane;
 ArrayList<MeasureType> listOfMeasures=new ArrayList<MeasureType>();//Liste aller Measures, abfragen von MeasureFormPane
-ArrayList<parser> historyOfParsers=new ArrayList<parser>();//History of all simulation runs
-parameter[] parameterBase;//Base set of parameters, start/end-value, stepping, etc.
+ArrayList<SimulationType> historyOfParsers=new ArrayList<SimulationType>();//History of all simulation runs
+ArrayList<parameter> parameterBase;//Base set of parameters, start/end-value, stepping, etc.
 double[] arrayOfIncrements;
 boolean optimized=false;//False until Optimization is ended
 JLabel infoLabel;
@@ -81,9 +81,9 @@ boolean directionOfOptimization=true;//true->increment parameters, false->decrem
     support.log("# of Measures to be optimized: "+this.listOfMeasures.size());
 
     //Alle Steppings auf Standard setzen
-    arrayOfIncrements=new double[parameterBase.length];
-        for(int i=0;i<parameterBase.length;i++){
-        arrayOfIncrements[i]=support.getDouble(parameterBase[i].getStepping());
+    arrayOfIncrements=new double[parameterBase.size()];
+        for(int i=0;i<parameterBase.size();i++){
+        arrayOfIncrements[i]=support.getDouble(parameterBase.get(i).getStepping());
         }
 
     this.filename=support.getOriginalFilename();// originalFilename;
@@ -146,13 +146,13 @@ boolean directionOfOptimization=true;//true->increment parameters, false->decrem
      * @param actualParameterset  actual parameterset, if null, then first parameterset is calculated
      * @return next parameterset to be simulated
      */
-    private parameter[] getNextParameterset(parameter[] actualParameterset){
-    parameter[] newParameterset=support.getCopyOfParameterSet(parameterBase);
+    private ArrayList<parameter> getNextParameterset(ArrayList<parameter> actualParameterset){
+    ArrayList<parameter> newParameterset=support.getCopyOfParameterSet(parameterBase);
     ArrayList<parameter> listOfChangableParameters=new ArrayList<parameter>(); 
         //Count the number of changable parameters
         this.numberOfChangableParameters=0;
-        for(int i=0;i<newParameterset.length;i++){
-                parameter p=newParameterset[i];
+        for(int i=0;i<newParameterset.size();i++){
+                parameter p=newParameterset.get(i);
                 if(p.isIteratableAndIntern()){
                 this.numberOfChangableParameters++;
                 listOfChangableParameters.add(p);
@@ -167,8 +167,8 @@ boolean directionOfOptimization=true;//true->increment parameters, false->decrem
                         support.log("Taking Min-Values as Start for every Parameter.");
                             //Calculate first parameterset, set every parameter to start-value
                             //For this choosing strategy, the first element must be minimum
-                            for(int i=0;i<newParameterset.length;i++){
-                            parameter p=newParameterset[i];
+                            for(int i=0;i<newParameterset.size();i++){
+                            parameter p=newParameterset.get(i);
                                 if(p.isIteratableAndIntern()){
                                 p.setValue(p.getStartValue());
                                 }
@@ -177,8 +177,8 @@ boolean directionOfOptimization=true;//true->increment parameters, false->decrem
                 case middle:
                         support.log("Taking Middle-Values as Start for every Parameter.");
                             //Calulate first parameterset, the mean value of all parameters, with respect to stepping
-                            for(int i=0;i<newParameterset.length;i++){
-                                parameter p=newParameterset[i];
+                            for(int i=0;i<newParameterset.size();i++){
+                                parameter p=newParameterset.get(i);
                                 if(p.isIteratableAndIntern()){
                                 double distance=p.getEndValue()-p.getStartValue();
                                 distance=Math.round(0.5*distance/p.getStepping())*p.getStepping()+p.getStartValue();
@@ -190,8 +190,8 @@ boolean directionOfOptimization=true;//true->increment parameters, false->decrem
                         support.log("Taking Max-Values as Start for every Parameter.");
                             //Calculate first parameterset, set every parameter to end-value
                             //For this choosing strategy, the first element must be minimum
-                            for(int i=0;i<newParameterset.length;i++){
-                            parameter p=newParameterset[i];
+                            for(int i=0;i<newParameterset.size();i++){
+                            parameter p=newParameterset.get(i);
                                 if(p.isIteratableAndIntern()){
                                 p.setValue(p.getEndValue());
                                 }
@@ -200,8 +200,8 @@ boolean directionOfOptimization=true;//true->increment parameters, false->decrem
                 case random:
                         support.log("Taking Random-Values as Start for every Parameter.");
                             //Calulate first parameterset, the random value of all parameters, with respect to stepping
-                            for(int i=0;i<newParameterset.length;i++){
-                                parameter p=newParameterset[i];
+                            for(int i=0;i<newParameterset.size();i++){
+                                parameter p = newParameterset.get(i);
                                 if(p.isIteratableAndIntern()){
                                 double distance=p.getEndValue()-p.getStartValue();
                                 double rnd=Math.random();
@@ -227,19 +227,19 @@ boolean directionOfOptimization=true;//true->increment parameters, false->decrem
             if(listOfChangableParameters.size()>1){
             //support.log("List of Changable Parameters has size: "+listOfChangableParameters.size());
             //TODO: Sort List of Parameters (new method in support)    
-            parser lastParser=this.historyOfParsers.get(this.historyOfParsers.size()-1);
+            SimulationType lastParser=this.historyOfParsers.get(this.historyOfParsers.size()-1);
             //support.log("History of Parsers has size: "+this.historyOfParsers.size());
             
-            parameter[] lastParameterList=lastParser.getListOfParameters();
+            ArrayList<parameter> lastParameterList=lastParser.getListOfParameters();
             //For ever Parameter check if it is iteratable and if it was changed last time
             int i=0;
             int numberOfLastParameter=-1;//Number of last parameter that was changed(in an Array of changable parameters)
-                for(i=0;i<lastParameterList.length;i++){
-                    if(lastParameterList[i].isIteratableAndIntern()){
+                for(i=0;i<lastParameterList.size();i++){
+                    if(lastParameterList.get(i).isIteratableAndIntern()){
                     numberOfLastParameter++;
                     support.log("Iteratable Parameter with number "+numberOfLastParameter+" found.");
                         /*if it was changed, then break, and numberOfLastParameter contains the number of last changed parameter in array of changable parameters*/
-                        if(lastParameterList[i]!=actualParameterset[i]){
+                        if(lastParameterList.get(i)!=actualParameterset.get(i)){
                         break;
                         }
                     }
@@ -286,8 +286,8 @@ boolean directionOfOptimization=true;//true->increment parameters, false->decrem
                         incResult=support.getParameterByName(newParameterset, nameOfParameterToBeChanged).incDecValue(this.directionOfOptimization);
                         break;
                 case 1://Step back and forward randomly based on stepping
-                        for(int i=0;i<newParameterset.length;i++){
-                        parameter p=newParameterset[i];
+                        for(int i=0;i<newParameterset.size();i++){
+                        parameter p=newParameterset.get(i);
                             if(p.isIteratableAndIntern()){
                             double nextValue=0.0;
                                 if(Math.random()>=0.5){
@@ -300,8 +300,8 @@ boolean directionOfOptimization=true;//true->increment parameters, false->decrem
                         }
                         break;
                 case 2://Calculate neighborhood and choose next value randomly 
-                        for(int i=0;i<newParameterset.length;i++){
-                        parameter p=newParameterset[i];
+                        for(int i=0;i<newParameterset.size();i++){
+                        parameter p=newParameterset.get(i);
                             if(p.isIteratableAndIntern()){
                             double nextValue=0.0;
                             double stepCount=(p.getEndValue()-p.getStartValue())/p.getStepping();
@@ -316,8 +316,8 @@ boolean directionOfOptimization=true;//true->increment parameters, false->decrem
                         }
                         break;
                 case 3://Choose Value randomly out of complete designspace
-                        for(int i=0;i<newParameterset.length;i++){
-                        parameter p=newParameterset[i];
+                        for(int i=0;i<newParameterset.size();i++){
+                        parameter p=newParameterset.get(i);
                             if(p.isIteratableAndIntern()){
                             double nextValue=0.0;
                             double stepCount=(p.getEndValue()-p.getStartValue())/p.getStepping();
@@ -328,8 +328,8 @@ boolean directionOfOptimization=true;//true->increment parameters, false->decrem
                     
                         break;
                 case 4: //Calculate neighborhood and choose next value randomly, Ignore Stepping!
-                        for(int i=0;i<newParameterset.length;i++){
-                        parameter p=newParameterset[i];
+                        for(int i=0;i<newParameterset.size();i++){
+                        parameter p=newParameterset.get(i);
                             if(p.isIteratableAndIntern()){
                             double nextValue=0.0;
                             double range=(p.getEndValue()-p.getStartValue());
@@ -365,8 +365,8 @@ boolean directionOfOptimization=true;//true->increment parameters, false->decrem
      * @param actualParameterset Base Parameterset to calculate the next one
      * @return ArrayList of Parametersets
      */
-    private ArrayList<parameter[]> getNextParametersetAsArrayList(parameter[] actualParameterset){
-    ArrayList<parameter[]> myParametersetList=new ArrayList<parameter[]>();
+    private ArrayList< ArrayList<parameter> > getNextParametersetAsArrayList(ArrayList<parameter> actualParameterset){
+    ArrayList< ArrayList<parameter> > myParametersetList=new ArrayList< ArrayList<parameter> >();
     myParametersetList.add(getNextParameterset(actualParameterset));
     return myParametersetList;
     }
@@ -376,7 +376,7 @@ boolean directionOfOptimization=true;//true->increment parameters, false->decrem
      * Sums up all distances from Measures
      * @return distance (Fx)
      */
-    private double getActualDistance(parser p){
+    private double getActualDistance(SimulationType p){
     double distance=0;
         for(int measureCount=0;measureCount<listOfMeasures.size();measureCount++){
                 MeasureType activeMeasure=p.getMeasureByName(listOfMeasures.get(measureCount).getMeasureName());

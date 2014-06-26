@@ -19,9 +19,10 @@ import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.*;
+import timenetexperimentgenerator.Parser;
+import timenetexperimentgenerator.datamodel.SimulationType;
 import timenetexperimentgenerator.helper.ProcMon;
 import timenetexperimentgenerator.datamodel.parameter;
-import timenetexperimentgenerator.datamodel.parser;
 import timenetexperimentgenerator.support;
 
 /**
@@ -29,8 +30,8 @@ import timenetexperimentgenerator.support;
  * @author Christoph Bodenstein
  */
 public class SimulatorLocal implements Runnable, Simulator{
-ArrayList<parameter[]> listOfParameterSets;
-ArrayList<parser> listOfCompletedSimulationParsers;
+ArrayList< ArrayList<parameter> > listOfParameterSets;
+ArrayList<SimulationType> listOfCompletedSimulationParsers;
 String originalFilename;
 String pathToTimeNet;
 String tmpFilePath;
@@ -55,7 +56,7 @@ boolean log=true;
      * @param listOfParameterSetsTMP List of Parameter-sets to be simulated
      * @param simulationCounterTMP start value of simulation counter
     */
-    public void initSimulator(ArrayList<parameter[]> listOfParameterSetsTMP, int simulationCounterTMP, boolean log){
+    public void initSimulator(ArrayList< ArrayList<parameter> > listOfParameterSetsTMP, int simulationCounterTMP, boolean log){
     this.listOfParameterSets=listOfParameterSetsTMP;
     this.log=log;
     this.originalFilename=support.getOriginalFilename();//  originalFilenameTMP;
@@ -75,7 +76,7 @@ boolean log=true;
      */
     public void run(){
     this.status=0;
-    this.listOfCompletedSimulationParsers=new ArrayList<parser>();
+    this.listOfCompletedSimulationParsers=new ArrayList<SimulationType>();
     String line="";
     int numberOfSimulations=0;
         if(support.checkTimeNetPath()){
@@ -89,21 +90,29 @@ boolean log=true;
                     for(int i=0;i<listOfParameterSets.size();i++){
                     //fw = new FileWriter(logFileName, true);
                     if(cancelSimulations) return;
-                    parameter[] actualParameterSet=listOfParameterSets.get(i);//get actual parameterset
+                    ArrayList<parameter> actualParameterSet=listOfParameterSets.get(i);//get actual parameterset
                     String actualParameterFileName=createLocalSimulationFile(actualParameterSet, this.simulationCounter);//create actual SCPN xml-file and save it in tmp-folder
                     support.log("Simulating file:"+actualParameterFileName);
                     startLocalSimulation(actualParameterFileName);//Returns, when Simulation has ended
-                    parser myParser=new parser();//create new log-parser
-                    boolean parseResult=myParser.parse(actualSimulationLogFile);//parse Log-file and xml-file
-                        if(parseResult){
-                        support.log("Parsing successful.");
-                            if(this.log){
-                            support.addLinesToLogFile(myParser, logFileName);
+                    SimulationType myResults=new SimulationType();//create new SimulationResults
+                    //here the SimType has to get Data From Parser;
+                    Parser myParser = new Parser();
+                    myResults = myParser.parse(actualSimulationLogFile);//parse Log-file and xml-file
+                    
+                    if(myParser.isParsingSuccessfullFinished())
+                        {
+                            support.log("Parsing successful.");
+                            listOfCompletedSimulationParsers.add(myResults);
+                            if(this.log)
+                            {
+                                support.addLinesToLogFile(myResults, logFileName);
                             }
-                        this.listOfCompletedSimulationParsers.add(myParser);//add parser to local list of completed simulations
-                        }else{
-                        support.log("Error Parsing the Simulation results. Maybe Simulation failure?");
+                            this.listOfCompletedSimulationParsers.add(myResults);//add parser to local list of completed simulations
                         }
+                    else
+                    {
+                        support.log("Error Parsing the Simulation results. Maybe Simulation failure?");
+                    }
                     numberOfSimulations++;//increment local simulation counter
                     
                     this.status=numberOfSimulations*100 / listOfParameterSets.size(); //update status of local simulations (in %)
@@ -131,7 +140,7 @@ boolean log=true;
      * @param simulationNumber number of simulation
      * @return Name of simulation file incl. path
      */
-    private String createLocalSimulationFile(parameter[] p, int simulationNumber){
+    private String createLocalSimulationFile(ArrayList<parameter> p, int simulationNumber){
     String fileNameOfLocalSimulationFile="";
     File f = new File(this.originalFilename);
     try{
@@ -140,29 +149,29 @@ boolean log=true;
         Document doc = docBuilder.parse(this.originalFilename);
         NodeList parameterList=doc.getElementsByTagName("parameter");
         String ConfidenceIntervall="90", Seed="0", EndTime="0", MaxTime="0",MaxRelError="5";
-            for(int parameterNumber=0; parameterNumber< p.length;parameterNumber++){
-                        if(!p[parameterNumber].isExternalParameter()){
+            for(int parameterNumber=0; parameterNumber< p.size();parameterNumber++){
+                        if(!p.get(parameterNumber).isExternalParameter()){
                             for(int i=0;i<parameterList.getLength();i++){
-                                if(parameterList.item(i).getAttributes().getNamedItem("name").getNodeValue().equals(p[parameterNumber].getName())){
-                                parameterList.item(i).getAttributes().getNamedItem("defaultValue").setNodeValue(p[parameterNumber].getStringValue());
+                                if(parameterList.item(i).getAttributes().getNamedItem("name").getNodeValue().equals(p.get(parameterNumber).getName())){
+                                parameterList.item(i).getAttributes().getNamedItem("defaultValue").setNodeValue(p.get(parameterNumber).getStringValue());
                                 }
                                 //support.log(parameterList.item(i).getAttributes().getNamedItem("name").getNodeValue());
                             }
                         }else{
-                            if(p[parameterNumber].getName().equals("MaxTime")){
-                            MaxTime=p[parameterNumber].getStringValue();
+                            if(p.get(parameterNumber).getName().equals("MaxTime")){
+                            MaxTime=p.get(parameterNumber).getStringValue();
                             }
-                            if(p[parameterNumber].getName().equals("EndTime")){
-                            EndTime=p[parameterNumber].getStringValue();
+                            if(p.get(parameterNumber).getName().equals("EndTime")){
+                            EndTime=p.get(parameterNumber).getStringValue();
                             }
-                            if(p[parameterNumber].getName().equals("Seed")){
-                            Seed=p[parameterNumber].getStringValue();
+                            if(p.get(parameterNumber).getName().equals("Seed")){
+                            Seed=p.get(parameterNumber).getStringValue();
                             }
-                            if(p[parameterNumber].getName().equals("ConfidenceIntervall")){
-                            ConfidenceIntervall=p[parameterNumber].getStringValue();
+                            if(p.get(parameterNumber).getName().equals("ConfidenceIntervall")){
+                            ConfidenceIntervall=p.get(parameterNumber).getStringValue();
                             }
-                            if(p[parameterNumber].getName().equals("MaxRelError")){
-                            MaxRelError=p[parameterNumber].getStringValue();
+                            if(p.get(parameterNumber).getName().equals("MaxRelError")){
+                            MaxRelError=p.get(parameterNumber).getStringValue();
                             }
 
                         }
@@ -239,7 +248,7 @@ boolean log=true;
     }
 
 
-    public ArrayList<parser> getListOfCompletedSimulationParsers(){
+    public ArrayList<SimulationType> getListOfCompletedSimulationParsers(){
     return this.listOfCompletedSimulationParsers;
     }
 

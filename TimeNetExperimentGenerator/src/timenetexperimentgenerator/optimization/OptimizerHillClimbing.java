@@ -17,7 +17,7 @@ import timenetexperimentgenerator.datamodel.MeasureType;
 import timenetexperimentgenerator.SimOptiFactory;
 import timenetexperimentgenerator.simulation.Simulator;
 import timenetexperimentgenerator.datamodel.parameter;
-import timenetexperimentgenerator.datamodel.parser;
+import timenetexperimentgenerator.datamodel.SimulationType;
 import timenetexperimentgenerator.support;
 
 /**
@@ -34,8 +34,8 @@ String pathToTimeNet="";
 MainFrame parent=null;
 JTabbedPane MeasureFormPane;
 ArrayList<MeasureType> listOfMeasures=new ArrayList<MeasureType>();//Liste aller Measures, abfragen von MeasureFormPane
-ArrayList<parser> historyOfParsers=new ArrayList<parser>();//History of all simulation runs
-parameter[] parameterBase;//Base set of parameters, start/end-value, stepping, etc.
+ArrayList<SimulationType> historyOfParsers=new ArrayList<SimulationType>();//History of all simulation runs
+ArrayList<parameter> parameterBase;//Base set of parameters, start/end-value, stepping, etc.
 double[] arrayOfIncrements;
 boolean optimized=false;//False until Optimization is ended
 JLabel infoLabel;
@@ -67,10 +67,10 @@ int abortCounter=abortLimit;
     support.log("# of Measures to be optimized: "+this.listOfMeasures.size());
 
     //Alle Steppings auf Standard setzen
-    arrayOfIncrements=new double[parameterBase.length];
-        for(int i=0;i<parameterBase.length;i++){
-        arrayOfIncrements[i]=support.getDouble(parameterBase[i].getStepping());
-        support.log("Parameterbase for Parameter " + parameterBase[i].getName() + " is " + parameterBase[i].getValue());
+    arrayOfIncrements=new double[parameterBase.size()];
+        for(int i=0;i<parameterBase.size();i++){
+        arrayOfIncrements[i]=support.getDouble(parameterBase.get(i).getStepping());
+        support.log("Parameterbase for Parameter " + parameterBase.get(i).getName() + " is " + parameterBase.get(i).getValue());
         }
   
     this.filename=support.getOriginalFilename();// originalFilename;
@@ -84,11 +84,11 @@ int abortCounter=abortLimit;
 
     /**
      * Creates new List of Parametersets to be simulated, based on actual history of simulation-results
-     * @param historyOfParsers history of Simulation-runs, stored as parser-objects
+     * @param historyOfParsers history of Simulation-runs, stored as SimulationType-objects
      * @return List of Parametersets to be simulated next
      */
-    public ArrayList<parameter[]> getNextSimulations(ArrayList<parser> historyOfParsers){
-    ArrayList<parameter[]> returnValue=new ArrayList<parameter[]>();
+    public ArrayList< ArrayList<parameter> > getNextSimulations(ArrayList<SimulationType> historyOfParsers){
+    ArrayList< ArrayList<parameter> > returnValue=new ArrayList< ArrayList<parameter> >();
     MeasureType activeMeasure=null;
     MeasureType lastActiveMeasure=null;
     MeasureType activeMeasureFromInterface;
@@ -144,7 +144,7 @@ int abortCounter=abortLimit;
                         
                     //Greedy, wenn gesamtdistanz jetzt kleiner als eben ist, dann appliziere den gleichen Inkrement-Vektor nochmal
                     if((arrayOfDistanceSums[arrayOfDistanceSums.length-1]<=arrayOfDistanceSums[arrayOfDistanceSums.length-2])&&(abortCounter>=1)){
-                    parameter[] newParameterSet=support.getCopyOfParameterSet(parameterBase);
+                    ArrayList<parameter> newParameterSet=support.getCopyOfParameterSet(parameterBase);
                     applyArrayOfIncrements(arrayOfIncrements, newParameterSet);
                     returnValue.add(newParameterSet);
                     
@@ -191,17 +191,17 @@ int abortCounter=abortLimit;
                 }   else{
                     // History of Parsers has less then 3 member, create next one
 
-                    parameter[] newParameterSet=support.getCopyOfParameterSet(this.parameterBase);
+                    ArrayList<parameter> newParameterSet=support.getCopyOfParameterSet(this.parameterBase);
                     //Für alle Parameter, die keine Externen Parameter sind erhöhe um Step
 
-                        for(int i=0;i<newParameterSet.length;i++){
+                        for(int i=0;i<newParameterSet.size();i++){
                         arrayOfIncrements[i]=0;}
 
-                        for(int i=0;i<newParameterSet.length;i++){
-                            if(!newParameterSet[i].isExternalParameter()){
+                        for(int i=0;i<newParameterSet.size();i++){
+                            if(!newParameterSet.get(i).isExternalParameter()){
 
-                                if(support.getDouble(newParameterSet[i].getValue())<support.getDouble(newParameterSet[i].getEndValue())){
-                                arrayOfIncrements[i]=support.getDouble(newParameterSet[i].getStepping());
+                                if(support.getDouble(newParameterSet.get(i).getValue())<support.getDouble(newParameterSet.get(i).getEndValue())){
+                                arrayOfIncrements[i]=support.getDouble(newParameterSet.get(i).getStepping());
                                 break;//Abbruch nach erstem änderbaren Parameter
                                 }
                             }
@@ -224,12 +224,12 @@ int abortCounter=abortLimit;
     * @param newParameterSet Array of parameters which will be increased by values from arrayOfIncrements
     * 
     */
-    void applyArrayOfIncrements(double[] arrayOfIncrements, parameter[] newParameterSet){
+    void applyArrayOfIncrements(double[] arrayOfIncrements, ArrayList<parameter> newParameterSet){
     support.log("Applying Array of Increments.");
-        for(int i=0;i<newParameterSet.length;i++){
-        support.log(newParameterSet[i].getName()+"="+newParameterSet[i].getValue()+" will be incremented by: "+arrayOfIncrements[i]+" and is now:");
-        newParameterSet[i].setValue((support.round( Math.min(arrayOfIncrements[i]+support.getDouble(newParameterSet[i].getValue()),support.getDouble(newParameterSet[i].getEndValue()))) ) );
-        support.log(Double.toString(newParameterSet[i].getValue()));
+        for(int i=0;i<newParameterSet.size();i++){
+        support.log(newParameterSet.get(i).getName()+"="+newParameterSet.get(i).getValue()+" will be incremented by: "+arrayOfIncrements[i]+" and is now:");
+        newParameterSet.get(i).setValue((support.round( Math.min(arrayOfIncrements[i]+support.getDouble(newParameterSet.get(i).getValue()),support.getDouble(newParameterSet.get(i).getEndValue()))) ) );
+        support.log(Double.toString(newParameterSet.get(i).getValue()));
         }
     this.parameterBase=newParameterSet;
     }
@@ -241,7 +241,7 @@ int abortCounter=abortLimit;
      * Run method, the main optimization loop
      */
     public void run() {
-    ArrayList<parameter[]> mySimulationList=getNextSimulations(historyOfParsers);
+    ArrayList< ArrayList<parameter> > mySimulationList=getNextSimulations(historyOfParsers);
     int simulationCounter=0;
     
             while(mySimulationList.size()>0){
@@ -273,7 +273,7 @@ int abortCounter=abortLimit;
     private void printStatistics() {
     this.simulationTimeSum=0;
     this.cpuTimeSum=0;
-        for (parser historyOfParser : historyOfParsers) {
+        for (SimulationType historyOfParser : historyOfParsers) {
             this.simulationTimeSum += historyOfParser.getMeasures().get(0).getSimulationTime();
             this.cpuTimeSum += historyOfParser.getMeasures().get(0).getCPUTime();
         }

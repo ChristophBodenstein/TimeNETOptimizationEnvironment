@@ -16,7 +16,7 @@ import timenetexperimentgenerator.MainFrame;
 import timenetexperimentgenerator.SimOptiFactory;
 import timenetexperimentgenerator.datamodel.MeasureType;
 import timenetexperimentgenerator.datamodel.parameter;
-import timenetexperimentgenerator.datamodel.parser;
+import timenetexperimentgenerator.datamodel.SimulationType;
 import timenetexperimentgenerator.simulation.Simulator;
 import timenetexperimentgenerator.support;
 
@@ -34,16 +34,16 @@ private double Fy;//New Distance?
 private int typeOfNeighborhood=0;
 
 private int simulationCounter=0;
-parser currentSolution;
-parser nextSolution;
+SimulationType currentSolution;
+SimulationType nextSolution;
 String tmpPath="";
 String filename="";//Original filename
 String pathToTimeNet="";
 MainFrame parent=null;
 JTabbedPane MeasureFormPane;
 ArrayList<MeasureType> listOfMeasures=new ArrayList<MeasureType>();//Liste aller Measures, abfragen von MeasureFormPane
-ArrayList<parser> historyOfParsers=new ArrayList<parser>();//History of all simulation runs
-parameter[] parameterBase;//Base set of parameters, start/end-value, stepping, etc.
+ArrayList<SimulationType> historyOfParsers=new ArrayList<SimulationType>();//History of all simulation runs
+ArrayList<parameter> parameterBase;//Base set of parameters, start/end-value, stepping, etc.
 double[] arrayOfIncrements;
 boolean optimized=false;//False until Optimization is ended
 JLabel infoLabel;
@@ -77,9 +77,9 @@ int wrongSolutionCounter=support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW;
     support.log("# of Measures to be optimized: "+this.listOfMeasures.size());
 
     //Alle Steppings auf Standard setzen
-    arrayOfIncrements=new double[parameterBase.length];
-        for(int i=0;i<parameterBase.length;i++){
-        arrayOfIncrements[i]=support.getDouble(parameterBase[i].getStepping());
+    arrayOfIncrements=new double[parameterBase.size()];
+        for(int i=0;i<parameterBase.size();i++){
+        arrayOfIncrements[i]=support.getDouble(parameterBase.get(i).getStepping());
         }
 
     this.filename=support.getOriginalFilename();// originalFilename;
@@ -145,15 +145,15 @@ int wrongSolutionCounter=support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW;
      * @param actualParameterset  actual parameterset, if null, then first parameterset is calculated
      * @return next parameterset to be simulated
      */
-    private parameter[] getNextParameterset(parameter[] actualParameterset){
+    private ArrayList<parameter> getNextParameterset(ArrayList<parameter> actualParameterset){
     
         if(actualParameterset==null){
         //Calulate first parameterset, the mean value of all parameters, with respect to stepping
-        parameter[] newParameterset=support.getCopyOfParameterSet(parameterBase);
+        ArrayList<parameter> newParameterset=support.getCopyOfParameterSet(parameterBase);
             if(this.typeOfNeighborhood==0){
             //For this chooseing strategy, the first element must be minimum
-                for(int i=0;i<newParameterset.length;i++){
-                    parameter p=newParameterset[i];
+                for(int i=0;i<newParameterset.size();i++){
+                    parameter p=newParameterset.get(i);
                     if(p.isIteratableAndIntern()){
                     p.setValue(p.getStartValue());
                     }
@@ -161,8 +161,8 @@ int wrongSolutionCounter=support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW;
             return newParameterset;
             }
         
-            for(int i=0;i<newParameterset.length;i++){
-                parameter p=newParameterset[i];
+            for(int i=0;i<newParameterset.size();i++){
+                parameter p=newParameterset.get(i);
                 if(p.isIteratableAndIntern()){
                 double distance=p.getEndValue()-p.getStartValue();
                 distance=Math.round(0.5*distance/p.getStepping())*p.getStepping()+p.getStartValue();
@@ -171,15 +171,15 @@ int wrongSolutionCounter=support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW;
             }
         return newParameterset;
         }else{
-        parameter[] newParameterset=support.getCopyOfParameterSet(actualParameterset);
+        ArrayList<parameter> newParameterset=support.getCopyOfParameterSet(actualParameterset);
         //TODO: 
         //1 Calculate neighborhood for each parameter and choose one of the values randomly
         //2 choose next value randomly from complete design-space
         
             switch(typeOfNeighborhood){
                 case 0://0 choose the next neighbor based on stepping forward
-                        for(int i=0;i<newParameterset.length;i++){
-                        parameter p=newParameterset[i];
+                        for(int i=0;i<newParameterset.size();i++){
+                        parameter p=newParameterset.get(i);
                             if(p.isIteratableAndIntern()){
                             double nextValue=Math.min(p.getValue()+p.getStepping(),p.getEndValue());
                             p.setValue(nextValue);
@@ -187,8 +187,8 @@ int wrongSolutionCounter=support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW;
                         }
                         break;
                 case 1://Step back and forward randomly based on stepping
-                        for(int i=0;i<newParameterset.length;i++){
-                        parameter p=newParameterset[i];
+                        for(int i=0;i<newParameterset.size();i++){
+                        parameter p=newParameterset.get(i);
                             if(p.isIteratableAndIntern()){
                             double nextValue=0.0;
                                 if(Math.random()>=0.5){
@@ -201,8 +201,8 @@ int wrongSolutionCounter=support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW;
                         }
                         break;
                 case 2://Calculate neighborhood and choose next value randomly 
-                        for(int i=0;i<newParameterset.length;i++){
-                        parameter p=newParameterset[i];
+                        for(int i=0;i<newParameterset.size();i++){
+                        parameter p=newParameterset.get(i);
                             if(p.isIteratableAndIntern()){
                             double nextValue=0.0;
                             double stepCount=(p.getEndValue()-p.getStartValue())/p.getStepping();
@@ -217,8 +217,8 @@ int wrongSolutionCounter=support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW;
                         }
                         break;
                 case 3://Choose Value randomly out of complete designspace
-                        for(int i=0;i<newParameterset.length;i++){
-                        parameter p=newParameterset[i];
+                        for(int i=0;i<newParameterset.size();i++){
+                        parameter p=newParameterset.get(i);
                             if(p.isIteratableAndIntern()){
                             double nextValue=0.0;
                             double stepCount=(p.getEndValue()-p.getStartValue())/p.getStepping();
@@ -229,8 +229,8 @@ int wrongSolutionCounter=support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW;
                     
                         break;
                 case 4: //Calculate neighborhood and choose next value randomly, Ignore Stepping!
-                        for(int i=0;i<newParameterset.length;i++){
-                        parameter p=newParameterset[i];
+                        for(int i=0;i<newParameterset.size();i++){
+                        parameter p=newParameterset.get(i);
                            if(p.isIteratableAndIntern()){
                             double nextValue=0.0;
                             double range=(p.getEndValue()-p.getStartValue());
@@ -260,8 +260,8 @@ int wrongSolutionCounter=support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW;
      * @param actualParameterset Base Parameterset to calculate the next one
      * @return ArrayList of Parametersets
      */
-    private ArrayList<parameter[]> getNextParametersetAsArrayList(parameter[] actualParameterset){
-    ArrayList<parameter[]> myParametersetList=new ArrayList<parameter[]>();
+    private ArrayList< ArrayList<parameter>> getNextParametersetAsArrayList(ArrayList<parameter> actualParameterset){
+    ArrayList< ArrayList<parameter>> myParametersetList=new ArrayList< ArrayList<parameter>>();
     myParametersetList.add(getNextParameterset(actualParameterset));
     return myParametersetList;
     }
@@ -271,7 +271,7 @@ int wrongSolutionCounter=support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW;
      * Sums up all distances from Measures
      * @return distance (Fx)
      */
-    private double getActualDistance(parser p){
+    private double getActualDistance(SimulationType p){
     double distance=0;
         for(int measureCount=0;measureCount<listOfMeasures.size();measureCount++){
                 MeasureType activeMeasure=p.getMeasureByName(listOfMeasures.get(measureCount).getMeasureName());

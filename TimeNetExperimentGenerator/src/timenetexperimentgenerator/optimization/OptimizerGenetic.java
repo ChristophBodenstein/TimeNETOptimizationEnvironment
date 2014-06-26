@@ -18,7 +18,7 @@ import timenetexperimentgenerator.MainFrame;
 import timenetexperimentgenerator.SimOptiFactory;
 import timenetexperimentgenerator.datamodel.MeasureType;
 import timenetexperimentgenerator.datamodel.parameter;
-import timenetexperimentgenerator.datamodel.parser;
+import timenetexperimentgenerator.datamodel.SimulationType;
 import timenetexperimentgenerator.simulation.Simulator;
 import timenetexperimentgenerator.support;
 
@@ -36,7 +36,7 @@ public class OptimizerGenetic implements Runnable, Optimizer{
     private MainFrame parent = null;
     private JTabbedPane MeasureFormPane;
     private ArrayList<MeasureType> listOfMeasures = new ArrayList<MeasureType>();//Liste aller Measures, abfragen von MeasureFormPane
-    private parameter[] parameterBase;//Base set of parameters, start/end-value, stepping, etc.
+    private ArrayList<parameter> parameterBase;//Base set of parameters, start/end-value, stepping, etc.
     private JLabel infoLabel;
     private double simulationTimeSum = 0;
     private double cpuTimeSum = 0;
@@ -49,8 +49,8 @@ public class OptimizerGenetic implements Runnable, Optimizer{
     private double mutationChance = 0.2; // chance of genes to Mutate
     private boolean mutateTopMeasure = false;
     
-    private ArrayList<parser> population;
-    private parser bestKnownSolution = null;
+    private ArrayList<SimulationType> population;
+    private SimulationType bestKnownSolution = null;
     
     Random randomGenerator;
 
@@ -145,8 +145,8 @@ public class OptimizerGenetic implements Runnable, Optimizer{
         this.filename=support.getOriginalFilename();// originalFilename;
         this.tmpPath=support.getTmpPath(); //Ask for Tmp-Path
         
-        population = new ArrayList<parser>();
-        bestKnownSolution = new parser();
+        population = new ArrayList<SimulationType>();
+        bestKnownSolution = new SimulationType();
         
         randomGenerator = new Random(System.currentTimeMillis());
 
@@ -179,8 +179,8 @@ public class OptimizerGenetic implements Runnable, Optimizer{
             
             
             //simulation phase -----------------------------------------------------------------------
-            ArrayList<parameter[]> parameterList = getNextParameterSetAsArrayList();
-            for (parameter[] pArray : parameterList)
+            ArrayList< ArrayList<parameter> > parameterList = getNextParameterSetAsArrayList();
+            for (ArrayList<parameter> pArray : parameterList)
             {
                 pArray =  roundToStepping(pArray);
             }
@@ -208,32 +208,32 @@ public class OptimizerGenetic implements Runnable, Optimizer{
      * @param mother the mother for the genetic parameter mix process
      * @return the resulting child
      */
-    private parser crossOver(parser father, parser mother)
+    private SimulationType crossOver(SimulationType father, SimulationType mother)
     {
         if (father == null || mother == null)
         {
             return null;
         }            
-        if (father.getListOfParameters().length != mother.getListOfParameters().length)
+        if (father.getListOfParameters().size() != mother.getListOfParameters().size())
         {
             support.log("Parameter length of mother and father different. No Crossover Possible");
             return null;
         }
-        parser child = new parser(father);
-        parameter[] fatherDNA = father.getListOfParameters();
-        parameter[] motherDNA = mother.getListOfParameters();
-        parameter[] childDNA = child.getListOfParameters();
+        SimulationType child = new SimulationType(father);
+        ArrayList<parameter> fatherDNA = father.getListOfParameters();
+        ArrayList<parameter> motherDNA = mother.getListOfParameters();
+        ArrayList<parameter> childDNA = child.getListOfParameters();
              
         //find random crossover-point
-        int crossingPoint = randomGenerator.nextInt(father.getListOfParameters().length);
+        int crossingPoint = randomGenerator.nextInt(father.getListOfParameters().size());
         
         //copy paramters from mother after crossing Point, father-DNA is already included through copy-constructor
-        for (int i = crossingPoint; i<fatherDNA.length; ++i)
+        for (int i = crossingPoint; i<fatherDNA.size(); ++i)
         {
             parameter parameterFromMother = null;
             try
             {
-                parameterFromMother = (parameter)motherDNA[i].clone();
+                parameterFromMother = (parameter)motherDNA.get(i).clone();
             }
             catch (CloneNotSupportedException e)
             {
@@ -241,7 +241,7 @@ public class OptimizerGenetic implements Runnable, Optimizer{
             }
             if (parameterFromMother!=null) //clone was successful
             {
-                childDNA[i] = parameterFromMother;
+                childDNA.set(i, parameterFromMother);
             }
         }
         child.setListOfParameters(childDNA);
@@ -249,20 +249,20 @@ public class OptimizerGenetic implements Runnable, Optimizer{
         return child;
     }
     
-    private ArrayList<parser> crossPopulation(ArrayList<parser> population, int numNewChildren)
+    private ArrayList<SimulationType> crossPopulation(ArrayList<SimulationType> population, int numNewChildren)
     {
         for (int i = 0; i<numNewChildren; ++i)
         {
             int indexOfFather = randomGenerator.nextInt(populationSize);
             int indexOfMother = randomGenerator.nextInt(populationSize);
         
-            parser child = crossOver(population.get(indexOfFather), population.get(indexOfMother));
+            SimulationType child = crossOver(population.get(indexOfFather), population.get(indexOfMother));
             population.add(child);   
         }        
         return population;
     }
     
-    private ArrayList<parser> mutatePopulation(ArrayList<parser> population, double mutationProbability)
+    private ArrayList<SimulationType> mutatePopulation(ArrayList<SimulationType> population, double mutationProbability)
     {
         int mutationStart = 1;
         if (mutateTopMeasure)
@@ -270,15 +270,15 @@ public class OptimizerGenetic implements Runnable, Optimizer{
         
         for (int popCounter = mutationStart; popCounter< population.size(); ++popCounter)
         {
-            parser p = population.get(popCounter);
-            parameter[] pArray = p.getListOfParameters();
-            for (int i = 0; i<pArray.length; ++i)
+            SimulationType p = population.get(popCounter);
+            ArrayList<parameter> pArray = p.getListOfParameters();
+            for (int i = 0; i<pArray.size(); ++i)
             {
-                if (pArray[i].isIteratableAndIntern())
+                if (pArray.get(i).isIteratableAndIntern())
                 {
                     if (randomGenerator.nextDouble() <= mutationProbability)
                     {
-                        pArray[i] = mutate(pArray[i]);
+                        pArray.set(i, mutate(pArray.get(i)));
                     }   
                 }
             }
@@ -287,16 +287,16 @@ public class OptimizerGenetic implements Runnable, Optimizer{
         return population;
     }
     
-    private parser mutate(parser mutant)
+    private SimulationType mutate(SimulationType mutant)
     {
         ArrayList<parameter> changeableGens = new ArrayList<parameter>();
         
-        parameter[] pArray = mutant.getListOfParameters();
-        for (int i=0; i<pArray.length; ++i)
+        ArrayList<parameter> pArray = mutant.getListOfParameters();
+        for (int i=0; i<pArray.size(); ++i)
         {
-            if (pArray[i].isIteratableAndIntern())
+            if (pArray.get(i).isIteratableAndIntern())
             {
-                changeableGens.add(pArray[i]);
+                changeableGens.add(pArray.get(i));
             }
         }
         
@@ -321,21 +321,21 @@ public class OptimizerGenetic implements Runnable, Optimizer{
      */
     private void createNewRandomPopulation(int populationSize, boolean ignoreStepping)
     {
-        population = new ArrayList<parser>();
+        population = new ArrayList<SimulationType>();
        
         //fill population with random values
         for(int i=0; i<populationSize; ++i)
         {
-            parser p = new parser();
+            SimulationType p = new SimulationType();
             population.add(p);
             MeasureType newMeasure = new MeasureType();
             
-            parameter[] pArray = support.getCopyOfParameterSet(parameterBase);
-            for (int j=0; j<pArray.length; ++j)
+            ArrayList<parameter> pArray = support.getCopyOfParameterSet(parameterBase);
+            for (int j=0; j<pArray.size(); ++j)
             {
                 //creates a random value between start and end value for each parameter
-                double newValue = pArray[j].getStartValue() + Math.random() * (pArray[j].getEndValue() - pArray[j].getStartValue());
-                pArray[j].setValue(newValue);
+                double newValue = pArray.get(j).getStartValue() + Math.random() * (pArray.get(j).getEndValue() - pArray.get(j).getStartValue());
+                pArray.get(j).setValue(newValue);
             }
             if(!ignoreStepping)
             {
@@ -351,12 +351,12 @@ public class OptimizerGenetic implements Runnable, Optimizer{
      * @param oldPopulation the old population to cut
      * @return the new population, which is cutted to max population size 
      */
-    private ArrayList<parser> cutPopulation(ArrayList<parser> oldPopulation)
+    private ArrayList<SimulationType> cutPopulation(ArrayList<SimulationType> oldPopulation)
     {
         if (oldPopulation == null)
             return null;
         
-        ArrayList<parser> newPopulation = oldPopulation; //makes ref on both, only for better understanding of the code
+        ArrayList<SimulationType> newPopulation = oldPopulation; //makes ref on both, only for better understanding of the code
         
         newPopulation = sortPopulationByDistance(newPopulation);
         
@@ -390,33 +390,33 @@ public class OptimizerGenetic implements Runnable, Optimizer{
         return parameterToBeRounded;
     }
     
-    private parameter[] roundToStepping(parameter[] pArray)
+    private ArrayList<parameter> roundToStepping(ArrayList<parameter> pArray)
     {
-        for (int i = 0; i<pArray.length; ++i)
+        for (int i = 0; i<pArray.size(); ++i)
         {
-            pArray[i] = roundToStepping(pArray[i]);
+            pArray.set(i, roundToStepping(pArray.get(i)));
         }
         return pArray;
     }
     
-    private ArrayList<parameter[]> getNextParameterSetAsArrayList()
+    private ArrayList< ArrayList<parameter> > getNextParameterSetAsArrayList()
     {
-        ArrayList<parameter[]> myParametersetList = new ArrayList<parameter[]>();
-        for (parser p : population)
+        ArrayList< ArrayList<parameter> > myParametersetList = new ArrayList< ArrayList<parameter> >();
+        for (SimulationType p : population)
         {
-            parameter[] pArray = p.getListOfParameters();
+            ArrayList<parameter> pArray = p.getListOfParameters();
             myParametersetList.add(pArray);
         }
         return myParametersetList;
     }
     
-    private ArrayList<parser> sortPopulationByDistance(ArrayList<parser> originalPopulation)
+    private ArrayList<SimulationType> sortPopulationByDistance(ArrayList<SimulationType> originalPopulation)
     {
         setMeasureTargets(originalPopulation);
-        Collections.sort(originalPopulation, new Comparator<parser>()
+        Collections.sort(originalPopulation, new Comparator<SimulationType>()
         {
             @Override
-            public int compare(parser a, parser b) 
+            public int compare(SimulationType a, SimulationType b) 
             {
                 return Double.compare(a.getDistance(), b.getDistance());
             }                    
@@ -431,14 +431,14 @@ public class OptimizerGenetic implements Runnable, Optimizer{
         
         if (bestKnownSolution == null) //no top solution found until know, so take the next you can get
         {
-            bestKnownSolution = new parser(population.get(0));
+            bestKnownSolution = new SimulationType(population.get(0));
         }
         
-        for (parser p : population)
+        for (SimulationType p : population)
         {
             if(p.getDistance() < bestKnownSolution.getDistance())
             {
-                bestKnownSolution = new parser(p);
+                bestKnownSolution = new SimulationType(p);
                 newTopMeasurefound = true;
             }
         }
@@ -452,7 +452,7 @@ public class OptimizerGenetic implements Runnable, Optimizer{
         }
     }
     
-    private void setMeasureTargets(ArrayList<parser> pList)
+    private void setMeasureTargets(ArrayList<SimulationType> pList)
     {
         MeasureType activeMeasure = null;
         MeasureType activeMeasureFromInterface = null;

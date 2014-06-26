@@ -11,7 +11,7 @@ package timenetexperimentgenerator.simulation;
 
 import timenetexperimentgenerator.helper.parameterTableModel;
 import timenetexperimentgenerator.datamodel.MeasureType;
-import timenetexperimentgenerator.datamodel.parser;
+import timenetexperimentgenerator.datamodel.SimulationType;
 import timenetexperimentgenerator.datamodel.parameter;
 import java.io.BufferedReader;
 import java.io.File;
@@ -273,12 +273,12 @@ private int localSimulationCounter=0;
     }
     
     /**
-     * Returns parser, which is the nearest to the given parameterSet (if exact match doesn`t exist)
+     * Returns SimulationType, which is the nearest to the given parameterSet (if exact match doesn`t exist)
      * @param parameterList given parameterSet for simulated simulation...
      * @return Measure which is nearest one to given parameterset
      * TODO build into getListOfCompletedSimulationParsers()
      */
-    public parser getNearestParserWithParameterList(ArrayList<parameter> parameterList){
+    public SimulationType getNearestParserWithParameterList(ArrayList<parameter> parameterList){
     ArrayList<Double[]> distArrayList=new ArrayList<Double[]>();    
         
         for(int i=0;i<this.MeasureList.size();i++){
@@ -318,12 +318,12 @@ private int localSimulationCounter=0;
      * @param pList List of Parametersets (ArrayList of Arrays)
      * @return ArrayList of parsers
      */
-    public ArrayList<parser> getNearestParserListFromListOfParamaeterSets(ArrayList<parameter[]> pList){
-    ArrayList<parser> returnList=new ArrayList<parser>();
+    public ArrayList<SimulationType> getNearestParserListFromListOfParamaeterSets(ArrayList< ArrayList<parameter> > pList){
+    ArrayList<SimulationType> returnList=new ArrayList<SimulationType>();
         for(int i=0;i<pList.size();i++){
         ArrayList<parameter> tmpPList=new ArrayList();
-            for(int c=0;c<pList.get(i).length;c++){
-            tmpPList.add(pList.get(i)[c]);
+            for(int c=0;c<pList.get(i).size();c++){
+            tmpPList.add(pList.get(i).get(c));
             }
         returnList.add(getNearestParserWithParameterList(tmpPList));
         }
@@ -417,16 +417,16 @@ private int localSimulationCounter=0;
      * @param simulationCounter Counter of Simulations
      * @return List of parsers with Simulation-Results, like in real simulation
      */
-    public ArrayList<parser> getListOfCompletedSimulationParsers(ArrayList<parameter[]> parameterListArray, int simulationCounter){
+    public ArrayList<SimulationType> getListOfCompletedSimulationParsers(ArrayList<ArrayList<parameter>> parameterListArray, int simulationCounter){
     setLocalSimulationCounter(simulationCounter);
-    ArrayList<parser> myParserList=new ArrayList<parser>();
+    ArrayList<SimulationType> myParserList=new ArrayList<SimulationType>();
     
     
         for(int i=0;i<parameterListArray.size();i++){
             //Create Arraylist from array of parameters
             ArrayList<parameter> tmpParameterList=new ArrayList<parameter>();
-            for(int c=0;c<parameterListArray.get(i).length;c++){
-            tmpParameterList.add(parameterListArray.get(i)[c]);
+            for(int c=0;c<parameterListArray.get(i).size();c++){
+            tmpParameterList.add(parameterListArray.get(i).get(c));
             }
             
             //Get local simulation results
@@ -435,12 +435,12 @@ private int localSimulationCounter=0;
             
             //append if listSize is > 0
             if(listOfMeasureWithGivenParameters.size()>0){
-            /*parser tmpParser=new parser();
+            /*SimulationType tmpParser=new SimulationType();
             tmpParser.setMeasures(listOfMeasureWithGivenParameters);
             tmpParser.setSimulationTime(listOfMeasureWithGivenParameters.get(i).getSimulationTime());
             tmpParser.setCPUTime(support.getInt(listOfMeasureWithGivenParameters.get(i).getCPUTime()));
             */
-            parser tmpParser=this.getParserFromListOfMeasures(listOfMeasureWithGivenParameters);
+            SimulationType tmpParser=this.getParserFromListOfMeasures(listOfMeasureWithGivenParameters);
             tmpParser.setListOfParameters(parameterListArray.get(i));
             myParserList.add(tmpParser);
             simulationCounter++;
@@ -454,13 +454,13 @@ private int localSimulationCounter=0;
 
     
     /**
-     * Returns a parser-object containing all given MeasureTypes
-     * @param mList List of MeasureType-Objects to be converted into one parser
-     * @return one parser-object
+     * Returns a SimulationType-object containing all given MeasureTypes
+     * @param mList List of MeasureType-Objects to be converted into one SimulationType
+     * @return one SimulationType-object
      */
-    private parser getParserFromListOfMeasures(ArrayList<MeasureType> mList){
+    private SimulationType getParserFromListOfMeasures(ArrayList<MeasureType> mList){
         if(mList.size()>0){
-        parser tmpParser=new parser();
+        SimulationType tmpParser=new SimulationType();
             for(int i=0;i<mList.size();i++){
             tmpParser.setMeasures(mList);
             //tmpParser.setSimulationTime(mList.get(i).getSimulationTime());
@@ -487,19 +487,19 @@ private int localSimulationCounter=0;
     
     
     /**
-     * Converts every given parser into List of Measures and adds this to local cache
+     * Converts every given SimulationType into List of Measures and adds this to local cache
      * 
      * @param parserList List of parsers to be added to local cache
      */
-    public void addListOfParsersToCache(ArrayList<parser> parserList){
+    public void addListOfParsersToCache(ArrayList<SimulationType> parserList){
         for(int i=0; i<parserList.size();i++){
-        parser tmpParser=parserList.get(i);
+        SimulationType tmpParser=parserList.get(i);
             
             //Convert Array of parameters to ArrayList of parameters
-            ArrayList<parameter> tmpParameterList=new ArrayList<parameter>();
-            for(int d=0;d<tmpParser.getListOfParameters().length;d++){
-            tmpParameterList.add(tmpParser.getListOfParameters()[d]);
-            }
+            ArrayList<parameter> tmpParameterList = tmpParser.getListOfParameters();
+//            for(int d=0;d<tmpParser.getListOfParameters().length;d++){
+//            tmpParameterList.add(tmpParser.getListOfParameters()[d]);
+//            }
             
             //Get List of MeasureTypes, set ParameterList and append it to local MeasureList
             for(int c=0;c>tmpParser.getMeasures().size();c++){

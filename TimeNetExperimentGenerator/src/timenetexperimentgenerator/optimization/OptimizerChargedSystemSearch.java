@@ -18,7 +18,7 @@ import timenetexperimentgenerator.MainFrame;
 import timenetexperimentgenerator.SimOptiFactory;
 import timenetexperimentgenerator.datamodel.MeasureType;
 import timenetexperimentgenerator.datamodel.parameter;
-import timenetexperimentgenerator.datamodel.parser;
+import timenetexperimentgenerator.datamodel.SimulationType;
 import timenetexperimentgenerator.simulation.Simulator;
 import timenetexperimentgenerator.support;
 
@@ -38,12 +38,12 @@ private String logFileName = "";
 private MainFrame parent = null;
 private JTabbedPane MeasureFormPane;
 private ArrayList<MeasureType> listOfMeasures = new ArrayList<MeasureType>();//Liste aller Measures, abfragen von MeasureFormPane
-private parameter[] parameterBase;//Base set of parameters, start/end-value, stepping, etc.
+private ArrayList<parameter> parameterBase;//Base set of parameters, start/end-value, stepping, etc.
 private JLabel infoLabel;
 private double simulationTimeSum = 0;
 private double cpuTimeSum = 0;
 
-private ArrayList<parser> charges = new ArrayList<parser>();//History of all simulation runs
+private ArrayList<SimulationType> charges = new ArrayList<SimulationType>();//History of all simulation runs
 
 private int numberOfCharges = 5; //number of active charges to explore design space
 private int maxNumberOfOptiCycles = 100; //maximum number of cycles, before optimization terminates
@@ -54,7 +54,7 @@ private double[] distances; //current Distance of all objects
 private double[] powerOfCharges; // attraction power of every object
 private double[][] speedOfCharges; //current speed vector for all objects with all parameters;
 
-private parser topMeasure;//temp top measure before implementing top-List
+private SimulationType topMeasure;//temp top measure before implementing top-List
 private double topDistance = Double.POSITIVE_INFINITY;//temp top distance
 
 private final int maxAttraction;//limit of attraction-force of 2 charges
@@ -75,10 +75,10 @@ public void initOptimizer()
     this.listOfMeasures=parent.getListOfActiveMeasureMentsToOptimize(); //((MeasurementForm)MeasureFormPane.getComponent(0)).getListOfMeasurements();
     support.log("# of Measures to be optimized: "+this.listOfMeasures.size());
        
-    charges = new ArrayList<parser>();
+    charges = new ArrayList<SimulationType>();
     distances = new double[numberOfCharges];
     powerOfCharges = new double[numberOfCharges];
-    speedOfCharges = new double[numberOfCharges][parameterBase.length];
+    speedOfCharges = new double[numberOfCharges][parameterBase.size()];
     
     //allocate all measurements the same parameterbase
     if (listOfMeasures.size()>1)
@@ -105,14 +105,14 @@ public void initOptimizer()
      */
     private void createNewRandomPopulation(int numOfCharges, boolean ignoreStepping)
     {
-        charges = new ArrayList<parser>();
+        charges = new ArrayList<SimulationType>();
         //init of supporting-arrays
         distances = new double[numOfCharges];
         Arrays.fill(distances, 0);
-        speedOfCharges = new double[numOfCharges][parameterBase.length];
+        speedOfCharges = new double[numOfCharges][parameterBase.size()];
         for (int i=0; i<numOfCharges; ++i)
         {
-            double[] newArray = new double[parameterBase.length];
+            double[] newArray = new double[parameterBase.size()];
             Arrays.fill(newArray, 0);
             speedOfCharges[i] = newArray;
         }
@@ -123,16 +123,16 @@ public void initOptimizer()
         //fill population with random values
         for(int i=0; i<numOfCharges; ++i)
         {
-            parser p = new parser();
+            SimulationType p = new SimulationType();
             charges.add(p);
             MeasureType newMeasure = new MeasureType();
             
-            parameter[] pArray = support.getCopyOfParameterSet(parameterBase);
-            for (int j=0; j<pArray.length; ++j)
+            ArrayList<parameter> pArray = support.getCopyOfParameterSet(parameterBase);
+            for (int j=0; j<pArray.size(); ++j)
             {
                 //creates a random value between start and end value for each parameter
-                double newValue = pArray[j].getStartValue() + Math.random() * (pArray[j].getEndValue() - pArray[j].getStartValue());
-                pArray[j].setValue(newValue);
+                double newValue = pArray.get(j).getStartValue() + Math.random() * (pArray.get(j).getEndValue() - pArray.get(j).getStartValue());
+                pArray.get(j).setValue(newValue);
             }
             if(!ignoreStepping)
             {
@@ -148,28 +148,28 @@ public void initOptimizer()
      * @param p array of parameters to be rounded
      * @return 
      */    
-    private parameter[] roundToStepping(parameter[] p)
+    private ArrayList<parameter> roundToStepping(ArrayList<parameter> p)
     {
         double currentValue = 0;
         double currentStepping = 0;
-        for (int i=0; i<p.length; ++i)
+        for (int i=0; i<p.size(); ++i)
         {
-            currentValue = p[i].getValue();
-            currentStepping = p[i].getStepping();
+            currentValue = p.get(i).getValue();
+            currentStepping = p.get(i).getStepping();
             
             currentValue = Math.round(currentValue / currentStepping) * currentStepping;
             
-            if (currentValue < p[i].getStartValue())
+            if (currentValue < p.get(i).getStartValue())
             {
-                currentValue = p[i].getStartValue();
+                currentValue = p.get(i).getStartValue();
             }
-            else if (currentValue > p[i].getEndValue())
+            else if (currentValue > p.get(i).getEndValue())
             {
-                currentValue = p[i].getEndValue();
+                currentValue = p.get(i).getEndValue();
             }
             
             
-            p[i].setValue(currentValue);
+            p.get(i).setValue(currentValue);
         }
         return p;
     }
@@ -264,7 +264,7 @@ public void initOptimizer()
             if(distances[i]<topDistance)
             {
                 topDistance = distances[i];
-                topMeasure = new parser(charges.get(i));
+                topMeasure = new SimulationType(charges.get(i));
                 newTopMeasurefound = true;
             }
         }
@@ -306,14 +306,14 @@ public void initOptimizer()
                 break;
             }
             
-            ArrayList<parameter[]> parameterList = getNextParameterSetAsArrayList();
+            ArrayList< ArrayList<parameter> > parameterList = getNextParameterSetAsArrayList();
             
-            for (parameter[] pArray : parameterList)
+            for (ArrayList<parameter> pArray : parameterList)
             {
                 pArray =  roundToStepping(pArray);
             }
             
-            System.out.println("Number of Parameters in: " + parameterList.get(0).length);
+            System.out.println("Number of Parameters in: " + parameterList.get(0).size());
             
             mySimulator = SimOptiFactory.getSimulator();
             mySimulator.initSimulator(parameterList, simulationCounter, false);
@@ -337,25 +337,25 @@ public void initOptimizer()
         
     }
     
-    //TODO: make only one function-->init charges with parameter, so could leave paramter of parser blank (Why we need parameter[] in parser?
+    //TODO: make only one function-->init charges with parameter, so could leave paramter of SimulationType blank (Why we need parameter[] in SimulationType?
     //parser has an ArrayList of Measure, which contains the paramter[] already...)
-    private ArrayList<parameter[]> getNextParameterSetAsArrayList()
+    private ArrayList< ArrayList<parameter> > getNextParameterSetAsArrayList()
     {
-        ArrayList<parameter[]> myParametersetList = new ArrayList<parameter[]>();
-        for (parser p : charges)
+        ArrayList< ArrayList<parameter> > myParametersetList = new ArrayList< ArrayList<parameter> >();
+        for (SimulationType p : charges)
         {
-            parameter[] pArray = p.getListOfParameters();
+            ArrayList<parameter> pArray = p.getListOfParameters();
             myParametersetList.add(pArray);
         }
         return myParametersetList;
     }
-    private ArrayList<parameter[]> getNextParameterSetAsArrayListFromMeasures()
+    private ArrayList< ArrayList<parameter> > getNextParameterSetAsArrayListFromMeasures()
     {
-        ArrayList<parameter[]> myParamterList = new ArrayList<parameter[]>();
-        for (parser p : charges)
+        ArrayList< ArrayList<parameter> > myParamterList = new ArrayList< ArrayList<parameter> >();
+        for (SimulationType p : charges)
         {
             ArrayList<MeasureType> measures = p.getMeasures();
-            parameter[] pArray = support.convertArrayListToArray(measures.get(0).getParameterList());
+            ArrayList<parameter> pArray = measures.get(0).getParameterList();
             myParamterList.add(pArray);
         }
         return myParamterList;
@@ -363,31 +363,12 @@ public void initOptimizer()
     
     private ArrayList<parameter> getParameters(int indexOfCharge)
     {
-        parameter pArray[] = charges.get(indexOfCharge).getListOfParameters();
-        if (pArray == null)
-        {
-            pArray = support.convertArrayListToArray(charges.get(indexOfCharge).getMeasures().get(0).getParameterList());//cruel coding style... only temp
-        }
-        
-        ArrayList<parameter> paraList = new  ArrayList<parameter>();
-        for (int i = 0; i < pArray.length ; ++i)
-        {
-            paraList.add(pArray[i]);
-        }
-        
-        return paraList;
+        return charges.get(indexOfCharge).getListOfParameters();
     }
     
     private void setParameters(ArrayList<parameter> parameterList, int indexOfCharge)
     {
-        parameter pArray[] = new parameter[parameterList.size()];
-        
-        for (int i = 0; i < parameterList.size(); ++i)
-        {
-            pArray[i] = parameterList.get(i);
-        }
-        
-        charges.get(indexOfCharge).setListOfParameters(pArray);        
+        charges.get(indexOfCharge).setListOfParameters(parameterList);        
     }
     
 
