@@ -23,7 +23,7 @@ import timenetexperimentgenerator.support;
  */
 public class SimulatorCached implements Simulator{
 private SimulationCache mySimulationCache=null;
-private ArrayList<SimulationType> myListOfSimulationParsers=null;
+private ArrayList<SimulationType> myListOfSimulations=null;
 private int simulationCounter=0;
 private String logFileName;
     
@@ -43,28 +43,28 @@ private String logFileName;
      */
     public void initSimulator(ArrayList<ArrayList <parameter> > listOfParameterSetsTMP, int simulationCounterTMP, boolean log) {
         if(mySimulationCache!=null){
-        this.myListOfSimulationParsers=mySimulationCache.getListOfCompletedSimulationParsers(listOfParameterSetsTMP, simulationCounter);
+        this.myListOfSimulations=mySimulationCache.getListOfCompletedSimulationParsers(listOfParameterSetsTMP, simulationCounter);
         this.simulationCounter=mySimulationCache.getLocalSimulationCounter();
         }else{
         support.log("No local Simulation file loaded. Simulation not possible.");
         }
         
-        if((this.myListOfSimulationParsers==null)||(this.myListOfSimulationParsers.size()!=listOfParameterSetsTMP.size())){
+        if((this.myListOfSimulations==null)||(this.myListOfSimulations.size()!=listOfParameterSetsTMP.size())){
         support.log("Not all Simulations found in local Cache.  Will take next possible parametersets from cache.");
-        myListOfSimulationParsers=this.mySimulationCache.getNearestParserListFromListOfParamaeterSets(listOfParameterSetsTMP);
+        myListOfSimulations=this.mySimulationCache.getNearestParserListFromListOfParamaeterSets(listOfParameterSetsTMP);
         }
         
-        if(this.myListOfSimulationParsers!=null){
+        if(this.myListOfSimulations!=null){
             //copy parameterList of measure to parameter[] of SimulationType for later use
-            if (myListOfSimulationParsers.size() > 0)
+            if (myListOfSimulations.size() > 0)
             {
                 //take first measure in SimulationType for list of parameters
-                if (myListOfSimulationParsers.get(0).getMeasures().size() > 0)
+                if (myListOfSimulations.get(0).getMeasures().size() > 0)
                 {
-                    for (int i=0; i<myListOfSimulationParsers.size(); ++i)
+                    for (int i=0; i<myListOfSimulations.size(); ++i)
                     {
-                        MeasureType firstMeasure = myListOfSimulationParsers.get(i).getMeasures().get(0);
-                        myListOfSimulationParsers.get(i).setListOfParameters(firstMeasure.getParameterList());
+                        //MeasureType firstMeasure = myListOfSimulations.get(i).getMeasures().get(0);
+                        myListOfSimulations.get(i).setListOfParameters(listOfParameterSetsTMP.get(i));
                     }
                 }
                 else
@@ -79,7 +79,7 @@ private String logFileName;
 
             if(log){
             //Print out a log file    
-            support.addLinesToLogFileFromListOfParser(myListOfSimulationParsers, logFileName);
+            support.addLinesToLogFileFromListOfParser(myListOfSimulations, logFileName);
             }
         }
         
@@ -90,7 +90,7 @@ private String logFileName;
      * @return % of simulatiions that are finished
      */
     public int getStatus() {
-        if (this.myListOfSimulationParsers!=null){
+        if (this.myListOfSimulations!=null){
         return 100;
         }else {return 0;}
     }
@@ -111,7 +111,7 @@ private String logFileName;
      * @return list of completed simulations (parsers) which contain all data from the log-files
      */
     public ArrayList<SimulationType> getListOfCompletedSimulationParsers() {
-        return this.myListOfSimulationParsers;
+        return this.myListOfSimulations;
     }
 
     

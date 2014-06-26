@@ -196,7 +196,7 @@ private boolean parsingSuccessfullFinished = false;
     //Begin parsing rest of file
     MeasureType tmpMeasure=new MeasureType();
     tmpMeasure.setSimulationTime(localSimulationTime);
-    tmpMeasure.setParameterList(tmpParameterList);
+    //tmpMeasure.setParameterList(tmpParameterList);
     tmpMeasure.setCPUTime(localCPUTime);
     String tmpConfidence="";
     for(int i=0;i<tmpStrings.size();i++){
@@ -204,7 +204,7 @@ private boolean parsingSuccessfullFinished = false;
             case 0:
                 if(tmpStrings.get(i).split(" ")[0].equalsIgnoreCase("Measure:")){
                 tmpMeasure=new MeasureType();
-                tmpMeasure.setParameterList(tmpParameterList);
+                //tmpMeasure.setParameterList(tmpParameterList);
                 tmpMeasure.setCPUTime(localCPUTime);
                 tmpMeasure.setSimulationTime(localSimulationTime);
                 tmpMeasure.setMeasureName(tmpStrings.get(i).split(" ")[1]);
@@ -226,7 +226,7 @@ private boolean parsingSuccessfullFinished = false;
                 double[] tmpConf={getFloatString(segs[0]),getFloatString(segs[1])}  ;
                 tmpMeasure.setConfidenceInterval(tmpConf);
                 tmpMeasure.setEpsilon(getFloatString(s.next()));
-                tmpMeasure.setParameterList(tmpParameterList);
+                //tmpMeasure.setParameterList(tmpParameterList);
                 results.getMeasures().add(tmpMeasure);
                 parseStatus=0;
                 support.log("Measures "+tmpMeasure.getMeasureName()+" has Epsilon of "+tmpMeasure.getEpsilon()+" and Mean of "+tmpMeasure.getMeanValue() );

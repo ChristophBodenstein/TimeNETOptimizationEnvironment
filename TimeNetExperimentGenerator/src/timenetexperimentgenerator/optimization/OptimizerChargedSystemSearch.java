@@ -81,14 +81,14 @@ public void initOptimizer()
     speedOfCharges = new double[numberOfCharges][parameterBase.size()];
     
     //allocate all measurements the same parameterbase
-    if (listOfMeasures.size()>1)
-    {
-        for (int i=1; i<listOfMeasures.size(); ++i)
-        {
-            ArrayList<parameter> parameterList = listOfMeasures.get(0).getParameterList();
-            listOfMeasures.get(i).setParameterList(parameterList);
-        }
-    }
+//    if (listOfMeasures.size()>1)
+//    {
+//        for (int i=1; i<listOfMeasures.size(); ++i)
+//        {
+//            ArrayList<parameter> parameterList = listOfMeasures.get(0).getParameterList();
+//            listOfMeasures.get(i).setParameterList(parameterList);
+//        }
+//    }
 
     this.filename=support.getOriginalFilename();// originalFilename;
     //Ask for Tmp-Path
@@ -348,17 +348,6 @@ public void initOptimizer()
             myParametersetList.add(pArray);
         }
         return myParametersetList;
-    }
-    private ArrayList< ArrayList<parameter> > getNextParameterSetAsArrayListFromMeasures()
-    {
-        ArrayList< ArrayList<parameter> > myParamterList = new ArrayList< ArrayList<parameter> >();
-        for (SimulationType p : charges)
-        {
-            ArrayList<MeasureType> measures = p.getMeasures();
-            ArrayList<parameter> pArray = measures.get(0).getParameterList();
-            myParamterList.add(pArray);
-        }
-        return myParamterList;
     }
     
     private ArrayList<parameter> getParameters(int indexOfCharge)

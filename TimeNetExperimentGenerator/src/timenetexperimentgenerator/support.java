@@ -365,14 +365,15 @@ private static typeOfStartValueEnum typeOfStartValue=typeOfStartValueEnum.start;
         support.log("Confidence-Max: "+support.getCommaFloat(m.getConfidenceInterval()[1]));
         support.log("Epsilon: "+support.getCommaFloat(m.getEpsilon()));
         
-        if(m.getParameterList()!=null){
-        support.log("---Printing parameterlist---");
-        ArrayList<parameter> pList=m.getParameterList();
-            for(int i=0;i<pList.size();i++){
-            support.log("Value of "+pList.get(i).getName() +" is: "+pList.get(i).getValue());
-            }
-        support.log("---End of parameterlist---");
-        }
+//        if(m.getParameterList()!=null)
+//        {
+//        support.log("---Printing parameterlist---");
+//        ArrayList<parameter> pList=m.getParameterList();
+//            for(int i=0;i<pList.size();i++){
+//            support.log("Value of "+pList.get(i).getName() +" is: "+pList.get(i).getValue());
+//            }
+//        support.log("---End of parameterlist---");
+//        }
         support.log("Used CPU-Time: " +m.getCPUTime());
         support.log("***** End of Measure "+m.getMeasureName()+" ******");
         support.log(footer);
@@ -398,9 +399,10 @@ private static typeOfStartValueEnum typeOfStartValue=typeOfStartValueEnum.start;
             if(writeHeader){
                 MeasureType exportMeasure=pList.get(0).getMeasures().get(0);//Dummy, es wird das erste Measure abgefragt und die Parameterliste
                 line="MeasureName;Mean Value; Variance; Conf.Interval-Min;Conf.Interval-Max;Epsilon;"+"Simulation Time";
-                    for(int i1=0;i1<exportMeasure.getParameterList().size();i1++){
-                    line=line+";"+exportMeasure.getParameterList().get(i1).getName();
-                    }
+//                    for(int i1=0;i1<exportMeasure.getParameterList().size();i1++)
+//                    {
+//                    line=line+";"+exportMeasure.getParameterList().get(i1).getName();
+//                    }
                     try {
                         fw.write(line);
                         fw.append( System.getProperty("line.separator") );
@@ -426,9 +428,10 @@ private static typeOfStartValueEnum typeOfStartValue=typeOfStartValueEnum.start;
                 support.log("Simulation-Time= "+support.getCommaFloat(myParser.getSimulationTime()));
                 */
                 line=exportMeasure.getMeasureName()+";"+support.getCommaFloat(exportMeasure.getMeanValue())+";"+support.getCommaFloat(exportMeasure.getVariance())+";"+support.getCommaFloat(exportMeasure.getConfidenceInterval()[0])+";"+support.getCommaFloat(exportMeasure.getConfidenceInterval()[1])+";"+support.getCommaFloat(exportMeasure.getEpsilon())+";"+support.getCommaFloat(exportMeasure.getSimulationTime());
-                    for(int c=0;c<exportMeasure.getParameterList().size();c++){
-                    line=line+";"+support.getCommaFloat(exportMeasure.getParameterList().get(c).getValue());
-                    }
+//                    for(int c=0;c<exportMeasure.getParameterList().size();c++)
+//                    {
+//                        line=line+";"+support.getCommaFloat(exportMeasure.getParameterList().get(c).getValue());
+//                    }
                 fw.write(line);
                 fw.append( System.getProperty("line.separator") );
                 }

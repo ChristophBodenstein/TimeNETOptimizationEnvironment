@@ -31,12 +31,14 @@ String[] listOfCachedParameterNames;
 double[] listOfCachedParameterMin;
 double[] listOfCachedParameterMax;
 double[] listOfCachedParameterStepping;
-ArrayList<MeasureType> MeasureList;
-private int localSimulationCounter=0;
+//ArrayList<MeasureType> MeasureList;
+ArrayList<SimulationType> simulationList;
+private int localSimulationCounter = 0;
 
 
     public SimulationCache() {
-        this.MeasureList=new ArrayList<MeasureType>();
+        //this.MeasureList = new ArrayList<MeasureType>();
+        this.simulationList = new ArrayList<SimulationType>();
     }
     
 
@@ -153,46 +155,55 @@ private int localSimulationCounter=0;
         
         support.log("Number of Measures:"+listOfCachedMeasureNames.size());
         //Generate List of Simulated Experiments
-        for(i=0;i<numberOfExperiments;i++){
+        for(i=0;i<numberOfExperiments;i++)
+        {    
+            SimulationType tmpSimulation = new SimulationType();
+            for(int c=0;c<listOfCachedMeasureNames.size();c++)
+            {
+                MeasureType tmpMeasure=new MeasureType();
+                //Line number in read cache file
+                int lineNumber=i*listOfCachedMeasureNames.size()+c+1;
+                tmpMeasure.setMeasureName(listOfStringLines.get(lineNumber)[0]);
+                tmpMeasure.setMeanValue(support.getDouble(listOfStringLines.get(lineNumber)[1]));
+                tmpMeasure.setVariance(support.getDouble(listOfStringLines.get(lineNumber)[2]));
+                double[] tmpConf={support.getDouble(listOfStringLines.get(lineNumber)[3]),support.getDouble(listOfStringLines.get(lineNumber)[4])};
+                tmpMeasure.setConfidenceInterval(tmpConf);
+                tmpMeasure.setEpsilon(support.getDouble(listOfStringLines.get(lineNumber)[5]));
+                tmpMeasure.setSimulationTime(support.getDouble(listOfStringLines.get(lineNumber)[6]));
+                //CPU-Time is in last column
+                tmpMeasure.setCPUTime(support.getDouble(listOfStringLines.get(lineNumber)[7+listOfCachedParameterNames.length]));
+                //support.log("CPU-Time of "+tmpSimulation.getMeasureName() +" is " +tmpSimulation.getCPUTime()+".");
             
-            for(int c=0;c<listOfCachedMeasureNames.size();c++){
-            MeasureType tmpMeasure=new MeasureType();
-            //Line number in read cache file
-            int lineNumber=i*listOfCachedMeasureNames.size()+c+1;
-            tmpMeasure.setMeasureName(listOfStringLines.get(lineNumber)[0]);
-            tmpMeasure.setMeanValue(support.getDouble(listOfStringLines.get(lineNumber)[1]));
-            tmpMeasure.setVariance(support.getDouble(listOfStringLines.get(lineNumber)[2]));
-            double[] tmpConf={support.getDouble(listOfStringLines.get(lineNumber)[3]),support.getDouble(listOfStringLines.get(lineNumber)[4])};
-            tmpMeasure.setConfidenceInterval(tmpConf);
-            tmpMeasure.setEpsilon(support.getDouble(listOfStringLines.get(lineNumber)[5]));
-            tmpMeasure.setSimulationTime(support.getDouble(listOfStringLines.get(lineNumber)[6]));
-            //CPU-Time is in last column
-            tmpMeasure.setCPUTime(support.getDouble(listOfStringLines.get(lineNumber)[7+listOfCachedParameterNames.length]));
-            //support.log("CPU-Time of "+tmpMeasure.getMeasureName() +" is " +tmpMeasure.getCPUTime()+".");
-            
-            ArrayList<parameter> tmpParameterList=new ArrayList<parameter>();
-                for(int i1=0;i1<listOfCachedParameterNames.length;i1++){
-                column=i1+7;
-                parameter tmpParameter=new parameter();
-                tmpParameter.setName(support.translateParameterNameFromLogFileToTable(listOfCachedParameterNames[i1]));
-                tmpParameter.setEndValue(support.round(listOfCachedParameterMax[i1]));
-                tmpParameter.setStartValue(support.round(listOfCachedParameterMin[i1]));
-                tmpParameter.setStepping(support.round(listOfCachedParameterStepping[i1]));
-                //Get and save Value of this Parameter
-                //It is in the correct Column of the actual line
-                //We did not change the order of Parameters (it`s the same like in the raw file)
-                //tmpParameter.setValue(support.translateParameterNameFromLogFileToTable(listOfStringLines.get(lineNumber)[column]));
-                tmpParameter.setValue(support.round(support.getDouble(listOfStringLines.get(lineNumber)[column])));
+                if (tmpSimulation.getListOfParameters() == null) //list of parameters for current simulation not set
+                {
+                    ArrayList<parameter> tmpParameterList=new ArrayList<parameter>();
+                    for(int i1=0;i1<listOfCachedParameterNames.length;i1++)
+                    {
+                        column=i1+7;
+                        parameter tmpParameter=new parameter();
+                        tmpParameter.setName(support.translateParameterNameFromLogFileToTable(listOfCachedParameterNames[i1]));
+                        tmpParameter.setEndValue(support.round(listOfCachedParameterMax[i1]));
+                        tmpParameter.setStartValue(support.round(listOfCachedParameterMin[i1]));
+                        tmpParameter.setStepping(support.round(listOfCachedParameterStepping[i1]));
+                        //Get and save Value of this Parameter
+                        //It is in the correct Column of the actual line
+                        //We did not change the order of Parameters (it`s the same like in the raw file)
+                        //tmpParameter.setValue(support.translateParameterNameFromLogFileToTable(listOfStringLines.get(lineNumber)[column]));
+                        tmpParameter.setValue(support.round(support.getDouble(listOfStringLines.get(lineNumber)[column])));
                 
-                tmpParameterList.add(tmpParameter);
-                }
+                        tmpParameterList.add(tmpParameter);
+                    }
 
-            tmpMeasure.setParameterList(tmpParameterList);
-            
-            this.MeasureList.add(tmpMeasure);
+                    //tmpMeasure.setParameterList(tmpParameterList);
+                    tmpSimulation.setListOfParameters(tmpParameterList);
+                }
+                
+                tmpSimulation.getMeasures().add(tmpMeasure);
+                //this.MeasureList.add(tmpSimulation);
             
             }
-        }
+            simulationList.add(tmpSimulation);
+        }   
 
         //Reformat Parameter-Table
         this.reformatParameterTable(myParameterTableModel);
@@ -238,19 +249,19 @@ private int localSimulationCounter=0;
     * @param MeasureName given Name of Measure to get the simulaion value (needle)
     * @return Measure
     */
-    public MeasureType getMeasureByParameterList(ArrayList<parameter> parameterList, String MeasureName){
-    MeasureType tmpMeasure;
-        //Go through all Measures, find the one with the same parameterlist
-        for(int i=0;i<this.MeasureList.size();i++){
-        tmpMeasure=this.MeasureList.get(i);
-            if((tmpMeasure.getMeasureName().equals(MeasureName))&&(compareParameterList(parameterList, tmpMeasure.getParameterList()))){
-            return tmpMeasure;
-            }
-        }
-    //TODO: If not found, then find the nearest one       
-    //Return null, if not found
-    return null;
-    }
+//    public MeasureType getMeasureByParameterList(ArrayList<parameter> parameterList, String MeasureName){
+//    MeasureType tmpSimulation;
+//        //Go through all Measures, find the one with the same parameterlist
+//        for(int i=0;i<this.MeasureList.size();i++){
+//        tmpSimulation=this.MeasureList.get(i);
+//            if((tmpSimulation.getMeasureName().equals(MeasureName))&&(compareParameterList(parameterList, tmpSimulation.getParameterList()))){
+//            return tmpSimulation;
+//            }
+//        }
+//    //TODO: If not found, then find the nearest one       
+//    //Return null, if not found
+//    return null;
+//    }
 
     /**
     * Returns all Measures, selected by one parameterset(ParameterList)
@@ -258,15 +269,17 @@ private int localSimulationCounter=0;
     * @return ArrayList of MeasureTypes
     */
     public ArrayList<MeasureType> getAllMeasuresWithParameterList(ArrayList<parameter> parameterList){
-    MeasureType tmpMeasure;
+    SimulationType tmpSimulation;
     ArrayList<MeasureType> myTmpList=new ArrayList();
     
     //support.log("Size of All Measures from File: "+MeasureList.size());
         //Go through all Measures, find the one with the same parameterlist
-        for(int i=0;i<this.MeasureList.size();i++){
-        tmpMeasure=this.MeasureList.get(i);
-            if(compareParameterList(parameterList, tmpMeasure.getParameterList())){
-            myTmpList.add(tmpMeasure);
+        for(int i=0;i<this.simulationList.size();i++)
+        {
+            tmpSimulation=this.simulationList.get(i);
+            if(compareParameterList(parameterList, tmpSimulation.getListOfParameters()))
+            {
+                myTmpList = tmpSimulation.getMeasures(); //assumming cache-file did not have experiments with same Parameterset
             }
         }
     return myTmpList;
@@ -281,11 +294,12 @@ private int localSimulationCounter=0;
     public SimulationType getNearestParserWithParameterList(ArrayList<parameter> parameterList){
     ArrayList<Double[]> distArrayList=new ArrayList<Double[]>();    
         
-        for(int i=0;i<this.MeasureList.size();i++){
-        Double[] tmpDist=new Double[2];//0->Dist, 1->Index
-        tmpDist[0]=getDistanceOfParameterLists(this.MeasureList.get(i).getParameterList(), parameterList);
-        tmpDist[1]= (double)i;
-        distArrayList.add(tmpDist);
+        for(int i=0;i<this.simulationList.size();i++)
+        {
+            Double[] tmpDist=new Double[2];//0->Dist, 1->Index
+            tmpDist[0]=getDistanceOfParameterLists(this.simulationList.get(i).getListOfParameters(), parameterList);
+            tmpDist[1]= (double)i;
+            distArrayList.add(tmpDist);
         }
         
         Collections.sort(distArrayList, new Comparator<Double[]>(){
@@ -303,7 +317,7 @@ private int localSimulationCounter=0;
         //}
         
         //indexOfZeroDistance should contain the index of the Distance >=0
-        ArrayList<MeasureType> listOfMeasureWithGivenParameters=this.getAllMeasuresWithParameterList(this.MeasureList.get(distArrayList.get(indexOfZeroDistance)[1].intValue()).getParameterList());
+        ArrayList<MeasureType> listOfMeasureWithGivenParameters=this.getAllMeasuresWithParameterList(this.simulationList.get(distArrayList.get(indexOfZeroDistance)[1].intValue()).getListOfParameters());
         if(listOfMeasureWithGivenParameters.size()>0){
         
         this.setLocalSimulationCounter(this.getLocalSimulationCounter()+1);
@@ -487,26 +501,14 @@ private int localSimulationCounter=0;
     
     
     /**
-     * Converts every given SimulationType into List of Measures and adds this to local cache
+     * adds every given SimulationType into list of simualtions to local cache
      * 
-     * @param parserList List of parsers to be added to local cache
+     * @param SimulationListToAdd List of simulaions to be added to local cache
      */
-    public void addListOfParsersToCache(ArrayList<SimulationType> parserList){
-        for(int i=0; i<parserList.size();i++){
-        SimulationType tmpParser=parserList.get(i);
-            
-            //Convert Array of parameters to ArrayList of parameters
-            ArrayList<parameter> tmpParameterList = tmpParser.getListOfParameters();
-//            for(int d=0;d<tmpParser.getListOfParameters().length;d++){
-//            tmpParameterList.add(tmpParser.getListOfParameters()[d]);
-//            }
-            
-            //Get List of MeasureTypes, set ParameterList and append it to local MeasureList
-            for(int c=0;c>tmpParser.getMeasures().size();c++){
-            MeasureType tmpMeasure=tmpParser.getMeasures().get(c);
-            tmpMeasure.setParameterList(tmpParameterList);
-            this.MeasureList.add(tmpMeasure);
-            }
+    public void addListOfSimulationsToCache(ArrayList<SimulationType> SimulationListToAdd){
+        for(int i=0; i<SimulationListToAdd.size();i++)
+        {
+            this.simulationList.add(SimulationListToAdd.get(i));
         }
     }
     

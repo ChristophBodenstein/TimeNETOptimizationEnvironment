@@ -58,7 +58,7 @@ private String logFileName;
             support.waitForEndOfSimulator(myLocalSimulator, simulationCounter, support.DEFAULT_TIMEOUT);
             
         myListOfSimulationParsers=myLocalSimulator.getListOfCompletedSimulationParsers();
-        this.mySimulationCache.addListOfParsersToCache(myListOfSimulationParsers);
+        this.mySimulationCache.addListOfSimulationsToCache(myListOfSimulationParsers);
         }
         if(this.myListOfSimulationParsers!=null){
         //Print out a log file    

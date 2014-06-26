@@ -22,7 +22,7 @@ private double MeanValue;
 private double Variance;
 private double[] ConfidenceInterval;
 private double Epsilon;
-private ArrayList<parameter> parameterList=new ArrayList<parameter>();
+//private ArrayList<parameter> parameterList=new ArrayList<parameter>();
 private double targetValue;
 private String targetKindOf;
 private double SimulationTime;
@@ -41,19 +41,19 @@ private double CPUTime;
         this.Variance = originalMeasure.Variance;
         this.ConfidenceInterval = Arrays.copyOf(originalMeasure.ConfidenceInterval, originalMeasure.ConfidenceInterval.length);
         this.Epsilon = originalMeasure.Epsilon;
-        this.parameterList = new ArrayList<parameter>();
-        for (int i = 0; i<originalMeasure.getParameterListSize(); ++i)
-        {
-            try
-            {
-                parameter tmpParameter = (parameter)originalMeasure.getParameterList().get(i).clone();
-                this.parameterList.add(tmpParameter);
-            }
-            catch (CloneNotSupportedException e)
-            {
-                support.log(e.getMessage());
-            }
-        }
+//        this.parameterList = new ArrayList<parameter>();
+//        for (int i = 0; i<originalMeasure.getParameterListSize(); ++i)
+//        {
+//            try
+//            {
+//                parameter tmpParameter = (parameter)originalMeasure.getParameterList().get(i).clone();
+//                this.parameterList.add(tmpParameter);
+//            }
+//            catch (CloneNotSupportedException e)
+//            {
+//                support.log(e.getMessage());
+//            }
+//        }
         this.targetValue = originalMeasure.targetValue;
         this.targetKindOf = originalMeasure.targetKindOf;
         this.CPUTime = originalMeasure.CPUTime;
@@ -172,31 +172,31 @@ private double CPUTime;
         this.Epsilon = Epsilon;
     }
 
-    /**
-     * @return the parameterList
-     */
-    public ArrayList<parameter> getParameterList() {
-        return parameterList;
-    }
-
-    /**
-     * @param parameterList the parameterList to set
-     */
-    public void setParameterList(ArrayList<parameter> parameterList) {
-        this.parameterList = parameterList;
-    }
+//    /**
+//     * @return the parameterList
+//     */
+//    public ArrayList<parameter> getParameterList() {
+//        return parameterList;
+//    }
+//
+//    /**
+//     * @param parameterList the parameterList to set
+//     */
+//    public void setParameterList(ArrayList<parameter> parameterList) {
+//        this.parameterList = parameterList;
+//    }
     
      /**
      * @return the size of the paramterList
      */
-    public int getParameterListSize()
-    {
-        if (parameterList != null)
-        {
-            return this.parameterList.size();
-        }
-        return 0;
-    }
+//    public int getParameterListSize()
+//    {
+//        if (parameterList != null)
+//        {
+//            return this.parameterList.size();
+//        }
+//        return 0;
+//    }
 
     /**
      * @return the SimulationTime
@@ -233,11 +233,11 @@ private double CPUTime;
         state += this.MeasureName + " \t" + this.MeanValue + " \t" + this.Variance + " \t" + this.targetValue + " \t" + this.targetKindOf + "\n\n";
         
         state += "ParameterName\tCurrentValue\tStartValue\tEndValue\tStepping\n";
-        for (int i = 0; i<this.parameterList.size(); ++i)
-        {
-            parameter p = this.parameterList.get(i);
-            state += p.getName() + " \t" + p.getValue() + " \t" + p.getStartValue() + " \t" + p.getEndValue() + " \t" + p.getStepping() + "\n";
-        }
+//        for (int i = 0; i<this.parameterList.size(); ++i)
+//        {
+//            parameter p = this.parameterList.get(i);
+//            state += p.getName() + " \t" + p.getValue() + " \t" + p.getStartValue() + " \t" + p.getEndValue() + " \t" + p.getStepping() + "\n";
+//        }
         
         return state;
     }
