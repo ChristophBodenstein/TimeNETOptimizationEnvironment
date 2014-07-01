@@ -399,10 +399,10 @@ private static typeOfStartValueEnum typeOfStartValue=typeOfStartValueEnum.start;
             if(writeHeader){
                 MeasureType exportMeasure=pList.get(0).getMeasures().get(0);//Dummy, es wird das erste Measure abgefragt und die Parameterliste
                 line="MeasureName;Mean Value; Variance; Conf.Interval-Min;Conf.Interval-Max;Epsilon;"+"Simulation Time";
-//                    for(int i1=0;i1<exportMeasure.getParameterList().size();i1++)
-//                    {
-//                    line=line+";"+exportMeasure.getParameterList().get(i1).getName();
-//                    }
+                    for(int i1=0;i1<pList.get(0).getListOfParameters().size();i1++)
+                    {
+                    line=line+";"+pList.get(0).getListOfParameters().get(i1).getName();
+                    }
                     try {
                         fw.write(line);
                         fw.append( System.getProperty("line.separator") );
@@ -428,10 +428,10 @@ private static typeOfStartValueEnum typeOfStartValue=typeOfStartValueEnum.start;
                 support.log("Simulation-Time= "+support.getCommaFloat(myParser.getSimulationTime()));
                 */
                 line=exportMeasure.getMeasureName()+";"+support.getCommaFloat(exportMeasure.getMeanValue())+";"+support.getCommaFloat(exportMeasure.getVariance())+";"+support.getCommaFloat(exportMeasure.getConfidenceInterval()[0])+";"+support.getCommaFloat(exportMeasure.getConfidenceInterval()[1])+";"+support.getCommaFloat(exportMeasure.getEpsilon())+";"+support.getCommaFloat(exportMeasure.getSimulationTime());
-//                    for(int c=0;c<exportMeasure.getParameterList().size();c++)
-//                    {
-//                        line=line+";"+support.getCommaFloat(exportMeasure.getParameterList().get(c).getValue());
-//                    }
+                    for(int c=0;c<myParser.getListOfParameters().size();c++)
+                    {
+                        line=line+";"+support.getCommaFloat(myParser.getListOfParameters().get(c).getValue());
+                    }
                 fw.write(line);
                 fw.append( System.getProperty("line.separator") );
                 }
