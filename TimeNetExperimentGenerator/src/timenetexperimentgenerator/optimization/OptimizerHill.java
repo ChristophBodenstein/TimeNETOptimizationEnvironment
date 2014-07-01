@@ -136,6 +136,8 @@ boolean directionOfOptimization=true;//true->increment parameters, false->decrem
             //nextSolution is not null --> We are on the right way, else we are wrong and should change
             }
         support.log("Hill Climbing has ended, printing optimal value:");
+        support.addLinesToLogFile(currentSolution, logFileName);
+        support.getStatusLabel().setText("Optimization ended. See Log.");
         support.printOptimizedMeasures(currentSolution, this.listOfMeasures);    
     }
 
