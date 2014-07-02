@@ -19,7 +19,7 @@ import timenetexperimentgenerator.datamodel.parameter;
 import timenetexperimentgenerator.datamodel.SimulationType;
 import timenetexperimentgenerator.simulation.Simulator;
 import timenetexperimentgenerator.support;
-import timenetexperimentgenerator.support.*;
+import timenetexperimentgenerator.helper.*;
 
 /**
  *
@@ -52,6 +52,7 @@ double simulationTimeSum=0;
 double cpuTimeSum=0;
 String logFileName;
 int wrongSolutionCounter=support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW;
+int wrongSolutionPerDirectionCounter=support.DEFAULT_WRONG_SOLUTION_PER_DIRECTION;
 int numberOfLastChangedParameter=0;
 int numberOfChangableParameters=0;
 boolean directionOfOptimization=true;//true->increment parameters, false->decrement parameters
@@ -95,6 +96,7 @@ boolean directionOfOptimization=true;//true->increment parameters, false->decrem
     }
 
     public void run() {
+        ArrayList<parameter> lastParameterset;
         //Simulator init with initional parameterset
         Simulator mySimulator=SimOptiFactory.getSimulator();
         
@@ -106,16 +108,17 @@ boolean directionOfOptimization=true;//true->increment parameters, false->decrem
         currentSolution=mySimulator.getListOfCompletedSimulationParsers().get(0);
         Fx=this.getActualDistance(currentSolution);
         nextSolution=currentSolution;
+        lastParameterset=currentSolution.getListOfParameters();
         
             while(!optimized){
-            mySimulator.initSimulator(getNextParametersetAsArrayList(currentSolution.getListOfParameters()), simulationCounter, false);
+            mySimulator.initSimulator(getNextParametersetAsArrayList(lastParameterset), simulationCounter, false);
             support.waitForEndOfSimulator(mySimulator, simulationCounter, 600);
             this.simulationCounter=mySimulator.getSimulationCounter();
             support.addLinesToLogFileFromListOfParser(mySimulator.getListOfCompletedSimulationParsers(), logFileName);
             this.historyOfParsers = support.appendListOfParsers(historyOfParsers, mySimulator.getListOfCompletedSimulationParsers());
             nextSolution=mySimulator.getListOfCompletedSimulationParsers().get(0);
             Fy=this.getActualDistance(nextSolution);
-                
+            lastParameterset=nextSolution.getListOfParameters();
                 //If next Solution is better or Probability is above 0.5 then take it as actual best solution
                 if((Fy<Fx)){
                 support.log("Choosing next solution for Hill Climbing");
@@ -123,6 +126,7 @@ boolean directionOfOptimization=true;//true->increment parameters, false->decrem
                 currentSolution=nextSolution;
                 //Reset wrong-solution-counter
                 wrongSolutionCounter=support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW;
+                wrongSolutionPerDirectionCounter=support.DEFAULT_WRONG_SOLUTION_PER_DIRECTION;
                 }else{
                 nextSolution=null;
                 //Count up the Solutions which are not taken
@@ -138,7 +142,8 @@ boolean directionOfOptimization=true;//true->increment parameters, false->decrem
         support.log("Hill Climbing has ended, printing optimal value:");
         support.addLinesToLogFile(currentSolution, logFileName);
         support.getStatusLabel().setText("Optimization ended. See Log.");
-        support.printOptimizedMeasures(currentSolution, this.listOfMeasures);    
+        support.printOptimizedMeasures(currentSolution, this.listOfMeasures);
+        StatisticAggregator.printLastStatistic();
     }
 
 
@@ -250,9 +255,14 @@ boolean directionOfOptimization=true;//true->increment parameters, false->decrem
             // At this point, numberOfLastParameter contains the number of last changed parameter in an array of all changeable parameters
             support.log("Number of Last changed Parameter is "+numberOfLastParameter);
             
-            
                 if(nextSolution==null){
-                support.log("NextSolution is null->last Solution was not better then the overlast solution.");
+                support.log("Last Solution was not better then overlast solution. Counting up Wrong Solutions in one dircetion.");
+                wrongSolutionPerDirectionCounter--;
+                }
+            
+                if(wrongSolutionPerDirectionCounter<=0){
+                wrongSolutionPerDirectionCounter=support.DEFAULT_WRONG_SOLUTION_PER_DIRECTION;
+                support.log(support.DEFAULT_WRONG_SOLUTION_PER_DIRECTION+" wrong solutions in one direction.");
                     if(this.directionOfOptimization){
                     //Switch direction of Optimization but chnge the same old parameter
                     support.log("Changing direction of Optimization to false(backwards).");
@@ -269,7 +279,7 @@ boolean directionOfOptimization=true;//true->increment parameters, false->decrem
                     }
                 }else{
                 //Select old parameter to be changed again
-                    support.log("Last Solution was better then overlast solution. Changing again parameter "+ numberOfLastParameter);
+                    support.log("Changing again parameter "+ numberOfLastParameter);
                     numberOfParameterToBeChanged=numberOfLastParameter;
                 }
             

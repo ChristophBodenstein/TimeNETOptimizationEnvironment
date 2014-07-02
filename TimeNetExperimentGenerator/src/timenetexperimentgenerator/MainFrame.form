@@ -145,8 +145,7 @@
                           <Component id="jSeparator3" alignment="0" max="32767" attributes="1"/>
                           <Component id="jButtonLoadCacheFile" alignment="1" pref="266" max="32767" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="jLabelExportStatus" min="-2" pref="14" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
                               <Component id="jButtonStartOptimization" max="32767" attributes="1"/>
                           </Group>
                           <Group type="102" alignment="1" attributes="0">
@@ -164,6 +163,7 @@
                               </Group>
                               <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
                           </Group>
+                          <Component id="jLabelExportStatus" alignment="1" min="-2" pref="265" max="-2" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -210,7 +210,7 @@
                           <Component id="jComboBoxTypeOfStartValue" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="9" max="32767" attributes="0"/>
+                      <EmptySpace pref="6" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
@@ -218,21 +218,20 @@
                   </Group>
               </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="1" attributes="0">
+                  <Component id="jButtonPathToTimeNet" min="-2" pref="20" max="-2" attributes="0"/>
+                  <Component id="jButtonStartOptimization" min="-2" pref="32" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
-                      <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="jButtonPathToTimeNet" min="-2" pref="20" max="-2" attributes="0"/>
-                          <Component id="jButtonStartOptimization" min="-2" pref="32" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace max="-2" attributes="0"/>
                       <Component id="jButtonEnterURLToSimServer" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
                       <Component id="jCheckBoxSlaveSimulator" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
                   </Group>
-                  <Component id="jLabelExportStatus" max="32767" attributes="0"/>
+                  <Component id="jLabelExportStatus" alignment="0" min="-2" pref="29" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace type="unrelated" pref="29" max="32767" attributes="0"/>
+              <EmptySpace pref="31" max="32767" attributes="0"/>
               <Component id="jLabelSimulationCount" min="-2" pref="24" max="-2" attributes="0"/>
           </Group>
       </Group>
