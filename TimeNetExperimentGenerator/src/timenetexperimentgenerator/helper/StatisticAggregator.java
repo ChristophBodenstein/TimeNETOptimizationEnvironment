@@ -72,4 +72,16 @@ private static ArrayList<Statistic> listOfStatistics=new ArrayList<Statistic>();
         getStatisticByName(name).printStatisticToLog();
     }
     
+    /**
+     * Prints the last statistic
+     */
+    public static void printLastStatistic(){
+        if((listOfStatistics==null)||(listOfStatistics.size()<1)){
+        support.log("No Statistics Available!");    
+        }else{
+        listOfStatistics.get(listOfStatistics.size()-1).printStatisticToLog();
+        }
+        
+    }
+    
 }
