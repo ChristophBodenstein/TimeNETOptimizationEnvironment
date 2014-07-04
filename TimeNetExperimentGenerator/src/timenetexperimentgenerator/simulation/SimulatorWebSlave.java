@@ -26,6 +26,10 @@ private boolean shouldEnd=false;
         //Enter your code here...
             try {
                 Thread.sleep(2000);
+                
+                //get URL!
+                //support.getReMoteAddress();
+                
             } catch (InterruptedException ex) {
                 support.log("Error while sleeping Thread of Slave Web simulator.");
             }
