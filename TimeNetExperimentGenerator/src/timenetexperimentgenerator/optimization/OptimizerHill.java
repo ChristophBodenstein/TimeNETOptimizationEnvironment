@@ -53,9 +53,10 @@ double cpuTimeSum=0;
 String logFileName;
 int wrongSolutionCounter=support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW;
 int wrongSolutionPerDirectionCounter=support.DEFAULT_WRONG_SOLUTION_PER_DIRECTION;
-int numberOfLastChangedParameter=0;
+//int numberOfLastChangedParameter=0;
 int numberOfChangableParameters=0;
 boolean directionOfOptimization=true;//true->increment parameters, false->decrement parameters
+boolean directionOfOptimizationChanged=false;//True->direction already changed, False->you can change it one time
 
     /**
      * Constructor
@@ -119,7 +120,7 @@ boolean directionOfOptimization=true;//true->increment parameters, false->decrem
             nextSolution=mySimulator.getListOfCompletedSimulationParsers().get(0);
             Fy=this.getActualDistance(nextSolution);
             lastParameterset=nextSolution.getListOfParameters();
-                //If next Solution is better or Probability is above 0.5 then take it as actual best solution
+                //If next Solution is better then take it as actual best solution
                 if((Fy<Fx)){
                 support.log("Choosing next solution for Hill Climbing");
                 Fx=Fy;
@@ -229,18 +230,20 @@ boolean directionOfOptimization=true;//true->increment parameters, false->decrem
         //1 Calculate neighborhood for each parameter and choose one of the values randomly
         //2 choose next value randomly from complete design-space
         int numberOfParameterToBeChanged=0;//Default, change the first changeable parameter
-        
+        int numberOfLastParameter=-1;//Number of last parameter that was changed(in an Array of changable parameters)
             //Check, which parameters can be changed
             if(listOfChangableParameters.size()>1){
             //support.log("List of Changable Parameters has size: "+listOfChangableParameters.size());
             //TODO: Sort List of Parameters (new method in support)    
-            SimulationType lastParser=this.historyOfParsers.get(this.historyOfParsers.size()-1);
-            //support.log("History of Parsers has size: "+this.historyOfParsers.size());
+            SimulationType lastParser=currentSolution;
+            //this.historyOfParsers.get(this.historyOfParsers.size()-1);
+            
+//support.log("History of Parsers has size: "+this.historyOfParsers.size());
             
             ArrayList<parameter> lastParameterList=lastParser.getListOfParameters();
             //For ever Parameter check if it is iteratable and if it was changed last time
             int i=0;
-            int numberOfLastParameter=-1;//Number of last parameter that was changed(in an Array of changable parameters)
+            numberOfLastParameter=-1;//Number of last parameter that was changed(in an Array of changable parameters)
                 for(i=0;i<lastParameterList.size();i++){
                     if(lastParameterList.get(i).isIteratableAndIntern()){
                     numberOfLastParameter++;
@@ -262,6 +265,7 @@ boolean directionOfOptimization=true;//true->increment parameters, false->decrem
             
                 if(wrongSolutionPerDirectionCounter<=0){
                 wrongSolutionPerDirectionCounter=support.DEFAULT_WRONG_SOLUTION_PER_DIRECTION;
+                
                 support.log(support.DEFAULT_WRONG_SOLUTION_PER_DIRECTION+" wrong solutions in one direction.");
                     if(this.directionOfOptimization){
                     //Switch direction of Optimization but chnge the same old parameter
@@ -271,11 +275,18 @@ boolean directionOfOptimization=true;//true->increment parameters, false->decrem
                     }   else{
                         support.log("Changing direction of Optimization back to true(forward). Taking next parameter to change.");
                         this.directionOfOptimization=true;
+                        newParameterset=currentSolution.getListOfParameters();
                         //Select next Parameter to be changed with round-robin
                         numberOfParameterToBeChanged=numberOfLastParameter+1;
                         if(numberOfParameterToBeChanged>=listOfChangableParameters.size()){
                         numberOfParameterToBeChanged=0;
+                        
+                        //Reset the wrong solution-counter
+                        this.wrongSolutionPerDirectionCounter=support.DEFAULT_WRONG_SOLUTION_PER_DIRECTION;
+                        
                         }
+                        support.log("Last changed Parameter was: "+numberOfLastParameter+", next Parameter to be changed is "+numberOfParameterToBeChanged);
+                        support.log("There are "+ listOfChangableParameters.size() +" parameters in list to be changed.");
                     }
                 }else{
                 //Select old parameter to be changed again
@@ -291,6 +302,7 @@ boolean directionOfOptimization=true;//true->increment parameters, false->decrem
             //Get Parameter by name
             String nameOfParameterToBeChanged=listOfChangableParameters.get(numberOfParameterToBeChanged).getName();
             boolean incResult=false;
+            support.log("Number of Parameter to be changed "+numberOfParameterToBeChanged);
             support.log("Name of Parameter to be changed: "+nameOfParameterToBeChanged);
             switch(typeOfNeighborhood){
                 case 0://0 choose the next neighbor based on stepping forward
@@ -364,7 +376,25 @@ boolean directionOfOptimization=true;//true->increment parameters, false->decrem
             if(incResult){
             support.log("Parameter could be incremented.(or decremented)");
             }else{
-            support.log("Parameter could NOT be incremented.(or decremented)");
+            support.log("Parameter could NOT be incremented.(or decremented). Set WrongSolutionsPerDirectionCounter to 0.");
+            wrongSolutionPerDirectionCounter=0;
+            /*this.directionOfOptimization=!this.directionOfOptimization;
+            wrongSolutionPerDirectionCounter=support.DEFAULT_WRONG_SOLUTION_PER_DIRECTION;
+            wrongSolutionCounter=support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW;
+            newParameterset=currentSolution.getListOfParameters();//Reset to last good parameterset
+                if(this.directionOfOptimizationChanged){
+                //Change to new parameter to be changed
+                //Select next Parameter to be changed with round-robin
+                        numberOfParameterToBeChanged=numberOfLastParameter+1;
+                        if(numberOfParameterToBeChanged>=listOfChangableParameters.size()){
+                        numberOfParameterToBeChanged=0;
+                        }
+                this.directionOfOptimizationChanged=false;
+                }else{
+                    
+                    this.directionOfOptimizationChanged=true;
+                    }
+            */
             }
         return newParameterset;
         }
