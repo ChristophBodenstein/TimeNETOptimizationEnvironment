@@ -67,9 +67,6 @@
   </NonVisualComponents>
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
-    <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-      <Dimension value="[675, 600]"/>
-    </Property>
     <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
       <Dimension value="[675, 600]"/>
     </Property>
@@ -78,7 +75,6 @@
   <SyntheticProperties>
     <SyntheticProperty name="menuBar" type="java.lang.String" value="jMenuBar1"/>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
-    <SyntheticProperty name="generateCenter" type="boolean" value="false"/>
   </SyntheticProperties>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
@@ -99,7 +95,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <EmptySpace min="-2" max="-2" attributes="0"/>
-                      <Component id="jSeparator1" max="32767" attributes="0"/>
+                      <Component id="jSeparator1" pref="650" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace min="5" pref="5" max="-2" attributes="0"/>
@@ -118,45 +114,39 @@
                                   <EmptySpace pref="26" max="32767" attributes="0"/>
                               </Group>
                               <Group type="102" attributes="0">
-                                  <Component id="jTextFieldSCPNFile" max="32767" attributes="0"/>
+                                  <Component id="jTextFieldSCPNFile" pref="394" max="32767" attributes="0"/>
                                   <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                       </Group>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jLabelSimulationCount" max="32767" attributes="0"/>
+                          <Component id="jLabelSimulationCount" pref="266" max="32767" attributes="0"/>
                           <Component id="jTabbedPane1" alignment="0" pref="0" max="32767" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="jButtonOpenSCPN" max="32767" attributes="1"/>
+                              <Component id="jButtonOpenSCPN" pref="144" max="32767" attributes="1"/>
                               <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
-                              <Component id="jButtonReload" max="32767" attributes="1"/>
+                              <Component id="jButtonReload" pref="117" max="32767" attributes="1"/>
                           </Group>
-                          <Component id="jSeparator2" alignment="0" max="32767" attributes="1"/>
+                          <Component id="jSeparator2" alignment="0" pref="266" max="32767" attributes="1"/>
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="jButtonExport" pref="0" max="32767" attributes="0"/>
                               <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
-                              <Component id="jButton1" max="32767" attributes="0"/>
+                              <Component id="jButton1" pref="258" max="32767" attributes="0"/>
                           </Group>
-                          <Component id="jButtonGenerateListOfExperiments" alignment="0" max="32767" attributes="1"/>
-                          <Component id="jButtonStartBatchSimulation" alignment="0" max="32767" attributes="1"/>
-                          <Component id="jSeparator3" alignment="0" max="32767" attributes="1"/>
+                          <Component id="jButtonGenerateListOfExperiments" alignment="0" pref="266" max="32767" attributes="1"/>
+                          <Component id="jButtonStartBatchSimulation" alignment="0" pref="266" max="32767" attributes="1"/>
+                          <Component id="jSeparator3" alignment="0" pref="266" max="32767" attributes="1"/>
                           <Component id="jButtonLoadCacheFile" alignment="1" pref="266" max="32767" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
-                              <Component id="jButtonStartOptimization" max="32767" attributes="1"/>
+                              <Component id="jButtonStartOptimization" pref="246" max="32767" attributes="1"/>
                           </Group>
                           <Group type="102" alignment="1" attributes="0">
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="jComboBoxSimulationType" pref="135" max="32767" attributes="0"/>
-                                  <Group type="102" attributes="0">
-                                      <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
-                                      <Component id="jLabel1" max="32767" attributes="0"/>
-                                  </Group>
-                              </Group>
+                              <Component id="jComboBoxSimulationType" pref="135" max="32767" attributes="0"/>
                               <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="jComboBoxTypeOfStartValue" max="32767" attributes="0"/>
-                                  <Component id="jComboBoxOptimizationType" min="-2" pref="121" max="-2" attributes="0"/>
+                                  <Component id="jButton2" max="32767" attributes="1"/>
+                                  <Component id="jComboBoxOptimizationType" alignment="0" pref="121" max="32767" attributes="1"/>
                               </Group>
                               <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
                           </Group>
@@ -164,14 +154,14 @@
                       </Group>
                   </Group>
               </Group>
-              <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jTextFieldSCPNFile" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jButtonOpenSCPN" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -203,10 +193,7 @@
                           <Component id="jComboBoxOptimizationType" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="jComboBoxTypeOfStartValue" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
+                      <Component id="jButton2" min="-2" max="-2" attributes="0"/>
                       <EmptySpace pref="6" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="1" attributes="0">
@@ -267,7 +254,6 @@
       <SubComponents>
         <Component class="javax.swing.JTable" name="jTableParameterList">
           <Properties>
-            <Property name="autoCreateRowSorter" type="boolean" value="true"/>
             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
               <Table columnCount="4" rowCount="4">
                 <Column editable="true" title="Name" type="java.lang.String"/>
@@ -276,6 +262,7 @@
                 <Column editable="true" title="Stepping" type="java.lang.String"/>
               </Table>
             </Property>
+            <Property name="autoCreateRowSorter" type="boolean" value="true"/>
             <Property name="autoResizeMode" type="int" value="4"/>
             <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
               <TableColumnModel selectionModel="0">
@@ -463,17 +450,13 @@
         <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="jCheckBoxSlaveSimulatorItemStateChanged"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JComboBox" name="jComboBoxTypeOfStartValue">
+    <Component class="javax.swing.JButton" name="jButton2">
       <Properties>
-        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-          <Connection code="new DefaultComboBoxModel(support.typeOfStartValueEnum.values())" type="code"/>
-        </Property>
+        <Property name="text" type="java.lang.String" value="Options"/>
       </Properties>
-    </Component>
-    <Component class="javax.swing.JLabel" name="jLabel1">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Start at"/>
-      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton2ActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>
