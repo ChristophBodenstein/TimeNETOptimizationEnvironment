@@ -33,6 +33,7 @@ private double sizeOfNeighborhood=10;//in percent
 private double Fx;//Current Distance
 private double Fy;//New Distance?
 private int typeOfNeighborhood=0;
+private static OptimizerPreferences myPreferences=new OptimizerPreferences();
 
 private int simulationCounter=0;
 SimulationType currentSolution;
@@ -66,6 +67,7 @@ boolean directionOfOptimizationChanged=false;//True->direction already changed, 
     logFileName=support.getTmpPath()+File.separator+"Optimizing_with_HillClimbing"+Calendar.getInstance().getTimeInMillis()+".csv";
     support.log("LogfileName:"+logFileName);
     this.wrongSolutionCounter=support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW;
+    myPreferences.setVisible(false);
     }
 
     
@@ -450,6 +452,10 @@ boolean directionOfOptimizationChanged=false;//True->direction already changed, 
         
         return (maxTemp - (maxTemp/stepCountTemp)*t);
         }
+    }
+
+    public void showPreferences() {
+        myPreferences.setVisible(true);
     }
 
 }

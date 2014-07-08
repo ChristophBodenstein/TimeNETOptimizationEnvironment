@@ -251,10 +251,8 @@ SimulatorWebSlave mySlave=new SimulatorWebSlave();
         jMenuItem2 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setLocation(java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode().getWidth()/2 - 300,java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode().getHeight()/2  - this.getHeight()/2);
         setMaximumSize(new java.awt.Dimension(675, 600));
         setMinimumSize(new java.awt.Dimension(675, 600));
-        setPreferredSize(new java.awt.Dimension(675, 600));
         setResizable(false);
 
         jButtonOpenSCPN.setText("Open SCPN");
@@ -1280,7 +1278,7 @@ SimulatorWebSlave mySlave=new SimulatorWebSlave();
     }
 
     /**
-     * Return daouble value of loaded property
+     * Return double value of loaded property
      * If any error occurs, the given default value is returned
      * @param name Name of the property to be loaded
      * @param defaultValue The default to be returned, if error occurs

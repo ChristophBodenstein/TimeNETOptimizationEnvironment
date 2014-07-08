@@ -11,11 +11,13 @@ package timenetexperimentgenerator;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Properties;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 import timenetexperimentgenerator.datamodel.*;
 import timenetexperimentgenerator.helper.StatisticAggregator;
+import timenetexperimentgenerator.optimization.OptimizerPreferences;
 import timenetexperimentgenerator.simulation.SimulationCache;
 import timenetexperimentgenerator.simulation.Simulator;
 
@@ -44,7 +46,18 @@ private static Integer chosenSimulatorType=0;//0=local, 1=cached, 2=distributed
 private static LogFrame myLogFrame=new LogFrame();
 
 public static final String[] SIMTYPES={"Local Sim.","Cache Only Sim.","Cache & Local","Web Sim."};
-public static final String[] OPTITYPES={"Hillclimbing","Sim. Annealing","ChargedSystemSearch","A.Seidel-2","A.Seidel-3"};
+public static final String[] OPTITYPES={"Hillclimbing","Sim. Annealing","ChargedSystemSearch","GeneticSearch","A.Seidel-3"};
+
+    /**
+     * @return the myOptimizerPreferences a Reference to the Preferences-Frame
+     */
+    public static OptimizerPreferences getOptimizerPreferences() {
+        return myOptimizerPreferences;
+    }
+
+public enum typeOfStartValueEnum{start, end, middle, random};
+
+private static final OptimizerPreferences myOptimizerPreferences = new OptimizerPreferences();
 
     /**
      * @return the typeOfStartValue
@@ -60,7 +73,7 @@ public static final String[] OPTITYPES={"Hillclimbing","Sim. Annealing","Charged
         typeOfStartValue = aTypeOfStartValue;
     }
 
-public enum typeOfStartValueEnum{start, end, middle, random};
+
 
 private static boolean logToConsole=false;
  
@@ -825,6 +838,39 @@ private static typeOfStartValueEnum typeOfStartValue=typeOfStartValueEnum.start;
     return outputValue;
     }
     
+    /**
+     * Return double value of loaded property
+     * If any error occurs, the given default value is returned
+     * @param name Name of the property to be loaded
+     * @param defaultValue The default to be returned, if error occurs
+     * @param auto The Properties-Object to load data from
+     * @return double value of property
+     */
+    public static double loadDoubleFromProperties(String name, double defaultValue, Properties auto){
+        try{
+        return Double.valueOf(auto.getProperty(name));
+        }catch(Exception e){
+        support.log("Error loading property: "+name);
+        return defaultValue;
+        }
+    }
+    
+    
+    /**
+     * Return int value of loaded property
+     * If any error occurs, the given default value is returned
+     * @param name Name of the property to be loaded
+     * @param defaultValue The default to be returned, if error occurs
+     * @return double value of property
+     */
+    public static int loadIntFromProperties(String name, int defaultValue, Properties auto){
+        try{
+        return Integer.valueOf(auto.getProperty(name));
+        }catch(Exception e){
+        support.log("Error loading property: "+name +". Setting to default Value: "+ defaultValue);
+        return defaultValue;
+        }
+    }
 }
 
 
