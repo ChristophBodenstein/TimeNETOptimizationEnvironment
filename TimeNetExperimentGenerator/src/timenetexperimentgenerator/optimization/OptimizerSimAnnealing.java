@@ -19,6 +19,7 @@ import timenetexperimentgenerator.datamodel.parameter;
 import timenetexperimentgenerator.datamodel.SimulationType;
 import timenetexperimentgenerator.simulation.Simulator;
 import timenetexperimentgenerator.support;
+import timenetexperimentgenerator.support.typeOfNeighborhoodEnum;
 
 /**
  *
@@ -31,7 +32,7 @@ private int stepCountTemp=100;
 private double sizeOfNeighborhood=10;//in percent
 private double Fx;//Current Distance
 private double Fy;//New Distance?
-private int typeOfNeighborhood=0;
+private typeOfNeighborhoodEnum typeOfNeighborhood=typeOfNeighborhoodEnum.StepForwardBackRandom;
 
 private int simulationCounter=0;
 SimulationType currentSolution;
@@ -57,7 +58,7 @@ int wrongSolutionCounter=support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW;
      *
      */
     public OptimizerSimAnnealing() {
-    logFileName=support.getTmpPath()+File.separator+"Optimizing_with_Sim.Annealing"+Calendar.getInstance().getTimeInMillis()+".csv";
+    logFileName=support.getTmpPath()+File.separator+"Sim.Annealing"+Calendar.getInstance().getTimeInMillis()+support.getOptimizerPreferences().getPref_LogFileAddon()+".csv";
     support.log("LogfileName:"+logFileName);
     this.wrongSolutionCounter=support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW;
     }
@@ -150,7 +151,7 @@ int wrongSolutionCounter=support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW;
         if(actualParameterset==null){
         //Calulate first parameterset, the mean value of all parameters, with respect to stepping
         ArrayList<parameter> newParameterset=support.getCopyOfParameterSet(parameterBase);
-            if(this.typeOfNeighborhood==0){
+            if(support.getOptimizerPreferences().getPref_StartValue()==support.typeOfStartValueEnum.start){
             //For this chooseing strategy, the first element must be minimum
                 for(int i=0;i<newParameterset.size();i++){
                     parameter p=newParameterset.get(i);
@@ -177,7 +178,7 @@ int wrongSolutionCounter=support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW;
         //2 choose next value randomly from complete design-space
         
             switch(typeOfNeighborhood){
-                case 0://0 choose the next neighbor based on stepping forward
+                case StepForward ://0 choose the next neighbor based on stepping forward
                         for(int i=0;i<newParameterset.size();i++){
                         parameter p=newParameterset.get(i);
                             if(p.isIteratableAndIntern()){
@@ -186,7 +187,7 @@ int wrongSolutionCounter=support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW;
                             }
                         }
                         break;
-                case 1://Step back and forward randomly based on stepping
+                case StepForwardBackRandom://Step back and forward randomly based on stepping
                         for(int i=0;i<newParameterset.size();i++){
                         parameter p=newParameterset.get(i);
                             if(p.isIteratableAndIntern()){
@@ -200,7 +201,7 @@ int wrongSolutionCounter=support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW;
                             }
                         }
                         break;
-                case 2://Calculate neighborhood and choose next value randomly 
+                case RandomStepInNeighborhood://Calculate neighborhood and choose next value randomly
                         for(int i=0;i<newParameterset.size();i++){
                         parameter p=newParameterset.get(i);
                             if(p.isIteratableAndIntern()){
@@ -216,7 +217,7 @@ int wrongSolutionCounter=support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW;
                             }
                         }
                         break;
-                case 3://Choose Value randomly out of complete designspace
+                case RandomStepInDesignspace://Choose Value randomly out of complete designspace
                         for(int i=0;i<newParameterset.size();i++){
                         parameter p=newParameterset.get(i);
                             if(p.isIteratableAndIntern()){
@@ -228,7 +229,7 @@ int wrongSolutionCounter=support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW;
                         }
                     
                         break;
-                case 4: //Calculate neighborhood and choose next value randomly, Ignore Stepping!
+                case RandomSteplessInNeighborhood: //Calculate neighborhood and choose next value randomly, Ignore Stepping!
                         for(int i=0;i<newParameterset.size();i++){
                         parameter p=newParameterset.get(i);
                            if(p.isIteratableAndIntern()){

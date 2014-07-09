@@ -19,7 +19,7 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="1" attributes="0">
+          <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="103" groupAlignment="0" attributes="0">
@@ -47,14 +47,19 @@
                   <Component id="jComboBoxTypeOfStartValue" alignment="0" min="-2" pref="132" max="-2" attributes="1"/>
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jSpinnerWrongSolutionsPerDirectionUntilBreak" alignment="0" pref="132" max="32767" attributes="1"/>
+                      <Group type="103" groupAlignment="1" attributes="0">
                           <Component id="jSpinnerWrongSolutionsUntilBreak" alignment="0" pref="132" max="32767" attributes="1"/>
-                          <Component id="jTextField1" alignment="0" pref="132" max="32767" attributes="0"/>
+                          <Component id="jSpinnerWrongSolutionsPerDirectionUntilBreak" alignment="0" pref="132" max="32767" attributes="1"/>
+                          <Component id="jTextFieldLogFileAddon" alignment="0" pref="132" max="32767" attributes="1"/>
                       </Group>
                   </Group>
               </Group>
-              <EmptySpace min="-2" pref="59" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="78" max="-2" attributes="0"/>
+          </Group>
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
+              <Component id="jCheckBoxAddPrefsToLogfilename" min="-2" max="-2" attributes="0"/>
+              <EmptySpace pref="301" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -76,9 +81,11 @@
                   <Component id="jLabel3" min="-2" pref="24" max="-2" attributes="0"/>
                   <Component id="jSpinnerWrongSolutionsPerDirectionUntilBreak" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="135" max="32767" attributes="0"/>
+              <EmptySpace pref="107" max="32767" attributes="0"/>
+              <Component id="jCheckBoxAddPrefsToLogfilename" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="jTextField1" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jTextFieldLogFileAddon" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -98,13 +105,25 @@
           <Connection code="new DefaultComboBoxModel(support.typeOfStartValueEnum.values())" type="code"/>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="jComboBoxTypeOfStartValueItemStateChanged"/>
+        <EventHandler event="vetoableChange" listener="java.beans.VetoableChangeListener" parameters="java.beans.PropertyChangeEvent" handler="jComboBoxTypeOfStartValueVetoableChange"/>
+      </Events>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
       </AuxValues>
     </Component>
     <Component class="javax.swing.JSpinner" name="jSpinnerWrongSolutionsUntilBreak">
+      <Events>
+        <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="jSpinnerWrongSolutionsUntilBreakStateChanged"/>
+        <EventHandler event="vetoableChange" listener="java.beans.VetoableChangeListener" parameters="java.beans.PropertyChangeEvent" handler="jSpinnerWrongSolutionsUntilBreakVetoableChange"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JSpinner" name="jSpinnerWrongSolutionsPerDirectionUntilBreak">
+      <Events>
+        <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="jSpinnerWrongSolutionsPerDirectionUntilBreakStateChanged"/>
+        <EventHandler event="vetoableChange" listener="java.beans.VetoableChangeListener" parameters="java.beans.PropertyChangeEvent" handler="jSpinnerWrongSolutionsPerDirectionUntilBreakVetoableChange"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel2">
       <Properties>
@@ -116,17 +135,26 @@
         <Property name="text" type="java.lang.String" value="Wrong Solutions per direction until break"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JTextField" name="jTextField1">
+    <Component class="javax.swing.JTextField" name="jTextFieldLogFileAddon">
       <Properties>
         <Property name="toolTipText" type="java.lang.String" value="Addon-Text for Logfilename"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextField1ActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextFieldLogFileAddonActionPerformed"/>
+        <EventHandler event="inputMethodTextChanged" listener="java.awt.event.InputMethodListener" parameters="java.awt.event.InputMethodEvent" handler="jTextFieldLogFileAddonInputMethodTextChanged"/>
+        <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="jTextFieldLogFileAddonKeyReleased"/>
+        <EventHandler event="vetoableChange" listener="java.beans.VetoableChangeListener" parameters="java.beans.PropertyChangeEvent" handler="jTextFieldLogFileAddonVetoableChange"/>
       </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel4">
       <Properties>
         <Property name="text" type="java.lang.String" value="Addon-Text for Logfile"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="jCheckBoxAddPrefsToLogfilename">
+      <Properties>
+        <Property name="selected" type="boolean" value="true"/>
+        <Property name="text" type="java.lang.String" value="Add Prefs to Logfilename"/>
       </Properties>
     </Component>
   </SubComponents>

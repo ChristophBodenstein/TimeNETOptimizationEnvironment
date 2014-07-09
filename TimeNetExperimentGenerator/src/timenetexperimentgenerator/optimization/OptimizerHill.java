@@ -64,7 +64,7 @@ boolean directionOfOptimizationChanged=false;//True->direction already changed, 
      *
      */
     public OptimizerHill() {
-    logFileName=support.getTmpPath()+File.separator+"Optimizing_with_HillClimbing"+Calendar.getInstance().getTimeInMillis()+support.getOptimizerPreferences().getPref_LogFileAddon()+".csv";
+    logFileName=support.getTmpPath()+File.separator+"HillClimbing"+Calendar.getInstance().getTimeInMillis()+support.getOptimizerPreferences().getPref_LogFileAddon()+".csv";
     support.log("LogfileName:"+logFileName);
     this.wrongSolutionCounter=support.getOptimizerPreferences().getPref_WrongSimulationsUntilBreak();
     myPreferences.setVisible(false);
