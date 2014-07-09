@@ -52,8 +52,8 @@ JLabel infoLabel;
 double simulationTimeSum=0;
 double cpuTimeSum=0;
 String logFileName;
-int wrongSolutionCounter=support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW;
-int wrongSolutionPerDirectionCounter=support.DEFAULT_WRONG_SOLUTION_PER_DIRECTION;
+int wrongSolutionCounter=support.getOptimizerPreferences().getPref_WrongSimulationsUntilBreak();
+int wrongSolutionPerDirectionCounter=support.getOptimizerPreferences().getPref_WrongSimulationsPerDirection();
 //int numberOfLastChangedParameter=0;
 int numberOfChangableParameters=0;
 boolean directionOfOptimization=true;//true->increment parameters, false->decrement parameters
@@ -64,9 +64,9 @@ boolean directionOfOptimizationChanged=false;//True->direction already changed, 
      *
      */
     public OptimizerHill() {
-    logFileName=support.getTmpPath()+File.separator+"Optimizing_with_HillClimbing"+Calendar.getInstance().getTimeInMillis()+".csv";
+    logFileName=support.getTmpPath()+File.separator+"Optimizing_with_HillClimbing"+Calendar.getInstance().getTimeInMillis()+support.getOptimizerPreferences().getPref_LogFileAddon()+".csv";
     support.log("LogfileName:"+logFileName);
-    this.wrongSolutionCounter=support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW;
+    this.wrongSolutionCounter=support.getOptimizerPreferences().getPref_WrongSimulationsUntilBreak();
     myPreferences.setVisible(false);
     }
 
@@ -128,8 +128,8 @@ boolean directionOfOptimizationChanged=false;//True->direction already changed, 
                 Fx=Fy;
                 currentSolution=nextSolution;
                 //Reset wrong-solution-counter
-                wrongSolutionCounter=support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW;
-                wrongSolutionPerDirectionCounter=support.DEFAULT_WRONG_SOLUTION_PER_DIRECTION;
+                wrongSolutionCounter=support.getOptimizerPreferences().getPref_WrongSimulationsUntilBreak();
+                wrongSolutionPerDirectionCounter=support.getOptimizerPreferences().getPref_WrongSimulationsPerDirection();
                 }else{
                 nextSolution=null;
                 //Count up the Solutions which are not taken
@@ -266,9 +266,9 @@ boolean directionOfOptimizationChanged=false;//True->direction already changed, 
                 }
             
                 if(wrongSolutionPerDirectionCounter<=0){
-                wrongSolutionPerDirectionCounter=support.DEFAULT_WRONG_SOLUTION_PER_DIRECTION;
+                wrongSolutionPerDirectionCounter=support.getOptimizerPreferences().getPref_WrongSimulationsPerDirection();
                 
-                support.log(support.DEFAULT_WRONG_SOLUTION_PER_DIRECTION+" wrong solutions in one direction.");
+                support.log(support.getOptimizerPreferences().getPref_WrongSimulationsPerDirection()+" wrong solutions in one direction.");
                     if(this.directionOfOptimization){
                     //Switch direction of Optimization but chnge the same old parameter
                     support.log("Changing direction of Optimization to false(backwards).");
@@ -284,7 +284,7 @@ boolean directionOfOptimizationChanged=false;//True->direction already changed, 
                         numberOfParameterToBeChanged=0;
                         
                         //Reset the wrong solution-counter
-                        this.wrongSolutionPerDirectionCounter=support.DEFAULT_WRONG_SOLUTION_PER_DIRECTION;
+                        this.wrongSolutionPerDirectionCounter=support.getOptimizerPreferences().getPref_WrongSimulationsPerDirection();
                         
                         }
                         support.log("Last changed Parameter was: "+numberOfLastParameter+", next Parameter to be changed is "+numberOfParameterToBeChanged);

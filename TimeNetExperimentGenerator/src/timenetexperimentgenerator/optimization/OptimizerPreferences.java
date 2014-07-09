@@ -23,9 +23,9 @@ public class OptimizerPreferences extends javax.swing.JFrame {
 private String propertyFile=System.getProperty("user.home")+File.separatorChar+ ".OptimizerProperties.prop";
 private Properties auto=new Properties();
 
-public String pref_LogFileAddon="";
-public int pref_WrongSimulationsUntilBreak=30;
-public int pref_WrongSimulationsPerDirection=10;
+private String pref_LogFileAddon="";
+private int pref_WrongSimulationsUntilBreak;
+private int pref_WrongSimulationsPerDirection;
 public support.typeOfStartValueEnum pref_StartValue=support.typeOfStartValueEnum.start;
 
     /**
@@ -34,6 +34,10 @@ public support.typeOfStartValueEnum pref_StartValue=support.typeOfStartValueEnum
     public OptimizerPreferences() {
         initComponents();
         this.loadPreferences();
+
+        this.setPref_WrongSimulationsUntilBreak(support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW);
+        this.setPref_WrongSimulationsPerDirection(support.DEFAULT_WRONG_SOLUTION_PER_DIRECTION);
+
     }
 
     /**
@@ -47,20 +51,59 @@ public support.typeOfStartValueEnum pref_StartValue=support.typeOfStartValueEnum
 
         jLabel1 = new javax.swing.JLabel();
         jComboBoxTypeOfStartValue = new javax.swing.JComboBox();
+        jSpinnerWrongSolutionsUntilBreak = new javax.swing.JSpinner();
+        jSpinnerWrongSolutionsPerDirectionUntilBreak = new javax.swing.JSpinner();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
 
         jLabel1.setText("Startvalue for parameters");
 
         jComboBoxTypeOfStartValue.setModel(new DefaultComboBoxModel(support.typeOfStartValueEnum.values()));
 
+        jLabel2.setText("Wrong Solutions until break");
+
+        jLabel3.setText("Wrong Solutions per direction until break");
+
+        jTextField1.setToolTipText("Addon-Text for Logfilename");
+        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField1ActionPerformed(evt);
+            }
+        });
+
+        jLabel4.setText("Addon-Text for Logfile");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 163, Short.MAX_VALUE)
-                .addGap(26, 26, 26)
-                .addComponent(jComboBoxTypeOfStartValue, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 243, Short.MAX_VALUE)
+                                .addGap(26, 26, 26))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(jLabel3)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jComboBoxTypeOfStartValue, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jSpinnerWrongSolutionsPerDirectionUntilBreak, javax.swing.GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE)
+                            .addComponent(jSpinnerWrongSolutionsUntilBreak, javax.swing.GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE)
+                            .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE))))
                 .addGap(59, 59, 59))
         );
         layout.setVerticalGroup(
@@ -70,50 +113,38 @@ public support.typeOfStartValueEnum pref_StartValue=support.typeOfStartValueEnum
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(jComboBoxTypeOfStartValue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(257, Short.MAX_VALUE))
+                .addGap(10, 10, 10)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jSpinnerWrongSolutionsUntilBreak, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jSpinnerWrongSolutionsPerDirectionUntilBreak, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 135, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4))
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(OptimizerPreferences.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(OptimizerPreferences.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(OptimizerPreferences.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(OptimizerPreferences.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
+    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField1ActionPerformed
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new OptimizerPreferences().setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JComboBox jComboBoxTypeOfStartValue;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JSpinner jSpinnerWrongSolutionsPerDirectionUntilBreak;
+    private javax.swing.JSpinner jSpinnerWrongSolutionsUntilBreak;
+    private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
 
 
@@ -129,17 +160,17 @@ public support.typeOfStartValueEnum pref_StartValue=support.typeOfStartValueEnum
 		// Exception bearbeiten
 	}
     
-    this.pref_WrongSimulationsUntilBreak=support.loadIntFromProperties("pref_WrongSimulationsUntilBreak", pref_WrongSimulationsUntilBreak, auto);
-    support.log("Loaded pref_WrongSimulationsUntilBreak is "+pref_WrongSimulationsUntilBreak);
+        this.setPref_WrongSimulationsUntilBreak(support.loadIntFromProperties("pref_WrongSimulationsUntilBreak", getPref_WrongSimulationsUntilBreak(), auto));
+    support.log("Loaded pref_WrongSimulationsUntilBreak is "+getPref_WrongSimulationsUntilBreak());
     
-    this.pref_WrongSimulationsPerDirection=support.loadIntFromProperties("pref_WrongSimulationsPerDirection", pref_WrongSimulationsPerDirection, auto);
-    support.log("Loaded pref_WrongSimulationsPerDirection is "+pref_WrongSimulationsPerDirection);
+        this.setPref_WrongSimulationsPerDirection(support.loadIntFromProperties("pref_WrongSimulationsPerDirection", getPref_WrongSimulationsPerDirection(), auto));
+    support.log("Loaded pref_WrongSimulationsPerDirection is "+getPref_WrongSimulationsPerDirection());
     
     this.pref_StartValue=support.typeOfStartValueEnum.valueOf(auto.getProperty("pref_StartValue", support.typeOfStartValueEnum.start.toString()));
     support.log("Loaded StartValue is "+pref_StartValue);
     
-    this.pref_LogFileAddon=auto.getProperty("pref_LogFileAddon", "");
-    support.log("Loaded Optimizer_Logfile-Addon is "+pref_LogFileAddon);
+        this.setPref_LogFileAddon(auto.getProperty("pref_LogFileAddon", ""));
+    support.log("Loaded Optimizer_Logfile-Addon is "+getPref_LogFileAddon());
     
     }
     
@@ -149,10 +180,10 @@ public support.typeOfStartValueEnum pref_StartValue=support.typeOfStartValueEnum
     public void savePreferences(){
     support.log("Saving Properties of HillClimbing");
         try{
-        auto.setProperty("pref_WrongSimulationsUntilBreak", Integer.toString(pref_WrongSimulationsUntilBreak));
-        auto.setProperty("pref_WrongSimulationsPerDirection", Integer.toString(pref_WrongSimulationsPerDirection));
+        auto.setProperty("pref_WrongSimulationsUntilBreak", Integer.toString(getPref_WrongSimulationsUntilBreak()));
+        auto.setProperty("pref_WrongSimulationsPerDirection", Integer.toString(getPref_WrongSimulationsPerDirection()));
         auto.setProperty("pref_StartValue", pref_StartValue.toString());
-        auto.setProperty("pref_LogFileAddon", pref_LogFileAddon);
+        auto.setProperty("pref_LogFileAddon", getPref_LogFileAddon());
         
         File parserprops =  new File(propertyFile);
         auto.store(new FileOutputStream(parserprops), "ExperimentGenerator-Properties");
@@ -160,6 +191,52 @@ public support.typeOfStartValueEnum pref_StartValue=support.typeOfStartValueEnum
         support.log("Problem Saving the properties.");
         }
     
+    }
+
+    /**
+     * @return the pref_WrongSimulationsUntilBreak
+     */
+    public int getPref_WrongSimulationsUntilBreak() {
+        pref_WrongSimulationsUntilBreak=(Integer)this.jSpinnerWrongSolutionsUntilBreak.getValue();
+        return pref_WrongSimulationsUntilBreak;
+    }
+
+    /**
+     * @param pref_WrongSimulationsUntilBreak the pref_WrongSimulationsUntilBreak to set
+     */
+    public void setPref_WrongSimulationsUntilBreak(int pref_WrongSimulationsUntilBreak) {
+        this.pref_WrongSimulationsUntilBreak = pref_WrongSimulationsUntilBreak;
+        this.jSpinnerWrongSolutionsUntilBreak.setValue(pref_WrongSimulationsUntilBreak);
+    }
+
+    /**
+     * @return the pref_WrongSimulationsPerDirection
+     */
+    public int getPref_WrongSimulationsPerDirection() {
+        pref_WrongSimulationsPerDirection=(Integer)this.jSpinnerWrongSolutionsPerDirectionUntilBreak.getValue();
+        return pref_WrongSimulationsPerDirection;
+    }
+
+    /**
+     * @param pref_WrongSimulationsPerDirection the pref_WrongSimulationsPerDirection to set
+     */
+    public void setPref_WrongSimulationsPerDirection(int pref_WrongSimulationsPerDirection) {
+        this.pref_WrongSimulationsPerDirection = pref_WrongSimulationsPerDirection;
+        this.jSpinnerWrongSolutionsPerDirectionUntilBreak.setValue(pref_WrongSimulationsPerDirection);
+    }
+
+    /**
+     * @return the pref_LogFileAddon
+     */
+    public String getPref_LogFileAddon() {
+        return pref_LogFileAddon;
+    }
+
+    /**
+     * @param pref_LogFileAddon the pref_LogFileAddon to set
+     */
+    public void setPref_LogFileAddon(String pref_LogFileAddon) {
+        this.pref_LogFileAddon = pref_LogFileAddon;
     }
 
     
