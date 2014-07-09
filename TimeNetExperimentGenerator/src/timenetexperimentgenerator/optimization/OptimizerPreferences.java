@@ -33,11 +33,12 @@ private support.typeOfStartValueEnum pref_StartValue=support.typeOfStartValueEnu
      */
     public OptimizerPreferences() {
         initComponents();
-        this.loadPreferences();
-
         this.setPref_WrongSimulationsUntilBreak(support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW);
         this.setPref_WrongSimulationsPerDirection(support.DEFAULT_WRONG_SOLUTION_PER_DIRECTION);
 
+        this.loadPreferences();
+
+        
     }
 
     /**
@@ -58,6 +59,7 @@ private support.typeOfStartValueEnum pref_StartValue=support.typeOfStartValueEnu
         jTextFieldLogFileAddon = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jCheckBoxAddPrefsToLogfilename = new javax.swing.JCheckBox();
+        jButton1 = new javax.swing.JButton();
 
         jLabel1.setText("Startvalue for parameters");
 
@@ -128,40 +130,50 @@ private support.typeOfStartValueEnum pref_StartValue=support.typeOfStartValueEnu
         jCheckBoxAddPrefsToLogfilename.setSelected(true);
         jCheckBoxAddPrefsToLogfilename.setText("Add Prefs to Logfilename");
 
+        jButton1.setText("Save");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 243, Short.MAX_VALUE)
-                                .addGap(26, 26, 26))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(jLabel3)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jComboBoxTypeOfStartValue, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 254, Short.MAX_VALUE)
+                                        .addGap(26, 26, 26))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel2)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(jLabel3)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jSpinnerWrongSolutionsUntilBreak, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE)
-                            .addComponent(jSpinnerWrongSolutionsPerDirectionUntilBreak, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE)
-                            .addComponent(jTextFieldLogFileAddon, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE))))
-                .addGap(78, 78, 78))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(8, 8, 8)
-                .addComponent(jCheckBoxAddPrefsToLogfilename)
-                .addContainerGap(301, Short.MAX_VALUE))
+                            .addComponent(jComboBoxTypeOfStartValue, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jSpinnerWrongSolutionsUntilBreak, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 143, Short.MAX_VALUE)
+                                    .addComponent(jSpinnerWrongSolutionsPerDirectionUntilBreak, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 143, Short.MAX_VALUE)
+                                    .addComponent(jTextFieldLogFileAddon, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 143, Short.MAX_VALUE))))
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton1))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(8, 8, 8)
+                        .addComponent(jCheckBoxAddPrefsToLogfilename)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -183,7 +195,8 @@ private support.typeOfStartValueEnum pref_StartValue=support.typeOfStartValueEnu
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextFieldLogFileAddon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4))
+                    .addComponent(jLabel4)
+                    .addComponent(jButton1))
                 .addContainerGap())
         );
 
@@ -211,15 +224,15 @@ private support.typeOfStartValueEnum pref_StartValue=support.typeOfStartValueEnu
     }//GEN-LAST:event_jTextFieldLogFileAddonVetoableChange
 
     private void jComboBoxTypeOfStartValueItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxTypeOfStartValueItemStateChanged
-    this.savePreferences();
+    
     }//GEN-LAST:event_jComboBoxTypeOfStartValueItemStateChanged
 
     private void jSpinnerWrongSolutionsUntilBreakStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerWrongSolutionsUntilBreakStateChanged
-    this.savePreferences();
+    
     }//GEN-LAST:event_jSpinnerWrongSolutionsUntilBreakStateChanged
 
     private void jSpinnerWrongSolutionsPerDirectionUntilBreakStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerWrongSolutionsPerDirectionUntilBreakStateChanged
-    this.savePreferences();
+    
     }//GEN-LAST:event_jSpinnerWrongSolutionsPerDirectionUntilBreakStateChanged
 
     private void jTextFieldLogFileAddonInputMethodTextChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_jTextFieldLogFileAddonInputMethodTextChanged
@@ -227,11 +240,16 @@ private support.typeOfStartValueEnum pref_StartValue=support.typeOfStartValueEnu
     }//GEN-LAST:event_jTextFieldLogFileAddonInputMethodTextChanged
 
     private void jTextFieldLogFileAddonKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldLogFileAddonKeyReleased
-    this.savePreferences();
+    
     }//GEN-LAST:event_jTextFieldLogFileAddonKeyReleased
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    this.savePreferences();
+    }//GEN-LAST:event_jButton1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
     private javax.swing.JCheckBox jCheckBoxAddPrefsToLogfilename;
     public javax.swing.JComboBox jComboBoxTypeOfStartValue;
     private javax.swing.JLabel jLabel1;
@@ -254,9 +272,12 @@ private support.typeOfStartValueEnum pref_StartValue=support.typeOfStartValueEnu
                 in.close();
 	} catch (IOException e) {
 		// Exception bearbeiten
+            support.log("Error while loading Optimizer-Properties.");
 	}
     
-        this.setPref_WrongSimulationsUntilBreak(support.loadIntFromProperties("pref_WrongSimulationsUntilBreak", getPref_WrongSimulationsUntilBreak(), auto));
+    this.setPref_WrongSimulationsUntilBreak(support.loadIntFromProperties("pref_WrongSimulationsUntilBreak", getPref_WrongSimulationsUntilBreak(), auto));
+    support.log(Integer.toString(support.loadIntFromProperties("pref_WrongSimulationsUntilBreak", getPref_WrongSimulationsUntilBreak(), auto)));
+    
     support.log("Loaded pref_WrongSimulationsUntilBreak is "+getPref_WrongSimulationsUntilBreak());
     
         this.setPref_WrongSimulationsPerDirection(support.loadIntFromProperties("pref_WrongSimulationsPerDirection", getPref_WrongSimulationsPerDirection(), auto));
@@ -266,7 +287,7 @@ private support.typeOfStartValueEnum pref_StartValue=support.typeOfStartValueEnu
     support.log("Loaded StartValue is "+getPref_StartValue());
     
         this.setPref_LogFileAddon(auto.getProperty("pref_LogFileAddon", ""));
-    support.log("Loaded Optimizer_Logfile-Addon is "+getPref_LogFileAddon());
+    support.log("Loaded Optimizer_Logfile-Addon is "+this.jTextFieldLogFileAddon.getText());
     
     }
     
@@ -274,12 +295,12 @@ private support.typeOfStartValueEnum pref_StartValue=support.typeOfStartValueEnu
      * Save Preferences to defined file
      */
     public void savePreferences(){
-    support.log("Saving Properties of HillClimbing");
+    support.log("Saving Properties of Optimization");
         try{
         auto.setProperty("pref_WrongSimulationsUntilBreak", Integer.toString(getPref_WrongSimulationsUntilBreak()));
         auto.setProperty("pref_WrongSimulationsPerDirection", Integer.toString(getPref_WrongSimulationsPerDirection()));
         auto.setProperty("pref_StartValue", getPref_StartValue().toString());
-        auto.setProperty("pref_LogFileAddon", getPref_LogFileAddon());
+        auto.setProperty("pref_LogFileAddon", this.jTextFieldLogFileAddon.getText());
         
         File parserprops =  new File(propertyFile);
         auto.store(new FileOutputStream(parserprops), "ExperimentGenerator-Properties");
@@ -338,6 +359,7 @@ private support.typeOfStartValueEnum pref_StartValue=support.typeOfStartValueEnu
      * @param pref_LogFileAddon the pref_LogFileAddon to set
      */
     public void setPref_LogFileAddon(String pref_LogFileAddon) {
+        this.jTextFieldLogFileAddon.setText(pref_LogFileAddon);
         this.pref_LogFileAddon = pref_LogFileAddon;
     }
 
