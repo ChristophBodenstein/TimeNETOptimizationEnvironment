@@ -35,6 +35,7 @@ private static String originalFilename=null;//The original SCPN source file to f
 private static MainFrame mainFrame=null;//The Main Frame of the program
 private static JTabbedPane measureFormPane=null;//The tabbed pane with some Measurement-forms inside to select the optimization targets
 private static String pathToTimeNet=null;//The path to TimeNet.jar
+private static String pathToR=null;//The path to R
 private static String tmpPath=null;//The path, where all simulation files (xml), source files and logs will be stored
 private static SimulationCache mySimulationCache=null;  
 private static boolean cachedSimulationAvailable=false;
@@ -187,6 +188,14 @@ private static typeOfStartValueEnum typeOfStartValue=typeOfStartValueEnum.start;
     public static String getPathToTimeNet() {
         return pathToTimeNet;
     }
+    
+    /**
+     * Returns path to R executable, needed for plots
+     * @return the pathToR
+     */
+    public static String getPathToR() {
+        return pathToR;
+    }
 
     /**
      * Sets path to TimeNet executable, needed for local simulations
@@ -194,6 +203,14 @@ private static typeOfStartValueEnum typeOfStartValue=typeOfStartValueEnum.start;
      */
     public static void setPathToTimeNet(String aPathToTimeNet) {
         pathToTimeNet = aPathToTimeNet;
+    }
+    
+    /**
+     * Sets path to R executable, needed for plots
+     * @param aPathToR the pathToR to set
+     */
+    public static void setPathToR(String aPathToR) {
+        pathToR = aPathToR;
     }
 
     /**

@@ -53,6 +53,7 @@ private int colorClm = -1, colorRow = -1;
 ArrayList <Long>ListOfParameterSetIds=new ArrayList<Long>();
 private int sizeOfDesignSpace;
 private String pathToTimeNet="";
+private String pathToR="";
 private SimulationCache mySimulationCache=null;
 private String pathToLastSimulationCache="";
 private SimulationTypeComboBoxModel mySimulationTypeModel=new SimulationTypeComboBoxModel();
@@ -76,6 +77,9 @@ SimulatorWebSlave mySlave=new SimulatorWebSlave();
         jButtonPathToTimeNet.setBackground(Color.GRAY);
         jButtonPathToTimeNet.setText("Enter Path To TimeNet");
         
+        jButtonPathToR.setBackground(Color.GRAY);
+        jButtonPathToR.setText("Enter Path To R");
+        
         pConfidenceIntervall.initWithValues("ConfidenceIntervall", 95, 95, 1); 
         pSeed.initWithValues("Seed", 0, 0, 1);
         pEndTime.initWithValues("EndTime",0,0,1);
@@ -86,6 +90,7 @@ SimulatorWebSlave mySlave=new SimulatorWebSlave();
         //this.jTextFieldPathToTimeNet.setText(auto.getProperty("timenetpath"));
         this.setPathToTimeNet(auto.getProperty("timenetpath"));
         //support.log("Read Path to TimeNet:"+auto.getProperty("timenetpath"));
+        this.setPathToR(auto.getProperty("rpath"));
         
         this.pConfidenceIntervall.setStartValue(this.loadDouble("ConfidenceIntervallStart",pConfidenceIntervall.getStartValue()));
         this.pConfidenceIntervall.setEndValue(this.loadDouble("ConfidenceIntervallEnd",pConfidenceIntervall.getEndValue()));
@@ -112,6 +117,7 @@ SimulatorWebSlave mySlave=new SimulatorWebSlave();
         support.setIsRunningAsSlave(Boolean.parseBoolean(auto.getProperty("isRunningAsSlave")));
         
         this.checkIfTimeNetPathIsCorrect();
+        this.checkIfRPathIsCorrect();
         this.deactivateExportButtons();
 
         jTableParameterList.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
@@ -147,6 +153,7 @@ SimulatorWebSlave mySlave=new SimulatorWebSlave();
         support.setMainFrame(this);
         support.setMeasureFormPane(jTabbedPane1);
         support.setPathToTimeNet(pathToTimeNet);
+        support.setPathToR(pathToR);
         
         this.checkIfCachedSimulationIsPossible();
         
@@ -238,6 +245,7 @@ SimulatorWebSlave mySlave=new SimulatorWebSlave();
         jButtonEnterURLToSimServer = new javax.swing.JButton();
         jCheckBoxSlaveSimulator = new javax.swing.JCheckBox();
         jButton2 = new javax.swing.JButton();
+        jButtonPathToR = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jSeparator4 = new javax.swing.JPopupMenu.Separator();
@@ -269,6 +277,7 @@ SimulatorWebSlave mySlave=new SimulatorWebSlave();
 
         jScrollPane1.setMinimumSize(new java.awt.Dimension(469, 404));
 
+        jTableParameterList.setAutoCreateRowSorter(true);
         jTableParameterList.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -288,7 +297,6 @@ SimulatorWebSlave mySlave=new SimulatorWebSlave();
                 return types [columnIndex];
             }
         });
-        jTableParameterList.setAutoCreateRowSorter(true);
         jTableParameterList.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
         jTableParameterList.setMinimumSize(new java.awt.Dimension(20, 24));
         jTableParameterList.setPreferredSize(new java.awt.Dimension(469, 404));
@@ -393,6 +401,13 @@ SimulatorWebSlave mySlave=new SimulatorWebSlave();
             }
         });
 
+        jButtonPathToR.setText("Enter Path to R");
+        jButtonPathToR.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonPathToRActionPerformed(evt);
+            }
+        });
+
         jMenu1.setText("File");
         jMenu1.add(jSeparator4);
         jMenu1.add(jSeparator5);
@@ -448,45 +463,46 @@ SimulatorWebSlave mySlave=new SimulatorWebSlave();
             .add(layout.createSequentialGroup()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .add(jSeparator1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 650, Short.MAX_VALUE))
+                        .add(10, 10, 10)
+                        .add(jSeparator1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 666, Short.MAX_VALUE))
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                        .add(5, 5, 5)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(layout.createSequentialGroup()
+                                .add(11, 11, 11)
                                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                    .add(jButtonPathToTimeNet, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 192, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                    .add(jButtonEnterURLToSimServer, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 192, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                    .add(jCheckBoxSlaveSimulator, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 198, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                                .add(5, 5, 5))
-                            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                .add(layout.createSequentialGroup()
-                                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 373, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 26, Short.MAX_VALUE))
-                                .add(layout.createSequentialGroup()
-                                    .add(jTextFieldSCPNFile, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 394, Short.MAX_VALUE)
-                                    .add(5, 5, 5))))
+                                    .add(jTextFieldSCPNFile, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 393, Short.MAX_VALUE)
+                                    .add(layout.createSequentialGroup()
+                                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 373, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                            .add(jButtonPathToTimeNet, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 192, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                            .add(jCheckBoxSlaveSimulator, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 198, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                                        .add(0, 0, Short.MAX_VALUE)))
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED))
+                            .add(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .add(jButtonPathToR, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 192, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(jLabelSimulationCount, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE)
+                            .add(jLabelSimulationCount, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                             .add(layout.createSequentialGroup()
-                                .add(jButtonOpenSCPN, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE)
+                                .add(jButtonOpenSCPN, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .add(5, 5, 5)
-                                .add(jButtonReload, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE))
-                            .add(jSeparator2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE)
+                                .add(jButtonReload, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .add(jSeparator2)
                             .add(layout.createSequentialGroup()
-                                .add(jButtonExport, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                                .add(jButtonExport, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE)
                                 .add(5, 5, 5)
-                                .add(jButton1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE))
-                            .add(jButtonGenerateListOfExperiments, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE)
-                            .add(jButtonStartBatchSimulation, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE)
-                            .add(jSeparator3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE)
-                            .add(org.jdesktop.layout.GroupLayout.TRAILING, jButtonLoadCacheFile, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE)
+                                .add(jButton1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .add(jButtonGenerateListOfExperiments, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .add(jButtonStartBatchSimulation, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .add(jSeparator3)
+                            .add(org.jdesktop.layout.GroupLayout.TRAILING, jButtonLoadCacheFile, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .add(layout.createSequentialGroup()
                                 .add(20, 20, 20)
-                                .add(jButtonStartOptimization, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 246, Short.MAX_VALUE))
+                                .add(jButtonStartOptimization, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                                .add(jComboBoxSimulationType, 0, 135, Short.MAX_VALUE)
+                                .add(jComboBoxSimulationType, 0, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .add(5, 5, 5)
                                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
                                     .add(jButton2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -494,6 +510,10 @@ SimulatorWebSlave mySlave=new SimulatorWebSlave();
                                 .add(5, 5, 5))
                             .add(org.jdesktop.layout.GroupLayout.TRAILING, jLabelExportStatus, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 265, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
                 .add(20, 20, 20))
+            .add(layout.createSequentialGroup()
+                .addContainerGap()
+                .add(jButtonEnterURLToSimServer, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 192, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -528,7 +548,7 @@ SimulatorWebSlave mySlave=new SimulatorWebSlave();
                             .add(jComboBoxOptimizationType, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jButton2)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 6, Short.MAX_VALUE))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                         .add(5, 5, 5)
                         .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
@@ -538,12 +558,13 @@ SimulatorWebSlave mySlave=new SimulatorWebSlave();
                     .add(jButtonStartOptimization, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 32, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(layout.createSequentialGroup()
-                        .add(jButtonEnterURLToSimServer)
-                        .add(5, 5, 5)
-                        .add(jCheckBoxSlaveSimulator))
-                    .add(jLabelExportStatus, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 29, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 31, Short.MAX_VALUE)
+                    .add(jLabelExportStatus, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 29, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jButtonPathToR, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 20, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .add(2, 2, 2)
+                .add(jButtonEnterURLToSimServer, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 20, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jCheckBoxSlaveSimulator)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .add(jLabelSimulationCount, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 24, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -782,6 +803,29 @@ SimulatorWebSlave mySlave=new SimulatorWebSlave();
 
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    private void jButtonPathToRActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPathToRActionPerformed
+        JFileChooser fileChooser = new JFileChooser(this.getPathToR());
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
+        fileChooser.setControlButtonsAreShown(true);
+        fileChooser.setDialogTitle(" Choose Dir of R (jri has to be installed!)");
+        String outputDir;
+
+
+        if (fileChooser.showDialog(this, "Choose this") == JFileChooser.APPROVE_OPTION) {
+          if(fileChooser.getSelectedFile().isDirectory() ){
+              outputDir=fileChooser.getSelectedFile().toString();
+          }else{
+              outputDir=fileChooser.getCurrentDirectory().toString();
+          }
+          support.log("chosen outputdir: "+outputDir);
+          this.setPathToR(outputDir);
+          this.checkIfRPathIsCorrect();
+        }else{
+        support.log("No Path to R chosen.");
+        }  
+    }//GEN-LAST:event_jButtonPathToRActionPerformed
+
     /**
      * Calculates the design space, number of all permutations of parameters
      * with respect to the stepping sizes
@@ -879,6 +923,7 @@ SimulatorWebSlave mySlave=new SimulatorWebSlave();
     private javax.swing.JButton jButtonGenerateListOfExperiments;
     private javax.swing.JButton jButtonLoadCacheFile;
     private javax.swing.JButton jButtonOpenSCPN;
+    private javax.swing.JButton jButtonPathToR;
     private javax.swing.JButton jButtonPathToTimeNet;
     private javax.swing.JButton jButtonReload;
     private javax.swing.JButton jButtonStartBatchSimulation;
@@ -1202,6 +1247,34 @@ SimulatorWebSlave mySlave=new SimulatorWebSlave();
         
         }
     }
+    
+    /*
+    * Checks, if given Path to R is correct
+    */
+    private void checkIfRPathIsCorrect(){
+    String path=this.getPathToR();
+    File tmpFile=new File(path+File.separator+"library"+File.separator+"rjava"+File.separator+"jri");
+   
+    support.log("R should be here: "+tmpFile.getAbsolutePath());
+        if(tmpFile.exists())
+        {
+            jButtonPathToR.setBackground(Color.GREEN);
+            jButtonPathToR.setOpaque(true);
+            jButtonPathToR.setBorderPainted(false);
+            jButtonPathToR.setText("Reset Path To R");
+
+            support.setPathToR(path);
+            this.pathToR=path;
+            this.saveProperties();
+        }
+        else
+        {
+            jButtonPathToR.setBackground(Color.RED);
+            jButtonPathToR.setOpaque(true);
+            jButtonPathToR.setBorderPainted(true);
+            jButtonPathToR.setText("Enter Path To R");
+        }
+    }
 
     /**
      * Saves program-properties to a local file in home-dir
@@ -1211,6 +1284,8 @@ SimulatorWebSlave mySlave=new SimulatorWebSlave();
         try{
     auto.setProperty("timenetpath", this.getPathToTimeNet());
     auto.setProperty("file", this.jTextFieldSCPNFile.getText().toString());
+    
+    auto.setProperty("rpath", this.getPathToR());
     
     auto.setProperty("ConfidenceIntervallStart",support.getString(this.pConfidenceIntervall.getStartValue()));
     auto.setProperty("ConfidenceIntervallEnd",support.getString(this.pConfidenceIntervall.getEndValue()));
@@ -1376,10 +1451,25 @@ SimulatorWebSlave mySlave=new SimulatorWebSlave();
     }
     
     /**
+     * Set local variable of path to R
+     * @param pathToR the pathToR to set
+     */
+    private void setPathToR(String pathToR) {
+        this.pathToR = pathToR;   
+    }
+    
+    /**
      * returns local value of path to TimeNet
      */
     private String getPathToTimeNet(){
     return this.pathToTimeNet;
+    }
+    
+    /**
+     * returns local value of path to R
+     */
+    private String getPathToR(){
+    return this.pathToR;
     }
     
     
