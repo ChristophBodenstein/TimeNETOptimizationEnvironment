@@ -849,7 +849,7 @@ private String pathToR="";
     }//GEN-LAST:event_jButtonPathToRActionPerformed
 
     private void jButtonPlotRActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPlotRActionPerformed
-        support.log("Using " + rplugin.getRVersion());
+        rplugin.plot();
     }//GEN-LAST:event_jButtonPlotRActionPerformed
 
     /**
@@ -1280,7 +1280,7 @@ private String pathToR="";
     */
     private void checkIfRPathIsCorrect(){
     String path=this.getPathToR();
-    File tmpFile=new File(path+File.separator+"library"+File.separator+"rjava"+File.separator+"jri");
+    File tmpFile=new File(path+File.separator+"bin");
    
     support.log("R should be here: "+tmpFile.getAbsolutePath());
         if(tmpFile.exists())
