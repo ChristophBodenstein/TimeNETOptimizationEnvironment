@@ -52,8 +52,8 @@ public parameter pMaxError=new parameter();
 private int colorClm = -1, colorRow = -1;
 ArrayList <Long>ListOfParameterSetIds=new ArrayList<Long>();
 private int sizeOfDesignSpace;
-private String pathToTimeNet="";
-private String pathToR="";
+private String pathToTimeNet="a";
+private String pathToR="a";
 private SimulationCache mySimulationCache=null;
 private String pathToLastSimulationCache="";
 private SimulationTypeComboBoxModel mySimulationTypeModel=new SimulationTypeComboBoxModel();
@@ -91,6 +91,12 @@ SimulatorWebSlave mySlave=new SimulatorWebSlave();
         this.setPathToTimeNet(auto.getProperty("timenetpath"));
         //support.log("Read Path to TimeNet:"+auto.getProperty("timenetpath"));
         this.setPathToR(auto.getProperty("rpath"));
+        
+        //set null strings to empty strings, avoids a crash when saving the configuration
+        if(this.getPathToR() == null)
+            this.setPathToR("");
+        if(this.getPathToTimeNet() == null)
+            this.setPathToTimeNet("");
         
         this.pConfidenceIntervall.setStartValue(this.loadDouble("ConfidenceIntervallStart",pConfidenceIntervall.getStartValue()));
         this.pConfidenceIntervall.setEndValue(this.loadDouble("ConfidenceIntervallEnd",pConfidenceIntervall.getEndValue()));
@@ -1282,6 +1288,10 @@ SimulatorWebSlave mySlave=new SimulatorWebSlave();
     private void saveProperties(){
     support.log("Saving Properties.");
         try{
+    support.log("rpath = " + this.getPathToR());
+    support.log("timenetpath = " + this.getPathToTimeNet());
+    
+    
     auto.setProperty("timenetpath", this.getPathToTimeNet());
     auto.setProperty("file", this.jTextFieldSCPNFile.getText().toString());
     
