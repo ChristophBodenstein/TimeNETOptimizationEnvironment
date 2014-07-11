@@ -827,7 +827,7 @@ private String pathToR="";
 
     private void jButtonPathToRActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPathToRActionPerformed
         JFileChooser fileChooser = new JFileChooser(this.getPathToR());
-        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
         fileChooser.setControlButtonsAreShown(true);
         fileChooser.setDialogTitle(" Choose Dir of R ");

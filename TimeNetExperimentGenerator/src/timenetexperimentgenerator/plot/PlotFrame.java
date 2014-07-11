@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package timenetexperimentgenerator;
+package timenetexperimentgenerator.plot;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
