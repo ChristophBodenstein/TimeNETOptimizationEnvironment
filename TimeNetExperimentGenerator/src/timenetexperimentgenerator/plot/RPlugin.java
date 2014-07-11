@@ -4,7 +4,6 @@ package timenetexperimentgenerator.plot;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import timenetexperimentgenerator.PlotFrame;
 import timenetexperimentgenerator.support;
 
 /**
@@ -36,7 +35,14 @@ public class RPlugin
 
             String command = support.getPathToR() + File.separator+"bin" + File.separator + "Rscript rscript.r";
             support.log("executing command: " + command);
-            Runtime.getRuntime().exec(command); 
+            Process child = Runtime.getRuntime().exec(command); 
+            try
+            {
+                child.waitFor();
+            }
+            catch(InterruptedException e)
+            {
+            }
         }
         catch(IOException e)
         {

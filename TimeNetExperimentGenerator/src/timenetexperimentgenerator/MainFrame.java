@@ -827,10 +827,10 @@ private String pathToR="";
 
     private void jButtonPathToRActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPathToRActionPerformed
         JFileChooser fileChooser = new JFileChooser(this.getPathToR());
-        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
         fileChooser.setControlButtonsAreShown(true);
-        fileChooser.setDialogTitle(" Choose Dir of R (jri has to be installed!)");
+        fileChooser.setDialogTitle(" Choose Dir of R ");
         String outputDir;
 
 
@@ -1293,6 +1293,8 @@ private String pathToR="";
             support.setPathToR(path);
             this.pathToR=path;
             this.saveProperties();
+            
+            jButtonPlotR.setEnabled(true);
         }
         else
         {
@@ -1300,6 +1302,7 @@ private String pathToR="";
             jButtonPathToR.setOpaque(true);
             jButtonPathToR.setBorderPainted(true);
             jButtonPathToR.setText("Enter Path To R");
+            jButtonPlotR.setEnabled(false);
         }
     }
 
