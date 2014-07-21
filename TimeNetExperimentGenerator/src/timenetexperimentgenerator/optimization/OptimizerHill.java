@@ -150,29 +150,16 @@ boolean directionOfOptimizationChanged=false;//True->direction already changed, 
     }
 
 
+
     /**
-     * Returns the next parameterset in neighborhood
-     * Next parameterset is chosen randomly within the neighborhood
-     * @param actualParameterset  actual parameterset, if null, then first parameterset is calculated
-     * @return next parameterset to be simulated
+     *
+     * Returns the first Parameterset with respect to strategie of choosing
      */
-    private ArrayList<parameter> getNextParameterset(ArrayList<parameter> actualParameterset){
+    private ArrayList<parameter> getFirstParameterset(){
     ArrayList<parameter> newParameterset=support.getCopyOfParameterSet(parameterBase);
-    ArrayList<parameter> listOfChangableParameters=new ArrayList<parameter>(); 
-        //Count the number of changable parameters
-        this.numberOfChangableParameters=0;
-        for(int i=0;i<newParameterset.size();i++){
-                parameter p=newParameterset.get(i);
-                if(p.isIteratableAndIntern()){
-                this.numberOfChangableParameters++;
-                listOfChangableParameters.add(p);
-                }
-            }
-    
-        if(actualParameterset==null){
-            //calculate the first parameterset
+        //calculate the first parameterset
             switch(support.getTypeOfStartValue()){
-            
+
                 case start:
                         support.log("Taking Min-Values as Start for every Parameter.");
                             //Calculate first parameterset, set every parameter to start-value
@@ -220,11 +207,34 @@ boolean directionOfOptimizationChanged=false;//True->direction already changed, 
                                 }
                             }
                             break;
-            
+
             }
             return newParameterset;
-            
-        
+    }
+
+
+    /**
+     * Returns the next parameterset in neighborhood
+     * Next parameterset is chosen randomly within the neighborhood
+     * @param actualParameterset  actual parameterset, if null, then first parameterset is calculated
+     * @return next parameterset to be simulated
+     */
+    protected ArrayList<parameter> getNextParameterset(ArrayList<parameter> actualParameterset){
+    ArrayList<parameter> newParameterset=support.getCopyOfParameterSet(parameterBase);
+    ArrayList<parameter> listOfChangableParameters=new ArrayList<parameter>(); 
+        //Count the number of changable parameters
+        this.numberOfChangableParameters=0;
+        for(int i=0;i<newParameterset.size();i++){
+                parameter p=newParameterset.get(i);
+                if(p.isIteratableAndIntern()){
+                this.numberOfChangableParameters++;
+                listOfChangableParameters.add(p);
+                }
+            }
+    
+        if(actualParameterset==null){
+            //Return the inital parameterset for optimization, based on startvalue-strategy
+            return getFirstParameterset();
         }else{
         //First parameterset exists, calculate the next
         newParameterset=support.getCopyOfParameterSet(actualParameterset);
@@ -240,7 +250,7 @@ boolean directionOfOptimizationChanged=false;//True->direction already changed, 
             SimulationType lastParser=currentSolution;
             //this.historyOfParsers.get(this.historyOfParsers.size()-1);
             
-//support.log("History of Parsers has size: "+this.historyOfParsers.size());
+            //support.log("History of Parsers has size: "+this.historyOfParsers.size());
             
             ArrayList<parameter> lastParameterList=lastParser.getListOfParameters();
             //For ever Parameter check if it is iteratable and if it was changed last time
@@ -306,12 +316,12 @@ boolean directionOfOptimizationChanged=false;//True->direction already changed, 
             boolean incResult=false;
             support.log("Number of Parameter to be changed "+numberOfParameterToBeChanged);
             support.log("Name of Parameter to be changed: "+nameOfParameterToBeChanged);
-            switch(typeOfNeighborhood){
-                case 0://0 choose the next neighbor based on stepping forward
+            switch(support.getOptimizerPreferences().getPref_NeighborhoodType()){
+                case StepForward://0 choose the next neighbor based on stepping forward
                         //Inc this parameter by standard-increment
                         incResult=support.getParameterByName(newParameterset, nameOfParameterToBeChanged).incDecValue(this.directionOfOptimization);
                         break;
-                case 1://Step back and forward randomly based on stepping
+                case StepForwardBackRandom://Step back and forward randomly based on stepping
                         for(int i=0;i<newParameterset.size();i++){
                         parameter p=newParameterset.get(i);
                             if(p.isIteratableAndIntern()){
@@ -325,7 +335,7 @@ boolean directionOfOptimizationChanged=false;//True->direction already changed, 
                             }
                         }
                         break;
-                case 2://Calculate neighborhood and choose next value randomly 
+                case RandomStepInNeighborhood://Calculate neighborhood and choose next value randomly
                         for(int i=0;i<newParameterset.size();i++){
                         parameter p=newParameterset.get(i);
                             if(p.isIteratableAndIntern()){
@@ -341,7 +351,7 @@ boolean directionOfOptimizationChanged=false;//True->direction already changed, 
                             }
                         }
                         break;
-                case 3://Choose Value randomly out of complete designspace
+                case RandomStepInDesignspace://Choose Value randomly out of complete designspace
                         for(int i=0;i<newParameterset.size();i++){
                         parameter p=newParameterset.get(i);
                             if(p.isIteratableAndIntern()){
@@ -353,7 +363,7 @@ boolean directionOfOptimizationChanged=false;//True->direction already changed, 
                         }
                     
                         break;
-                case 4: //Calculate neighborhood and choose next value randomly, Ignore Stepping!
+                case RandomSteplessInNeighborhood: //Calculate neighborhood and choose next value randomly, Ignore Stepping!
                         for(int i=0;i<newParameterset.size();i++){
                         parameter p=newParameterset.get(i);
                             if(p.isIteratableAndIntern()){
