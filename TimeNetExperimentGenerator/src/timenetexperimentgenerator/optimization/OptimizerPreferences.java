@@ -102,7 +102,7 @@ private support.typeOfNeighborhoodEnum pref_NeighborhoodType=support.typeOfNeigh
 
         jLabelWrongSolutionsUntilBreak.setText("Wrong Solutions until break");
 
-        jLabelWrongSolutionsPerDirectionUntilBreak.setText("Wrong Solutions per direction until break");
+        jLabelWrongSolutionsPerDirectionUntilBreak.setText("Wrong Solutions per direction/parameter until break");
 
         jTextFieldLogFileAddon.setToolTipText("Addon-Text for Logfilename");
         jTextFieldLogFileAddon.addActionListener(new java.awt.event.ActionListener() {
@@ -186,7 +186,7 @@ private support.typeOfNeighborhoodEnum pref_NeighborhoodType=support.typeOfNeigh
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabelStartvalueForParameters, javax.swing.GroupLayout.DEFAULT_SIZE, 340, Short.MAX_VALUE)
+                            .addComponent(jLabelStartvalueForParameters, javax.swing.GroupLayout.DEFAULT_SIZE, 410, Short.MAX_VALUE)
                             .addComponent(jLabelTypeOfNeighborhood, javax.swing.GroupLayout.PREFERRED_SIZE, 276, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(292, 292, 292))
                     .addGroup(layout.createSequentialGroup()

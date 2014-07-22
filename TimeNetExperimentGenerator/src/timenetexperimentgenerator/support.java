@@ -58,7 +58,7 @@ public static final String[] OPTITYPES={"Hillclimbing","Sim. Annealing","Charged
 
 public enum typeOfStartValueEnum{start, end, middle, random};
 
-public enum typeOfNeighborhoodEnum{StepForward,StepForwardBackRandom,RandomStepInNeighborhood,RandomStepInDesignspace,RandomSteplessInNeighborhood};
+public enum typeOfNeighborhoodEnum{StepForward,StepForwardBackward,StepForwardBackRandom,RandomStepInNeighborhood,RandomStepInDesignspace,RandomSteplessInNeighborhood};
 
 
 private static final OptimizerPreferences myOptimizerPreferences = new OptimizerPreferences();

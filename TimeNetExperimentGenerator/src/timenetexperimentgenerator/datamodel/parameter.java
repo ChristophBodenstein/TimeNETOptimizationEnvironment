@@ -161,12 +161,12 @@ private long idHash=0;
 
    
    /**
-    * Compare Method simailar to String compareision. It`s based on the names of Parameters
+    * Compare Method similar to String comparision. It`s based on the names of Parameters
     * @param o other Parameter to be compared with
     * @return integer-value of compariosion result
     */
     public int compareTo(parameter o) {
-    return this.getName().compareTo(o.getName());//Parameter werden nach Namen sortiert
+    return this.getName().compareTo(o.getName());//Parameters will be sorted by name
     }
 
     

@@ -10,6 +10,7 @@ package timenetexperimentgenerator.optimization;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 import timenetexperimentgenerator.MainFrame;
@@ -153,7 +154,8 @@ boolean directionOfOptimizationChanged=false;//True->direction already changed, 
 
     /**
      *
-     * Returns the first Parameterset with respect to strategie of choosing
+     * Returns the first Parameterset with respect to strategy of choosing
+     * @return ArrayList of parameter for start of optimization
      */
     private ArrayList<parameter> getFirstParameterset(){
     ArrayList<parameter> newParameterset=support.getCopyOfParameterSet(parameterBase);
@@ -238,22 +240,19 @@ boolean directionOfOptimizationChanged=false;//True->direction already changed, 
         }else{
         //First parameterset exists, calculate the next
         newParameterset=support.getCopyOfParameterSet(actualParameterset);
-        //TODO: 
-        //1 Calculate neighborhood for each parameter and choose one of the values randomly
-        //2 choose next value randomly from complete design-space
+
         int numberOfParameterToBeChanged=0;//Default, change the first changeable parameter
         int numberOfLastParameter=-1;//Number of last parameter that was changed(in an Array of changable parameters)
             //Check, which parameters can be changed
-            if(listOfChangableParameters.size()>1){
-            //support.log("List of Changable Parameters has size: "+listOfChangableParameters.size());
-            //TODO: Sort List of Parameters (new method in support)    
+            if(listOfChangableParameters.size()>1){   
             SimulationType lastParser=currentSolution;
-            //this.historyOfParsers.get(this.historyOfParsers.size()-1);
-            
-            //support.log("History of Parsers has size: "+this.historyOfParsers.size());
             
             ArrayList<parameter> lastParameterList=lastParser.getListOfParameters();
-            //For ever Parameter check if it is iteratable and if it was changed last time
+
+            //Sort the parameterlist
+            Collections.sort(lastParameterList);
+
+            //For every Parameter check if it is iteratable and if it was changed last time
             int i=0;
             numberOfLastParameter=-1;//Number of last parameter that was changed(in an Array of changable parameters)
                 for(i=0;i<lastParameterList.size();i++){
@@ -276,11 +275,15 @@ boolean directionOfOptimizationChanged=false;//True->direction already changed, 
                 }
             
                 if(wrongSolutionPerDirectionCounter<=0){
+                //Number of maximum wrong solutions per direction/parameter reached
+                //-->first change the direction, if already changed, choose next parameter
                 wrongSolutionPerDirectionCounter=support.getOptimizerPreferences().getPref_WrongSimulationsPerDirection();
                 
                 support.log(support.getOptimizerPreferences().getPref_WrongSimulationsPerDirection()+" wrong solutions in one direction.");
-                    if(this.directionOfOptimization){
-                    //Switch direction of Optimization but chnge the same old parameter
+                    if(this.directionOfOptimization && support.getOptimizerPreferences().getPref_NeighborhoodType()==support.typeOfNeighborhoodEnum.StepForwardBackward){
+                    //Switch direction of Optimization but change the same old parameter
+                    //This only applies if StepForwardBackward
+
                     support.log("Changing direction of Optimization to false(backwards).");
                     this.directionOfOptimization=false;
                     numberOfParameterToBeChanged=numberOfLastParameter;
@@ -319,8 +322,14 @@ boolean directionOfOptimizationChanged=false;//True->direction already changed, 
             switch(support.getOptimizerPreferences().getPref_NeighborhoodType()){
                 case StepForward://0 choose the next neighbor based on stepping forward
                         //Inc this parameter by standard-increment
+                        incResult=support.getParameterByName(newParameterset, nameOfParameterToBeChanged).incValue();
+                        break;
+                
+                case StepForwardBackward://0 choose the next neighbor based on stepping forward or backward
+                        //Inc or Dec this parameter by standard-increment
                         incResult=support.getParameterByName(newParameterset, nameOfParameterToBeChanged).incDecValue(this.directionOfOptimization);
                         break;
+
                 case StepForwardBackRandom://Step back and forward randomly based on stepping
                         for(int i=0;i<newParameterset.size();i++){
                         parameter p=newParameterset.get(i);
@@ -390,23 +399,7 @@ boolean directionOfOptimizationChanged=false;//True->direction already changed, 
             }else{
             support.log("Parameter could NOT be incremented.(or decremented). Set WrongSolutionsPerDirectionCounter to 0.");
             wrongSolutionPerDirectionCounter=0;
-            /*this.directionOfOptimization=!this.directionOfOptimization;
-            wrongSolutionPerDirectionCounter=support.DEFAULT_WRONG_SOLUTION_PER_DIRECTION;
-            wrongSolutionCounter=support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW;
-            newParameterset=currentSolution.getListOfParameters();//Reset to last good parameterset
-                if(this.directionOfOptimizationChanged){
-                //Change to new parameter to be changed
-                //Select next Parameter to be changed with round-robin
-                        numberOfParameterToBeChanged=numberOfLastParameter+1;
-                        if(numberOfParameterToBeChanged>=listOfChangableParameters.size()){
-                        numberOfParameterToBeChanged=0;
-                        }
-                this.directionOfOptimizationChanged=false;
-                }else{
-                    
-                    this.directionOfOptimizationChanged=true;
-                    }
-            */
+
             }
         return newParameterset;
         }
