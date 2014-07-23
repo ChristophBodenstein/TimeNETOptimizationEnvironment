@@ -65,7 +65,7 @@ boolean directionOfOptimizationChanged=false;//True->direction already changed, 
      *
      */
     public OptimizerHill() {
-    logFileName=support.getTmpPath()+File.separator+"HillClimbing"+Calendar.getInstance().getTimeInMillis()+support.getOptimizerPreferences().getPref_LogFileAddon()+".csv";
+    logFileName=support.getTmpPath()+File.separator+this.getClass().getSimpleName()+Calendar.getInstance().getTimeInMillis()+support.getOptimizerPreferences().getPref_LogFileAddon()+".csv";
     support.log("LogfileName:"+logFileName);
     this.wrongSolutionCounter=support.getOptimizerPreferences().getPref_WrongSimulationsUntilBreak();
     myPreferences.setVisible(false);
@@ -123,14 +123,33 @@ boolean directionOfOptimizationChanged=false;//True->direction already changed, 
             nextSolution=mySimulator.getListOfCompletedSimulationParsers().get(0);
             Fy=this.getActualDistance(nextSolution);
             lastParameterset=nextSolution.getListOfParameters();
-                //If next Solution is better then take it as actual best solution
-                if((Fy<Fx)){
-                support.log("Choosing next solution for Hill Climbing");
-                Fx=Fy;
-                currentSolution=nextSolution;
+
+            //Check, if Optimization has ended!
+            optimized=isOptimized(Fx, Fy);
+            
+            }
+        support.log(this.getClass().getSimpleName()+" has ended, printing optimal value:");
+        support.addLinesToLogFile(currentSolution, logFileName);
+        support.getStatusLabel().setText("Optimization ended. See Log.");
+        support.printOptimizedMeasures(currentSolution, this.listOfMeasures);
+        StatisticAggregator.printLastStatistic();
+    }
+
+
+    /**
+     * Check, if next Solution is better. Calculate if Optimization is done or not
+     *
+     */
+    protected boolean isOptimized(double actualDistance, double nextDistance){
+    //If next Solution is better then take it as actual best solution
+                if((nextDistance<actualDistance)){
+                support.log("Choosing next solution for "+this.getClass().getSimpleName());
+                Fx=nextDistance;//Set global Distance Value
+                currentSolution=nextSolution;//Set Global Solution Value
                 //Reset wrong-solution-counter
                 wrongSolutionCounter=support.getOptimizerPreferences().getPref_WrongSimulationsUntilBreak();
                 wrongSolutionPerDirectionCounter=support.getOptimizerPreferences().getPref_WrongSimulationsPerDirection();
+                return false;
                 }else{
                 nextSolution=null;
                 //Count up the Solutions which are not taken
@@ -138,18 +157,12 @@ boolean directionOfOptimizationChanged=false;//True->direction already changed, 
                 support.log("Distance was higher, Solution not chosen. Counting up wrong-solution-counter.");
                 wrongSolutionCounter--;
                     if(wrongSolutionCounter<=1){
-                    optimized=true;
+                    return true;
+                    }else{
+                    return false;
                     }
                 }
-            //nextSolution is not null --> We are on the right way, else we are wrong and should change
-            }
-        support.log("Hill Climbing has ended, printing optimal value:");
-        support.addLinesToLogFile(currentSolution, logFileName);
-        support.getStatusLabel().setText("Optimization ended. See Log.");
-        support.printOptimizedMeasures(currentSolution, this.listOfMeasures);
-        StatisticAggregator.printLastStatistic();
     }
-
 
 
     /**
@@ -249,8 +262,8 @@ boolean directionOfOptimizationChanged=false;//True->direction already changed, 
             
             ArrayList<parameter> lastParameterList=lastParser.getListOfParameters();
 
-            //Sort the parameterlist
-            Collections.sort(lastParameterList);
+            //Don't Sort the parameterlist!
+            //Collections.sort(lastParameterList);
 
             //For every Parameter check if it is iteratable and if it was changed last time
             int i=0;
@@ -444,18 +457,6 @@ boolean directionOfOptimizationChanged=false;//True->direction already changed, 
     return distance;
     }
 
-    /**
-     * Calculates the next temperature from max to min
-     * The higher SimT is, the lower the temperature is
-     */
-    private double getNextTemperature(int t){
-        if(t>=stepCountTemp-1){
-            return 0.001;
-        }else{
-        
-        return (maxTemp - (maxTemp/stepCountTemp)*t);
-        }
-    }
 
     public void showPreferences() {
         myPreferences.setVisible(true);

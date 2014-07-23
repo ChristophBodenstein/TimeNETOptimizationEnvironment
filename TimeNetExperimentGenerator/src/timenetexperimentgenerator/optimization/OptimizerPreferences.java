@@ -391,6 +391,7 @@ private support.typeOfNeighborhoodEnum pref_NeighborhoodType=support.typeOfNeigh
 
         if(this.jCheckBoxAddPrefsToLogfilename.isSelected()){
         addonString+="_WSIMPERDIR_"+this.getPref_WrongSimulationsPerDirection()+"_WSIM_"+this.getPref_WrongSimulationsUntilBreak()+"_StartAt_"+this.jComboBoxTypeOfStartValue.getSelectedItem();
+        addonString+="TypOfNeighborhodd_"+this.jComboBoxTypeOfNeighborhood.getSelectedItem();
         }
         return addonString;
     }
