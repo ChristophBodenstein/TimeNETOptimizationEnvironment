@@ -29,6 +29,7 @@ public class RPlugin
             
             writer.println("setwd(\"" + userdir + "\")");
             writer.println("png(filename=\"rplot.png\")");
+            //writer.println("svg(filename=\"rplot.svg\")");
             writer.println("values <- c(1, 3, 6, 4, 9)");
             writer.println("plot(values, type=\"o\", col=\"blue\")");
             writer.close();

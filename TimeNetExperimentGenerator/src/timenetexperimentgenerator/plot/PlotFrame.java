@@ -6,7 +6,10 @@
 
 package timenetexperimentgenerator.plot;
 
+import java.awt.*;
+import javax.swing.*;
 import java.awt.image.BufferedImage;
+import java.awt.Graphics;
 import java.io.File;
 import java.io.IOException;
 
@@ -15,6 +18,17 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+import org.apache.batik.swing.JSVGCanvas;
+import org.apache.batik.swing.gvt.GVTTreeRendererAdapter;
+import org.apache.batik.swing.gvt.GVTTreeRendererEvent;
+import org.apache.batik.swing.svg.SVGDocumentLoaderAdapter;
+import org.apache.batik.swing.svg.SVGDocumentLoaderEvent;
+import org.apache.batik.swing.svg.GVTTreeBuilderAdapter;
+import org.apache.batik.swing.svg.GVTTreeBuilderEvent;
+
+
 
 /**
  *
@@ -22,15 +36,14 @@ import javax.swing.JFrame;
  */
 public class PlotFrame extends javax.swing.JFrame {
     
-    JFrame f = new JFrame();
-    
+    JFrame testframe = new JFrame();
     /**
      * Creates new form PlotFrame
      */
     public PlotFrame() {
         initComponents();
-        f.setLocation(200,200);
-        f.setTitle("R Plugin");
+        //this.setLocation(200,200);
+        //this.setTitle("R Plugin");
     }
 
     /**
@@ -42,7 +55,24 @@ public class PlotFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu1 = new javax.swing.JMenu();
+        jMenu2 = new javax.swing.JMenu();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        addWindowStateListener(new java.awt.event.WindowStateListener() {
+            public void windowStateChanged(java.awt.event.WindowEvent evt) {
+                formWindowStateChanged(evt);
+            }
+        });
+
+        jMenu1.setText("File");
+        jMenuBar1.add(jMenu1);
+
+        jMenu2.setText("Edit");
+        jMenuBar1.add(jMenu2);
+
+        setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -52,11 +82,15 @@ public class PlotFrame extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGap(0, 279, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void formWindowStateChanged(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowStateChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_formWindowStateChanged
 
     /**
      * @param args the command line arguments
@@ -95,22 +129,57 @@ public class PlotFrame extends javax.swing.JFrame {
         
     }
     
+    public class ImagePanel extends JPanel{
+
+    private BufferedImage image;
+    private String _path;
+
+    public ImagePanel(String path) {
+       try {
+          _path = path;
+          image = ImageIO.read(new File(_path));
+       } catch (IOException e) {
+            // handle exception...
+       }
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        g.drawImage(image, 0, 0, null); // see javadoc for more info on the parameters            
+    }
+
+}
+    
     public void showImage(String path)
     {
-        File file = new File(path);
-        try
-        {
-            BufferedImage image = ImageIO.read(file);
-            JLabel label = new JLabel(new ImageIcon(image));
+        PlotFrame f = new PlotFrame();
+        ImagePanel p = new ImagePanel(path);
+        //try
+        //{
         
-        f.getContentPane().add(label);
-        f.pack();
+            
+            //this.getContentPane().add(p);
+            JLabel textLabel = new JLabel("I'm a label in the window",SwingConstants.CENTER); textLabel.setPreferredSize(new Dimension(300, 100));
+            f.getContentPane().add(textLabel, BorderLayout.CENTER); 
+            f.setLocationRelativeTo(null);
+            f.pack();
 
-        f.setVisible(true);
-        }
-        catch(IOException e){}        
+            //f.setVisible(true);
+            
+            //testframe.getContentPane().add(textLabel, BorderLayout.CENTER); 
+            testframe.getContentPane().add(p);
+            testframe.setLocationRelativeTo(null);
+            testframe.pack();
+
+            testframe.setVisible(true);
+        //}
+        //catch(IOException e){}  
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenuBar jMenuBar1;
     // End of variables declaration//GEN-END:variables
 }

@@ -8,7 +8,7 @@ package timenetexperimentgenerator.plot;
 
 /**
  *
- * @author Simon
+ * @author Simon Niebler
  */
 public class commands 
 {
