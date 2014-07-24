@@ -77,6 +77,12 @@ private int pref_SizeOfNeighborhood;
         jLabelWrongSolutionsUntilBreak = new javax.swing.JLabel();
         jLabelWrongSolutionsPerDirectionUntilBreak = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        jComboBox1 = new javax.swing.JComboBox();
+        jLabel3 = new javax.swing.JLabel();
+        jSpinner1 = new javax.swing.JSpinner();
+        jLabel5 = new javax.swing.JLabel();
+        jSpinner2 = new javax.swing.JSpinner();
         jLabel1 = new javax.swing.JLabel();
         jSpinnerSizeOfNeighborhoodInPercent = new javax.swing.JSpinner();
 
@@ -183,7 +189,7 @@ private int pref_SizeOfNeighborhood;
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jSpinnerWrongSolutionsPerDirectionUntilBreak)
                     .addComponent(jSpinnerWrongSolutionsUntilBreak, javax.swing.GroupLayout.DEFAULT_SIZE, 76, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(38, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -199,21 +205,32 @@ private int pref_SizeOfNeighborhood;
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabelWrongSolutionsPerDirectionUntilBreak, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(6, 6, 6)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(55, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("HillClimbing", jPanel1);
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 455, Short.MAX_VALUE)
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 90, Short.MAX_VALUE)
-        );
+        jPanel2.setLayout(null);
+
+        jLabel2.setText("Annealing Method");
+        jPanel2.add(jLabel2);
+        jLabel2.setBounds(20, 20, 114, 16);
+
+        jComboBox1.setModel(new DefaultComboBoxModel(support.typeOfAnnealing.values()));
+        jPanel2.add(jComboBox1);
+        jComboBox1.setBounds(260, 20, 170, 27);
+
+        jLabel3.setText("Maximum (Start) Temperature");
+        jPanel2.add(jLabel3);
+        jLabel3.setBounds(20, 50, 186, 16);
+        jPanel2.add(jSpinner1);
+        jSpinner1.setBounds(260, 50, 90, 28);
+
+        jLabel5.setText("Temperature-step");
+        jPanel2.add(jLabel5);
+        jLabel5.setBounds(20, 80, 114, 16);
+        jPanel2.add(jSpinner2);
+        jSpinner2.setBounds(260, 80, 90, 28);
 
         jTabbedPane1.addTab("Simmulated Annealing", jPanel2);
 
@@ -236,19 +253,21 @@ private int pref_SizeOfNeighborhood;
                                     .addComponent(jTextFieldLogFileAddon, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGap(36, 36, 36)
                                     .addComponent(jButton1))
-                                .addComponent(jCheckBoxAddPrefsToLogfilename)
-                                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 476, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(jCheckBoxAddPrefsToLogfilename)))
                         .addGap(292, 292, 292))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabelTypeOfNeighborhood, javax.swing.GroupLayout.PREFERRED_SIZE, 276, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel1))
-                        .addGap(72, 72, 72)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jComboBoxTypeOfStartValue, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jComboBoxTypeOfNeighborhood, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jSpinnerSizeOfNeighborhoodInPercent, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(48, 48, 48)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabelTypeOfNeighborhood, javax.swing.GroupLayout.PREFERRED_SIZE, 276, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel1))
+                                .addGap(72, 72, 72)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jSpinnerSizeOfNeighborhoodInPercent, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jComboBoxTypeOfNeighborhood, 0, 146, Short.MAX_VALUE)
+                                    .addComponent(jComboBoxTypeOfStartValue, 0, 146, Short.MAX_VALUE)))
+                            .addComponent(jTabbedPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 494, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(347, 347, 347)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -267,8 +286,8 @@ private int pref_SizeOfNeighborhood;
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
                     .addComponent(jSpinnerSizeOfNeighborhoodInPercent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jTabbedPane1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jCheckBoxAddPrefsToLogfilename)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -338,16 +357,22 @@ private int pref_SizeOfNeighborhood;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JCheckBox jCheckBoxAddPrefsToLogfilename;
+    private javax.swing.JComboBox jComboBox1;
     public javax.swing.JComboBox jComboBoxTypeOfNeighborhood;
     public javax.swing.JComboBox jComboBoxTypeOfStartValue;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabelStartvalueForParameters;
     private javax.swing.JLabel jLabelTypeOfNeighborhood;
     private javax.swing.JLabel jLabelWrongSolutionsPerDirectionUntilBreak;
     private javax.swing.JLabel jLabelWrongSolutionsUntilBreak;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JSpinner jSpinner1;
+    private javax.swing.JSpinner jSpinner2;
     private javax.swing.JSpinner jSpinnerSizeOfNeighborhoodInPercent;
     private javax.swing.JSpinner jSpinnerWrongSolutionsPerDirectionUntilBreak;
     private javax.swing.JSpinner jSpinnerWrongSolutionsUntilBreak;

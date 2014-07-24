@@ -61,6 +61,7 @@ public enum typeOfStartValueEnum{start, end, middle, random};
 
 public enum typeOfNeighborhoodEnum{StepForward,StepForwardBackward,StepForwardBackRandom,RandomStepInNeighborhood,RandomStepInDesignspace,RandomSteplessInNeighborhood};
 
+public enum typeOfAnnealing{Boltzmann, FastAnnealing, VeryFastAnnealing};
 
 private static final OptimizerPreferences myOptimizerPreferences = new OptimizerPreferences();
 
