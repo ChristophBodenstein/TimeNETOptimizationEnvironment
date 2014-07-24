@@ -13,6 +13,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JSpinner.DefaultEditor;
+import javax.swing.SpinnerNumberModel;
 import timenetexperimentgenerator.support;
 
 /**
@@ -28,7 +30,7 @@ private int pref_WrongSimulationsUntilBreak;
 private int pref_WrongSimulationsPerDirection;
 private support.typeOfStartValueEnum pref_StartValue=support.typeOfStartValueEnum.start;
 private support.typeOfNeighborhoodEnum pref_NeighborhoodType=support.typeOfNeighborhoodEnum.StepForwardBackRandom;
-
+private int pref_SizeOfNeighborhood;
     /**
      * Creates new form OptimizerHillPreferences
      */
@@ -36,6 +38,15 @@ private support.typeOfNeighborhoodEnum pref_NeighborhoodType=support.typeOfNeigh
         initComponents();
         this.setPref_WrongSimulationsUntilBreak(support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW);
         this.setPref_WrongSimulationsPerDirection(support.DEFAULT_WRONG_SOLUTION_PER_DIRECTION);
+        this.setPref_SizeOfNeighborhood(support.DEFAULT_SIZE_OF_NEIGHBORHOOD);
+
+        this.jSpinnerSizeOfNeighborhoodInPercent.setModel(new SpinnerNumberModel(1, 1, 100, 1));
+        ((DefaultEditor)this.jSpinnerSizeOfNeighborhoodInPercent.getEditor()).getTextField().setEditable(false);
+
+        ((DefaultEditor)this.jSpinnerWrongSolutionsPerDirectionUntilBreak.getEditor()).getTextField().setEditable(false);
+        ((DefaultEditor)this.jSpinnerWrongSolutionsUntilBreak.getEditor()).getTextField().setEditable(false);
+
+
 
         this.loadPreferences();
 
@@ -53,16 +64,21 @@ private support.typeOfNeighborhoodEnum pref_NeighborhoodType=support.typeOfNeigh
 
         jLabelStartvalueForParameters = new javax.swing.JLabel();
         jComboBoxTypeOfStartValue = new javax.swing.JComboBox();
-        jSpinnerWrongSolutionsUntilBreak = new javax.swing.JSpinner();
-        jSpinnerWrongSolutionsPerDirectionUntilBreak = new javax.swing.JSpinner();
-        jLabelWrongSolutionsUntilBreak = new javax.swing.JLabel();
-        jLabelWrongSolutionsPerDirectionUntilBreak = new javax.swing.JLabel();
         jTextFieldLogFileAddon = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jCheckBoxAddPrefsToLogfilename = new javax.swing.JCheckBox();
         jButton1 = new javax.swing.JButton();
         jComboBoxTypeOfNeighborhood = new javax.swing.JComboBox();
         jLabelTypeOfNeighborhood = new javax.swing.JLabel();
+        jTabbedPane1 = new javax.swing.JTabbedPane();
+        jPanel1 = new javax.swing.JPanel();
+        jSpinnerWrongSolutionsPerDirectionUntilBreak = new javax.swing.JSpinner();
+        jSpinnerWrongSolutionsUntilBreak = new javax.swing.JSpinner();
+        jLabelWrongSolutionsUntilBreak = new javax.swing.JLabel();
+        jLabelWrongSolutionsPerDirectionUntilBreak = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jSpinnerSizeOfNeighborhoodInPercent = new javax.swing.JSpinner();
 
         jLabelStartvalueForParameters.setText("Startvalue for parameters");
 
@@ -77,32 +93,6 @@ private support.typeOfNeighborhoodEnum pref_NeighborhoodType=support.typeOfNeigh
                 jComboBoxTypeOfStartValueVetoableChange(evt);
             }
         });
-
-        jSpinnerWrongSolutionsUntilBreak.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                jSpinnerWrongSolutionsUntilBreakStateChanged(evt);
-            }
-        });
-        jSpinnerWrongSolutionsUntilBreak.addVetoableChangeListener(new java.beans.VetoableChangeListener() {
-            public void vetoableChange(java.beans.PropertyChangeEvent evt)throws java.beans.PropertyVetoException {
-                jSpinnerWrongSolutionsUntilBreakVetoableChange(evt);
-            }
-        });
-
-        jSpinnerWrongSolutionsPerDirectionUntilBreak.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                jSpinnerWrongSolutionsPerDirectionUntilBreakStateChanged(evt);
-            }
-        });
-        jSpinnerWrongSolutionsPerDirectionUntilBreak.addVetoableChangeListener(new java.beans.VetoableChangeListener() {
-            public void vetoableChange(java.beans.PropertyChangeEvent evt)throws java.beans.PropertyVetoException {
-                jSpinnerWrongSolutionsPerDirectionUntilBreakVetoableChange(evt);
-            }
-        });
-
-        jLabelWrongSolutionsUntilBreak.setText("Wrong Solutions until break");
-
-        jLabelWrongSolutionsPerDirectionUntilBreak.setText("Wrong Solutions per direction/parameter until break");
 
         jTextFieldLogFileAddon.setToolTipText("Addon-Text for Logfilename");
         jTextFieldLogFileAddon.addActionListener(new java.awt.event.ActionListener() {
@@ -154,79 +144,138 @@ private support.typeOfNeighborhoodEnum pref_NeighborhoodType=support.typeOfNeigh
 
         jLabelTypeOfNeighborhood.setText("Type of Neighborhood");
 
+        jSpinnerWrongSolutionsPerDirectionUntilBreak.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinnerWrongSolutionsPerDirectionUntilBreakStateChanged(evt);
+            }
+        });
+        jSpinnerWrongSolutionsPerDirectionUntilBreak.addVetoableChangeListener(new java.beans.VetoableChangeListener() {
+            public void vetoableChange(java.beans.PropertyChangeEvent evt)throws java.beans.PropertyVetoException {
+                jSpinnerWrongSolutionsPerDirectionUntilBreakVetoableChange(evt);
+            }
+        });
+
+        jSpinnerWrongSolutionsUntilBreak.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinnerWrongSolutionsUntilBreakStateChanged(evt);
+            }
+        });
+        jSpinnerWrongSolutionsUntilBreak.addVetoableChangeListener(new java.beans.VetoableChangeListener() {
+            public void vetoableChange(java.beans.PropertyChangeEvent evt)throws java.beans.PropertyVetoException {
+                jSpinnerWrongSolutionsUntilBreakVetoableChange(evt);
+            }
+        });
+
+        jLabelWrongSolutionsUntilBreak.setText("Wrong Solutions until break");
+
+        jLabelWrongSolutionsPerDirectionUntilBreak.setText("Wrong Solutions per direction/parameter until break");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabelWrongSolutionsUntilBreak)
+                    .addComponent(jLabelWrongSolutionsPerDirectionUntilBreak))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jSpinnerWrongSolutionsPerDirectionUntilBreak)
+                    .addComponent(jSpinnerWrongSolutionsUntilBreak, javax.swing.GroupLayout.DEFAULT_SIZE, 76, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jSpinnerWrongSolutionsUntilBreak, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jSpinnerWrongSolutionsPerDirectionUntilBreak, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabelWrongSolutionsUntilBreak, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabelWrongSolutionsPerDirectionUntilBreak, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(6, 6, 6)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab("HillClimbing", jPanel1);
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 455, Short.MAX_VALUE)
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 90, Short.MAX_VALUE)
+        );
+
+        jTabbedPane1.addTab("Simmulated Annealing", jPanel2);
+
+        jLabel1.setText("Size of Neighborhood (in % of Designspace)");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabelWrongSolutionsUntilBreak)
-                            .addComponent(jLabelWrongSolutionsPerDirectionUntilBreak))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(9, 9, 9)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                        .addComponent(jComboBoxTypeOfStartValue, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(48, 48, 48))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                        .addComponent(jComboBoxTypeOfNeighborhood, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(48, 48, 48))
-                                    .addComponent(jSpinnerWrongSolutionsUntilBreak, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
-                                    .addComponent(jSpinnerWrongSolutionsPerDirectionUntilBreak, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)))
-                            .addComponent(jTextFieldLogFileAddon, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton1)
-                        .addGap(81, 81, 81))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabelStartvalueForParameters, javax.swing.GroupLayout.DEFAULT_SIZE, 410, Short.MAX_VALUE)
-                            .addComponent(jLabelTypeOfNeighborhood, javax.swing.GroupLayout.PREFERRED_SIZE, 276, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabelStartvalueForParameters, javax.swing.GroupLayout.DEFAULT_SIZE, 549, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(jTextFieldLogFileAddon, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(36, 36, 36)
+                                    .addComponent(jButton1))
+                                .addComponent(jCheckBoxAddPrefsToLogfilename)
+                                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 476, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(292, 292, 292))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(8, 8, 8)
-                        .addComponent(jCheckBoxAddPrefsToLogfilename)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabelTypeOfNeighborhood, javax.swing.GroupLayout.PREFERRED_SIZE, 276, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel1))
+                        .addGap(72, 72, 72)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jComboBoxTypeOfStartValue, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jComboBoxTypeOfNeighborhood, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jSpinnerSizeOfNeighborhoodInPercent, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(48, 48, 48)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jComboBoxTypeOfStartValue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jComboBoxTypeOfNeighborhood, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(20, 20, 20)
-                        .addComponent(jSpinnerWrongSolutionsUntilBreak, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jSpinnerWrongSolutionsPerDirectionUntilBreak, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(94, 94, 94)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextFieldLogFileAddon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton1)))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addGroup(layout.createSequentialGroup()
-                            .addContainerGap()
-                            .addComponent(jLabelStartvalueForParameters)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(jLabelTypeOfNeighborhood)
-                            .addGap(215, 215, 215))
-                        .addGroup(layout.createSequentialGroup()
-                            .addGap(102, 102, 102)
-                            .addComponent(jLabelWrongSolutionsUntilBreak, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(jLabelWrongSolutionsPerDirectionUntilBreak, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 80, Short.MAX_VALUE)
-                            .addComponent(jCheckBoxAddPrefsToLogfilename)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(jLabel4))))
+                            .addComponent(jComboBoxTypeOfNeighborhood, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabelTypeOfNeighborhood)))
+                    .addComponent(jLabelStartvalueForParameters))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1)
+                    .addComponent(jSpinnerSizeOfNeighborhoodInPercent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jCheckBoxAddPrefsToLogfilename)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(jTextFieldLogFileAddon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton1))
                 .addContainerGap())
         );
 
@@ -291,13 +340,18 @@ private support.typeOfNeighborhoodEnum pref_NeighborhoodType=support.typeOfNeigh
     private javax.swing.JCheckBox jCheckBoxAddPrefsToLogfilename;
     public javax.swing.JComboBox jComboBoxTypeOfNeighborhood;
     public javax.swing.JComboBox jComboBoxTypeOfStartValue;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabelStartvalueForParameters;
     private javax.swing.JLabel jLabelTypeOfNeighborhood;
     private javax.swing.JLabel jLabelWrongSolutionsPerDirectionUntilBreak;
     private javax.swing.JLabel jLabelWrongSolutionsUntilBreak;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JSpinner jSpinnerSizeOfNeighborhoodInPercent;
     private javax.swing.JSpinner jSpinnerWrongSolutionsPerDirectionUntilBreak;
     private javax.swing.JSpinner jSpinnerWrongSolutionsUntilBreak;
+    private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTextField jTextFieldLogFileAddon;
     // End of variables declaration//GEN-END:variables
 
@@ -315,16 +369,22 @@ private support.typeOfNeighborhoodEnum pref_NeighborhoodType=support.typeOfNeigh
             support.log("Error while loading Optimizer-Properties.");
 	}
     
-    this.setPref_WrongSimulationsUntilBreak(support.loadIntFromProperties("pref_WrongSimulationsUntilBreak", getPref_WrongSimulationsUntilBreak(), auto));
-    support.log(Integer.toString(support.loadIntFromProperties("pref_WrongSimulationsUntilBreak", getPref_WrongSimulationsUntilBreak(), auto)));
-    
+        this.setPref_WrongSimulationsUntilBreak(support.loadIntFromProperties("pref_WrongSimulationsUntilBreak", support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW, auto));
+    //support.log(Integer.toString(support.loadIntFromProperties("pref_WrongSimulationsUntilBreak", getPref_WrongSimulationsUntilBreak(), auto)));
     support.log("Loaded pref_WrongSimulationsUntilBreak is "+getPref_WrongSimulationsUntilBreak());
     
-        this.setPref_WrongSimulationsPerDirection(support.loadIntFromProperties("pref_WrongSimulationsPerDirection", getPref_WrongSimulationsPerDirection(), auto));
+        this.setPref_WrongSimulationsPerDirection(support.loadIntFromProperties("pref_WrongSimulationsPerDirection", support.DEFAULT_WRONG_SOLUTION_PER_DIRECTION, auto));
     support.log("Loaded pref_WrongSimulationsPerDirection is "+getPref_WrongSimulationsPerDirection());
-    
+
+        this.setPref_SizeOfNeighborhood(support.loadIntFromProperties("pref_SizeOfNeighborhood", support.DEFAULT_SIZE_OF_NEIGHBORHOOD, auto));
+    support.log("Loaded Size of Neighborhood is "+getPref_SizeOfNeighborhood());
+
         this.setPref_StartValue(support.typeOfStartValueEnum.valueOf(auto.getProperty("pref_StartValue", support.typeOfStartValueEnum.start.toString())));
     support.log("Loaded StartValue is "+getPref_StartValue());
+
+        this.setPref_NeighborhoodType(support.typeOfNeighborhoodEnum.valueOf(auto.getProperty("Pref_NeighborhoodType", support.typeOfNeighborhoodEnum.StepForwardBackward.toString())));
+    support.log("Loaded Neighborhoodtype is "+getPref_NeighborhoodType());
+
     
         this.setPref_LogFileAddon(auto.getProperty("pref_LogFileAddon", ""));
     support.log("Loaded Optimizer_Logfile-Addon is "+this.jTextFieldLogFileAddon.getText());
@@ -339,7 +399,12 @@ private support.typeOfNeighborhoodEnum pref_NeighborhoodType=support.typeOfNeigh
         try{
         auto.setProperty("pref_WrongSimulationsUntilBreak", Integer.toString(getPref_WrongSimulationsUntilBreak()));
         auto.setProperty("pref_WrongSimulationsPerDirection", Integer.toString(getPref_WrongSimulationsPerDirection()));
+        auto.setProperty("pref_SizeOfNeighborhood", Integer.toString(getPref_SizeOfNeighborhood()));
+
         auto.setProperty("pref_StartValue", getPref_StartValue().toString());
+        auto.setProperty("Pref_NeighborhoodType", getPref_NeighborhoodType().toString());
+
+
         auto.setProperty("pref_LogFileAddon", this.jTextFieldLogFileAddon.getText());
         
         File parserprops =  new File(propertyFile);
@@ -434,6 +499,21 @@ private support.typeOfNeighborhoodEnum pref_NeighborhoodType=support.typeOfNeigh
     public void setPref_NeighborhoodType(support.typeOfNeighborhoodEnum pref_NeighborhoodType) {
         this.jComboBoxTypeOfNeighborhood.setSelectedItem(pref_NeighborhoodType);
         this.pref_NeighborhoodType = pref_NeighborhoodType;
+    }
+
+    /**
+     * @return the pref_SizeOfNeighborhood
+     */
+    public int getPref_SizeOfNeighborhood() {
+        return pref_SizeOfNeighborhood;
+    }
+
+    /**
+     * @param pref_SizeOfNeighborhood the pref_SizeOfNeighborhood to set
+     */
+    public void setPref_SizeOfNeighborhood(int pref_SizeOfNeighborhood) {
+        this.jSpinnerSizeOfNeighborhoodInPercent.setValue(pref_SizeOfNeighborhood);
+        this.pref_SizeOfNeighborhood = pref_SizeOfNeighborhood;
     }
     
 }
