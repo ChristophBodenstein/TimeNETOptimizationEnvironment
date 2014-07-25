@@ -43,6 +43,8 @@ public static final typeOfNeighborhoodEnum DEFAULT_TYPE_OF_NEIGHBORHOOD =typeOfN
 
 public static final double DEFAULT_T_RATIO_SCALE=0.00001;
 public static final double DEFAULT_T_ANNEAL_SCALE=100;
+public static final double DEFAULT_MAXTEMP_PARAMETER=10;
+public static final double DEFAULT_MAXTEMP_COST=10;
 
 
 //End of program-wide default value definition

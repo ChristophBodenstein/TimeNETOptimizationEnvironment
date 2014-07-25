@@ -72,6 +72,7 @@ private double pref_MaxTempCost;//-->Probability of acceptance of bad solutions
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        measurementForm1 = new timenetexperimentgenerator.MeasurementForm();
         jLabelStartvalueForParameters = new javax.swing.JLabel();
         jComboBoxTypeOfStartValue = new javax.swing.JComboBox();
         jTextFieldLogFileAddon = new javax.swing.JTextField();
@@ -95,10 +96,10 @@ private double pref_MaxTempCost;//-->Probability of acceptance of bad solutions
         jSpinnerTemperatureStep = new javax.swing.JSpinner();
         jSpinnerMaxTemperatureCost = new javax.swing.JSpinner();
         jLabel6 = new javax.swing.JLabel();
-        jSpinnerTRatioScale = new javax.swing.JSpinner();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        jSpinnerTAnnealScale = new javax.swing.JSpinner();
+        jSpinnerTRatioScale = new timenetexperimentgenerator.helper.doubleSpinner();
+        jSpinnerTAnnealScale = new timenetexperimentgenerator.helper.doubleSpinner();
         jLabel1 = new javax.swing.JLabel();
         jSpinnerSizeOfNeighborhoodInPercent = new javax.swing.JSpinner();
 
@@ -253,8 +254,6 @@ private double pref_MaxTempCost;//-->Probability of acceptance of bad solutions
         jLabel6.setText("Max. Temp. for Cost(T-0-cost)");
         jPanel2.add(jLabel6);
         jLabel6.setBounds(20, 80, 200, 16);
-        jPanel2.add(jSpinnerTRatioScale);
-        jSpinnerTRatioScale.setBounds(580, 20, 90, 28);
 
         jLabel7.setText("TRatioScale");
         jPanel2.add(jLabel7);
@@ -263,8 +262,10 @@ private double pref_MaxTempCost;//-->Probability of acceptance of bad solutions
         jLabel8.setText("TAnnealScale");
         jPanel2.add(jLabel8);
         jLabel8.setBounds(480, 60, 100, 16);
+        jPanel2.add(jSpinnerTRatioScale);
+        jSpinnerTRatioScale.setBounds(580, 30, 101, 28);
         jPanel2.add(jSpinnerTAnnealScale);
-        jSpinnerTAnnealScale.setBounds(580, 50, 90, 28);
+        jSpinnerTAnnealScale.setBounds(580, 60, 101, 28);
 
         jTabbedPane1.addTab("Simmulated Annealing", jPanel2);
 
@@ -411,13 +412,14 @@ private double pref_MaxTempCost;//-->Probability of acceptance of bad solutions
     private javax.swing.JSpinner jSpinnerMaxTemperatureCost;
     private javax.swing.JSpinner jSpinnerMaxTemperatureParameters;
     private javax.swing.JSpinner jSpinnerSizeOfNeighborhoodInPercent;
-    private javax.swing.JSpinner jSpinnerTAnnealScale;
-    private javax.swing.JSpinner jSpinnerTRatioScale;
+    private timenetexperimentgenerator.helper.doubleSpinner jSpinnerTAnnealScale;
+    private timenetexperimentgenerator.helper.doubleSpinner jSpinnerTRatioScale;
     private javax.swing.JSpinner jSpinnerTemperatureStep;
     private javax.swing.JSpinner jSpinnerWrongSolutionsPerDirectionUntilBreak;
     private javax.swing.JSpinner jSpinnerWrongSolutionsUntilBreak;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTextField jTextFieldLogFileAddon;
+    private timenetexperimentgenerator.MeasurementForm measurementForm1;
     // End of variables declaration//GEN-END:variables
 
 
@@ -449,8 +451,22 @@ private double pref_MaxTempCost;//-->Probability of acceptance of bad solutions
         this.setPref_Annealing(typeOfAnnealing.valueOf(auto.getProperty("pref_Annealing", support.DEFAULT_TYPE_OF_ANNEALING.toString())));
     support.log("Loaded Annealing method is "+getPref_Annealing());
 
+
+    //////
         this.setPref_TScaleRatio(support.loadDoubleFromProperties("pref_TScaleRatio", support.DEFAULT_T_RATIO_SCALE, auto));
     support.log("Loaded TRatioScale is "+getPref_TRatioScale());
+
+        this.setPref_TAnnealScale(support.loadDoubleFromProperties("pref_TAnnealScale", support.DEFAULT_T_ANNEAL_SCALE, auto));
+    support.log("Loaded TAnnealScale is "+getPref_TAnnealScale());
+
+        this.setPref_MaxTempParameter(support.loadDoubleFromProperties("pref_MaxTempParameter", support.DEFAULT_MAXTEMP_PARAMETER, auto));
+    support.log("Loaded MaxTempParameter is "+getPref_MaxTempParameter());
+
+        this.setPref_MaxTempCost(support.loadDoubleFromProperties("pref_MaxTempCost", support.DEFAULT_MAXTEMP_COST, auto));
+    support.log("Loaded MaxTempCost is "+getPref_MaxTempCost());
+
+    ////
+
 
         this.setPref_LogFileAddon(auto.getProperty("pref_LogFileAddon", ""));
     support.log("Loaded Optimizer_Logfile-Addon is "+this.jTextFieldLogFileAddon.getText());
@@ -476,6 +492,15 @@ private double pref_MaxTempCost;//-->Probability of acceptance of bad solutions
         auto.setProperty("pref_NeighborhoodType", getPref_NeighborhoodType().toString());
 
         auto.setProperty("pref_Annealing", getPref_Annealing().toString());
+
+        auto.setProperty("pref_TScaleRatio", support.getString(this.getPref_TRatioScale()));
+
+        auto.setProperty("pref_TAnnealScale", support.getString(this.getPref_TAnnealScale()));
+
+        auto.setProperty("pref_MaxTempParameter", support.getString(this.getPref_MaxTempParameter()));
+
+        auto.setProperty("pref_MaxTempCost", support.getString(this.getPref_MaxTempCost()));
+
 
         auto.setProperty("pref_LogFileAddon", this.jTextFieldLogFileAddon.getText());
         
@@ -609,7 +634,7 @@ private double pref_MaxTempCost;//-->Probability of acceptance of bad solutions
      * @return the pref_TRatioScale
      */
     public double getPref_TRatioScale() {
-        this.pref_TRatioScale=(Double)this.jSpinnerTRatioScale.getValue();
+        this.pref_TRatioScale=(Double)this.jSpinnerTRatioScale.getDouble();
         return pref_TRatioScale;
     }
 
@@ -625,7 +650,7 @@ private double pref_MaxTempCost;//-->Probability of acceptance of bad solutions
      * @return the pref_TAnnealScale
      */
     public double getPref_TAnnealScale() {
-        this.pref_TAnnealScale=(Double)this.jSpinnerTAnnealScale.getValue();
+        this.pref_TAnnealScale=(Double)this.jSpinnerTAnnealScale.getDouble();
         return pref_TAnnealScale;
     }
 
