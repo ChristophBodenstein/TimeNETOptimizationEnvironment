@@ -33,6 +33,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
+import timenetexperimentgenerator.typedef.*;
 
 /**
  *
@@ -683,7 +684,7 @@ private String pathToR="";
                     support.setOriginalFilename(fileName);
                     support.setStatusLabel(jLabelExportStatus);
                     support.setMeasureFormPane(jTabbedPane1);
-                    support.setTypeOfStartValue((support.typeOfStartValueEnum)support.getOptimizerPreferences().jComboBoxTypeOfStartValue.getSelectedItem());
+                    //support.setTypeOfStartValue((typeOfStartValueEnum)support.getOptimizerPreferences().jComboBoxTypeOfStartValue.getSelectedItem());
                     Optimizer myOptimizer=SimOptiFactory.getOptimizer();
                     myOptimizer.initOptimizer();
                     }else{

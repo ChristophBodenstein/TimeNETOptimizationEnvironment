@@ -20,17 +20,34 @@ import timenetexperimentgenerator.helper.StatisticAggregator;
 import timenetexperimentgenerator.optimization.OptimizerPreferences;
 import timenetexperimentgenerator.simulation.SimulationCache;
 import timenetexperimentgenerator.simulation.Simulator;
+import timenetexperimentgenerator.typedef.*;
+
+
 
 /**
  *
  * @author Christoph Bodenstein
  */
 public class support {
+
+//Define some program-wide default values
 public static final double DEFAULT_STEPPING=1.0;
 public static final long DEFAULT_TIMEOUT=10000;
 public static final int DEFAULT_WRONG_SOLUTIONS_IN_A_ROW=30;
 public static final int DEFAULT_WRONG_SOLUTION_PER_DIRECTION=9;
 public static final int DEFAULT_SIZE_OF_NEIGHBORHOOD=5;
+public static final typeOfAnnealing DEFAULT_TYPE_OF_ANNEALING=typeOfAnnealing.FastAnnealing;
+public static final typeOfStartValueEnum DEFAULT_TYPE_OF_STARTVALUE =typeOfStartValueEnum.random;
+public static final typeOfNeighborhoodEnum DEFAULT_TYPE_OF_NEIGHBORHOOD =typeOfNeighborhoodEnum.StepForwardBackward;
+
+
+public static final double DEFAULT_T_RATIO_SCALE=0.00001;
+public static final double DEFAULT_T_ANNEAL_SCALE=100;
+
+
+//End of program-wide default value definition
+
+
 private static JLabel statusLabel=null;//The label for showing status information
 private static String originalFilename=null;//The original SCPN source file to fork for every simulation
 private static MainFrame mainFrame=null;//The Main Frame of the program
@@ -57,33 +74,28 @@ public static final String[] OPTITYPES={"Hillclimbing","Sim. Annealing","Charged
         return myOptimizerPreferences;
     }
 
-public enum typeOfStartValueEnum{start, end, middle, random};
-
-public enum typeOfNeighborhoodEnum{StepForward,StepForwardBackward,StepForwardBackRandom,RandomStepInNeighborhood,RandomStepInDesignspace,RandomSteplessInNeighborhood};
-
-public enum typeOfAnnealing{Boltzmann, FastAnnealing, VeryFastAnnealing};
 
 private static final OptimizerPreferences myOptimizerPreferences = new OptimizerPreferences();
 
     /**
      * @return the typeOfStartValue
      */
-    public static typeOfStartValueEnum getTypeOfStartValue() {
-        return typeOfStartValue;
-    }
+//    public static typedef.typeOfStartValueEnum getTypeOfStartValue() {
+//        return typeOfStartValue;
+//    }
 
     /**
      * @param aTypeOfStartValue the typeOfStartValue to set
      */
-    public static void setTypeOfStartValue(typeOfStartValueEnum aTypeOfStartValue) {
-        typeOfStartValue = aTypeOfStartValue;
-    }
+//    public static void setTypeOfStartValue(typedef.typeOfStartValueEnum aTypeOfStartValue) {
+//        typeOfStartValue = aTypeOfStartValue;
+//    }
 
 
 
 private static boolean logToConsole=false;
  
-private static typeOfStartValueEnum typeOfStartValue=typeOfStartValueEnum.start;
+//private static typedef.typeOfStartValueEnum typeOfStartValue=typedef.typeOfStartValueEnum.start;
 
     /**
      * Translates Parameternames from logfile to internal used Strings

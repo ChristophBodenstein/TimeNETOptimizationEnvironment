@@ -21,6 +21,8 @@ import timenetexperimentgenerator.datamodel.SimulationType;
 import timenetexperimentgenerator.simulation.Simulator;
 import timenetexperimentgenerator.support;
 import timenetexperimentgenerator.helper.*;
+import timenetexperimentgenerator.typedef.*;
+
 
 /**
  *
@@ -173,8 +175,7 @@ boolean directionOfOptimizationChanged=false;//True->direction already changed, 
     private ArrayList<parameter> getFirstParameterset(){
     ArrayList<parameter> newParameterset=support.getCopyOfParameterSet(parameterBase);
         //calculate the first parameterset
-            switch(support.getTypeOfStartValue()){
-
+            switch(support.getOptimizerPreferences().getPref_StartValue()){
                 case start:
                         support.log("Taking Min-Values as Start for every Parameter.");
                             //Calculate first parameterset, set every parameter to start-value
@@ -293,7 +294,7 @@ boolean directionOfOptimizationChanged=false;//True->direction already changed, 
                 wrongSolutionPerDirectionCounter=support.getOptimizerPreferences().getPref_WrongSimulationsPerDirection();
                 
                 support.log(support.getOptimizerPreferences().getPref_WrongSimulationsPerDirection()+" wrong solutions in one direction.");
-                    if(this.directionOfOptimization && support.getOptimizerPreferences().getPref_NeighborhoodType()==support.typeOfNeighborhoodEnum.StepForwardBackward){
+                    if(this.directionOfOptimization && support.getOptimizerPreferences().getPref_NeighborhoodType()==typeOfNeighborhoodEnum.StepForwardBackward){
                     //Switch direction of Optimization but change the same old parameter
                     //This only applies if StepForwardBackward
 

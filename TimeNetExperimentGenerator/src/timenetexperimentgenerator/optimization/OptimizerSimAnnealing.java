@@ -19,7 +19,7 @@ import timenetexperimentgenerator.datamodel.parameter;
 import timenetexperimentgenerator.datamodel.SimulationType;
 import timenetexperimentgenerator.simulation.Simulator;
 import timenetexperimentgenerator.support;
-import timenetexperimentgenerator.support.typeOfNeighborhoodEnum;
+import timenetexperimentgenerator.typedef.*;
 
 /**
  *
@@ -151,7 +151,7 @@ int wrongSolutionCounter=support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW;
         if(actualParameterset==null){
         //Calulate first parameterset, the mean value of all parameters, with respect to stepping
         ArrayList<parameter> newParameterset=support.getCopyOfParameterSet(parameterBase);
-            if(support.getOptimizerPreferences().getPref_StartValue()==support.typeOfStartValueEnum.start){
+            if(support.getOptimizerPreferences().getPref_StartValue()==typeOfStartValueEnum.start){
             //For this chooseing strategy, the first element must be minimum
                 for(int i=0;i<newParameterset.size();i++){
                     parameter p=newParameterset.get(i);

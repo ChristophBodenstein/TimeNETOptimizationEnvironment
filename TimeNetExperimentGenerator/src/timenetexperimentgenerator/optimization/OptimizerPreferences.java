@@ -16,6 +16,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JSpinner.DefaultEditor;
 import javax.swing.SpinnerNumberModel;
 import timenetexperimentgenerator.support;
+import timenetexperimentgenerator.typedef.*;
 
 /**
  *
@@ -28,9 +29,17 @@ private Properties auto=new Properties();
 private String pref_LogFileAddon="";
 private int pref_WrongSimulationsUntilBreak;
 private int pref_WrongSimulationsPerDirection;
-private support.typeOfStartValueEnum pref_StartValue=support.typeOfStartValueEnum.start;
-private support.typeOfNeighborhoodEnum pref_NeighborhoodType=support.typeOfNeighborhoodEnum.StepForwardBackRandom;
+private typeOfStartValueEnum pref_StartValue;
+private typeOfNeighborhoodEnum pref_NeighborhoodType;
 private int pref_SizeOfNeighborhood;
+private typeOfAnnealing pref_Annealing;
+private double pref_TRatioScale;
+private double pref_TAnnealScale;
+private double pref_MaxTempParameter;//-->Distance for parameters (Stepwidth)
+private double pref_MaxTempCost;//-->Probability of acceptance of bad solutions
+
+
+
     /**
      * Creates new form OptimizerHillPreferences
      */
@@ -39,6 +48,7 @@ private int pref_SizeOfNeighborhood;
         this.setPref_WrongSimulationsUntilBreak(support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW);
         this.setPref_WrongSimulationsPerDirection(support.DEFAULT_WRONG_SOLUTION_PER_DIRECTION);
         this.setPref_SizeOfNeighborhood(support.DEFAULT_SIZE_OF_NEIGHBORHOOD);
+        this.setPref_Annealing(support.DEFAULT_TYPE_OF_ANNEALING);
 
         this.jSpinnerSizeOfNeighborhoodInPercent.setModel(new SpinnerNumberModel(1, 1, 100, 1));
         ((DefaultEditor)this.jSpinnerSizeOfNeighborhoodInPercent.getEditor()).getTextField().setEditable(false);
@@ -78,17 +88,23 @@ private int pref_SizeOfNeighborhood;
         jLabelWrongSolutionsPerDirectionUntilBreak = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox();
+        jComboBoxAnnealingMethod = new javax.swing.JComboBox();
         jLabel3 = new javax.swing.JLabel();
-        jSpinner1 = new javax.swing.JSpinner();
+        jSpinnerMaxTemperatureParameters = new javax.swing.JSpinner();
         jLabel5 = new javax.swing.JLabel();
-        jSpinner2 = new javax.swing.JSpinner();
+        jSpinnerTemperatureStep = new javax.swing.JSpinner();
+        jSpinnerMaxTemperatureCost = new javax.swing.JSpinner();
+        jLabel6 = new javax.swing.JLabel();
+        jSpinnerTRatioScale = new javax.swing.JSpinner();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jSpinnerTAnnealScale = new javax.swing.JSpinner();
         jLabel1 = new javax.swing.JLabel();
         jSpinnerSizeOfNeighborhoodInPercent = new javax.swing.JSpinner();
 
         jLabelStartvalueForParameters.setText("Startvalue for parameters");
 
-        jComboBoxTypeOfStartValue.setModel(new DefaultComboBoxModel(support.typeOfStartValueEnum.values()));
+        jComboBoxTypeOfStartValue.setModel(new DefaultComboBoxModel(typeOfStartValueEnum.values()));
         jComboBoxTypeOfStartValue.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 jComboBoxTypeOfStartValueItemStateChanged(evt);
@@ -136,7 +152,7 @@ private int pref_SizeOfNeighborhood;
             }
         });
 
-        jComboBoxTypeOfNeighborhood.setModel(new DefaultComboBoxModel(support.typeOfNeighborhoodEnum.values()));
+        jComboBoxTypeOfNeighborhood.setModel(new DefaultComboBoxModel(typeOfNeighborhoodEnum.values()));
         jComboBoxTypeOfNeighborhood.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 jComboBoxTypeOfNeighborhoodItemStateChanged(evt);
@@ -189,7 +205,7 @@ private int pref_SizeOfNeighborhood;
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jSpinnerWrongSolutionsPerDirectionUntilBreak)
                     .addComponent(jSpinnerWrongSolutionsUntilBreak, javax.swing.GroupLayout.DEFAULT_SIZE, 76, Short.MAX_VALUE))
-                .addContainerGap(38, Short.MAX_VALUE))
+                .addContainerGap(385, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -205,7 +221,7 @@ private int pref_SizeOfNeighborhood;
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabelWrongSolutionsPerDirectionUntilBreak, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(6, 6, 6)))
-                .addContainerGap(55, Short.MAX_VALUE))
+                .addContainerGap(91, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("HillClimbing", jPanel1);
@@ -216,21 +232,39 @@ private int pref_SizeOfNeighborhood;
         jPanel2.add(jLabel2);
         jLabel2.setBounds(20, 20, 114, 16);
 
-        jComboBox1.setModel(new DefaultComboBoxModel(support.typeOfAnnealing.values()));
-        jPanel2.add(jComboBox1);
-        jComboBox1.setBounds(260, 20, 170, 27);
+        jComboBoxAnnealingMethod.setModel(new DefaultComboBoxModel(typeOfAnnealing.values()));
+        jPanel2.add(jComboBoxAnnealingMethod);
+        jComboBoxAnnealingMethod.setBounds(260, 20, 170, 27);
 
-        jLabel3.setText("Maximum (Start) Temperature");
+        jLabel3.setText("Max. Temp. for Parameters(T-0-par)");
         jPanel2.add(jLabel3);
-        jLabel3.setBounds(20, 50, 186, 16);
-        jPanel2.add(jSpinner1);
-        jSpinner1.setBounds(260, 50, 90, 28);
+        jLabel3.setBounds(20, 50, 230, 16);
+        jPanel2.add(jSpinnerMaxTemperatureParameters);
+        jSpinnerMaxTemperatureParameters.setBounds(260, 50, 90, 28);
 
         jLabel5.setText("Temperature-step");
         jPanel2.add(jLabel5);
-        jLabel5.setBounds(20, 80, 114, 16);
-        jPanel2.add(jSpinner2);
-        jSpinner2.setBounds(260, 80, 90, 28);
+        jLabel5.setBounds(20, 120, 114, 16);
+        jPanel2.add(jSpinnerTemperatureStep);
+        jSpinnerTemperatureStep.setBounds(260, 120, 90, 28);
+        jPanel2.add(jSpinnerMaxTemperatureCost);
+        jSpinnerMaxTemperatureCost.setBounds(260, 80, 90, 28);
+
+        jLabel6.setText("Max. Temp. for Cost(T-0-cost)");
+        jPanel2.add(jLabel6);
+        jLabel6.setBounds(20, 80, 200, 16);
+        jPanel2.add(jSpinnerTRatioScale);
+        jSpinnerTRatioScale.setBounds(580, 20, 90, 28);
+
+        jLabel7.setText("TRatioScale");
+        jPanel2.add(jLabel7);
+        jLabel7.setBounds(480, 30, 80, 16);
+
+        jLabel8.setText("TAnnealScale");
+        jPanel2.add(jLabel8);
+        jLabel8.setBounds(480, 60, 100, 16);
+        jPanel2.add(jSpinnerTAnnealScale);
+        jSpinnerTAnnealScale.setBounds(580, 50, 90, 28);
 
         jTabbedPane1.addTab("Simmulated Annealing", jPanel2);
 
@@ -243,21 +277,22 @@ private int pref_SizeOfNeighborhood;
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 841, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabelStartvalueForParameters, javax.swing.GroupLayout.DEFAULT_SIZE, 549, Short.MAX_VALUE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(jTextFieldLogFileAddon, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(36, 36, 36)
-                                    .addComponent(jButton1))
-                                .addComponent(jCheckBoxAddPrefsToLogfilename)))
-                        .addGap(292, 292, 292))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabelStartvalueForParameters, javax.swing.GroupLayout.DEFAULT_SIZE, 549, Short.MAX_VALUE)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(jTextFieldLogFileAddon, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addGap(36, 36, 36)
+                                            .addComponent(jButton1))
+                                        .addComponent(jCheckBoxAddPrefsToLogfilename)))
+                                .addGap(292, 292, 292))
+                            .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabelTypeOfNeighborhood, javax.swing.GroupLayout.PREFERRED_SIZE, 276, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel1))
@@ -265,10 +300,9 @@ private int pref_SizeOfNeighborhood;
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jSpinnerSizeOfNeighborhoodInPercent, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jComboBoxTypeOfNeighborhood, 0, 146, Short.MAX_VALUE)
-                                    .addComponent(jComboBoxTypeOfStartValue, 0, 146, Short.MAX_VALUE)))
-                            .addComponent(jTabbedPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 494, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(347, 347, 347)))
-                .addContainerGap())
+                                    .addComponent(jComboBoxTypeOfStartValue, 0, 146, Short.MAX_VALUE))
+                                .addGap(347, 347, 347)))
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -287,8 +321,8 @@ private int pref_SizeOfNeighborhood;
                     .addComponent(jLabel1)
                     .addComponent(jSpinnerSizeOfNeighborhoodInPercent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jTabbedPane1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jCheckBoxAddPrefsToLogfilename)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -357,7 +391,7 @@ private int pref_SizeOfNeighborhood;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JCheckBox jCheckBoxAddPrefsToLogfilename;
-    private javax.swing.JComboBox jComboBox1;
+    private javax.swing.JComboBox jComboBoxAnnealingMethod;
     public javax.swing.JComboBox jComboBoxTypeOfNeighborhood;
     public javax.swing.JComboBox jComboBoxTypeOfStartValue;
     private javax.swing.JLabel jLabel1;
@@ -365,15 +399,21 @@ private int pref_SizeOfNeighborhood;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabelStartvalueForParameters;
     private javax.swing.JLabel jLabelTypeOfNeighborhood;
     private javax.swing.JLabel jLabelWrongSolutionsPerDirectionUntilBreak;
     private javax.swing.JLabel jLabelWrongSolutionsUntilBreak;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JSpinner jSpinner1;
-    private javax.swing.JSpinner jSpinner2;
+    private javax.swing.JSpinner jSpinnerMaxTemperatureCost;
+    private javax.swing.JSpinner jSpinnerMaxTemperatureParameters;
     private javax.swing.JSpinner jSpinnerSizeOfNeighborhoodInPercent;
+    private javax.swing.JSpinner jSpinnerTAnnealScale;
+    private javax.swing.JSpinner jSpinnerTRatioScale;
+    private javax.swing.JSpinner jSpinnerTemperatureStep;
     private javax.swing.JSpinner jSpinnerWrongSolutionsPerDirectionUntilBreak;
     private javax.swing.JSpinner jSpinnerWrongSolutionsUntilBreak;
     private javax.swing.JTabbedPane jTabbedPane1;
@@ -389,30 +429,36 @@ private int pref_SizeOfNeighborhood;
                 FileInputStream in=new FileInputStream(propertyFile);
 		auto.load(in);
                 in.close();
-	} catch (IOException e) {
-		// Exception bearbeiten
-            support.log("Error while loading Optimizer-Properties.");
-	}
-    
-        this.setPref_WrongSimulationsUntilBreak(support.loadIntFromProperties("pref_WrongSimulationsUntilBreak", support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW, auto));
+
+    this.setPref_WrongSimulationsUntilBreak(support.loadIntFromProperties("pref_WrongSimulationsUntilBreak", support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW, auto));
     //support.log(Integer.toString(support.loadIntFromProperties("pref_WrongSimulationsUntilBreak", getPref_WrongSimulationsUntilBreak(), auto)));
     support.log("Loaded pref_WrongSimulationsUntilBreak is "+getPref_WrongSimulationsUntilBreak());
-    
+
         this.setPref_WrongSimulationsPerDirection(support.loadIntFromProperties("pref_WrongSimulationsPerDirection", support.DEFAULT_WRONG_SOLUTION_PER_DIRECTION, auto));
     support.log("Loaded pref_WrongSimulationsPerDirection is "+getPref_WrongSimulationsPerDirection());
 
         this.setPref_SizeOfNeighborhood(support.loadIntFromProperties("pref_SizeOfNeighborhood", support.DEFAULT_SIZE_OF_NEIGHBORHOOD, auto));
     support.log("Loaded Size of Neighborhood is "+getPref_SizeOfNeighborhood());
 
-        this.setPref_StartValue(support.typeOfStartValueEnum.valueOf(auto.getProperty("pref_StartValue", support.typeOfStartValueEnum.start.toString())));
+        this.setPref_StartValue(typeOfStartValueEnum.valueOf(auto.getProperty("pref_StartValue", support.DEFAULT_TYPE_OF_STARTVALUE.toString())));
     support.log("Loaded StartValue is "+getPref_StartValue());
 
-        this.setPref_NeighborhoodType(support.typeOfNeighborhoodEnum.valueOf(auto.getProperty("Pref_NeighborhoodType", support.typeOfNeighborhoodEnum.StepForwardBackward.toString())));
+        this.setPref_NeighborhoodType(typeOfNeighborhoodEnum.valueOf(auto.getProperty("pref_NeighborhoodType", support.DEFAULT_TYPE_OF_NEIGHBORHOOD.toString())));
     support.log("Loaded Neighborhoodtype is "+getPref_NeighborhoodType());
 
-    
+        this.setPref_Annealing(typeOfAnnealing.valueOf(auto.getProperty("pref_Annealing", support.DEFAULT_TYPE_OF_ANNEALING.toString())));
+    support.log("Loaded Annealing method is "+getPref_Annealing());
+
+        this.setPref_TScaleRatio(support.loadDoubleFromProperties("pref_TScaleRatio", support.DEFAULT_T_RATIO_SCALE, auto));
+    support.log("Loaded TRatioScale is "+getPref_TRatioScale());
+
         this.setPref_LogFileAddon(auto.getProperty("pref_LogFileAddon", ""));
     support.log("Loaded Optimizer_Logfile-Addon is "+this.jTextFieldLogFileAddon.getText());
+                
+	} catch (IOException e) {
+		// Exception bearbeiten
+            support.log("Error while loading Optimizer-Properties.");
+	}
     
     }
     
@@ -427,8 +473,9 @@ private int pref_SizeOfNeighborhood;
         auto.setProperty("pref_SizeOfNeighborhood", Integer.toString(getPref_SizeOfNeighborhood()));
 
         auto.setProperty("pref_StartValue", getPref_StartValue().toString());
-        auto.setProperty("Pref_NeighborhoodType", getPref_NeighborhoodType().toString());
+        auto.setProperty("pref_NeighborhoodType", getPref_NeighborhoodType().toString());
 
+        auto.setProperty("pref_Annealing", getPref_Annealing().toString());
 
         auto.setProperty("pref_LogFileAddon", this.jTextFieldLogFileAddon.getText());
         
@@ -497,15 +544,15 @@ private int pref_SizeOfNeighborhood;
     /**
      * @return the pref_StartValue
      */
-    public support.typeOfStartValueEnum getPref_StartValue() {
-        pref_StartValue=(support.typeOfStartValueEnum)this.jComboBoxTypeOfStartValue.getSelectedItem();
+    public typeOfStartValueEnum getPref_StartValue() {
+        pref_StartValue=(typeOfStartValueEnum)this.jComboBoxTypeOfStartValue.getSelectedItem();
         return pref_StartValue;
     }
 
     /**
      * @param pref_StartValue the pref_StartValue to set
      */
-    public void setPref_StartValue(support.typeOfStartValueEnum pref_StartValue) {
+    public void setPref_StartValue(typeOfStartValueEnum pref_StartValue) {
         this.jComboBoxTypeOfStartValue.setSelectedItem(pref_StartValue);
         this.pref_StartValue = pref_StartValue;
     }
@@ -513,15 +560,15 @@ private int pref_SizeOfNeighborhood;
     /**
      * @return the pref_NeighborhoodType
      */
-    public support.typeOfNeighborhoodEnum getPref_NeighborhoodType() {
-        pref_NeighborhoodType=(support.typeOfNeighborhoodEnum)this.jComboBoxTypeOfNeighborhood.getSelectedItem();
+    public typeOfNeighborhoodEnum getPref_NeighborhoodType() {
+        pref_NeighborhoodType=(typeOfNeighborhoodEnum)this.jComboBoxTypeOfNeighborhood.getSelectedItem();
         return pref_NeighborhoodType;
     }
 
     /**
      * @param pref_NeighborhoodType the pref_NeighborhoodType to set
      */
-    public void setPref_NeighborhoodType(support.typeOfNeighborhoodEnum pref_NeighborhoodType) {
+    public void setPref_NeighborhoodType(typeOfNeighborhoodEnum pref_NeighborhoodType) {
         this.jComboBoxTypeOfNeighborhood.setSelectedItem(pref_NeighborhoodType);
         this.pref_NeighborhoodType = pref_NeighborhoodType;
     }
@@ -530,6 +577,7 @@ private int pref_SizeOfNeighborhood;
      * @return the pref_SizeOfNeighborhood
      */
     public int getPref_SizeOfNeighborhood() {
+        this.pref_SizeOfNeighborhood=(Integer)this.jSpinnerSizeOfNeighborhoodInPercent.getValue();
         return pref_SizeOfNeighborhood;
     }
 
@@ -539,6 +587,86 @@ private int pref_SizeOfNeighborhood;
     public void setPref_SizeOfNeighborhood(int pref_SizeOfNeighborhood) {
         this.jSpinnerSizeOfNeighborhoodInPercent.setValue(pref_SizeOfNeighborhood);
         this.pref_SizeOfNeighborhood = pref_SizeOfNeighborhood;
+    }
+
+    /**
+     * @return the pref_Annealing, the Type of Annealing
+     */
+    public typeOfAnnealing getPref_Annealing() {
+        this.pref_Annealing=(typeOfAnnealing)this.jComboBoxAnnealingMethod.getSelectedItem();
+        return pref_Annealing;
+    }
+
+    /**
+     * @param pref_Annealing the pref_Annealing to set
+     */
+    public void setPref_Annealing(typeOfAnnealing pref_Annealing) {
+        this.jComboBoxAnnealingMethod.setSelectedItem(pref_Annealing);
+        this.pref_Annealing = pref_Annealing;
+    }
+
+    /**
+     * @return the pref_TRatioScale
+     */
+    public double getPref_TRatioScale() {
+        this.pref_TRatioScale=(Double)this.jSpinnerTRatioScale.getValue();
+        return pref_TRatioScale;
+    }
+
+    /**
+     * @param pref_TRatioScale the pref_TRatioScale to set
+     */
+    public void setPref_TScaleRatio(double pref_TScaleRatio) {
+        this.jSpinnerTRatioScale.setValue(pref_TScaleRatio);
+        this.pref_TRatioScale = pref_TScaleRatio;
+    }
+
+    /**
+     * @return the pref_TAnnealScale
+     */
+    public double getPref_TAnnealScale() {
+        this.pref_TAnnealScale=(Double)this.jSpinnerTAnnealScale.getValue();
+        return pref_TAnnealScale;
+    }
+
+    /**
+     * @param pref_TAnnealScale the pref_TAnnealScale to set
+     */
+    public void setPref_TAnnealScale(double pref_TAnnealScale) {
+        this.jSpinnerTAnnealScale.setValue(pref_TAnnealScale);
+        this.pref_TAnnealScale = pref_TAnnealScale;
+    }
+
+    /**
+     * @return the pref_MaxTempParameter
+     */
+    public double getPref_MaxTempParameter() {
+        this.pref_MaxTempParameter=(Double)this.jSpinnerMaxTemperatureParameters.getValue();
+        return pref_MaxTempParameter;
+    }
+
+    /**
+     * @param pref_MaxTempParameter the pref_MaxTempParameter to set
+     */
+    public void setPref_MaxTempParameter(double pref_MaxTempParameter) {
+        this.jSpinnerMaxTemperatureParameters.setValue(pref_MaxTempParameter);
+        this.pref_MaxTempParameter = pref_MaxTempParameter;
+    }
+
+    /**
+     * @return the pref_MaxTempCost
+     */
+    public double getPref_MaxTempCost() {
+        this.pref_MaxTempCost=(Double)jSpinnerMaxTemperatureCost.getValue();
+        return pref_MaxTempCost;
+    }
+
+    /**
+     * @param pref_MaxTempCost the pref_MaxTempCost to set
+     */
+    public void setPref_MaxTempCost(double pref_MaxTempCost) {
+        this.jSpinnerMaxTemperatureCost.setValue(pref_MaxTempCost);
+        this.pref_MaxTempCost = pref_MaxTempCost;
     }
     
 }
