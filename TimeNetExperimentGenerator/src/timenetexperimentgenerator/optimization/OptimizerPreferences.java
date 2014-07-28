@@ -37,6 +37,8 @@ private double pref_TRatioScale;
 private double pref_TAnnealScale;
 private double pref_MaxTempParameter;//-->Distance for parameters (Stepwidth)
 private double pref_MaxTempCost;//-->Probability of acceptance of bad solutions
+private SpinnerNumberModel TRatioScaleSpinnerModel;
+private SpinnerNumberModel TAnnealScaleSpinnerModel;
 
 
 
@@ -44,6 +46,9 @@ private double pref_MaxTempCost;//-->Probability of acceptance of bad solutions
      * Creates new form OptimizerHillPreferences
      */
     public OptimizerPreferences() {
+        TRatioScaleSpinnerModel = new SpinnerNumberModel(0.00001, 0.0, 100.0, 0.00001);
+        TAnnealScaleSpinnerModel = new SpinnerNumberModel(100, 0, 10000, 1);
+
         initComponents();
         this.setPref_WrongSimulationsUntilBreak(support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW);
         this.setPref_WrongSimulationsPerDirection(support.DEFAULT_WRONG_SOLUTION_PER_DIRECTION);
@@ -57,6 +62,7 @@ private double pref_MaxTempCost;//-->Probability of acceptance of bad solutions
         ((DefaultEditor)this.jSpinnerWrongSolutionsUntilBreak.getEditor()).getTextField().setEditable(false);
 
 
+        
 
         this.loadPreferences();
 
@@ -82,24 +88,23 @@ private double pref_MaxTempCost;//-->Probability of acceptance of bad solutions
         jComboBoxTypeOfNeighborhood = new javax.swing.JComboBox();
         jLabelTypeOfNeighborhood = new javax.swing.JLabel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
-        jPanel1 = new javax.swing.JPanel();
+        jPanelHillClimbing = new javax.swing.JPanel();
         jSpinnerWrongSolutionsPerDirectionUntilBreak = new javax.swing.JSpinner();
         jSpinnerWrongSolutionsUntilBreak = new javax.swing.JSpinner();
         jLabelWrongSolutionsUntilBreak = new javax.swing.JLabel();
         jLabelWrongSolutionsPerDirectionUntilBreak = new javax.swing.JLabel();
-        jPanel2 = new javax.swing.JPanel();
+        jPanelSimAnnealing = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jComboBoxAnnealingMethod = new javax.swing.JComboBox();
         jLabel3 = new javax.swing.JLabel();
         jSpinnerMaxTemperatureParameters = new javax.swing.JSpinner();
-        jLabel5 = new javax.swing.JLabel();
-        jSpinnerTemperatureStep = new javax.swing.JSpinner();
         jSpinnerMaxTemperatureCost = new javax.swing.JSpinner();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        jSpinnerTRatioScale = new timenetexperimentgenerator.helper.doubleSpinner();
-        jSpinnerTAnnealScale = new timenetexperimentgenerator.helper.doubleSpinner();
+        jSpinnerTRatioScale = new javax.swing.JSpinner();
+        jSpinnerTAnnealScale = new javax.swing.JSpinner();
+        jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jSpinnerSizeOfNeighborhoodInPercent = new javax.swing.JSpinner();
 
@@ -193,31 +198,31 @@ private double pref_MaxTempCost;//-->Probability of acceptance of bad solutions
 
         jLabelWrongSolutionsPerDirectionUntilBreak.setText("Wrong Solutions per direction/parameter until break");
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+        javax.swing.GroupLayout jPanelHillClimbingLayout = new javax.swing.GroupLayout(jPanelHillClimbing);
+        jPanelHillClimbing.setLayout(jPanelHillClimbingLayout);
+        jPanelHillClimbingLayout.setHorizontalGroup(
+            jPanelHillClimbingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelHillClimbingLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanelHillClimbingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabelWrongSolutionsUntilBreak)
                     .addComponent(jLabelWrongSolutionsPerDirectionUntilBreak))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jPanelHillClimbingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jSpinnerWrongSolutionsPerDirectionUntilBreak)
                     .addComponent(jSpinnerWrongSolutionsUntilBreak, javax.swing.GroupLayout.DEFAULT_SIZE, 76, Short.MAX_VALUE))
                 .addContainerGap(385, Short.MAX_VALUE))
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        jPanelHillClimbingLayout.setVerticalGroup(
+            jPanelHillClimbingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelHillClimbingLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanelHillClimbingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanelHillClimbingLayout.createSequentialGroup()
                         .addComponent(jSpinnerWrongSolutionsUntilBreak, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jSpinnerWrongSolutionsPerDirectionUntilBreak, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGroup(jPanelHillClimbingLayout.createSequentialGroup()
                         .addComponent(jLabelWrongSolutionsUntilBreak, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabelWrongSolutionsPerDirectionUntilBreak, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -225,49 +230,62 @@ private double pref_MaxTempCost;//-->Probability of acceptance of bad solutions
                 .addContainerGap(91, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("HillClimbing", jPanel1);
+        jTabbedPane1.addTab("HillClimbing", jPanelHillClimbing);
 
-        jPanel2.setLayout(null);
+        jPanelSimAnnealing.setLayout(null);
 
         jLabel2.setText("Annealing Method");
-        jPanel2.add(jLabel2);
+        jPanelSimAnnealing.add(jLabel2);
         jLabel2.setBounds(20, 20, 114, 16);
 
         jComboBoxAnnealingMethod.setModel(new DefaultComboBoxModel(typeOfAnnealing.values()));
-        jPanel2.add(jComboBoxAnnealingMethod);
+        jPanelSimAnnealing.add(jComboBoxAnnealingMethod);
         jComboBoxAnnealingMethod.setBounds(260, 20, 170, 27);
 
         jLabel3.setText("Max. Temp. for Parameters(T-0-par)");
-        jPanel2.add(jLabel3);
+        jPanelSimAnnealing.add(jLabel3);
         jLabel3.setBounds(20, 50, 230, 16);
-        jPanel2.add(jSpinnerMaxTemperatureParameters);
+        jPanelSimAnnealing.add(jSpinnerMaxTemperatureParameters);
         jSpinnerMaxTemperatureParameters.setBounds(260, 50, 90, 28);
-
-        jLabel5.setText("Temperature-step");
-        jPanel2.add(jLabel5);
-        jLabel5.setBounds(20, 120, 114, 16);
-        jPanel2.add(jSpinnerTemperatureStep);
-        jSpinnerTemperatureStep.setBounds(260, 120, 90, 28);
-        jPanel2.add(jSpinnerMaxTemperatureCost);
+        jPanelSimAnnealing.add(jSpinnerMaxTemperatureCost);
         jSpinnerMaxTemperatureCost.setBounds(260, 80, 90, 28);
 
         jLabel6.setText("Max. Temp. for Cost(T-0-cost)");
-        jPanel2.add(jLabel6);
+        jPanelSimAnnealing.add(jLabel6);
         jLabel6.setBounds(20, 80, 200, 16);
 
         jLabel7.setText("TRatioScale");
-        jPanel2.add(jLabel7);
+        jPanelSimAnnealing.add(jLabel7);
         jLabel7.setBounds(480, 30, 80, 16);
 
         jLabel8.setText("TAnnealScale");
-        jPanel2.add(jLabel8);
+        jPanelSimAnnealing.add(jLabel8);
         jLabel8.setBounds(480, 60, 100, 16);
-        jPanel2.add(jSpinnerTRatioScale);
-        jSpinnerTRatioScale.setBounds(580, 30, 101, 28);
-        jPanel2.add(jSpinnerTAnnealScale);
-        jSpinnerTAnnealScale.setBounds(580, 60, 101, 28);
 
-        jTabbedPane1.addTab("Simmulated Annealing", jPanel2);
+        jSpinnerTRatioScale.setModel(TRatioScaleSpinnerModel);
+        jSpinnerTRatioScale.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerTRatioScale, "#.#####"));
+        jSpinnerTRatioScale.setValue(0.00001);
+        jPanelSimAnnealing.add(jSpinnerTRatioScale);
+        jSpinnerTRatioScale.setBounds(580, 20, 100, 28);
+
+        jSpinnerTAnnealScale.setModel(new javax.swing.SpinnerNumberModel(100.0d, 0.0d, 10000.0d, 1.0d));
+        jPanelSimAnnealing.add(jSpinnerTAnnealScale);
+        jSpinnerTAnnealScale.setBounds(580, 60, 100, 28);
+
+        jTabbedPane1.addTab("Simmulated Annealing", jPanelSimAnnealing);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 820, Short.MAX_VALUE)
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 175, Short.MAX_VALUE)
+        );
+
+        jTabbedPane1.addTab("Simple Annealing", jPanel1);
 
         jLabel1.setText("Size of Neighborhood (in % of Designspace)");
 
@@ -399,7 +417,6 @@ private double pref_MaxTempCost;//-->Probability of acceptance of bad solutions
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
@@ -408,13 +425,13 @@ private double pref_MaxTempCost;//-->Probability of acceptance of bad solutions
     private javax.swing.JLabel jLabelWrongSolutionsPerDirectionUntilBreak;
     private javax.swing.JLabel jLabelWrongSolutionsUntilBreak;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanelHillClimbing;
+    private javax.swing.JPanel jPanelSimAnnealing;
     private javax.swing.JSpinner jSpinnerMaxTemperatureCost;
     private javax.swing.JSpinner jSpinnerMaxTemperatureParameters;
     private javax.swing.JSpinner jSpinnerSizeOfNeighborhoodInPercent;
-    private timenetexperimentgenerator.helper.doubleSpinner jSpinnerTAnnealScale;
-    private timenetexperimentgenerator.helper.doubleSpinner jSpinnerTRatioScale;
-    private javax.swing.JSpinner jSpinnerTemperatureStep;
+    private javax.swing.JSpinner jSpinnerTAnnealScale;
+    private javax.swing.JSpinner jSpinnerTRatioScale;
     private javax.swing.JSpinner jSpinnerWrongSolutionsPerDirectionUntilBreak;
     private javax.swing.JSpinner jSpinnerWrongSolutionsUntilBreak;
     private javax.swing.JTabbedPane jTabbedPane1;
@@ -634,7 +651,7 @@ private double pref_MaxTempCost;//-->Probability of acceptance of bad solutions
      * @return the pref_TRatioScale
      */
     public double getPref_TRatioScale() {
-        this.pref_TRatioScale=(Double)this.jSpinnerTRatioScale.getDouble();
+        this.pref_TRatioScale=(Double)this.jSpinnerTRatioScale.getValue();
         return pref_TRatioScale;
     }
 
@@ -650,7 +667,7 @@ private double pref_MaxTempCost;//-->Probability of acceptance of bad solutions
      * @return the pref_TAnnealScale
      */
     public double getPref_TAnnealScale() {
-        this.pref_TAnnealScale=(Double)this.jSpinnerTAnnealScale.getDouble();
+        this.pref_TAnnealScale=(Double)( this.jSpinnerTAnnealScale.getValue());
         return pref_TAnnealScale;
     }
 
