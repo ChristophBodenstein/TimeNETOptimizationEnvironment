@@ -37,8 +37,9 @@ private double pref_TRatioScale;
 private double pref_TAnnealScale;
 private double pref_MaxTempParameter;//-->Distance for parameters (Stepwidth)
 private double pref_MaxTempCost;//-->Probability of acceptance of bad solutions
+private double pref_Epsilon;//Abort-Temperature for Simmulated Annealing
 private SpinnerNumberModel TRatioScaleSpinnerModel;
-private SpinnerNumberModel TAnnealScaleSpinnerModel;
+
 
 
 
@@ -47,7 +48,7 @@ private SpinnerNumberModel TAnnealScaleSpinnerModel;
      */
     public OptimizerPreferences() {
         TRatioScaleSpinnerModel = new SpinnerNumberModel(0.00001, 0.0, 100.0, 0.00001);
-        TAnnealScaleSpinnerModel = new SpinnerNumberModel(100, 0, 10000, 1);
+        
 
         initComponents();
         this.setPref_WrongSimulationsUntilBreak(support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW);
@@ -104,6 +105,8 @@ private SpinnerNumberModel TAnnealScaleSpinnerModel;
         jLabel8 = new javax.swing.JLabel();
         jSpinnerTRatioScale = new javax.swing.JSpinner();
         jSpinnerTAnnealScale = new javax.swing.JSpinner();
+        jLabel5 = new javax.swing.JLabel();
+        jSpinnerEpsilon = new javax.swing.JSpinner();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jSpinnerSizeOfNeighborhoodInPercent = new javax.swing.JSpinner();
@@ -245,8 +248,14 @@ private SpinnerNumberModel TAnnealScaleSpinnerModel;
         jLabel3.setText("Max. Temp. for Parameters(T-0-par)");
         jPanelSimAnnealing.add(jLabel3);
         jLabel3.setBounds(20, 50, 230, 16);
+
+        jSpinnerMaxTemperatureParameters.setModel(new javax.swing.SpinnerNumberModel(1.0d, 0.0d, 1.0d, 0.01d));
+        jSpinnerMaxTemperatureParameters.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerMaxTemperatureParameters, "#.##"));
         jPanelSimAnnealing.add(jSpinnerMaxTemperatureParameters);
         jSpinnerMaxTemperatureParameters.setBounds(260, 50, 90, 28);
+
+        jSpinnerMaxTemperatureCost.setModel(new javax.swing.SpinnerNumberModel(1.0d, 0.0d, 1.0d, 0.01d));
+        jSpinnerMaxTemperatureCost.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerMaxTemperatureCost, "#.##"));
         jPanelSimAnnealing.add(jSpinnerMaxTemperatureCost);
         jSpinnerMaxTemperatureCost.setBounds(260, 80, 90, 28);
 
@@ -271,6 +280,16 @@ private SpinnerNumberModel TAnnealScaleSpinnerModel;
         jSpinnerTAnnealScale.setModel(new javax.swing.SpinnerNumberModel(100.0d, 0.0d, 10000.0d, 1.0d));
         jPanelSimAnnealing.add(jSpinnerTAnnealScale);
         jSpinnerTAnnealScale.setBounds(580, 60, 100, 28);
+
+        jLabel5.setText("Epsilon (Abort-Temperature)");
+        jPanelSimAnnealing.add(jLabel5);
+        jLabel5.setBounds(20, 120, 210, 16);
+
+        jSpinnerEpsilon.setModel(new javax.swing.SpinnerNumberModel(0.01d, 0.0d, 1.0d, 0.01d));
+        jSpinnerEpsilon.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerEpsilon, "#.##"));
+        jSpinnerEpsilon.setValue(0.01);
+        jPanelSimAnnealing.add(jSpinnerEpsilon);
+        jSpinnerEpsilon.setBounds(260, 120, 90, 28);
 
         jTabbedPane1.addTab("Simmulated Annealing", jPanelSimAnnealing);
 
@@ -417,6 +436,7 @@ private SpinnerNumberModel TAnnealScaleSpinnerModel;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
@@ -427,6 +447,7 @@ private SpinnerNumberModel TAnnealScaleSpinnerModel;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanelHillClimbing;
     private javax.swing.JPanel jPanelSimAnnealing;
+    private javax.swing.JSpinner jSpinnerEpsilon;
     private javax.swing.JSpinner jSpinnerMaxTemperatureCost;
     private javax.swing.JSpinner jSpinnerMaxTemperatureParameters;
     private javax.swing.JSpinner jSpinnerSizeOfNeighborhoodInPercent;
@@ -468,8 +489,6 @@ private SpinnerNumberModel TAnnealScaleSpinnerModel;
         this.setPref_Annealing(typeOfAnnealing.valueOf(auto.getProperty("pref_Annealing", support.DEFAULT_TYPE_OF_ANNEALING.toString())));
     support.log("Loaded Annealing method is "+getPref_Annealing());
 
-
-    //////
         this.setPref_TScaleRatio(support.loadDoubleFromProperties("pref_TScaleRatio", support.DEFAULT_T_RATIO_SCALE, auto));
     support.log("Loaded TRatioScale is "+getPref_TRatioScale());
 
@@ -482,7 +501,7 @@ private SpinnerNumberModel TAnnealScaleSpinnerModel;
         this.setPref_MaxTempCost(support.loadDoubleFromProperties("pref_MaxTempCost", support.DEFAULT_MAXTEMP_COST, auto));
     support.log("Loaded MaxTempCost is "+getPref_MaxTempCost());
 
-    ////
+        this.setPref_Epsilon(support.loadDoubleFromProperties("pref_Epsilon", support.DEFAULT_EPSILON, auto));
 
 
         this.setPref_LogFileAddon(auto.getProperty("pref_LogFileAddon", ""));
@@ -518,6 +537,7 @@ private SpinnerNumberModel TAnnealScaleSpinnerModel;
 
         auto.setProperty("pref_MaxTempCost", support.getString(this.getPref_MaxTempCost()));
 
+        auto.setProperty("pref_Epsilon", Double.toString(getPref_Epsilon()) ) ;
 
         auto.setProperty("pref_LogFileAddon", this.jTextFieldLogFileAddon.getText());
         
@@ -709,6 +729,22 @@ private SpinnerNumberModel TAnnealScaleSpinnerModel;
     public void setPref_MaxTempCost(double pref_MaxTempCost) {
         this.jSpinnerMaxTemperatureCost.setValue(pref_MaxTempCost);
         this.pref_MaxTempCost = pref_MaxTempCost;
+    }
+
+    /**
+     * @return the pref_Epsilon
+     */
+    public double getPref_Epsilon() {
+        this.pref_Epsilon = (Double)jSpinnerEpsilon.getValue();
+        return pref_Epsilon;
+    }
+
+    /**
+     * @param pref_Epsilon the pref_Epsilon to set
+     */
+    public void setPref_Epsilon(double pref_Epsilon) {
+        this.jSpinnerEpsilon.setValue(pref_Epsilon);
+        this.pref_Epsilon = pref_Epsilon;
     }
     
 }
