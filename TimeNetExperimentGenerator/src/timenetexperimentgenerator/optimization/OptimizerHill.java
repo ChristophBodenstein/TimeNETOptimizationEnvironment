@@ -10,7 +10,6 @@ package timenetexperimentgenerator.optimization;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 import timenetexperimentgenerator.MainFrame;
@@ -32,7 +31,7 @@ public class OptimizerHill implements Runnable, Optimizer{
 private int SimI=1,SimT=0;
 private double maxTemp=20;
 private int stepCountTemp=100;
-private double sizeOfNeighborhood=10;//in percent
+private double sizeOfNeighborhood;//in percent
 private double Fx;//Current Distance
 private double Fy;//New Distance?
 private int typeOfNeighborhood=0;
@@ -67,10 +66,11 @@ boolean directionOfOptimizationChanged=false;//True->direction already changed, 
      *
      */
     public OptimizerHill() {
-    logFileName=support.getTmpPath()+File.separator+this.getClass().getSimpleName()+Calendar.getInstance().getTimeInMillis()+support.getOptimizerPreferences().getPref_LogFileAddon()+".csv";
+    logFileName=support.getTmpPath()+File.separator+this.getClass().getSimpleName()+"_"+Calendar.getInstance().getTimeInMillis()+support.getOptimizerPreferences().getPref_LogFileAddon()+".csv";
     support.log("LogfileName:"+logFileName);
     this.wrongSolutionCounter=support.getOptimizerPreferences().getPref_WrongSimulationsUntilBreak();
     myPreferences.setVisible(false);
+    sizeOfNeighborhood=support.getOptimizerPreferences().getPref_SizeOfNeighborhood();
     }
 
     
