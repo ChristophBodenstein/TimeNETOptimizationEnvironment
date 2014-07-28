@@ -101,14 +101,18 @@ boolean directionOfOptimizationChanged=false;//True->direction already changed, 
     new Thread(this).start();
     }
 
+    
+    /**
+     * Main Routine for Thread. The Optimization runs here
+     */
     public void run() {
         ArrayList<parameter> lastParameterset;
         //Simulator init with initional parameterset
         Simulator mySimulator=SimOptiFactory.getSimulator();
         
-        mySimulator.initSimulator(getNextParametersetAsArrayList(null), simulationCounter, false);
+        mySimulator.initSimulator(getNextParametersetAsArrayList(null), getSimulationCounter(), false);
         //Wait until Simulator has ended
-        support.waitForEndOfSimulator(mySimulator, simulationCounter, 600);
+        support.waitForEndOfSimulator(mySimulator, getSimulationCounter(), 600);
         support.addLinesToLogFileFromListOfParser(mySimulator.getListOfCompletedSimulationParsers(), logFileName);
         this.historyOfParsers = support.appendListOfParsers(historyOfParsers, mySimulator.getListOfCompletedSimulationParsers());
         currentSolution=mySimulator.getListOfCompletedSimulationParsers().get(0);
@@ -117,9 +121,9 @@ boolean directionOfOptimizationChanged=false;//True->direction already changed, 
         lastParameterset=currentSolution.getListOfParameters();
         
             while(!optimized){
-            mySimulator.initSimulator(getNextParametersetAsArrayList(lastParameterset), simulationCounter, false);
-            support.waitForEndOfSimulator(mySimulator, simulationCounter, 600);
-            this.simulationCounter=mySimulator.getSimulationCounter();
+            mySimulator.initSimulator(getNextParametersetAsArrayList(lastParameterset), getSimulationCounter(), false);
+            support.waitForEndOfSimulator(mySimulator, getSimulationCounter(), 600);
+            this.setSimulationCounter(mySimulator.getSimulationCounter());
             support.addLinesToLogFileFromListOfParser(mySimulator.getListOfCompletedSimulationParsers(), logFileName);
             this.historyOfParsers = support.appendListOfParsers(historyOfParsers, mySimulator.getListOfCompletedSimulationParsers());
             nextSolution=mySimulator.getListOfCompletedSimulationParsers().get(0);
@@ -140,6 +144,9 @@ boolean directionOfOptimizationChanged=false;//True->direction already changed, 
 
     /**
      * Check, if next Solution is better. Calculate if Optimization is done or not
+     * Reset wrongSolutionCounter if solution is better
+     * Reset wrongSolutionPerDirectionCounter if solution is better
+     * Return true if wrongSolutionCounter is down
      *
      */
     protected boolean isOptimized(double actualDistance, double nextDistance){
@@ -232,6 +239,7 @@ boolean directionOfOptimizationChanged=false;//True->direction already changed, 
     /**
      * Returns the next parameterset in neighborhood
      * Next parameterset is chosen randomly within the neighborhood
+     * You should overload this method in your child-classes
      * @param actualParameterset  actual parameterset, if null, then first parameterset is calculated
      * @return next parameterset to be simulated
      */
@@ -458,9 +466,19 @@ boolean directionOfOptimizationChanged=false;//True->direction already changed, 
     return distance;
     }
 
-
-    public void showPreferences() {
-        myPreferences.setVisible(true);
+    /**
+     * @return the simulationCounter
+     */
+    public int getSimulationCounter() {
+        return simulationCounter;
     }
+
+    /**
+     * @param simulationCounter the simulationCounter to set
+     */
+    public void setSimulationCounter(int simulationCounter) {
+        this.simulationCounter = simulationCounter;
+    }
+
 
 }

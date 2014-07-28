@@ -51,17 +51,19 @@ private static SimulationCache singleTonSimulationCache=new SimulationCache();
     }
 
     public static Optimizer getOptimizer(){
-        switch (support.getChosenOptimizerType().intValue()){
-            case 0:
+        switch (support.getChosenOptimizerType()){
+            case HillClimbing:
                     return new OptimizerHill();
-            case 1:
+            case SimAnnealing:
                     return new OptimizerSimAnnealing();
-            case 2:
+            case ChargedSystemSearch:
                     return new OptimizerChargedSystemSearch();
-            case 3:
+            case Genetic:
                     return new OptimizerGenetic();
-            case 4:
+            case Seidel3:
                     return new OptimizerASeidel3();
+            case SimpleAnnealing:
+                    return new OptimizerSimAnnealing();
 
             default: 
                     return new OptimizerHill();

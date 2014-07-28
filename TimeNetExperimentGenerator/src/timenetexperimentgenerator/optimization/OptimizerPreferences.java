@@ -32,7 +32,7 @@ private int pref_WrongSimulationsPerDirection;
 private typeOfStartValueEnum pref_StartValue;
 private typeOfNeighborhoodEnum pref_NeighborhoodType;
 private int pref_SizeOfNeighborhood;
-private typeOfAnnealing pref_Annealing;
+private typeOfAnnealing pref_Cooling;
 private double pref_TRatioScale;
 private double pref_TAnnealScale;
 private double pref_MaxTempParameter;//-->Distance for parameters (Stepwidth)
@@ -54,7 +54,7 @@ private SpinnerNumberModel TRatioScaleSpinnerModel;
         this.setPref_WrongSimulationsUntilBreak(support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW);
         this.setPref_WrongSimulationsPerDirection(support.DEFAULT_WRONG_SOLUTION_PER_DIRECTION);
         this.setPref_SizeOfNeighborhood(support.DEFAULT_SIZE_OF_NEIGHBORHOOD);
-        this.setPref_Annealing(support.DEFAULT_TYPE_OF_ANNEALING);
+        this.setPref_Cooling(support.DEFAULT_TYPE_OF_ANNEALING);
 
         this.jSpinnerSizeOfNeighborhoodInPercent.setModel(new SpinnerNumberModel(1, 1, 100, 1));
         ((DefaultEditor)this.jSpinnerSizeOfNeighborhoodInPercent.getEditor()).getTextField().setEditable(false);
@@ -96,7 +96,7 @@ private SpinnerNumberModel TRatioScaleSpinnerModel;
         jLabelWrongSolutionsPerDirectionUntilBreak = new javax.swing.JLabel();
         jPanelSimAnnealing = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        jComboBoxAnnealingMethod = new javax.swing.JComboBox();
+        jComboBoxCoolingMethod = new javax.swing.JComboBox();
         jLabel3 = new javax.swing.JLabel();
         jSpinnerMaxTemperatureParameters = new javax.swing.JSpinner();
         jSpinnerMaxTemperatureCost = new javax.swing.JSpinner();
@@ -237,13 +237,13 @@ private SpinnerNumberModel TRatioScaleSpinnerModel;
 
         jPanelSimAnnealing.setLayout(null);
 
-        jLabel2.setText("Annealing Method");
+        jLabel2.setText("Cooling Method");
         jPanelSimAnnealing.add(jLabel2);
-        jLabel2.setBounds(20, 20, 114, 16);
+        jLabel2.setBounds(20, 20, 100, 16);
 
-        jComboBoxAnnealingMethod.setModel(new DefaultComboBoxModel(typeOfAnnealing.values()));
-        jPanelSimAnnealing.add(jComboBoxAnnealingMethod);
-        jComboBoxAnnealingMethod.setBounds(260, 20, 170, 27);
+        jComboBoxCoolingMethod.setModel(new DefaultComboBoxModel(typeOfAnnealing.values()));
+        jPanelSimAnnealing.add(jComboBoxCoolingMethod);
+        jComboBoxCoolingMethod.setBounds(260, 20, 170, 27);
 
         jLabel3.setText("Max. Temp. for Parameters(T-0-par)");
         jPanelSimAnnealing.add(jLabel3);
@@ -429,7 +429,7 @@ private SpinnerNumberModel TRatioScaleSpinnerModel;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JCheckBox jCheckBoxAddPrefsToLogfilename;
-    private javax.swing.JComboBox jComboBoxAnnealingMethod;
+    private javax.swing.JComboBox jComboBoxCoolingMethod;
     public javax.swing.JComboBox jComboBoxTypeOfNeighborhood;
     public javax.swing.JComboBox jComboBoxTypeOfStartValue;
     private javax.swing.JLabel jLabel1;
@@ -486,8 +486,8 @@ private SpinnerNumberModel TRatioScaleSpinnerModel;
         this.setPref_NeighborhoodType(typeOfNeighborhoodEnum.valueOf(auto.getProperty("pref_NeighborhoodType", support.DEFAULT_TYPE_OF_NEIGHBORHOOD.toString())));
     support.log("Loaded Neighborhoodtype is "+getPref_NeighborhoodType());
 
-        this.setPref_Annealing(typeOfAnnealing.valueOf(auto.getProperty("pref_Annealing", support.DEFAULT_TYPE_OF_ANNEALING.toString())));
-    support.log("Loaded Annealing method is "+getPref_Annealing());
+        this.setPref_Cooling(typeOfAnnealing.valueOf(auto.getProperty("pref_Cooling", support.DEFAULT_TYPE_OF_ANNEALING.toString())));
+    support.log("Loaded Annealing method is "+getPref_Cooling());
 
         this.setPref_TScaleRatio(support.loadDoubleFromProperties("pref_TScaleRatio", support.DEFAULT_T_RATIO_SCALE, auto));
     support.log("Loaded TRatioScale is "+getPref_TRatioScale());
@@ -528,7 +528,7 @@ private SpinnerNumberModel TRatioScaleSpinnerModel;
         auto.setProperty("pref_StartValue", getPref_StartValue().toString());
         auto.setProperty("pref_NeighborhoodType", getPref_NeighborhoodType().toString());
 
-        auto.setProperty("pref_Annealing", getPref_Annealing().toString());
+        auto.setProperty("pref_Cooling", getPref_Cooling().toString());
 
         auto.setProperty("pref_TScaleRatio", support.getString(this.getPref_TRatioScale()));
 
@@ -590,8 +590,36 @@ private SpinnerNumberModel TRatioScaleSpinnerModel;
     String addonString=pref_LogFileAddon;
 
         if(this.jCheckBoxAddPrefsToLogfilename.isSelected()){
-        addonString+="_WSIMPERDIR_"+this.getPref_WrongSimulationsPerDirection()+"_WSIM_"+this.getPref_WrongSimulationsUntilBreak()+"_StartAt_"+this.jComboBoxTypeOfStartValue.getSelectedItem();
-        addonString+="TypOfNeighborhodd_"+this.jComboBoxTypeOfNeighborhood.getSelectedItem();
+
+            switch(support.getChosenOptimizerType()){
+                case HillClimbing:
+                    addonString+="_WSIMPERDIR_"+this.getPref_WrongSimulationsPerDirection()+"_WSIM_"+this.getPref_WrongSimulationsUntilBreak()+"_StartAt_"+this.jComboBoxTypeOfStartValue.getSelectedItem();
+                    addonString+="TypOfNeighborhood_"+this.jComboBoxTypeOfNeighborhood.getSelectedItem();
+                    break;
+                case SimAnnealing:
+                    addonString+="_StartAt_"+this.jComboBoxTypeOfStartValue.getSelectedItem();
+                    addonString+="_TAnnealScale_"+this.getPref_TAnnealScale();
+                    addonString+="_TRatioScale_"+this.getPref_TRatioScale();
+                    addonString+="_Epsilon_"+this.getPref_Epsilon();
+                    addonString+="_Cooling_"+this.getPref_Cooling();
+                    addonString+="_MaxTempPara_"+this.getPref_MaxTempParameter();
+                    addonString+="_MaxTempCost_"+this.getPref_MaxTempCost();
+                    break;
+                case SimpleAnnealing:
+                    break;
+
+                case Genetic:
+                    //TODO Add Infos to this Algorithm here!
+                    break;
+                case ChargedSystemSearch:
+                    //TODO Add Infos to this Algorithm here!
+                    break;
+                case Seidel3:
+                    //TODO Add Infos to this Algorithm here!
+                    break;
+            }
+            
+        
         }
         return addonString;
     }
@@ -653,19 +681,19 @@ private SpinnerNumberModel TRatioScaleSpinnerModel;
     }
 
     /**
-     * @return the pref_Annealing, the Type of Annealing
+     * @return the pref_Cooling, the Type of Annealing
      */
-    public typeOfAnnealing getPref_Annealing() {
-        this.pref_Annealing=(typeOfAnnealing)this.jComboBoxAnnealingMethod.getSelectedItem();
-        return pref_Annealing;
+    public typeOfAnnealing getPref_Cooling() {
+        this.pref_Cooling=(typeOfAnnealing)this.jComboBoxCoolingMethod.getSelectedItem();
+        return pref_Cooling;
     }
 
     /**
-     * @param pref_Annealing the pref_Annealing to set
+     * @param pref_Cooling the pref_Cooling to set
      */
-    public void setPref_Annealing(typeOfAnnealing pref_Annealing) {
-        this.jComboBoxAnnealingMethod.setSelectedItem(pref_Annealing);
-        this.pref_Annealing = pref_Annealing;
+    public void setPref_Cooling(typeOfAnnealing pref_Cooling) {
+        this.jComboBoxCoolingMethod.setSelectedItem(pref_Cooling);
+        this.pref_Cooling = pref_Cooling;
     }
 
     /**

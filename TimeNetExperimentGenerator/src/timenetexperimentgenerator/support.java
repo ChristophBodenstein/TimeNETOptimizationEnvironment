@@ -63,7 +63,7 @@ private static boolean cachedSimulationAvailable=false;
 private static boolean distributedSimulationAvailable=false;
 private static boolean isRunningAsSlave=false;
 private static String remoteAddress=null;
-private static Integer chosenOptimizerType=0;//0=Greedy, 1=?, 2=?
+private static typedef.typeOfOptimization chosenOptimizerType=typeOfOptimization.HillClimbing;//0=Greedy, 1=?, 2=?
 private static Integer chosenSimulatorType=0;//0=local, 1=cached, 2=distributed
 private static LogFrame myLogFrame=new LogFrame();
 
@@ -662,14 +662,14 @@ private static boolean logToConsole=false;
     /**
      * @return the chosenOptimizerType
      */
-    public static Integer getChosenOptimizerType() {
+    public static typedef.typeOfOptimization getChosenOptimizerType() {
         return chosenOptimizerType;
     }
 
     /**
      * @param aChosenOptimizerType the chosenOptimizerType to set
      */
-    public static void setChosenOptimizerType(Integer aChosenOptimizerType) {
+    public static void setChosenOptimizerType(typedef.typeOfOptimization aChosenOptimizerType) {
         chosenOptimizerType = aChosenOptimizerType;
     }
 
