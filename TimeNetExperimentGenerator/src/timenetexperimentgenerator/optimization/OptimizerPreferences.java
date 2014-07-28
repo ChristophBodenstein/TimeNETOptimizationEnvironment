@@ -594,7 +594,7 @@ private SpinnerNumberModel TRatioScaleSpinnerModel;
             switch(support.getChosenOptimizerType()){
                 case HillClimbing:
                     addonString+="_WSIMPERDIR_"+this.getPref_WrongSimulationsPerDirection()+"_WSIM_"+this.getPref_WrongSimulationsUntilBreak()+"_StartAt_"+this.jComboBoxTypeOfStartValue.getSelectedItem();
-                    addonString+="TypOfNeighborhood_"+this.jComboBoxTypeOfNeighborhood.getSelectedItem();
+                    addonString+="_TypOfNeighborhood_"+this.jComboBoxTypeOfNeighborhood.getSelectedItem();
                     addonString+="_SizeOfNeighborhood_"+this.getPref_SizeOfNeighborhood();
                     break;
                 case SimAnnealing:
