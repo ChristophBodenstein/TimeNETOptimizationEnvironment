@@ -502,6 +502,7 @@ private SpinnerNumberModel TRatioScaleSpinnerModel;
     support.log("Loaded MaxTempCost is "+getPref_MaxTempCost());
 
         this.setPref_Epsilon(support.loadDoubleFromProperties("pref_Epsilon", support.DEFAULT_EPSILON, auto));
+    support.log("Loaded Epsilon is "+getPref_Epsilon());
 
 
         this.setPref_LogFileAddon(auto.getProperty("pref_LogFileAddon", ""));
