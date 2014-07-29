@@ -8,7 +8,9 @@
 
 package timenetexperimentgenerator.optimization;
 
+import java.util.ArrayList;
 import timenetexperimentgenerator.datamodel.SimulationType;
+import timenetexperimentgenerator.datamodel.parameter;
 import timenetexperimentgenerator.support;
 import timenetexperimentgenerator.typedef.*;
 
@@ -58,6 +60,7 @@ private double c;
 
     //Calculate the new Temperatures
     switch(support.getOptimizerPreferences().getPref_Cooling()){
+        default:
         case Boltzmann:
             //break; TODO Implement and remove comment
         case FastAnnealing:
@@ -85,7 +88,37 @@ private double c;
     return false;//Go back and loop again
     }
 
-    private void acceptCurrentSolution(){
+
+
+    /**
+     * Returns the next parameterset
+     * Next parameterset is chosen randomly within the neighborhood
+     * You should overload this method in your child-classes
+     * @param actualParameterset  actual parameterset, if null, then first parameterset is calculated
+     * @return next parameterset to be simulated
+     */
+    @Override
+    protected ArrayList<parameter> getNextParameterset(ArrayList<parameter> actualParameterset){
+    ArrayList<parameter> newParameterset=support.getCopyOfParameterSet(parameterBase);
+    ArrayList<parameter> listOfChangableParameters=this.getListOfChangableParameters();
+    //Count the number of changable parameters
+    this.numberOfChangableParameters=listOfChangableParameters.size();
+
+        newParameterset=support.getCopyOfParameterSet(actualParameterset);
+//DUMMY
+        //TODO Implement the standard and random stuff
+        switch(support.getOptimizerPreferences().getPref_CalculationOfNextParameterset()){
+            default:
+            case Random:
+                break;
+            case Standard:
+                break;
+
+        }
+
+
+        return newParameterset;
+        
 
     }
 
