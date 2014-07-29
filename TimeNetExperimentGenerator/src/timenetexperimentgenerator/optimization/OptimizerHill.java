@@ -40,6 +40,7 @@ private static OptimizerPreferences myPreferences=new OptimizerPreferences();
 private int simulationCounter=0;
 SimulationType currentSolution;
 SimulationType nextSolution;
+SimulationType bestSolution;
 String tmpPath="";
 String filename="";//Original filename
 String pathToTimeNet="";
@@ -116,8 +117,10 @@ boolean directionOfOptimizationChanged=false;//True->direction already changed, 
         support.addLinesToLogFileFromListOfParser(mySimulator.getListOfCompletedSimulationParsers(), logFileName);
         this.historyOfParsers = support.appendListOfParsers(historyOfParsers, mySimulator.getListOfCompletedSimulationParsers());
         currentSolution=mySimulator.getListOfCompletedSimulationParsers().get(0);
-        Fx=this.getActualDistance(currentSolution);
+        //Fx=this.getActualDistance(currentSolution);
         nextSolution=currentSolution;
+        bestSolution=currentSolution;
+        
         lastParameterset=currentSolution.getListOfParameters();
         
             while(!optimized){
@@ -127,11 +130,11 @@ boolean directionOfOptimizationChanged=false;//True->direction already changed, 
             support.addLinesToLogFileFromListOfParser(mySimulator.getListOfCompletedSimulationParsers(), logFileName);
             this.historyOfParsers = support.appendListOfParsers(historyOfParsers, mySimulator.getListOfCompletedSimulationParsers());
             nextSolution=mySimulator.getListOfCompletedSimulationParsers().get(0);
-            Fy=this.getActualDistance(nextSolution);
+            //Fy=this.getActualDistance(nextSolution);
             lastParameterset=nextSolution.getListOfParameters();
 
             //Check, if Optimization has ended!
-            optimized=isOptimized(Fx, Fy);
+            optimized=isOptimized(getActualDistance(currentSolution), getActualDistance(nextSolution));
             
             }
         support.log(this.getClass().getSimpleName()+" has ended, printing optimal value:");
@@ -236,6 +239,22 @@ boolean directionOfOptimizationChanged=false;//True->direction already changed, 
     }
 
 
+    protected ArrayList<parameter> getListOfChangableParameters(){
+    ArrayList<parameter> parameterset = support.getCopyOfParameterSet(parameterBase);
+    ArrayList<parameter> listOfChangableParameters = new ArrayList<parameter>();
+        //Count the number of changable parameters
+        this.numberOfChangableParameters=0;
+        for(int i=0;i<parameterset.size();i++){
+                parameter p=parameterset.get(i);
+                if(p.isIteratableAndIntern()){
+                this.numberOfChangableParameters++;
+                listOfChangableParameters.add(p);
+                }
+            }
+    return listOfChangableParameters;
+    }
+
+
     /**
      * Returns the next parameterset in neighborhood
      * Next parameterset is chosen randomly within the neighborhood
@@ -245,16 +264,10 @@ boolean directionOfOptimizationChanged=false;//True->direction already changed, 
      */
     protected ArrayList<parameter> getNextParameterset(ArrayList<parameter> actualParameterset){
     ArrayList<parameter> newParameterset=support.getCopyOfParameterSet(parameterBase);
-    ArrayList<parameter> listOfChangableParameters=new ArrayList<parameter>(); 
-        //Count the number of changable parameters
-        this.numberOfChangableParameters=0;
-        for(int i=0;i<newParameterset.size();i++){
-                parameter p=newParameterset.get(i);
-                if(p.isIteratableAndIntern()){
-                this.numberOfChangableParameters++;
-                listOfChangableParameters.add(p);
-                }
-            }
+    ArrayList<parameter> listOfChangableParameters=this.getListOfChangableParameters();
+    //Count the number of changable parameters
+    this.numberOfChangableParameters=listOfChangableParameters.size();
+        
     
         if(actualParameterset==null){
             //Return the inital parameterset for optimization, based on startvalue-strategy
@@ -445,7 +458,7 @@ boolean directionOfOptimizationChanged=false;//True->direction already changed, 
      * Sums up all distances from Measures
      * @return distance (Fx)
      */
-    private double getActualDistance(SimulationType p){
+    protected double getActualDistance(SimulationType p){
     double distance=0;
         for(int measureCount=0;measureCount<listOfMeasures.size();measureCount++){
                 MeasureType activeMeasure=p.getMeasureByName(listOfMeasures.get(measureCount).getMeasureName());

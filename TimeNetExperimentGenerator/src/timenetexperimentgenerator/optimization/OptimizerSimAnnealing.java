@@ -8,6 +8,8 @@
 
 package timenetexperimentgenerator.optimization;
 
+import timenetexperimentgenerator.datamodel.SimulationType;
+import timenetexperimentgenerator.support;
 import timenetexperimentgenerator.typedef.*;
 
 /**
@@ -18,10 +20,11 @@ public class OptimizerSimAnnealing extends OptimizerHill implements Runnable, Op
 private int SimI=1,SimT=0;
 private double maxTemp=20;
 private int stepCountTemp=100;
-private double Fx;//Current Distance
-private double Fy;//New Distance?
 
-
+private double TempCost=1.0, TempPara =1.0;
+private int accepted =0, generated=0;
+private double D=this.getListOfChangableParameters().size();//Number of changeable parameters
+private double c;
 
 
     /**
@@ -30,6 +33,60 @@ private double Fy;//New Distance?
      */
     public OptimizerSimAnnealing() {
     super();
+    c=-Math.log(support.getOptimizerPreferences().getPref_TRatioScale());
+    c=c*Math.exp(-Math.log(support.getOptimizerPreferences().getPref_TAnnealScale())/this.D);
+    }
+
+
+
+
+    /**
+     * Check, if next Solution is better. Calculate if Optimization is done or not
+     * Reset wrongSolutionCounter if solution is better
+     * Reset wrongSolutionPerDirectionCounter if solution is better
+     * Return true if wrongSolutionCounter is down
+     *
+     */
+    @Override
+    protected boolean isOptimized(double actualDistance, double nextDistance){
+    //If next Solution is better then take it as actual best solution
+    double actualTempParameter=1;
+    double actualTempCost=1;
+    
+    //Inc Simulationcounter
+    generated++;
+
+    //Calculate the new Temperatures
+    switch(support.getOptimizerPreferences().getPref_Cooling()){
+        case Boltzmann:
+            //break; TODO Implement and remove comment
+        case FastAnnealing:
+            //break; TODO Implement and remove comment
+        case VeryFastAnnealing:
+            actualTempParameter=Math.exp(-c*Math.pow((double)generated,1/D) )*support.getOptimizerPreferences().getPref_MaxTempParameter();
+            actualTempCost=Math.exp(-c*Math.pow((double)generated,1/D) )*support.getOptimizerPreferences().getPref_MaxTempCost();
+            //Eject if Temperature is lower then Epsilon
+            if(actualTempCost< support.getOptimizerPreferences().getPref_Epsilon())return true;
+            if(actualTempParameter< support.getOptimizerPreferences().getPref_Epsilon())return true;
+            break;
+    }       
+
+    //If new cost is lower then repvious then break and accept new solution
+        if(getActualDistance(nextSolution) < getActualDistance(bestSolution)){
+        bestSolution=nextSolution;
+        
+        double delta=getActualDistance(nextSolution)-getActualDistance(currentSolution);
+
+            if((delta<0) || (Math.random() < (Math.exp(-delta/actualTempCost) ) ) ){
+            currentSolution=nextSolution;
+            accepted++;
+            }        
+        }
+    return false;//Go back and loop again
+    }
+
+    private void acceptCurrentSolution(){
+
     }
 
 
