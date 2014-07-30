@@ -25,7 +25,7 @@ private int stepCountTemp=100;
 
 private double TempCost=1.0, TempPara =1.0;
 private int accepted =0, generated=0;
-private double D=this.getListOfChangableParameters().size();//Number of changeable parameters
+private double D=this.getListOfChangableParameters(parameterBase).size();//Number of changeable parameters
 private double c;
 
 
@@ -100,19 +100,50 @@ private double c;
     @Override
     protected ArrayList<parameter> getNextParameterset(ArrayList<parameter> actualParameterset){
     ArrayList<parameter> newParameterset=support.getCopyOfParameterSet(parameterBase);
-    ArrayList<parameter> listOfChangableParameters=this.getListOfChangableParameters();
+    ArrayList<parameter> listOfChangableParameters=this.getListOfChangableParameters(newParameterset);
     //Count the number of changable parameters
     this.numberOfChangableParameters=listOfChangableParameters.size();
 
         newParameterset=support.getCopyOfParameterSet(actualParameterset);
 //DUMMY
-        //TODO Implement the standard and random stuff
-        switch(support.getOptimizerPreferences().getPref_CalculationOfNextParameterset()){
-            default:
-            case Random:
-                break;
-            case Standard:
-                break;
+
+        for(int i=0;i<listOfChangableParameters.size();i++){
+
+            parameter p=listOfChangableParameters.get(i);
+            double sign=1;
+            double distanceMax=p.getEndValue()-p.getStartValue();
+            double r=Math.random();
+            r=1-(r*2);
+            
+            if(r<0){
+                sign=-1;
+            }else{sign=1;}
+
+            double nextValue=p.getEndValue()+1;
+            while(nextValue<p.getStartValue() || nextValue>p.getEndValue()){
+                
+            nextValue = p.getValue() + sign * TempPara *(Math.pow(1+(1/this.TempPara),Math.abs(2*r-1) )) * distanceMax;
+            
+
+
+                    //TODO Implement the standard and random stuff
+                switch(support.getOptimizerPreferences().getPref_CalculationOfNextParameterset()){
+                    default:
+                        //Do nothing
+                        break;
+                    case Stepwise:
+                        double stepCount=(p.getEndValue()-p.getStartValue())/p.getStepping();
+                        nextValue=Math.round(nextValue/stepCount) * p.getStepping();
+                        break;
+                    case Standard:
+                        //Do nothing
+                        break;
+
+                }
+            }
+ 
+            p.setValue(nextValue);
+            support.log("Setting Parameter "+ p.getName() + " to Value "+p.getValue()+".");
 
         }
 

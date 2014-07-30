@@ -239,13 +239,13 @@ boolean directionOfOptimizationChanged=false;//True->direction already changed, 
     }
 
 
-    protected ArrayList<parameter> getListOfChangableParameters(){
-    ArrayList<parameter> parameterset = support.getCopyOfParameterSet(parameterBase);
+    protected ArrayList<parameter> getListOfChangableParameters(ArrayList<parameter> sourceList){
+    //ArrayList<parameter> parameterset = support.getCopyOfParameterSet(sourceList);
     ArrayList<parameter> listOfChangableParameters = new ArrayList<parameter>();
         //Count the number of changable parameters
         this.numberOfChangableParameters=0;
-        for(int i=0;i<parameterset.size();i++){
-                parameter p=parameterset.get(i);
+        for(int i=0;i<sourceList.size();i++){
+                parameter p=sourceList.get(i);
                 if(p.isIteratableAndIntern()){
                 this.numberOfChangableParameters++;
                 listOfChangableParameters.add(p);
@@ -264,7 +264,7 @@ boolean directionOfOptimizationChanged=false;//True->direction already changed, 
      */
     protected ArrayList<parameter> getNextParameterset(ArrayList<parameter> actualParameterset){
     ArrayList<parameter> newParameterset=support.getCopyOfParameterSet(parameterBase);
-    ArrayList<parameter> listOfChangableParameters=this.getListOfChangableParameters();
+    ArrayList<parameter> listOfChangableParameters=this.getListOfChangableParameters(newParameterset);
     //Count the number of changable parameters
     this.numberOfChangableParameters=listOfChangableParameters.size();
         
