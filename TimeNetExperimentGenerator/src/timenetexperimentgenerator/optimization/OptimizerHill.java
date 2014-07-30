@@ -111,7 +111,7 @@ boolean directionOfOptimizationChanged=false;//True->direction already changed, 
         //Simulator init with initional parameterset
         Simulator mySimulator=SimOptiFactory.getSimulator();
         
-        mySimulator.initSimulator(getNextParametersetAsArrayList(null), getSimulationCounter(), false);
+        mySimulator.initSimulator(getParametersetAsArrayList(getFirstParameterset()), getSimulationCounter(), false);
         //Wait until Simulator has ended
         support.waitForEndOfSimulator(mySimulator, getSimulationCounter(), 600);
         support.addLinesToLogFileFromListOfParser(mySimulator.getListOfCompletedSimulationParsers(), logFileName);
@@ -122,7 +122,7 @@ boolean directionOfOptimizationChanged=false;//True->direction already changed, 
         bestSolution=currentSolution;
         
         lastParameterset=currentSolution.getListOfParameters();
-        
+        support.log("Start of Optimization-loop");
             while(!optimized){
             mySimulator.initSimulator(getNextParametersetAsArrayList(lastParameterset), getSimulationCounter(), false);
             support.waitForEndOfSimulator(mySimulator, getSimulationCounter(), 600);
@@ -452,7 +452,16 @@ boolean directionOfOptimizationChanged=false;//True->direction already changed, 
     myParametersetList.add(getNextParameterset(actualParameterset));
     return myParametersetList;
     }
-    
+
+    /**
+     * Wrapper, returns ArrayList of ArrayList of Parameters
+     */
+    private ArrayList< ArrayList<parameter> > getParametersetAsArrayList(ArrayList<parameter> actualParameterset){
+    ArrayList< ArrayList<parameter> > myParametersetList=new ArrayList< ArrayList<parameter> >();
+    myParametersetList.add(actualParameterset);
+    return myParametersetList;
+    }
+
     /**
      * Returns the fitness value of actual Paremeterset/Measure
      * Sums up all distances from Measures

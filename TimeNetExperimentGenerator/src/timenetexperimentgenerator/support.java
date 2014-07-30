@@ -65,7 +65,7 @@ private static boolean distributedSimulationAvailable=false;
 private static boolean isRunningAsSlave=false;
 private static String remoteAddress=null;
 private static typedef.typeOfOptimization chosenOptimizerType=typeOfOptimization.HillClimbing;//0=Greedy, 1=?, 2=?
-private static Integer chosenSimulatorType=0;//0=local, 1=cached, 2=distributed
+private static typeOfSimulator chosenSimulatorType=typeOfSimulator.Local;//0=local, 1=cached, 2=distributed
 private static LogFrame myLogFrame=new LogFrame();
 
 public static final String[] SIMTYPES={"Local Sim.","Cache Only Sim.","Cache & Local","Web Sim."};
@@ -677,14 +677,14 @@ private static boolean logToConsole=false;
     /**
      * @return the chosenSimulatorType
      */
-    public static Integer getChosenSimulatorType() {
+    public static typeOfSimulator getChosenSimulatorType() {
         return chosenSimulatorType;
     }
 
     /**
      * @param aChosenSimulatorType the chosenSimulatorType to set
      */
-    public static void setChosenSimulatorType(Integer aChosenSimulatorType) {
+    public static void setChosenSimulatorType(typeOfSimulator aChosenSimulatorType) {
         chosenSimulatorType = aChosenSimulatorType;
     }
 

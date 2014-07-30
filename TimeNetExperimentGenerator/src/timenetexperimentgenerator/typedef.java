@@ -24,6 +24,8 @@ public enum typeOfAnnealing{Boltzmann, FastAnnealing, VeryFastAnnealing};
 
 public enum typeOfOptimization{HillClimbing, SimAnnealing, SimpleAnnealing, ChargedSystemSearch, Genetic, Seidel3};
 
-public enum typeOfAnnealingParameterCalculation{Standard, Stepwise};
+public enum typeOfSimulator{Local, Cache_Only, Cached_Local, Distributed};
+
+public enum typeOfAnnealingParameterCalculation{Standard, Stepwise, Simple, SimpleStepwise};
 
 }

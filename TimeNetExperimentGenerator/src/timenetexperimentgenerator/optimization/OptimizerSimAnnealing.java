@@ -25,8 +25,10 @@ private int stepCountTemp=100;
 
 private double TempCost=1.0, TempPara =1.0;
 private int accepted =0, generated=0;
-private double D=this.getListOfChangableParameters(parameterBase).size();//Number of changeable parameters
+private double D;
 private double c;
+double actualTempParameter=1;
+double actualTempCost=1;
 
 
     /**
@@ -35,6 +37,7 @@ private double c;
      */
     public OptimizerSimAnnealing() {
     super();
+    D=this.getListOfChangableParameters(support.getMainFrame().getParameterBase()).size();//Number of changeable parameters
     c=-Math.log(support.getOptimizerPreferences().getPref_TRatioScale());
     c=c*Math.exp(-Math.log(support.getOptimizerPreferences().getPref_TAnnealScale())/this.D);
     }
@@ -52,8 +55,7 @@ private double c;
     @Override
     protected boolean isOptimized(double actualDistance, double nextDistance){
     //If next Solution is better then take it as actual best solution
-    double actualTempParameter=1;
-    double actualTempCost=1;
+    
     
     //Inc Simulationcounter
     generated++;
@@ -104,39 +106,59 @@ private double c;
     //Count the number of changable parameters
     this.numberOfChangableParameters=listOfChangableParameters.size();
 
-        newParameterset=support.getCopyOfParameterSet(actualParameterset);
-//DUMMY
-
+    support.log("TempParameter:"+actualTempParameter + " and TempCost:"+actualTempCost);
         for(int i=0;i<listOfChangableParameters.size();i++){
 
             parameter p=listOfChangableParameters.get(i);
             double sign=1;
             double distanceMax=p.getEndValue()-p.getStartValue();
-            double r=Math.random();
+            double r=0;
+
+            double nextValue=p.getEndValue()+1;
+            double simpleValue=p.getEndValue()+1;
+
+
+
+            while(nextValue<p.getStartValue() || nextValue>p.getEndValue()){
+            r=Math.random();
             r=1-(r*2);
-            
+
             if(r<0){
                 sign=-1;
             }else{sign=1;}
 
-            double nextValue=p.getEndValue()+1;
-            while(nextValue<p.getStartValue() || nextValue>p.getEndValue()){
-                
-            nextValue = p.getValue() + sign * TempPara *(Math.pow(1+(1/this.TempPara),Math.abs(2*r-1) )) * distanceMax;
+            //Calculation of Standard nextValue
+            nextValue = p.getValue() + sign * actualTempParameter *(Math.pow(1+(1/actualTempParameter),Math.abs(2*r-1) )) * distanceMax;
+            //support.log("Min:"+p.getStartValue()+" Max:"+p.getEndValue()+" NextValue:"+nextValue);
+
+            //Calculation of simple nextValue
+            double range=(p.getEndValue()-p.getStartValue());
+                            simpleValue=Math.round(Math.random()*range*actualTempParameter);
+                                if(Math.random()>=0.5){
+                                simpleValue=Math.min(p.getValue()+simpleValue,p.getEndValue());
+                                }else{
+                                simpleValue=Math.max(p.getValue()-simpleValue,p.getStartValue());
+                                }
+
+            double stepCount=(p.getEndValue()-p.getStartValue())/p.getStepping();
+
+
             
-
-
-                    //TODO Implement the standard and random stuff
                 switch(support.getOptimizerPreferences().getPref_CalculationOfNextParameterset()){
                     default:
                         //Do nothing
                         break;
                     case Stepwise:
-                        double stepCount=(p.getEndValue()-p.getStartValue())/p.getStepping();
                         nextValue=Math.round(nextValue/stepCount) * p.getStepping();
                         break;
                     case Standard:
                         //Do nothing
+                        break;
+                    case Simple:
+                        nextValue=simpleValue;
+                        break;
+                    case SimpleStepwise:
+                        nextValue=Math.round(simpleValue/stepCount) * p.getStepping();
                         break;
 
                 }

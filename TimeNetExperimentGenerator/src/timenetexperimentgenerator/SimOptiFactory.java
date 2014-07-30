@@ -18,37 +18,38 @@ import timenetexperimentgenerator.optimization.*;
 public class SimOptiFactory {
 private static SimulationCache singleTonSimulationCache=new SimulationCache();
 
-    public static Simulator getSimulator(){
+    public static Simulator getSimulator(){    
+//TODO, add support for typeOfSimulator !!!
 
-        if(support.getChosenSimulatorType().equals(new Integer(0))){
-        //Return local simulator
-        return new SimulatorLocal();
+        switch(support.getChosenSimulatorType()){
+            case Local:
+                //Return local simulator
+                return new SimulatorLocal();
+                //no break;
+            case Cache_Only:
+                //Return Cache-Only-Simulator
+                if (support.isCachedSimulationAvailable()&&(support.getMySimulationCache()!=null)){
+                SimulatorCached returnSimulator = new SimulatorCached();
+                returnSimulator.setMySimulationCache(support.getMySimulationCache());
+                return returnSimulator;
+                }else {
+                return new SimulatorLocal();
+                }
+                //no break;
+            case Cached_Local:
+                //Return Cache&Local Simulator
+                SimulatorCached returnSimulator = new SimulatorCached();
+                returnSimulator.setMySimulationCache(singleTonSimulationCache);
+                return returnSimulator;
+                //no break;
+            case Distributed:
+                //Return distributed simulator
+                return new SimulatorWeb();
+            default:
+                return new SimulatorLocal();
         }
-
-
-        if(support.getChosenSimulatorType().equals(new Integer(1))&&support.isCachedSimulationAvailable()&&(support.getMySimulationCache()!=null)){
-        //Return Cached simulator
-        SimulatorCached tmpSimulator=new SimulatorCached();
-        tmpSimulator.setMySimulationCache(support.getMySimulationCache());
-        return tmpSimulator;
-        }
-
-        
-        if(support.getChosenSimulatorType().equals(new Integer(2))){
-        //Return Cached/Local simulator, All new Parsers will be stored in local cache
-        SimulatorCachedLocal mySimulator=new SimulatorCachedLocal();
-        mySimulator.setMySimulationCache(singleTonSimulationCache);
-        return mySimulator;
-        }
-        
-        if(support.getChosenSimulatorType().equals(new Integer(3))){
-        //Return distributed simulator
-        return new SimulatorWeb();
-        }
-
-
-    return new SimulatorLocal();//Default
     }
+    
 
     public static Optimizer getOptimizer(){
         switch (support.getChosenOptimizerType()){

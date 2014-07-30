@@ -57,7 +57,7 @@ private int sizeOfDesignSpace;
 private String pathToTimeNet="";
 private SimulationCache mySimulationCache=null;
 private String pathToLastSimulationCache="";
-private SimulationTypeComboBoxModel mySimulationTypeModel=new SimulationTypeComboBoxModel();
+private SimulationTypeComboBoxModel mySimulationTypeModel=new SimulationTypeComboBoxModel(typeOfSimulator.values());
 private DefaultComboBoxModel myOptiTypeModel=new DefaultComboBoxModel();
 SimulatorWebSlave mySlave=new SimulatorWebSlave();
 
@@ -171,9 +171,10 @@ private String pathToR="";
         this.checkIfCachedSimulationIsPossible();
         
         
-        for (String SIMTYPES : support.SIMTYPES) {
+        /*for (String SIMTYPES : support.SIMTYPES) {
         mySimulationTypeModel.addElement(SIMTYPES);
         }
+        */
 
         /*for (String OPTITYPES : support.OPTITYPES){
         myOptiTypeModel.addElement(OPTITYPES);
@@ -206,7 +207,7 @@ private String pathToR="";
     
     this.jComboBoxSimulationType.setRenderer(new EnabledJComboBoxRenderer(model));
     
-    this.jComboBoxSimulationType.setModel(mySimulationTypeModel);
+    //this.jComboBoxSimulationType.setModel(mySimulationTypeModel);
     }
 
 
@@ -376,7 +377,7 @@ private String pathToR="";
             }
         });
 
-        jComboBoxSimulationType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Sim" }));
+        jComboBoxSimulationType.setModel(new DefaultComboBoxModel(typeOfSimulator.values()));
         jComboBoxSimulationType.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 jComboBoxSimulationTypeItemStateChanged(evt);
@@ -492,13 +493,13 @@ private String pathToR="";
                             .add(layout.createSequentialGroup()
                                 .add(11, 11, 11)
                                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                    .add(jTextFieldSCPNFile, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 393, Short.MAX_VALUE)
+                                    .add(jTextFieldSCPNFile, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 373, Short.MAX_VALUE)
                                     .add(layout.createSequentialGroup()
                                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                                             .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 373, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                                             .add(jButtonPathToTimeNet, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 192, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                                             .add(jCheckBoxSlaveSimulator, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 198, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                                        .add(0, 20, Short.MAX_VALUE))))
+                                        .add(0, 0, Short.MAX_VALUE))))
                             .add(layout.createSequentialGroup()
                                 .addContainerGap()
                                 .add(jButtonPathToR, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 192, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
@@ -506,23 +507,23 @@ private String pathToR="";
                                 .add(jButtonPlotR)))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(jLabelSimulationCount, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)
+                            .add(jLabelSimulationCount, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 285, Short.MAX_VALUE)
                             .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                             .add(layout.createSequentialGroup()
-                                .add(jButtonOpenSCPN, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE)
+                                .add(jButtonOpenSCPN, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)
                                 .add(5, 5, 5)
-                                .add(jButtonReload, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 116, Short.MAX_VALUE))
-                            .add(jSeparator2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)
-                            .add(layout.createSequentialGroup()
-                                .add(jButtonExport, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                                .add(5, 5, 5)
-                                .add(jButton1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE))
-                            .add(jButtonGenerateListOfExperiments, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)
-                            .add(jButtonStartBatchSimulation, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)
-                            .add(jSeparator3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)
-                            .add(org.jdesktop.layout.GroupLayout.TRAILING, jButtonLoadCacheFile, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)
+                                .add(jButtonReload, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 126, Short.MAX_VALUE))
+                            .add(jSeparator2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 285, Short.MAX_VALUE)
                             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                                .add(jComboBoxSimulationType, 0, 134, Short.MAX_VALUE)
+                                .add(jButtonExport, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 148, Short.MAX_VALUE)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                                .add(jButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 137, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                            .add(jButtonGenerateListOfExperiments, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 285, Short.MAX_VALUE)
+                            .add(jButtonStartBatchSimulation, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 285, Short.MAX_VALUE)
+                            .add(jSeparator3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 285, Short.MAX_VALUE)
+                            .add(org.jdesktop.layout.GroupLayout.TRAILING, jButtonLoadCacheFile, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 285, Short.MAX_VALUE)
+                            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                                .add(jComboBoxSimulationType, 0, 154, Short.MAX_VALUE)
                                 .add(5, 5, 5)
                                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
                                     .add(jButton2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -762,7 +763,7 @@ private String pathToR="";
     }//GEN-LAST:event_jComboBoxOptimizationTypeActionPerformed
 
     private void jComboBoxSimulationTypeItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxSimulationTypeItemStateChanged
-        support.setChosenSimulatorType(this.jComboBoxSimulationType.getSelectedIndex());
+        support.setChosenSimulatorType((typeOfSimulator)this.jComboBoxSimulationType.getSelectedItem());
     }//GEN-LAST:event_jComboBoxSimulationTypeItemStateChanged
 
     private void jComboBoxOptimizationTypeItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxOptimizationTypeItemStateChanged

@@ -8,35 +8,40 @@ package timenetexperimentgenerator.helper;
 
 import javax.swing.DefaultComboBoxModel;
 import timenetexperimentgenerator.support;
+import timenetexperimentgenerator.typedef.typeOfSimulator;
 
 /**
  *
  * @author sse
  */
 public class SimulationTypeComboBoxModel extends DefaultComboBoxModel{
+
+    public SimulationTypeComboBoxModel(typeOfSimulator[] values) {
+        super(values);
+    }
    @Override
     public void setSelectedItem(Object anObject) {
         //Here is defined, what kind of simulation is possible
         if (anObject != null) {
 
             
-            if (anObject.toString().equals(support.SIMTYPES[0])) {
+            if ((anObject).equals(typeOfSimulator.Local.toString())){//  toString().equals(support.SIMTYPES[0])) {
                 super.setSelectedItem(anObject);
-                support.setChosenSimulatorType(0);
+                support.setChosenSimulatorType((typeOfSimulator)anObject);
             }
             
-            if ((anObject.toString().equals(support.SIMTYPES[1]))&&(support.isCachedSimulationAvailable())) {
+            if ( ((anObject).equals(typeOfSimulator.Cache_Only.toString()) )&&(support.isCachedSimulationAvailable())) {
                 super.setSelectedItem(anObject);
-                support.setChosenSimulatorType(1);
+                support.setChosenSimulatorType((typeOfSimulator)anObject);
             }
             
-            if ((anObject.toString().equals(support.SIMTYPES[2]) )) {
+            if ((anObject).equals(typeOfSimulator.Cached_Local.toString())) {
                 super.setSelectedItem(anObject);
-                support.setChosenSimulatorType(2);
+                support.setChosenSimulatorType((typeOfSimulator)anObject);
             }
-            if ((anObject.toString().equals(support.SIMTYPES[3]))&&(support.isDistributedSimulationAvailable() )) {
+            if ( ((anObject).equals(typeOfSimulator.Distributed.toString()) )&&(support.isDistributedSimulationAvailable() )) {
                 super.setSelectedItem(anObject);
-                support.setChosenSimulatorType(3);
+                support.setChosenSimulatorType((typeOfSimulator)anObject);
             }
             
 
