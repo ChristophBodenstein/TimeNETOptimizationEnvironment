@@ -64,15 +64,21 @@ double actualTempCost=1;
     switch(support.getOptimizerPreferences().getPref_Cooling()){
         default:
         case Boltzmann:
-            //break; TODO Implement and remove comment
+            actualTempParameter = (1/(Math.log((double)generated)))*support.getOptimizerPreferences().getPref_MaxTempParameter();
+            actualTempCost = (1/(Math.log((double)generated)))*support.getOptimizerPreferences().getPref_MaxTempCost();
+            break;
+            
         case FastAnnealing:
-            //break; TODO Implement and remove comment
+            actualTempParameter = (1/(double)generated)*support.getOptimizerPreferences().getPref_MaxTempParameter();
+            actualTempCost = (1/(double)generated)*support.getOptimizerPreferences().getPref_MaxTempCost();
+            break;
+            
         case VeryFastAnnealing:
             actualTempParameter=Math.exp(-c*Math.pow((double)generated,1/D) )*support.getOptimizerPreferences().getPref_MaxTempParameter();
             actualTempCost=Math.exp(-c*Math.pow((double)generated,1/D) )*support.getOptimizerPreferences().getPref_MaxTempCost();
             //Eject if Temperature is lower then Epsilon
-            if(actualTempCost< support.getOptimizerPreferences().getPref_Epsilon())return true;
-            if(actualTempParameter< support.getOptimizerPreferences().getPref_Epsilon())return true;
+            if(actualTempCost< support.getOptimizerPreferences().getPref_Epsilon()){return true;}
+            if(actualTempParameter< support.getOptimizerPreferences().getPref_Epsilon()){return true;}
             break;
     }       
 
@@ -118,19 +124,34 @@ double actualTempCost=1;
             double simpleValue=p.getEndValue()+1;
 
 
+            //r=-0.99;
 
             while(nextValue<p.getStartValue() || nextValue>p.getEndValue()){
+            //while(r<1){
             r=Math.random();
             r=1-(r*2);
-
-            if(r<0){
-                sign=-1;
-            }else{sign=1;}
+            r=r+0.01;
+            
+            sign=Math.signum(r);
 
             //Calculation of Standard nextValue
-            nextValue = p.getValue() + sign * actualTempParameter *(Math.pow(1+(1/actualTempParameter),Math.abs(2*r-1) )) * distanceMax;
+            //nextValue = p.getValue() + sign * actualTempParameter *(Math.pow(1+(1/actualTempParameter),Math.abs(2*r-1) )) * distanceMax;
+            nextValue = p.getValue() + sign * actualTempParameter *(Math.pow(1+(1/actualTempParameter),Math.abs(2*r)-1 )) * distanceMax;
             //support.log("Min:"+p.getStartValue()+" Max:"+p.getEndValue()+" NextValue:"+nextValue);
+            support.log("xCurrent:"+p.getValue());
+            support.log("sign:"+sign);
+            support.log("r:"+r);
+            support.log("Tpar:"+actualTempParameter);
+            support.log("Pow_Down:"+(1+(1/actualTempParameter)));
+            support.log("Pow_Up:"+(Math.abs(2*r)-1));
+            support.log("d:"+distanceMax);
+            support.log("NextValue:"+nextValue);
 
+            /*try{
+            Thread.sleep(80);
+            }catch(Exception e){}
+            */
+            
             //Calculation of simple nextValue
             double range=(p.getEndValue()-p.getStartValue());
                             simpleValue=Math.round(Math.random()*range*actualTempParameter);
