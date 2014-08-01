@@ -1,51 +1,26 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package timenetexperimentgenerator.plot;
 
 import java.awt.*;
 import javax.swing.*;
-import java.awt.image.BufferedImage;
-import java.awt.Graphics;
-import java.io.File;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-
-import org.apache.batik.swing.JSVGCanvas;
-import org.apache.batik.swing.gvt.GVTTreeRendererAdapter;
-import org.apache.batik.swing.gvt.GVTTreeRendererEvent;
-import org.apache.batik.swing.svg.SVGDocumentLoaderAdapter;
-import org.apache.batik.swing.svg.SVGDocumentLoaderEvent;
-import org.apache.batik.swing.svg.GVTTreeBuilderAdapter;
-import org.apache.batik.swing.svg.GVTTreeBuilderEvent;
-
-
 
 /**
- *
  * @author Bastian
  */
-public class PlotFrame extends javax.swing.JFrame {
+public class PlotFrame extends javax.swing.JFrame 
+{
+    ImageIcon icon;
     
-    JFrame testframe = new JFrame();
     /**
      * Creates new form PlotFrame
      */
-    public PlotFrame() {
+    public PlotFrame() 
+    {
         initComponents();
-        //this.setLocation(200,200);
-        //this.setTitle("R Plugin");
+        setResizable(false);
+        this.setTitle("R Plot");
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -78,11 +53,11 @@ public class PlotFrame extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGap(0, 576, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 279, Short.MAX_VALUE)
+            .addGap(0, 507, Short.MAX_VALUE)
         );
 
         pack();
@@ -129,54 +104,19 @@ public class PlotFrame extends javax.swing.JFrame {
         
     }
     
-    public class ImagePanel extends JPanel{
-
-    private BufferedImage image;
-    private String _path;
-
-    public ImagePanel(String path) {
-       try {
-          _path = path;
-          image = ImageIO.read(new File(_path));
-       } catch (IOException e) {
-            // handle exception...
-       }
-    }
-
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        g.drawImage(image, 0, 0, null); // see javadoc for more info on the parameters            
-    }
-
-}
-    
     public void showImage(String path)
-    {
-        PlotFrame f = new PlotFrame();
-        ImagePanel p = new ImagePanel(path);
-        //try
-        //{
+    {   
+        this.setVisible(true);
+        icon = new ImageIcon(path); 
+        JLabel label = new JLabel();
+        label.setSize(icon.getIconWidth(), icon.getIconHeight());
+        label.setIcon(icon);
         
-            
-            //this.getContentPane().add(p);
-            JLabel textLabel = new JLabel("I'm a label in the window",SwingConstants.CENTER); textLabel.setPreferredSize(new Dimension(300, 100));
-            f.getContentPane().add(textLabel, BorderLayout.CENTER); 
-            f.setLocationRelativeTo(null);
-            f.pack();
-
-            //f.setVisible(true);
-            
-            //testframe.getContentPane().add(textLabel, BorderLayout.CENTER); 
-            testframe.getContentPane().add(p);
-            testframe.setLocationRelativeTo(null);
-            testframe.pack();
-
-            testframe.setVisible(true);
-        //}
-        //catch(IOException e){}  
+        this.getContentPane().add(label);
+        this.getContentPane().setPreferredSize(new Dimension(icon.getIconWidth(), icon.getIconHeight()));
+        this.pack();       
     }
-
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
