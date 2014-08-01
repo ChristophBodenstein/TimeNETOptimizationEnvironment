@@ -477,7 +477,7 @@ private static boolean logToConsole=false;
                 support.log("Confidence-Min= "+support.getCommaFloat(exportMeasure.getConfidenceInterval()[0]));
                 support.log("Confidence-Max= "+support.getCommaFloat(exportMeasure.getConfidenceInterval()[1]));
                 support.log("Epsilon= "+support.getCommaFloat(exportMeasure.getEpsilon()));
-                support.log("Simulation-Time= "+support.getCommaFloat(myParser.getSimulationTime()));
+                support.log("Simulation-Time= "+support.getCommaFloat(exportMeasure.getSimulationTime()));
                 */
                 line=exportMeasure.getMeasureName()+";"+support.getCommaFloat(exportMeasure.getMeanValue())+";"+support.getCommaFloat(exportMeasure.getVariance())+";"+support.getCommaFloat(exportMeasure.getConfidenceInterval()[0])+";"+support.getCommaFloat(exportMeasure.getConfidenceInterval()[1])+";"+support.getCommaFloat(exportMeasure.getEpsilon())+";"+support.getCommaFloat(exportMeasure.getSimulationTime());
                     for(int c=0;c<myParser.getListOfParameters().size();c++)

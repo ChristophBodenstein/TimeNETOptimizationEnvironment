@@ -16,21 +16,22 @@ import timenetexperimentgenerator.support;
  * @author Christoph Bodenstein
  */
 public class MeasureType {
-private String MeasureName;
+private String MeasureName="";
 private boolean AccuraryReached=false;
-private double MeanValue;
-private double Variance;
-private double[] ConfidenceInterval;
-private double Epsilon;
+private double MeanValue=0.0;
+private double Variance=0.0;
+private double[] ConfidenceInterval=new double[2];
+private double Epsilon=0.0;;
 //private ArrayList<parameter> parameterList=new ArrayList<parameter>();
-private double targetValue;
-private String targetKindOf;
-private double SimulationTime;
-private double CPUTime;
+private double targetValue=0.0;
+private String targetKindOf="min";
+private double SimulationTime=0.0;
+private double CPUTime=0;
 
     public MeasureType() {
-        this.CPUTime = (double)0.0;
-        this.SimulationTime = (double)0.0;
+        ConfidenceInterval[0]=0.0;
+        ConfidenceInterval[1]=0.0;
+
     }
     
     public MeasureType(MeasureType originalMeasure)

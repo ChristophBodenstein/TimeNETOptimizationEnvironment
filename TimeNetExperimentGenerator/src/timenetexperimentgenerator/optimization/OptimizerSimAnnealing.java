@@ -9,6 +9,7 @@
 package timenetexperimentgenerator.optimization;
 
 import java.util.ArrayList;
+import timenetexperimentgenerator.datamodel.MeasureType;
 import timenetexperimentgenerator.datamodel.SimulationType;
 import timenetexperimentgenerator.datamodel.parameter;
 import timenetexperimentgenerator.support;
@@ -78,10 +79,13 @@ double actualTempCost=1;
             actualTempParameter=Math.exp(-c*Math.pow((double)generated,1/D) )*support.getOptimizerPreferences().getPref_MaxTempParameter();
             actualTempCost=Math.exp(-c*Math.pow((double)generated,1/D) )*support.getOptimizerPreferences().getPref_MaxTempCost();
             //Eject if Temperature is lower then Epsilon
-            if(actualTempCost< support.getOptimizerPreferences().getPref_Epsilon()){return true;}
-            if(actualTempParameter< support.getOptimizerPreferences().getPref_Epsilon()){return true;}
+            
             break;
-    }       
+    }
+
+
+        if(actualTempCost< support.getOptimizerPreferences().getPref_Epsilon()){return true;}
+        if(actualTempParameter< support.getOptimizerPreferences().getPref_Epsilon()){return true;}
 
     //If new cost is lower then repvious then break and accept new solution
         if(getActualDistance(nextSolution) < getActualDistance(bestSolution)){
@@ -191,7 +195,38 @@ double actualTempCost=1;
 
         }
 
+        //Log the Temperature-Data to a seperate file
+        parameter parameterTempParameter=new parameter();
+        parameterTempParameter.setName(typedef.listOfParametersToIgnore[0]);
+        parameterTempParameter.setValue(actualTempParameter);
         
+        parameter parameterCostParameter=new parameter();
+        parameterCostParameter.setName(typedef.listOfParametersToIgnore[1]);
+        parameterCostParameter.setValue(actualTempCost);
+        
+        ArrayList<parameter> dummyParameterset=new ArrayList<parameter>();
+
+        dummyParameterset.add(parameterCostParameter);
+        dummyParameterset.add(parameterTempParameter);
+
+        MeasureType dummyMeasure=new MeasureType();
+        ArrayList<MeasureType> dummyMeasureList=new ArrayList<MeasureType>();
+
+        dummyMeasureList.add(dummyMeasure);
+
+        SimulationType dummySim=new SimulationType();
+        dummySim.setListOfParameters(dummyParameterset);
+        dummySim.setMeasures(dummyMeasureList);
+
+        ArrayList<SimulationType> dummySimulationTypeList=new ArrayList<SimulationType>();
+        dummySimulationTypeList.add(dummySim);
+
+        String nameOfdummyLogfile=this.logFileName;
+        nameOfdummyLogfile=support.removeExtention(nameOfdummyLogfile)+"_SA_Temperatures.csv";
+
+        support.addLinesToLogFileFromListOfParser(dummySimulationTypeList, nameOfdummyLogfile);
+
+        //End of loging the temperatures
 
         return newParameterset;
         
