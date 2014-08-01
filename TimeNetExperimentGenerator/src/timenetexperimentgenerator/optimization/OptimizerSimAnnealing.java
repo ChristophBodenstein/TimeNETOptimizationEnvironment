@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import timenetexperimentgenerator.datamodel.SimulationType;
 import timenetexperimentgenerator.datamodel.parameter;
 import timenetexperimentgenerator.support;
+import timenetexperimentgenerator.typedef;
 import timenetexperimentgenerator.typedef.*;
 
 /**
@@ -100,7 +101,6 @@ double actualTempCost=1;
 
     /**
      * Returns the next parameterset
-     * Next parameterset is chosen randomly within the neighborhood
      * You should overload this method in your child-classes
      * @param actualParameterset  actual parameterset, if null, then first parameterset is calculated
      * @return next parameterset to be simulated
@@ -138,6 +138,7 @@ double actualTempCost=1;
             //nextValue = p.getValue() + sign * actualTempParameter *(Math.pow(1+(1/actualTempParameter),Math.abs(2*r-1) )) * distanceMax;
             nextValue = p.getValue() + sign * actualTempParameter *(Math.pow(1+(1/actualTempParameter),Math.abs(2*r)-1 )) * distanceMax;
             //support.log("Min:"+p.getStartValue()+" Max:"+p.getEndValue()+" NextValue:"+nextValue);
+            /*
             support.log("xCurrent:"+p.getValue());
             support.log("sign:"+sign);
             support.log("r:"+r);
@@ -146,7 +147,7 @@ double actualTempCost=1;
             support.log("Pow_Up:"+(Math.abs(2*r)-1));
             support.log("d:"+distanceMax);
             support.log("NextValue:"+nextValue);
-
+            */
             /*try{
             Thread.sleep(80);
             }catch(Exception e){}
@@ -190,6 +191,7 @@ double actualTempCost=1;
 
         }
 
+        
 
         return newParameterset;
         

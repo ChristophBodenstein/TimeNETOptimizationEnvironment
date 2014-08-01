@@ -257,7 +257,7 @@ boolean directionOfOptimizationChanged=false;//True->direction already changed, 
 
     /**
      * Returns the next parameterset in neighborhood
-     * Next parameterset is chosen randomly within the neighborhood
+     * Next parameterset is chosen based on the used strategy
      * You should overload this method in your child-classes
      * @param actualParameterset  actual parameterset, if null, then first parameterset is calculated
      * @return next parameterset to be simulated

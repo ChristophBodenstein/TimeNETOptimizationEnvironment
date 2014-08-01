@@ -8,7 +8,9 @@
 
 package timenetexperimentgenerator.datamodel;
 
+import java.util.Arrays;
 import timenetexperimentgenerator.support;
+import timenetexperimentgenerator.typedef;
 
 /**
  *
@@ -244,4 +246,19 @@ private long idHash=0;
         return this.decValue();
         }
     }
+
+
+    /**
+     * Some Parameters needs to be ignored while searching in the Parameter-DB
+     * or during Caching. These parameters are identified by name
+     * @see timenetexperimentgenerator.typedef.listOfParametersToIgnore
+     */
+    public boolean isIgnorable(){
+        if(Arrays.asList(typedef.listOfParametersToIgnore).contains(this.getName())){
+        return true;
+        }else{
+        return false;
+        }
+    }
+
 }
