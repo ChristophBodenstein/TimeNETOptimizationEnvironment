@@ -26,7 +26,7 @@ private double maxTemp=20;
 private int stepCountTemp=100;
 
 private double TempCost=1.0, TempPara =1.0;
-private int accepted =0, generated=0;
+private int accepted = 0, generated = 1;
 private double D;
 private double c;
 double actualTempParameter=1;
@@ -78,12 +78,14 @@ double actualTempCost=1;
         case VeryFastAnnealing:
             actualTempParameter=Math.exp(-c*Math.pow((double)generated,1/D) )*support.getOptimizerPreferences().getPref_MaxTempParameter();
             actualTempCost=Math.exp(-c*Math.pow((double)generated,1/D) )*support.getOptimizerPreferences().getPref_MaxTempCost();
-            //Eject if Temperature is lower then Epsilon
+            
             
             break;
     }
 
-
+        support.log("Actual Temp for Parameters: "+actualTempParameter);
+        support.log("Actual Temp for Cost: "+actualTempCost);
+        //Eject if Temperature is lower then Epsilon
         if(actualTempCost< support.getOptimizerPreferences().getPref_Epsilon()){return true;}
         if(actualTempParameter< support.getOptimizerPreferences().getPref_Epsilon()){return true;}
 
