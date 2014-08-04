@@ -81,7 +81,15 @@ private static ArrayList<Statistic> listOfStatistics=new ArrayList<Statistic>();
         }else{
         listOfStatistics.get(listOfStatistics.size()-1).printStatisticToLog();
         }
-        
+    }
+    
+    /**
+     *
+     * @return listOfStatistics
+     */
+    public static ArrayList<Statistic> getListOfStatistics()
+    {
+        return listOfStatistics;
     }
     
 }

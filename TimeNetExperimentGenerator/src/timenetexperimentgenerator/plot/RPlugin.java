@@ -15,6 +15,7 @@ public class RPlugin
     
     public void openPlotGui()
     {
+        controller.readCachedListOfStatistics();
         controller.setVisible(true);
     }
 }
