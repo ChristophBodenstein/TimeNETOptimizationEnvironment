@@ -631,7 +631,7 @@ private String pathToR="";
     private void jButtonExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonExportActionPerformed
         
         //Ask for Export-Path
-        support.setTmpPath(support.getPathToDirByDialog("Dir for export of xml-Files.\n "+"Go INTO the dir to choose it!", null));
+        //support.setTmpPath(support.getPathToDirByDialog("Dir for export of xml-Files.\n "+"Go INTO the dir to choose it!", null));
         support.setPathToTimeNet(pathToTimeNet);
         support.setMainFrame(this);
         support.setOriginalFilename(fileName);
@@ -925,9 +925,9 @@ private String pathToR="";
                     }
 
                     for(int c=0;c<nextParameterSet.size();c++){
-                        if(nextParameterSet.get(i).getName().equals(loopName)){
+                        if(nextParameterSet.get(c).getName().equals(loopName)){
                         //set modified parameterset
-                        nextParameterSet.get(i).setValue(usedValue);
+                        nextParameterSet.get(c).setValue(usedValue);
                         }
                     }
                 if(ListOfParameterAsFromTable.size()==0){
