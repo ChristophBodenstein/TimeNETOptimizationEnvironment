@@ -69,6 +69,10 @@ public class PlotFrameController extends javax.swing.JFrame {
         {
             
         }
+        
+        XValueLabel.setText("None");
+        YValueLabel.setText("None");
+        ZValueLabel.setText("None");
     }
     
     public void readCachedListOfStatistics()
@@ -78,7 +82,7 @@ public class PlotFrameController extends javax.swing.JFrame {
         cachedListOfStatistics = StatisticAggregator.getListOfStatistics();
         
         for(int i = 0; i<cachedListOfStatistics.size(); i++)
-                cachedFilesListModel.addElement(cachedListOfStatistics.get(i));
+                cachedFilesListModel.addElement(cachedListOfStatistics.get(i).getName());
             
             CachedFilesList.setModel(cachedFilesListModel);
     }
@@ -131,7 +135,7 @@ public class PlotFrameController extends javax.swing.JFrame {
         });
 
         OpenFileTextField.setEditable(false);
-        OpenFileTextField.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        OpenFileTextField.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         OpenFileTextField.setMaximumSize(new java.awt.Dimension(6, 20));
         OpenFileTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -339,7 +343,11 @@ public class PlotFrameController extends javax.swing.JFrame {
     }//GEN-LAST:event_OpenButtonActionPerformed
 
     private void LoadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoadButtonActionPerformed
-        // TODO add your handling code here:
+        if(!CachedFilesList.isSelectionEmpty())
+        {
+            OpenFileTextField.setText(CachedFilesList.getSelectedValue().toString());
+            loadCSV(CachedFilesList.getSelectedValue().toString());
+        }      
     }//GEN-LAST:event_LoadButtonActionPerformed
 
     private void OpenFileTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OpenFileTextFieldActionPerformed
@@ -347,7 +355,11 @@ public class PlotFrameController extends javax.swing.JFrame {
     }//GEN-LAST:event_OpenFileTextFieldActionPerformed
 
     private void SetYButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SetYButtonActionPerformed
-        YValueLabel.setText(ColumnList.getSelectedValue().toString());
+        if(!ColumnList.isSelectionEmpty())
+        {
+            YValueLabel.setText(ColumnList.getSelectedValue().toString());
+        }
+        
     }//GEN-LAST:event_SetYButtonActionPerformed
 
     private void MeasureComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MeasureComboBoxActionPerformed
@@ -368,7 +380,21 @@ public class PlotFrameController extends javax.swing.JFrame {
             //writer.println("svg(filename=\"rplot.svg\")");
             //writer.println("values <- c(1, 3, 6, 4, 9)");
             //writer.println("plot(values, type=\"o\", col=\"blue\")");
-            writer.println("scatter3D(base$" + XValueLabel.getText() + ",base$Tdrain,base$Mean.Value, xlab=\"TSource\",ylab=\"TDrain\",zlab=\"Measure\", phi=15, theta=120, col=NULL, NAcol=\"white\", colkey=NULL, panel.first=NULL, clim=NULL, clab=NULL, bty=\"b2\", pch=\"x\", add=FALSE)");
+            
+            if(XValueLabel.getText() != "None" && YValueLabel.getText() != "None" && ZValueLabel.getText() == "None")
+            {
+                writer.println("plot(base$" + XValueLabel.getText() + ",base$" + YValueLabel.getText() + ", xlab=\"" + XValueLabel.getText() + "\",ylab=\"" + YValueLabel.getText() + "\" , pch=\"x\")");
+            }
+            else if(XValueLabel.getText() != "None" && YValueLabel.getText() != "None" && ZValueLabel.getText() != "None")
+            {
+                writer.println("scatter3D(base$" + XValueLabel.getText() + ",base$" + YValueLabel.getText() + ",base$" + ZValueLabel.getText() + ", xlab=\"" + XValueLabel.getText() + "\",ylab=\"" + YValueLabel.getText() + "\",zlab=\"" + ZValueLabel.getText() + "\", phi=15, theta=120, col=NULL, NAcol=\"white\", colkey=NULL, panel.first=NULL, clim=NULL, clab=NULL, bty=\"b2\", pch=\"x\", add=FALSE)");
+            }
+            else
+            {
+                writer.close();
+                return;
+            }
+            
             writer.close();
                
             String command = support.getPathToR() + File.separator+"bin" + File.separator + "Rscript rscript.r";
@@ -390,11 +416,17 @@ public class PlotFrameController extends javax.swing.JFrame {
     }//GEN-LAST:event_PlotButtonActionPerformed
 
     private void SetXButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SetXButtonActionPerformed
-        XValueLabel.setText(ColumnList.getSelectedValue().toString());
+        if(!ColumnList.isSelectionEmpty())
+        {
+            XValueLabel.setText(ColumnList.getSelectedValue().toString());
+        }
     }//GEN-LAST:event_SetXButtonActionPerformed
 
     private void SetZButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SetZButtonActionPerformed
-        ZValueLabel.setText(ColumnList.getSelectedValue().toString());
+        if(!ColumnList.isSelectionEmpty())
+        {
+            ZValueLabel.setText(ColumnList.getSelectedValue().toString());
+        }
     }//GEN-LAST:event_SetZButtonActionPerformed
 
     /**
