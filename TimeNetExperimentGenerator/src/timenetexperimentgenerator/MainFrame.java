@@ -851,7 +851,7 @@ private String pathToR="";
     }//GEN-LAST:event_jButtonPathToRActionPerformed
 
     private void jButtonPlotRActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPlotRActionPerformed
-        rplugin.plot();
+        rplugin.openPlotGui();
     }//GEN-LAST:event_jButtonPlotRActionPerformed
 
     /**

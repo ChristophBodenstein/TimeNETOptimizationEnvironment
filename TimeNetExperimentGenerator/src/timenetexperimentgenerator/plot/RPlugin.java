@@ -1,54 +1,20 @@
-
 package timenetexperimentgenerator.plot;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import timenetexperimentgenerator.support;
 
 /**
  *
  * @author Simon Niebler, Bastian Mauerer
  */
 public class RPlugin 
-{       
-    private PlotFrame plotFrame;
+{      
+    private PlotFrameController controller;
             
     public RPlugin()
     {
-        plotFrame = new PlotFrame();
+        controller = new PlotFrameController();
     }
     
-    public void plot()
+    public void openPlotGui()
     {
-        try
-        {
-            PrintWriter writer = new PrintWriter("rscript.r", "UTF-8");
-            String userdir = System.getProperty("user.dir");
-            userdir = userdir.replace("\\", "/");
-            
-            writer.println("setwd(\"" + userdir + "\")");
-            writer.println("png(filename=\"rplot.png\")");
-            //writer.println("svg(filename=\"rplot.svg\")");
-            writer.println("values <- c(1, 3, 6, 4, 9)");
-            writer.println("plot(values, type=\"o\", col=\"blue\")");
-            writer.close();
-
-            String command = support.getPathToR() + File.separator+"bin" + File.separator + "Rscript rscript.r";
-            support.log("executing command: " + command);
-            Process child = Runtime.getRuntime().exec(command); 
-            try
-            {
-                child.waitFor();
-            }
-            catch(InterruptedException e)
-            {
-            }
-        }
-        catch(IOException e)
-        {
-        }
-        
-        plotFrame.showImage(System.getProperty("user.dir") + File.separator + "rplot.png");
+        controller.setVisible(true);
     }
 }
