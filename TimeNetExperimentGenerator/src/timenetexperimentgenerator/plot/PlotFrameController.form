@@ -26,50 +26,67 @@
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="1" attributes="0">
-                      <Component id="OpenFileTextField" max="32767" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="OpenButton" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="102" attributes="0">
-                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                      <Component id="LoadButton" min="-2" max="-2" attributes="0"/>
-                  </Group>
                   <Component id="LoadFileLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                   <Component id="CachedFilesLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                  <Component id="jScrollPane1" alignment="0" min="-2" pref="321" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="jSeparator1" min="-2" pref="2" max="-2" attributes="0"/>
-              <EmptySpace max="32767" attributes="0"/>
-              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <Component id="MeasureLabel" min="-2" max="-2" attributes="0"/>
+                  <Group type="102" alignment="1" attributes="0">
+                      <Component id="OpenFileTextField" min="-2" pref="265" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="MeasureComboBox" max="32767" attributes="0"/>
+                      <Component id="OpenButton" min="-2" pref="80" max="-2" attributes="0"/>
                   </Group>
-                  <Group type="103" alignment="1" groupAlignment="0" attributes="0">
-                      <Component id="AxisSetupLabel" min="-2" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="jScrollPane2" pref="0" max="32767" attributes="0"/>
+                  <Component id="jScrollPane1" min="-2" pref="351" max="-2" attributes="0"/>
+                  <Component id="LoadButton" alignment="1" min="-2" pref="80" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Component id="jSeparator1" min="-2" pref="2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" attributes="0">
+                      <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="1" attributes="0">
-                              <Component id="SetXButton" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="SetYButton" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="SetZButton" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                              <Component id="PlotButton" min="-2" pref="80" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="XLabel" alignment="1" max="32767" attributes="0"/>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="ZLabel" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="YLabel" min="-2" pref="179" max="-2" attributes="0"/>
+                          <Group type="102" attributes="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="102" alignment="1" attributes="0">
+                                      <Component id="SetXButton" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="SetYButton" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="SetZButton" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="1" attributes="0">
+                                      <Component id="AxisSetupLabel" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace min="-2" pref="124" max="-2" attributes="0"/>
+                                  </Group>
                               </Group>
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="XLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="YLabel" alignment="0" min="-2" pref="10" max="-2" attributes="0"/>
+                                  <Component id="ZLabel" alignment="0" min="-2" pref="10" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="ZValueLabel" max="32767" attributes="0"/>
+                                  <Component id="YValueLabel" max="32767" attributes="0"/>
+                                  <Component id="XValueLabel" max="32767" attributes="0"/>
+                              </Group>
+                          </Group>
                       </Group>
                   </Group>
-                  <Component id="PlotButton" max="32767" attributes="0"/>
+                  <Group type="102" alignment="1" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="jScrollPane2" pref="351" max="32767" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="1" attributes="0">
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Component id="MeasureLabel" min="-2" pref="45" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="MeasureComboBox" max="32767" attributes="0"/>
+                  </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -93,6 +110,7 @@
                       <Component id="jScrollPane1" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="LoadButton" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="19" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="AxisSetupLabel" min="-2" max="-2" attributes="0"/>
@@ -107,22 +125,30 @@
                           <Component id="SetXButton" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="XLabel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="YLabel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="ZLabel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="1" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="MeasureLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="XLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="XValueLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="YLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="YValueLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="ZLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="ZValueLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="-2" pref="36" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="MeasureComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="MeasureLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="PlotButton" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace max="-2" attributes="0"/>
           </Group>
           <Component id="jSeparator1" alignment="0" max="32767" attributes="0"/>
       </Group>
@@ -160,6 +186,13 @@
       </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="OpenFileTextField">
+      <Properties>
+        <Property name="editable" type="boolean" value="false"/>
+        <Property name="horizontalAlignment" type="int" value="4"/>
+        <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[6, 20]"/>
+        </Property>
+      </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="OpenFileTextFieldActionPerformed"/>
       </Events>
@@ -198,6 +231,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="SetX"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="SetXButtonActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="SetYButton">
       <Properties>
@@ -211,6 +247,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="SetZ"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="SetZButtonActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="LoadFileLabel">
       <Properties>
@@ -224,17 +263,17 @@
     </Component>
     <Component class="javax.swing.JLabel" name="XLabel">
       <Properties>
-        <Property name="text" type="java.lang.String" value="X: None"/>
+        <Property name="text" type="java.lang.String" value="X:"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="YLabel">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Y: None"/>
+        <Property name="text" type="java.lang.String" value="Y:"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="ZLabel">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Z: None"/>
+        <Property name="text" type="java.lang.String" value="Z:"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="MeasureLabel">
@@ -245,12 +284,7 @@
     <Component class="javax.swing.JComboBox" name="MeasureComboBox">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="4">
-            <StringItem index="0" value="Item 1"/>
-            <StringItem index="1" value="Item 2"/>
-            <StringItem index="2" value="Item 3"/>
-            <StringItem index="3" value="Item 4"/>
-          </StringArray>
+          <StringArray count="0"/>
         </Property>
       </Properties>
       <Events>
@@ -264,6 +298,21 @@
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="PlotButtonActionPerformed"/>
       </Events>
+    </Component>
+    <Component class="javax.swing.JLabel" name="XValueLabel">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="None"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="YValueLabel">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="None"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="ZValueLabel">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="None"/>
+      </Properties>
     </Component>
   </SubComponents>
 </Form>

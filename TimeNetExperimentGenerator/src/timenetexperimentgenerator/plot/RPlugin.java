@@ -6,7 +6,7 @@ package timenetexperimentgenerator.plot;
  */
 public class RPlugin 
 {      
-    private PlotFrameController controller;
+    private final PlotFrameController controller;
             
     public RPlugin()
     {

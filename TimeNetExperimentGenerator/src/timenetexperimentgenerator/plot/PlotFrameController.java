@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.BufferedReader;
 import javax.swing.JFileChooser;
 import javax.swing.DefaultListModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import timenetexperimentgenerator.support;
 
@@ -40,13 +41,26 @@ public class PlotFrameController extends javax.swing.JFrame {
                        
             String[] parts = header.split(";");
             DefaultListModel model = new DefaultListModel();
+            model.addElement("None");
             
             for(int i = 0; i<parts.length; i++)
-            {
                 model.addElement(parts[i]);
-            }
             
             ColumnList.setModel(model);
+            
+            DefaultComboBoxModel cmodel = new DefaultComboBoxModel();
+            parts = in.readLine().split(";");
+            String first = parts[0];            
+            cmodel.addElement(first);
+            
+            String current = in.readLine().split(";")[0];
+            while(!current.equals(first))
+            {
+                cmodel.addElement(current);
+                current = in.readLine().split(";")[0];
+            }
+            
+            MeasureComboBox.setModel(cmodel);
         }
         catch(Exception e)
         {
@@ -83,6 +97,9 @@ public class PlotFrameController extends javax.swing.JFrame {
         MeasureLabel = new javax.swing.JLabel();
         MeasureComboBox = new javax.swing.JComboBox();
         PlotButton = new javax.swing.JButton();
+        XValueLabel = new javax.swing.JLabel();
+        YValueLabel = new javax.swing.JLabel();
+        ZValueLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -98,6 +115,9 @@ public class PlotFrameController extends javax.swing.JFrame {
             }
         });
 
+        OpenFileTextField.setEditable(false);
+        OpenFileTextField.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        OpenFileTextField.setMaximumSize(new java.awt.Dimension(6, 20));
         OpenFileTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 OpenFileTextFieldActionPerformed(evt);
@@ -117,6 +137,11 @@ public class PlotFrameController extends javax.swing.JFrame {
         AxisSetupLabel.setText("Axis Setup");
 
         SetXButton.setText("SetX");
+        SetXButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SetXButtonActionPerformed(evt);
+            }
+        });
 
         SetYButton.setText("SetY");
         SetYButton.addActionListener(new java.awt.event.ActionListener() {
@@ -126,20 +151,24 @@ public class PlotFrameController extends javax.swing.JFrame {
         });
 
         SetZButton.setText("SetZ");
+        SetZButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SetZButtonActionPerformed(evt);
+            }
+        });
 
         LoadFileLabel.setText("Load File");
 
         CachedFilesLabel.setText("Cached Files");
 
-        XLabel.setText("X: None");
+        XLabel.setText("X:");
 
-        YLabel.setText("Y: None");
+        YLabel.setText("Y:");
 
-        ZLabel.setText("Z: None");
+        ZLabel.setText("Z:");
 
         MeasureLabel.setText("Measure:");
 
-        MeasureComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         MeasureComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 MeasureComboBoxActionPerformed(evt);
@@ -153,6 +182,12 @@ public class PlotFrameController extends javax.swing.JFrame {
             }
         });
 
+        XValueLabel.setText("None");
+
+        YValueLabel.setText("None");
+
+        ZValueLabel.setText("None");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -160,41 +195,53 @@ public class PlotFrameController extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(OpenFileTextField)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(OpenButton))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(LoadButton))
                     .addComponent(LoadFileLabel)
                     .addComponent(CachedFilesLabel)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 321, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 2, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(MeasureLabel)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(OpenFileTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(MeasureComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(AxisSetupLabel)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                        .addComponent(OpenButton, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(LoadButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 2, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(8, 8, 8)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(SetXButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(SetYButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(SetZButton))
-                            .addComponent(XLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(PlotButton, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(ZLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(YLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(0, 0, Short.MAX_VALUE))))
-                    .addComponent(PlotButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addComponent(SetXButton)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(SetYButton)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(SetZButton))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addComponent(AxisSetupLabel)
+                                        .addGap(124, 124, 124)))
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(XLabel)
+                                    .addComponent(YLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(ZLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(ZValueLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(YValueLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(XValueLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 351, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(MeasureLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(MeasureComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -213,7 +260,8 @@ public class PlotFrameController extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(LoadButton))
+                        .addComponent(LoadButton)
+                        .addGap(19, 19, 19))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(AxisSetupLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -225,19 +273,24 @@ public class PlotFrameController extends javax.swing.JFrame {
                                 .addComponent(SetZButton))
                             .addComponent(SetXButton))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(XLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(YLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(ZLabel)
-                        .addGap(1, 1, 1)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(MeasureLabel)
-                            .addComponent(MeasureComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(XLabel)
+                            .addComponent(XValueLabel))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(YLabel)
+                            .addComponent(YValueLabel))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(ZLabel)
+                            .addComponent(ZValueLabel))
+                        .addGap(36, 36, 36)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(MeasureComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(MeasureLabel))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(PlotButton)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
             .addComponent(jSeparator1)
         );
 
@@ -282,7 +335,7 @@ public class PlotFrameController extends javax.swing.JFrame {
     }//GEN-LAST:event_OpenFileTextFieldActionPerformed
 
     private void SetYButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SetYButtonActionPerformed
-        // TODO add your handling code here:
+        YValueLabel.setText(ColumnList.getSelectedValue().toString());
     }//GEN-LAST:event_SetYButtonActionPerformed
 
     private void MeasureComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MeasureComboBoxActionPerformed
@@ -296,13 +349,16 @@ public class PlotFrameController extends javax.swing.JFrame {
             String userdir = System.getProperty("user.dir");
             userdir = userdir.replace("\\", "/");
             
+            writer.println("library(plot3D)");
+            writer.println("base<-read.csv(\"" + OpenFileTextField.getText().replace("\\", "/") + "\", sep=\";\", dec=\",\" )");
             writer.println("setwd(\"" + userdir + "\")");
             writer.println("png(filename=\"rplot.png\")");
             //writer.println("svg(filename=\"rplot.svg\")");
-            writer.println("values <- c(1, 3, 6, 4, 9)");
-            writer.println("plot(values, type=\"o\", col=\"blue\")");
+            //writer.println("values <- c(1, 3, 6, 4, 9)");
+            //writer.println("plot(values, type=\"o\", col=\"blue\")");
+            writer.println("scatter3D(base$" + XValueLabel.getText() + ",base$Tdrain,base$Mean.Value, xlab=\"TSource\",ylab=\"TDrain\",zlab=\"Measure\", phi=15, theta=120, col=NULL, NAcol=\"white\", colkey=NULL, panel.first=NULL, clim=NULL, clab=NULL, bty=\"b2\", pch=\"x\", add=FALSE)");
             writer.close();
-
+               
             String command = support.getPathToR() + File.separator+"bin" + File.separator + "Rscript rscript.r";
             support.log("executing command: " + command);
             Process child = Runtime.getRuntime().exec(command); 
@@ -320,6 +376,14 @@ public class PlotFrameController extends javax.swing.JFrame {
         
         plotFrame.showImage(System.getProperty("user.dir") + File.separator + "rplot.png");
     }//GEN-LAST:event_PlotButtonActionPerformed
+
+    private void SetXButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SetXButtonActionPerformed
+        XValueLabel.setText(ColumnList.getSelectedValue().toString());
+    }//GEN-LAST:event_SetXButtonActionPerformed
+
+    private void SetZButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SetZButtonActionPerformed
+        ZValueLabel.setText(ColumnList.getSelectedValue().toString());
+    }//GEN-LAST:event_SetZButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -372,8 +436,11 @@ public class PlotFrameController extends javax.swing.JFrame {
     private javax.swing.JButton SetYButton;
     private javax.swing.JButton SetZButton;
     private javax.swing.JLabel XLabel;
+    private javax.swing.JLabel XValueLabel;
     private javax.swing.JLabel YLabel;
+    private javax.swing.JLabel YValueLabel;
     private javax.swing.JLabel ZLabel;
+    private javax.swing.JLabel ZValueLabel;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;

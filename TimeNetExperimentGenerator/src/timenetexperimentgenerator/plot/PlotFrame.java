@@ -3,13 +3,16 @@ package timenetexperimentgenerator.plot;
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.JLabel;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
+import java.io.File;
 
 /**
  * @author Bastian
  */
 public class PlotFrame extends javax.swing.JFrame 
-{
-    ImageIcon icon;
+{   
+    JLabel label;
     
     /**
      * Creates new form PlotFrame
@@ -19,6 +22,8 @@ public class PlotFrame extends javax.swing.JFrame
         initComponents();
         setResizable(false);
         this.setTitle("R Plot");
+        label = new JLabel();
+        this.getContentPane().add(label);
     }
     
     /**
@@ -35,6 +40,7 @@ public class PlotFrame extends javax.swing.JFrame
         jMenu2 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
         addWindowStateListener(new java.awt.event.WindowStateListener() {
             public void windowStateChanged(java.awt.event.WindowEvent evt) {
                 formWindowStateChanged(evt);
@@ -106,15 +112,26 @@ public class PlotFrame extends javax.swing.JFrame
     
     public void showImage(String path)
     {   
-        this.setVisible(true);
-        icon = new ImageIcon(path); 
-        JLabel label = new JLabel();
-        label.setSize(icon.getIconWidth(), icon.getIconHeight());
-        label.setIcon(icon);
+        this.setVisible(true);  
+        try
+        {
+            BufferedImage bufferedImage = ImageIO.read(new File(path));
         
-        this.getContentPane().add(label);
-        this.getContentPane().setPreferredSize(new Dimension(icon.getIconWidth(), icon.getIconHeight()));
-        this.pack();       
+        
+            ImageIcon icon = new ImageIcon(bufferedImage); 
+
+            label.setSize(icon.getIconWidth(), icon.getIconHeight());
+            label.setIcon(icon);
+
+            label.revalidate();
+            label.repaint();
+
+            this.getContentPane().setPreferredSize(new Dimension(icon.getIconWidth(), icon.getIconHeight()));
+            this.pack(); 
+            }
+        catch(Exception e)
+        {
+        }                     
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
