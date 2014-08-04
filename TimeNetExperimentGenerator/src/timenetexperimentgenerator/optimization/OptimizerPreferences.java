@@ -337,7 +337,7 @@ private SpinnerNumberModel TRatioScaleSpinnerModel;
             .addGap(0, 225, Short.MAX_VALUE)
         );
 
-        jTabbedPane1.addTab("Simple Annealing", jPanel1);
+        jTabbedPane1.addTab("MultiStage", jPanel1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -627,7 +627,7 @@ private SpinnerNumberModel TRatioScaleSpinnerModel;
                     addonString+="_MaxTempPara_"+this.getPref_MaxTempParameter();
                     addonString+="_MaxTempCost_"+this.getPref_MaxTempCost();
                     break;
-                case SimpleAnnealing:
+                case MultiStage:
                     break;
 
                 case Genetic:

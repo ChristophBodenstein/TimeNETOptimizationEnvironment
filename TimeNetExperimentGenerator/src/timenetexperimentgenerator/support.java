@@ -68,8 +68,8 @@ private static typedef.typeOfOptimization chosenOptimizerType=typeOfOptimization
 private static typeOfSimulator chosenSimulatorType=typeOfSimulator.Local;//0=local, 1=cached, 2=distributed
 private static LogFrame myLogFrame=new LogFrame();
 
-public static final String[] SIMTYPES={"Local Sim.","Cache Only Sim.","Cache & Local","Web Sim."};
-public static final String[] OPTITYPES={"Hillclimbing","Sim. Annealing","ChargedSystemSearch","GeneticSearch","A.Seidel-3"};
+//public static final String[] SIMTYPES={"Local Sim.","Cache Only Sim.","Cache & Local","Web Sim."};
+//public static final String[] OPTITYPES={"Hillclimbing","Sim. Annealing","ChargedSystemSearch","GeneticSearch","A.Seidel-3"};
 
     /**
      * @return the myOptimizerPreferences a Reference to the Preferences-Frame
@@ -695,6 +695,7 @@ private static boolean logToConsole=false;
      */
     public static boolean isDistributedSimulationAvailable() {
         return distributedSimulationAvailable;
+        
     }
 
     /**

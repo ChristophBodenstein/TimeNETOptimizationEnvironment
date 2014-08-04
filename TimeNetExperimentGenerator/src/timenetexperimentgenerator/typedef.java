@@ -22,7 +22,7 @@ public enum typeOfNeighborhoodEnum{StepForward,StepForwardBackward,StepForwardBa
 
 public enum typeOfAnnealing{Boltzmann, FastAnnealing, VeryFastAnnealing};
 
-public enum typeOfOptimization{HillClimbing, SimAnnealing, SimpleAnnealing, ChargedSystemSearch, Genetic, Seidel3};
+public enum typeOfOptimization{HillClimbing, SimAnnealing, MultiStage, ChargedSystemSearch, Genetic, Seidel3};
 
 public enum typeOfSimulator{Local, Cache_Only, Cached_Local, Distributed};
 

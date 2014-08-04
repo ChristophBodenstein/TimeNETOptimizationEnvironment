@@ -128,6 +128,8 @@ private String pathToR="";
         this.pathToLastSimulationCache=auto.getProperty("pathToLastSimulationCache", "");
 
         support.setIsRunningAsSlave(Boolean.parseBoolean(auto.getProperty("isRunningAsSlave")));
+
+        support.setRemoteAddress(auto.getProperty("RemoteAddress", ""));
         
         this.checkIfTimeNetPathIsCorrect();
         this.checkIfRPathIsCorrect();
@@ -203,6 +205,9 @@ private String pathToR="";
     model.addSelectionInterval(2, 2);
     if(support.isCachedSimulationAvailable()){
     model.addSelectionInterval(1, 1);
+    }
+    if(support.isDistributedSimulationAvailable()){
+    model.addSelectionInterval(3, 3);
     }
     
     this.jComboBoxSimulationType.setRenderer(new EnabledJComboBoxRenderer(model));
@@ -1348,6 +1353,8 @@ private String pathToR="";
     auto.setProperty("SimulationType", support.getChosenSimulatorType().toString());
     
     auto.setProperty("isRunningAsSlave", Boolean.toString(support.isIsRunningAsSlave()));
+
+    auto.setProperty("RemoteAddress", support.getReMoteAddress());
     
     File parserprops =  new File(propertyFile);
     auto.store(new FileOutputStream(parserprops), "ExperimentGenerator-Properties");

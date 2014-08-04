@@ -63,8 +63,7 @@ private static SimulationCache singleTonSimulationCache=new SimulationCache();
                     return new OptimizerGenetic();
             case Seidel3:
                     return new OptimizerASeidel3();
-            case SimpleAnnealing:
-                    return new OptimizerSimAnnealing();
+
 
             default: 
                     return new OptimizerHill();
