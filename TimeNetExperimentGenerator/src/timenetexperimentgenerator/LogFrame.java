@@ -62,7 +62,7 @@ public class LogFrame extends javax.swing.JFrame {
     public void addText(String s){
     this.jTextAreaLog.append(System.getProperty("line.separator"));
     this.jTextAreaLog.append(s);
-    this.jTextAreaLog.setCaretPosition(jTextAreaLog.getDocument().getLength());
+    this.jTextAreaLog.setCaretPosition(jTextAreaLog.getDocument().getLength()-s.length());
     }
     
     public void clearText(){

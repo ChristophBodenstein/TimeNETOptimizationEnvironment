@@ -26,7 +26,7 @@ private double maxTemp=20;
 private int stepCountTemp=100;
 
 private double TempCost=1.0, TempPara =1.0;
-private int accepted = 0, generated = 1;
+private int accepted = 0, generated = 0;
 private double D;
 private double c;
 double actualTempParameter=1;
@@ -66,8 +66,14 @@ double actualTempCost=1;
     switch(support.getOptimizerPreferences().getPref_Cooling()){
         default:
         case Boltzmann:
-            actualTempParameter = (1/(Math.log((double)generated)))*support.getOptimizerPreferences().getPref_MaxTempParameter();
-            actualTempCost = (1/(Math.log((double)generated)))*support.getOptimizerPreferences().getPref_MaxTempCost();
+            double denominator=(Math.log((double)generated));
+            if(denominator<=0.0)denominator=0.1;
+            actualTempParameter = (1/denominator)*support.getOptimizerPreferences().getPref_MaxTempParameter();
+            if(actualTempParameter>support.getOptimizerPreferences().getPref_MaxTempParameter())actualTempParameter=support.getOptimizerPreferences().getPref_MaxTempParameter();
+
+            actualTempCost = (1/denominator)*support.getOptimizerPreferences().getPref_MaxTempCost();
+            if(actualTempCost>support.getOptimizerPreferences().getPref_MaxTempCost())actualTempCost=support.getOptimizerPreferences().getPref_MaxTempCost();
+
             break;
             
         case FastAnnealing:
