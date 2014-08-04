@@ -590,6 +590,11 @@ private static boolean logToConsole=false;
      */
     public static void setRemoteAddress(String address){
     remoteAddress=address;
+    //TODO DISTRIBUTEDSERVER
+    //Check if address is correct.
+    //If Address is correct, set distributedSimulationAvailable to TRUE!
+    //e.i. call the method checkRemoteAddress(String ere)
+    //After that, please call updateComboBoxSimulationType() in MainFrame.java
     }
     
     /**
@@ -599,6 +604,7 @@ private static boolean logToConsole=false;
      * To be modified by: Group studies 2014
      */
     public static boolean checkRemoteAddress(String urlString){
+        //TODO DISTRIBUTEDSERVER
     return true;
     }
     
