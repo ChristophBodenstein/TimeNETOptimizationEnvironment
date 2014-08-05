@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
-import javax.swing.JList;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import timenetexperimentgenerator.helper.Statistic;
 import timenetexperimentgenerator.helper.StatisticAggregator;
@@ -37,7 +36,6 @@ public class PlotFrameController extends javax.swing.JFrame {
                 
                 if (evt.getClickCount() == 2 && !CachedFilesList.isSelectionEmpty()) 
                 {
-                    //int index = list.locationToIndex(evt.getPoint());
                     OpenFileTextField.setText(CachedFilesList.getSelectedValue().toString());
                     loadCSV(CachedFilesList.getSelectedValue().toString());
                 } 
@@ -66,7 +64,6 @@ public class PlotFrameController extends javax.swing.JFrame {
             
             for(int i = 0; i<parts.length; i++)
             {
-                //parts[i] = parts[i].replaceAll("\\s+",""); //remove whitespaces
                 parts[i] = parts[i].trim();
                 model.addElement(parts[i]);
             }
