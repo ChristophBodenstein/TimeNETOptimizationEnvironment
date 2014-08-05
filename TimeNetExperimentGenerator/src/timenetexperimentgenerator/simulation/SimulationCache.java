@@ -285,6 +285,7 @@ private int localSimulationCounter = 0;
     return myTmpList;
     }
     
+    
     /**
      * Returns SimulationType, which is the nearest to the given parameterSet (if exact match doesn`t exist)
      * @param parameterList given parameterSet for simulated simulation...
@@ -378,7 +379,7 @@ private int localSimulationCounter = 0;
      * @param listB 
      * @return true if parametersets (only the values and names) are equal, else false
      */
-    private boolean compareParameterList(ArrayList<parameter> listA, ArrayList<parameter> listB){
+    public boolean compareParameterList(ArrayList<parameter> listA, ArrayList<parameter> listB){
     String nameA="";
     parameter tmpParameterA, tmpParameterB;
         if(listA.size()!=listB.size()){
@@ -501,7 +502,7 @@ private int localSimulationCounter = 0;
     
     
     /**
-     * adds every given SimulationType into list of simualtions to local cache
+     * Adds every given SimulationType into list of simulations to local cache
      * 
      * @param SimulationListToAdd List of simulaions to be added to local cache
      */
@@ -511,5 +512,13 @@ private int localSimulationCounter = 0;
             this.simulationList.add(SimulationListToAdd.get(i));
         }
     }
-    
+
+    /**
+     * Adds one Simulation(Type) to list of simulations (to local cache)
+     * @see addListOfSimulationsToCache(ArrayList<SimulationType> SimulationListToAdd)
+     * @param SimulationToAdd Simulation to be added
+     */
+    public void addSimulationToCache(SimulationType SimulationToAdd){
+            this.simulationList.add(SimulationToAdd);
+    }
 }

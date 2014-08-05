@@ -92,8 +92,11 @@ double actualTempCost=1;
         support.log("Actual Temp for Parameters: "+actualTempParameter);
         support.log("Actual Temp for Cost: "+actualTempCost);
         //Eject if Temperature is lower then Epsilon
-        if(actualTempCost< support.getOptimizerPreferences().getPref_Epsilon()){return true;}
-        if(actualTempParameter< support.getOptimizerPreferences().getPref_Epsilon()){return true;}
+        if(actualTempCost< support.getOptimizerPreferences().getPref_Epsilon() || actualTempParameter< support.getOptimizerPreferences().getPref_Epsilon()){
+            //Set currentsolution=bestsolution so it will be printed as optimum
+            currentSolution=bestSolution;
+            return true;
+        }
 
     //If new cost is lower then repvious then break and accept new solution
         if(getActualDistance(nextSolution) < getActualDistance(bestSolution)){
@@ -136,7 +139,7 @@ double actualTempCost=1;
             double simpleValue=p.getEndValue()+1;
 
 
-            //r=-0.99;
+            
 
             while(nextValue<p.getStartValue() || nextValue>p.getEndValue()){
             //while(r<1){

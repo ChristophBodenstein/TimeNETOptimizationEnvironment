@@ -49,6 +49,8 @@ public static final double DEFAULT_EPSILON=0.01;
 public static final typeOfAnnealingParameterCalculation DEFAULT_CALC_NEXT_PARAMETER=typeOfAnnealingParameterCalculation.Standard;
 
 
+public static final int DEFAULT_CACHE_STUCK=2;//Optimizer can ask 2 times for simulating the same parameterset in a row. Then optimization will be aborted!
+
 //End of program-wide default value definition
 
 

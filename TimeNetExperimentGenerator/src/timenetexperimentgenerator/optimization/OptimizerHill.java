@@ -20,6 +20,7 @@ import timenetexperimentgenerator.datamodel.SimulationType;
 import timenetexperimentgenerator.simulation.Simulator;
 import timenetexperimentgenerator.support;
 import timenetexperimentgenerator.helper.*;
+import timenetexperimentgenerator.simulation.SimulationCache;
 import timenetexperimentgenerator.typedef.*;
 
 
@@ -49,6 +50,7 @@ JTabbedPane MeasureFormPane;
 ArrayList<MeasureType> listOfMeasures=new ArrayList<MeasureType>();//Liste aller Measures, abfragen von MeasureFormPane
 ArrayList<SimulationType> historyOfParsers=new ArrayList<SimulationType>();//History of all simulation runs
 ArrayList<parameter> parameterBase;//Base set of parameters, start/end-value, stepping, etc.
+SimulationCache mySimulationCache=new SimulationCache();
 double[] arrayOfIncrements;
 boolean optimized=false;//False until Optimization is ended
 JLabel infoLabel;
@@ -61,6 +63,8 @@ int wrongSolutionPerDirectionCounter=support.getOptimizerPreferences().getPref_W
 int numberOfChangableParameters=0;
 boolean directionOfOptimization=true;//true->increment parameters, false->decrement parameters
 boolean directionOfOptimizationChanged=false;//True->direction already changed, False->you can change it one time
+int stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;
+
 
     /**
      * Constructor
@@ -108,6 +112,7 @@ boolean directionOfOptimizationChanged=false;//True->direction already changed, 
      */
     public void run() {
         ArrayList<parameter> lastParameterset;
+        ArrayList<ArrayList<parameter>> newParameterset;
         //Simulator init with initional parameterset
         Simulator mySimulator=SimOptiFactory.getSimulator();
         
@@ -120,21 +125,59 @@ boolean directionOfOptimizationChanged=false;//True->direction already changed, 
         //Fx=this.getActualDistance(currentSolution);
         nextSolution=currentSolution;
         bestSolution=currentSolution;
+        ArrayList<SimulationType> listOfCompletedSimulations;
         
         lastParameterset=currentSolution.getListOfParameters();
         support.log("Start of Optimization-loop");
             while(!optimized){
-            mySimulator.initSimulator(getNextParametersetAsArrayList(lastParameterset), getSimulationCounter(), false);
-            support.waitForEndOfSimulator(mySimulator, getSimulationCounter(), 600);
-            this.setSimulationCounter(mySimulator.getSimulationCounter());
-            support.addLinesToLogFileFromListOfParser(mySimulator.getListOfCompletedSimulationParsers(), logFileName);
-            this.historyOfParsers = support.appendListOfParsers(historyOfParsers, mySimulator.getListOfCompletedSimulationParsers());
-            nextSolution=mySimulator.getListOfCompletedSimulationParsers().get(0);
+                newParameterset=getNextParametersetAsArrayList(lastParameterset);
+                listOfCompletedSimulations=null;
+                //If result is already in cache, then count up corresponding counter
+                //Else start simulation
+                if(mySimulationCache.getListOfCompletedSimulationParsers(newParameterset, simulationCounter)!=null){
+                listOfCompletedSimulations=mySimulationCache.getListOfCompletedSimulationParsers(newParameterset, simulationCounter);
+                //Count up Eject-Counter for Cache
+
+                    //set all results to Cached, for statistics
+                    for(int i=0;i<listOfCompletedSimulations.size();i++){
+                    listOfCompletedSimulations.get(i).setIsFromCache(true);
+                    }
+
+                    //If last parameterset is double, then count up eject-counter for LastInCache
+                    //TODO This only works if ONE parameterset is used. For Lists of Parameterset this wil not work!
+                    if(mySimulationCache.compareParameterList(lastParameterset, newParameterset.get(0))){
+                    stuckInCacheCounter--;
+                    }
+
+                }else{
+                stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;//Reset Stuck-Counter
+                mySimulator.initSimulator(newParameterset, getSimulationCounter(), false);
+                support.waitForEndOfSimulator(mySimulator, getSimulationCounter(), 600);
+                this.setSimulationCounter(mySimulator.getSimulationCounter());
+                listOfCompletedSimulations=mySimulator.getListOfCompletedSimulationParsers();
+                //Add all Results to Cache
+                mySimulationCache.addListOfSimulationsToCache(listOfCompletedSimulations);
+                }
+
+            //TODO Only last Simulation is used. For future use we should use all Simulations to paralelise to simulation
+            nextSolution=listOfCompletedSimulations.get(0);
+
+            support.addLinesToLogFileFromListOfParser(listOfCompletedSimulations, logFileName);
+            this.historyOfParsers = support.appendListOfParsers(historyOfParsers, listOfCompletedSimulations);
+
+            
             //Fy=this.getActualDistance(nextSolution);
             lastParameterset=nextSolution.getListOfParameters();
 
-            //Check, if Optimization has ended!
-            optimized=isOptimized(getActualDistance(currentSolution), getActualDistance(nextSolution));
+                if(stuckInCacheCounter>=1){
+                //Check, if Optimization has ended!
+                optimized=isOptimized(getActualDistance(currentSolution), getActualDistance(nextSolution));
+                }else{
+                //End Optimization because we are stuck in cache in the last parameterset
+                optimized=true;
+                currentSolution=bestSolution;
+                support.log("End because we are stuck in temporary simulation cache.");
+                }
             
             }
         support.log(this.getClass().getSimpleName()+" has ended, printing optimal value:");
@@ -158,6 +201,7 @@ boolean directionOfOptimizationChanged=false;//True->direction already changed, 
                 support.log("Choosing next solution for "+this.getClass().getSimpleName());
                 Fx=nextDistance;//Set global Distance Value
                 currentSolution=nextSolution;//Set Global Solution Value
+                bestSolution=currentSolution;//Set globa best Solution Value
                 //Reset wrong-solution-counter
                 wrongSolutionCounter=support.getOptimizerPreferences().getPref_WrongSimulationsUntilBreak();
                 wrongSolutionPerDirectionCounter=support.getOptimizerPreferences().getPref_WrongSimulationsPerDirection();
