@@ -47,7 +47,11 @@ public class PlotFrameController extends javax.swing.JFrame {
             model.addElement("None");
             
             for(int i = 0; i<parts.length; i++)
+            {
+                //parts[i] = parts[i].replaceAll("\\s+",""); //remove whitespaces
+                parts[i] = parts[i].trim();
                 model.addElement(parts[i]);
+            }
             
             ColumnList.setModel(model);
             
@@ -374,7 +378,7 @@ public class PlotFrameController extends javax.swing.JFrame {
             userdir = userdir.replace("\\", "/");
             
             writer.println("library(plot3D)");
-            writer.println("base<-read.csv(\"" + OpenFileTextField.getText().replace("\\", "/") + "\", sep=\";\", dec=\",\" )");
+            writer.println("base<-read.csv(\"" + OpenFileTextField.getText().replace("\\", "/") + "\", sep=\";\", dec=\",\",check.names=FALSE)");
             writer.println("setwd(\"" + userdir + "\")");
             writer.println("png(filename=\"rplot.png\")");
             //writer.println("svg(filename=\"rplot.svg\")");
@@ -383,11 +387,11 @@ public class PlotFrameController extends javax.swing.JFrame {
             
             if(XValueLabel.getText() != "None" && YValueLabel.getText() != "None" && ZValueLabel.getText() == "None")
             {
-                writer.println("plot(base$" + XValueLabel.getText() + ",base$" + YValueLabel.getText() + ", xlab=\"" + XValueLabel.getText() + "\",ylab=\"" + YValueLabel.getText() + "\" , pch=\"x\")");
+                writer.println("plot(base$\"" + XValueLabel.getText() + "\",base$\"" + YValueLabel.getText() + "\", xlab=\"" + XValueLabel.getText() + "\",ylab=\"" + YValueLabel.getText() + "\" , pch=\"x\")");
             }
             else if(XValueLabel.getText() != "None" && YValueLabel.getText() != "None" && ZValueLabel.getText() != "None")
             {
-                writer.println("scatter3D(base$" + XValueLabel.getText() + ",base$" + YValueLabel.getText() + ",base$" + ZValueLabel.getText() + ", xlab=\"" + XValueLabel.getText() + "\",ylab=\"" + YValueLabel.getText() + "\",zlab=\"" + ZValueLabel.getText() + "\", phi=15, theta=120, col=NULL, NAcol=\"white\", colkey=NULL, panel.first=NULL, clim=NULL, clab=NULL, bty=\"b2\", pch=\"x\", add=FALSE)");
+                writer.println("scatter3D(base$\"" + XValueLabel.getText() + "\",base$\"" + YValueLabel.getText() + "\",base$\"" + ZValueLabel.getText() + "\", xlab=\"" + XValueLabel.getText() + "\",ylab=\"" + YValueLabel.getText() + "\",zlab=\"" + ZValueLabel.getText() + "\", phi=15, theta=120, col=NULL, NAcol=\"white\", colkey=NULL, panel.first=NULL, clim=NULL, clab=NULL, bty=\"b2\", pch=\"x\", add=FALSE)");
             }
             else
             {
@@ -397,7 +401,7 @@ public class PlotFrameController extends javax.swing.JFrame {
             
             writer.close();
                
-            String command = support.getPathToR() + File.separator+"bin" + File.separator + "Rscript rscript.r";
+            String command = support.getPathToR() + File.separator + "bin" + File.separator + "Rscript rscript.r 2> errorFile.Rout";
             support.log("executing command: " + command);
             Process child = Runtime.getRuntime().exec(command); 
             try
@@ -411,6 +415,31 @@ public class PlotFrameController extends javax.swing.JFrame {
         catch(IOException e)
         {
         }
+        
+        try
+        {
+            String userdir = System.getProperty("user.dir");
+            File errorFile = new File(userdir + File.separator + "errorFile.Rout");
+            if(errorFile.exists())
+            {
+                FileReader errorReader = new FileReader(errorFile);
+                BufferedReader bufferedErrorReader = new BufferedReader(errorReader);
+                String error = null;
+                
+                while((error = bufferedErrorReader.readLine()) != null)
+                {
+                    support.log(error);
+                }
+                
+                bufferedErrorReader.close();
+                errorReader.close();
+                errorFile.delete();
+            }
+        }
+        catch(Exception e)
+        {
+        }
+        
         
         plotFrame.showImage(System.getProperty("user.dir") + File.separator + "rplot.png");
     }//GEN-LAST:event_PlotButtonActionPerformed
