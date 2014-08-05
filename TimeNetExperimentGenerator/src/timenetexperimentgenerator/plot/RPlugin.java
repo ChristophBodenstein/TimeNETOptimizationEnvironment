@@ -6,7 +6,7 @@ package timenetexperimentgenerator.plot;
  */
 public class RPlugin 
 {      
-    private final PlotFrameController controller;
+    private static  PlotFrameController controller;
             
     public RPlugin()
     {
@@ -17,5 +17,10 @@ public class RPlugin
     {
         controller.readCachedListOfStatistics();
         controller.setVisible(true);
+    }
+    
+    public static void updateCachedListOfStatistics()
+    {
+        controller.readCachedListOfStatistics();
     }
 }

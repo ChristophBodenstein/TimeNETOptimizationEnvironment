@@ -8,7 +8,7 @@ import javax.imageio.ImageIO;
 import java.io.File;
 
 /**
- * @author Bastian
+ * @author Bastian Mauerer, Simon Niebler
  */
 public class PlotFrame extends javax.swing.JFrame 
 {   

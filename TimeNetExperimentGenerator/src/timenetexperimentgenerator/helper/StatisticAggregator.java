@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import timenetexperimentgenerator.Parser;
 import timenetexperimentgenerator.datamodel.SimulationType;
 import timenetexperimentgenerator.support;
+import timenetexperimentgenerator.plot.RPlugin;
 
 /**
  *
@@ -29,6 +30,9 @@ private static ArrayList<Statistic> listOfStatistics=new ArrayList<Statistic>();
     public static void addToStatistics(SimulationType p, String filename){
     Statistic myStatistic=getStatisticByName(filename);
         myStatistic.addSimulation(p);
+        
+        //update cached list in PlotFrameController
+        RPlugin.updateCachedListOfStatistics();
     }
     
     

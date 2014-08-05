@@ -1,5 +1,7 @@
 package timenetexperimentgenerator.plot;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -9,6 +11,7 @@ import java.util.ArrayList;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
+import javax.swing.JList;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import timenetexperimentgenerator.helper.Statistic;
 import timenetexperimentgenerator.helper.StatisticAggregator;
@@ -16,7 +19,7 @@ import timenetexperimentgenerator.support;
 
 /**
  *
- * @author Bastian
+ * @author Bastian Mauerer, Simon Niebler
  */
 public class PlotFrameController extends javax.swing.JFrame {
 
@@ -26,6 +29,21 @@ public class PlotFrameController extends javax.swing.JFrame {
      */
     public PlotFrameController() {
         initComponents();
+        
+        CachedFilesList.addMouseListener(new MouseAdapter() 
+        {
+            public void mouseClicked(MouseEvent evt) 
+            {
+                
+                if (evt.getClickCount() == 2 && !CachedFilesList.isSelectionEmpty()) 
+                {
+                    //int index = list.locationToIndex(evt.getPoint());
+                    OpenFileTextField.setText(CachedFilesList.getSelectedValue().toString());
+                    loadCSV(CachedFilesList.getSelectedValue().toString());
+                } 
+            }
+        });
+        
         this.setTitle("R Plugin");
         plotFrame = new PlotFrame();
         setResizable(false);
@@ -56,18 +74,20 @@ public class PlotFrameController extends javax.swing.JFrame {
             ColumnList.setModel(model);
             
             DefaultComboBoxModel cmodel = new DefaultComboBoxModel();
-            parts = in.readLine().split(";");
-            String first = parts[0];            
-            cmodel.addElement(first);
             
-            String current = in.readLine().split(";")[0];
-            while(!current.equals(first))
+            String first;
+            String current;
+            
+            
+            if((first = in.readLine()) != null)
             {
-                cmodel.addElement(current);
-                current = in.readLine().split(";")[0];
-            }
-            
-            MeasureComboBox.setModel(cmodel);
+                cmodel.addElement( first.split(";")[0] );
+                while( ( current = in.readLine() ) != null && !current.split( ";" )[0].equals( first ) )
+                    {
+                        cmodel.addElement( current.split(";")[0] );
+                    }
+            }        
+            MeasureComboBox.setModel( cmodel );
         }
         catch(Exception e)
         {
@@ -379,6 +399,9 @@ public class PlotFrameController extends javax.swing.JFrame {
             
             writer.println("library(plot3D)");
             writer.println("base<-read.csv(\"" + OpenFileTextField.getText().replace("\\", "/") + "\", sep=\";\", dec=\",\",check.names=FALSE)");
+            
+            writer.println("sub<-subset(base,  base$MeasureName ==  \"" + MeasureComboBox.getSelectedItem().toString() + "\")");
+            
             writer.println("setwd(\"" + userdir + "\")");
             writer.println("png(filename=\"rplot.png\")");
             //writer.println("svg(filename=\"rplot.svg\")");
@@ -387,11 +410,11 @@ public class PlotFrameController extends javax.swing.JFrame {
             
             if(XValueLabel.getText() != "None" && YValueLabel.getText() != "None" && ZValueLabel.getText() == "None")
             {
-                writer.println("plot(base$\"" + XValueLabel.getText() + "\",base$\"" + YValueLabel.getText() + "\", xlab=\"" + XValueLabel.getText() + "\",ylab=\"" + YValueLabel.getText() + "\" , pch=\"x\")");
+                writer.println("plot(sub$\"" + XValueLabel.getText() + "\",sub$\"" + YValueLabel.getText() + "\", xlab=\"" + XValueLabel.getText() + "\",ylab=\"" + YValueLabel.getText() + "\" , pch=\"x\")");
             }
             else if(XValueLabel.getText() != "None" && YValueLabel.getText() != "None" && ZValueLabel.getText() != "None")
             {
-                writer.println("scatter3D(base$\"" + XValueLabel.getText() + "\",base$\"" + YValueLabel.getText() + "\",base$\"" + ZValueLabel.getText() + "\", xlab=\"" + XValueLabel.getText() + "\",ylab=\"" + YValueLabel.getText() + "\",zlab=\"" + ZValueLabel.getText() + "\", phi=15, theta=120, col=NULL, NAcol=\"white\", colkey=NULL, panel.first=NULL, clim=NULL, clab=NULL, bty=\"b2\", pch=\"x\", add=FALSE)");
+                writer.println("scatter3D(sub$\"" + XValueLabel.getText() + "\",sub$\"" + YValueLabel.getText() + "\",sub$\"" + ZValueLabel.getText() + "\", xlab=\"" + XValueLabel.getText() + "\",ylab=\"" + YValueLabel.getText() + "\",zlab=\"" + ZValueLabel.getText() + "\", phi=15, theta=120, col=NULL, NAcol=\"white\", colkey=NULL, panel.first=NULL, clim=NULL, clab=NULL, bty=\"b2\", pch=\"x\", add=FALSE)");
             }
             else
             {
