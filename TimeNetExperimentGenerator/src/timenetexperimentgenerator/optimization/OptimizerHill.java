@@ -118,7 +118,7 @@ int stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;
         
         mySimulator.initSimulator(getParametersetAsArrayList(getFirstParameterset()), getSimulationCounter(), false);
         //Wait until Simulator has ended
-        support.waitForEndOfSimulator(mySimulator, getSimulationCounter(), 600);
+        support.waitForEndOfSimulator(mySimulator, getSimulationCounter(), support.DEFAULT_TIMEOUT);
         support.addLinesToLogFileFromListOfParser(mySimulator.getListOfCompletedSimulationParsers(), logFileName);
         this.historyOfParsers = support.appendListOfParsers(historyOfParsers, mySimulator.getListOfCompletedSimulationParsers());
         currentSolution=mySimulator.getListOfCompletedSimulationParsers().get(0);
@@ -144,7 +144,7 @@ int stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;
                     }
 
                     //If last parameterset is double, then count up eject-counter for LastInCache
-                    //TODO This only works if ONE parameterset is used. For Lists of Parameterset this wil not work!
+                    //TODO This only works if ONE parameterset is used. For Lists of Parameterset this will not work!
                     if(mySimulationCache.compareParameterList(lastParameterset, newParameterset.get(0))){
                     stuckInCacheCounter--;
                     }
@@ -152,7 +152,7 @@ int stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;
                 }else{
                 stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;//Reset Stuck-Counter
                 mySimulator.initSimulator(newParameterset, getSimulationCounter(), false);
-                support.waitForEndOfSimulator(mySimulator, getSimulationCounter(), 600);
+                support.waitForEndOfSimulator(mySimulator, getSimulationCounter(), support.DEFAULT_TIMEOUT);
                 this.setSimulationCounter(mySimulator.getSimulationCounter());
                 listOfCompletedSimulations=mySimulator.getListOfCompletedSimulationParsers();
                 //Add all Results to Cache

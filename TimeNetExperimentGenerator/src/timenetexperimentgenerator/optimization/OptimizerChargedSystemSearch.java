@@ -285,7 +285,7 @@ public void initOptimizer()
         
         Simulator mySimulator = SimOptiFactory.getSimulator();       
         mySimulator.initSimulator(getNextParameterSetAsArrayList(), optiCycleCounter, false);
-        support.waitForEndOfSimulator(mySimulator, optiCycleCounter, 600);
+        support.waitForEndOfSimulator(mySimulator, optiCycleCounter, support.DEFAULT_TIMEOUT);
         //support.addLinesToLogFileFromListOfParser(mySimulator.getListOfCompletedSimulationParsers(), logFileName);
                 
 
@@ -317,7 +317,7 @@ public void initOptimizer()
             
             mySimulator = SimOptiFactory.getSimulator();
             mySimulator.initSimulator(parameterList, simulationCounter, false);
-            support.waitForEndOfSimulator(mySimulator, simulationCounter, 6000);
+            support.waitForEndOfSimulator(mySimulator, simulationCounter, support.DEFAULT_TIMEOUT);
             simulationCounter = mySimulator.getSimulationCounter();
             System.out.println("NumMeasuresOut: " + mySimulator.getListOfCompletedSimulationParsers().get(0).getMeasures().size());
             charges = mySimulator.getListOfCompletedSimulationParsers();

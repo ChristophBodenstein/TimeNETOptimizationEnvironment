@@ -160,7 +160,7 @@ public class OptimizerGenetic implements Runnable, Optimizer{
         
         Simulator mySimulator = SimOptiFactory.getSimulator();       
         mySimulator.initSimulator(getNextParameterSetAsArrayList(), optiCycleCounter, false);
-        support.waitForEndOfSimulator(mySimulator, optiCycleCounter, 6000);
+        support.waitForEndOfSimulator(mySimulator, optiCycleCounter, support.DEFAULT_TIMEOUT);
         
         population = mySimulator.getListOfCompletedSimulationParsers();
         
@@ -187,7 +187,7 @@ public class OptimizerGenetic implements Runnable, Optimizer{
             
             mySimulator = SimOptiFactory.getSimulator();
             mySimulator.initSimulator(parameterList, simulationCounter, false);
-            support.waitForEndOfSimulator(mySimulator, simulationCounter, 6000);
+            support.waitForEndOfSimulator(mySimulator, simulationCounter, support.DEFAULT_TIMEOUT);
             simulationCounter = mySimulator.getSimulationCounter();
             
             population = mySimulator.getListOfCompletedSimulationParsers();
