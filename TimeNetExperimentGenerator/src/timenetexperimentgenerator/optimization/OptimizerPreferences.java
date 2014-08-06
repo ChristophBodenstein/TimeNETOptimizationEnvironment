@@ -114,6 +114,7 @@ private SpinnerNumberModel TRatioScaleSpinnerModel;
         jLabel9 = new javax.swing.JLabel();
         jComboBoxCoolingMethod = new javax.swing.JComboBox();
         jPanel1 = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
 
         jLabelStartvalueForParameters.setText("Startvalue for parameters");
 
@@ -337,7 +338,20 @@ private SpinnerNumberModel TRatioScaleSpinnerModel;
             .addGap(0, 225, Short.MAX_VALUE)
         );
 
-        jTabbedPane1.addTab("MultiStage", jPanel1);
+        jTabbedPane1.addTab("Two-Phase", jPanel1);
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 827, Short.MAX_VALUE)
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 225, Short.MAX_VALUE)
+        );
+
+        jTabbedPane1.addTab("Multi-Phase", jPanel2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -461,6 +475,7 @@ private SpinnerNumberModel TRatioScaleSpinnerModel;
     private javax.swing.JLabel jLabelWrongSolutionsPerDirectionUntilBreak;
     private javax.swing.JLabel jLabelWrongSolutionsUntilBreak;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanelHillClimbing;
     private javax.swing.JPanel jPanelSimAnnealing;
     private javax.swing.JSpinner jSpinnerEpsilon;
@@ -627,7 +642,10 @@ private SpinnerNumberModel TRatioScaleSpinnerModel;
                     addonString+="_MaxTempPara_"+this.getPref_MaxTempParameter();
                     addonString+="_MaxTempCost_"+this.getPref_MaxTempCost();
                     break;
-                case MultiStage:
+                case MultiPhase:
+                    break;
+
+                case TwoPhase:
                     break;
 
                 case Genetic:
