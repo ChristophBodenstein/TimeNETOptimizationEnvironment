@@ -11,11 +11,16 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Properties;
+import java.util.Vector;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListSelectionModel;
 import javax.swing.JSpinner.DefaultEditor;
 import javax.swing.SpinnerNumberModel;
+import timenetexperimentgenerator.helper.EnabledJComboBoxRenderer;
 import timenetexperimentgenerator.support;
+import timenetexperimentgenerator.typedef;
 import timenetexperimentgenerator.typedef.*;
 
 /**
@@ -65,7 +70,16 @@ private SpinnerNumberModel TRatioScaleSpinnerModel;
         ((DefaultEditor)this.jSpinnerWrongSolutionsUntilBreak.getEditor()).getTextField().setEditable(false);
 
 
-        
+        /*DefaultListSelectionModel model = new DefaultListSelectionModel();
+        model.addSelectionInterval(0, 5);
+
+
+        this.jComboBoxOptimizationType.setRenderer(new EnabledJComboBoxRenderer(model));
+        */
+
+        Vector tmpVector=new Vector(Arrays.asList(typedef.typeOfOptimization.values()));
+        tmpVector.remove(tmpVector.size()-1);
+        this.jComboBoxOptimizationType.setModel(new DefaultComboBoxModel(tmpVector));
 
         this.loadPreferences();
 
@@ -114,7 +128,41 @@ private SpinnerNumberModel TRatioScaleSpinnerModel;
         jLabel9 = new javax.swing.JLabel();
         jComboBoxCoolingMethod = new javax.swing.JComboBox();
         jPanel1 = new javax.swing.JPanel();
+        jLabel10 = new javax.swing.JLabel();
+        jComboBoxCoolingMethod1 = new javax.swing.JComboBox();
+        jSpinnerTRatioScale1 = new javax.swing.JSpinner();
+        jLabel11 = new javax.swing.JLabel();
+        jSpinnerTAnnealScale1 = new javax.swing.JSpinner();
+        jLabel12 = new javax.swing.JLabel();
+        jComboBoxCalculationOfNextParameterset1 = new javax.swing.JComboBox();
+        jLabel13 = new javax.swing.JLabel();
+        jLabel14 = new javax.swing.JLabel();
+        jSpinnerMaxTemperatureParameters1 = new javax.swing.JSpinner();
+        jLabel15 = new javax.swing.JLabel();
+        jSpinnerMaxTemperatureCost1 = new javax.swing.JSpinner();
+        jLabel16 = new javax.swing.JLabel();
+        jSpinnerEpsilon1 = new javax.swing.JSpinner();
+        jLabel17 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
+        jLabel18 = new javax.swing.JLabel();
+        jComboBox1 = new javax.swing.JComboBox();
+        jLabel19 = new javax.swing.JLabel();
+        jComboBoxOptimizationType = new javax.swing.JComboBox();
+        jLabel20 = new javax.swing.JLabel();
+        jLabel21 = new javax.swing.JLabel();
+        jLabel22 = new javax.swing.JLabel();
+        jLabel23 = new javax.swing.JLabel();
+        jLabel24 = new javax.swing.JLabel();
+        jLabel25 = new javax.swing.JLabel();
+        jSeparator1 = new javax.swing.JSeparator();
+        jSeparator2 = new javax.swing.JSeparator();
+        jSeparator3 = new javax.swing.JSeparator();
+        jSpinner1 = new javax.swing.JSpinner();
+        jSpinner2 = new javax.swing.JSpinner();
+        jSpinner3 = new javax.swing.JSpinner();
+        jSpinner4 = new javax.swing.JSpinner();
+        jSpinner5 = new javax.swing.JSpinner();
+        jSpinner6 = new javax.swing.JSpinner();
 
         jLabelStartvalueForParameters.setText("Startvalue for parameters");
 
@@ -256,7 +304,7 @@ private SpinnerNumberModel TRatioScaleSpinnerModel;
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabelWrongSolutionsPerDirectionUntilBreak, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(6, 6, 6)))
-                .addContainerGap(58, Short.MAX_VALUE))
+                .addContainerGap(87, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("HillClimbing", jPanelHillClimbing);
@@ -325,31 +373,148 @@ private SpinnerNumberModel TRatioScaleSpinnerModel;
         jPanelSimAnnealing.add(jComboBoxCoolingMethod);
         jComboBoxCoolingMethod.setBounds(260, 20, 170, 27);
 
-        jTabbedPane1.addTab("Simmulated Annealing", jPanelSimAnnealing);
+        jTabbedPane1.addTab("Simulated Annealing", jPanelSimAnnealing);
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 827, Short.MAX_VALUE)
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 225, Short.MAX_VALUE)
-        );
+        jPanel1.setLayout(null);
+
+        jLabel10.setText("Cooling Method");
+        jPanel1.add(jLabel10);
+        jLabel10.setBounds(20, 60, 100, 16);
+
+        jComboBoxCoolingMethod1.setModel(new DefaultComboBoxModel(typeOfAnnealing.values()));
+        jPanel1.add(jComboBoxCoolingMethod1);
+        jComboBoxCoolingMethod1.setBounds(260, 60, 170, 27);
+
+        jSpinnerTRatioScale1.setModel(TRatioScaleSpinnerModel);
+        jSpinnerTRatioScale1.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerTRatioScale1, "#.#####"));
+        jSpinnerTRatioScale1.setValue(0.00001);
+        jPanel1.add(jSpinnerTRatioScale1);
+        jSpinnerTRatioScale1.setBounds(580, 60, 100, 28);
+
+        jLabel11.setText("TRatioScale");
+        jPanel1.add(jLabel11);
+        jLabel11.setBounds(480, 70, 80, 16);
+
+        jSpinnerTAnnealScale1.setModel(new javax.swing.SpinnerNumberModel(100.0d, 0.0d, 10000.0d, 1.0d));
+        jPanel1.add(jSpinnerTAnnealScale1);
+        jSpinnerTAnnealScale1.setBounds(580, 100, 100, 28);
+
+        jLabel12.setText("TAnnealScale");
+        jPanel1.add(jLabel12);
+        jLabel12.setBounds(480, 100, 100, 16);
+
+        jComboBoxCalculationOfNextParameterset1.setModel(new DefaultComboBoxModel(typeOfAnnealingParameterCalculation.values()));
+        jPanel1.add(jComboBoxCalculationOfNextParameterset1);
+        jComboBoxCalculationOfNextParameterset1.setBounds(260, 100, 170, 27);
+
+        jLabel13.setText("Calculation of next Parameterset");
+        jPanel1.add(jLabel13);
+        jLabel13.setBounds(20, 100, 220, 16);
+
+        jLabel14.setText("Max. Temp. for Parameters(T-0-par)");
+        jPanel1.add(jLabel14);
+        jLabel14.setBounds(20, 150, 230, 16);
+
+        jSpinnerMaxTemperatureParameters1.setModel(new javax.swing.SpinnerNumberModel(1.0d, 0.0d, 1.0d, 0.01d));
+        jSpinnerMaxTemperatureParameters1.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerMaxTemperatureParameters1, "#.##"));
+        jPanel1.add(jSpinnerMaxTemperatureParameters1);
+        jSpinnerMaxTemperatureParameters1.setBounds(260, 150, 90, 28);
+
+        jLabel15.setText("Max. Temp. for Cost(T-0-cost)");
+        jPanel1.add(jLabel15);
+        jLabel15.setBounds(20, 180, 200, 16);
+
+        jSpinnerMaxTemperatureCost1.setModel(new javax.swing.SpinnerNumberModel(1.0d, 0.0d, 1.0d, 0.01d));
+        jSpinnerMaxTemperatureCost1.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerMaxTemperatureCost1, "#.##"));
+        jPanel1.add(jSpinnerMaxTemperatureCost1);
+        jSpinnerMaxTemperatureCost1.setBounds(260, 180, 90, 28);
+
+        jLabel16.setText("Epsilon (Abort-Temperature)");
+        jPanel1.add(jLabel16);
+        jLabel16.setBounds(20, 220, 210, 16);
+
+        jSpinnerEpsilon1.setModel(new javax.swing.SpinnerNumberModel(0.01d, 0.0d, 1.0d, 0.01d));
+        jSpinnerEpsilon1.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerEpsilon1, "#.##"));
+        jSpinnerEpsilon1.setValue(0.01);
+        jPanel1.add(jSpinnerEpsilon1);
+        jSpinnerEpsilon1.setBounds(260, 220, 90, 28);
+
+        jLabel17.setFont(new java.awt.Font("Lucida Grande", 1, 16)); // NOI18N
+        jLabel17.setText("Parameters for second Phase are taken from Standard-Panel (Simulated Annealing)!!!");
+        jPanel1.add(jLabel17);
+        jLabel17.setBounds(20, 28, 787, 20);
 
         jTabbedPane1.addTab("Two-Phase", jPanel1);
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 827, Short.MAX_VALUE)
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 225, Short.MAX_VALUE)
-        );
+        jPanel2.setLayout(null);
+
+        jLabel18.setText("Used Optimization Algorithm");
+        jPanel2.add(jLabel18);
+        jLabel18.setBounds(30, 70, 220, 16);
+
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "2", "3", "4", "5", "6", "7", "8", "9", "10" }));
+        jPanel2.add(jComboBox1);
+        jComboBox1.setBounds(260, 30, 72, 27);
+
+        jLabel19.setText("Number of Optimization-Phases");
+        jPanel2.add(jLabel19);
+        jLabel19.setBounds(28, 37, 220, 16);
+
+        jComboBoxOptimizationType.setModel(new DefaultComboBoxModel(typeOfOptimization.values()));
+        jComboBoxOptimizationType.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jComboBoxOptimizationTypeItemStateChanged(evt);
+            }
+        });
+        jComboBoxOptimizationType.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBoxOptimizationTypeActionPerformed(evt);
+            }
+        });
+        jPanel2.add(jComboBoxOptimizationType);
+        jComboBoxOptimizationType.setBounds(260, 70, 150, 27);
+
+        jLabel20.setText("Confidence-Intervall Start");
+        jPanel2.add(jLabel20);
+        jLabel20.setBounds(30, 110, 210, 16);
+
+        jLabel21.setText("Internal Parameter End");
+        jPanel2.add(jLabel21);
+        jLabel21.setBounds(510, 60, 170, 16);
+
+        jLabel22.setText("Confidence-Intervall End");
+        jPanel2.add(jLabel22);
+        jLabel22.setBounds(30, 140, 170, 16);
+
+        jLabel23.setText("Maximum Rel. Error Start");
+        jPanel2.add(jLabel23);
+        jLabel23.setBounds(30, 170, 170, 16);
+
+        jLabel24.setText("Maximum Rel. Error End");
+        jPanel2.add(jLabel24);
+        jLabel24.setBounds(30, 200, 170, 16);
+
+        jLabel25.setText("Internal Parameter Start");
+        jPanel2.add(jLabel25);
+        jLabel25.setBounds(510, 30, 170, 16);
+        jPanel2.add(jSeparator1);
+        jSeparator1.setBounds(30, 100, 400, 10);
+        jPanel2.add(jSeparator2);
+        jSeparator2.setBounds(30, 230, 400, 10);
+        jPanel2.add(jSeparator3);
+        jSeparator3.setBounds(30, 160, 400, 10);
+        jPanel2.add(jSpinner1);
+        jSpinner1.setBounds(260, 110, 70, 28);
+        jPanel2.add(jSpinner2);
+        jSpinner2.setBounds(260, 140, 70, 28);
+        jPanel2.add(jSpinner3);
+        jSpinner3.setBounds(260, 200, 70, 28);
+        jPanel2.add(jSpinner4);
+        jSpinner4.setBounds(260, 170, 70, 28);
+        jPanel2.add(jSpinner5);
+        jSpinner5.setBounds(700, 50, 70, 28);
+        jPanel2.add(jSpinner6);
+        jSpinner6.setBounds(700, 20, 70, 28);
 
         jTabbedPane1.addTab("Multi-Phase", jPanel2);
 
@@ -360,7 +525,6 @@ private SpinnerNumberModel TRatioScaleSpinnerModel;
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTabbedPane1)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
@@ -377,7 +541,8 @@ private SpinnerNumberModel TRatioScaleSpinnerModel;
                                     .addGap(36, 36, 36)
                                     .addComponent(jButton1))
                                 .addComponent(jCheckBoxAddPrefsToLogfilename)))
-                        .addGap(292, 292, 292))))
+                        .addGap(292, 292, 292))
+                    .addComponent(jTabbedPane1)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -386,9 +551,9 @@ private SpinnerNumberModel TRatioScaleSpinnerModel;
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabelStartvalueForParameters)
                     .addComponent(jComboBoxTypeOfStartValue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(31, 31, 31)
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jCheckBoxAddPrefsToLogfilename)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -453,16 +618,44 @@ private SpinnerNumberModel TRatioScaleSpinnerModel;
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBoxTypeOfNeighborhoodVetoableChange
 
+    private void jComboBoxOptimizationTypeItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxOptimizationTypeItemStateChanged
+        support.setChosenOptimizerType((typedef.typeOfOptimization)this.jComboBoxOptimizationType.getSelectedItem());
+}//GEN-LAST:event_jComboBoxOptimizationTypeItemStateChanged
+
+    private void jComboBoxOptimizationTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxOptimizationTypeActionPerformed
+        // TODO add your handling code here:
+}//GEN-LAST:event_jComboBoxOptimizationTypeActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JCheckBox jCheckBoxAddPrefsToLogfilename;
+    private javax.swing.JComboBox jComboBox1;
     private javax.swing.JComboBox jComboBoxCalculationOfNextParameterset;
+    private javax.swing.JComboBox jComboBoxCalculationOfNextParameterset1;
     private javax.swing.JComboBox jComboBoxCoolingMethod;
+    private javax.swing.JComboBox jComboBoxCoolingMethod1;
+    private javax.swing.JComboBox jComboBoxOptimizationType;
     public javax.swing.JComboBox jComboBoxTypeOfNeighborhood;
     public javax.swing.JComboBox jComboBoxTypeOfStartValue;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel22;
+    private javax.swing.JLabel jLabel23;
+    private javax.swing.JLabel jLabel24;
+    private javax.swing.JLabel jLabel25;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -478,12 +671,26 @@ private SpinnerNumberModel TRatioScaleSpinnerModel;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanelHillClimbing;
     private javax.swing.JPanel jPanelSimAnnealing;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JSeparator jSeparator3;
+    private javax.swing.JSpinner jSpinner1;
+    private javax.swing.JSpinner jSpinner2;
+    private javax.swing.JSpinner jSpinner3;
+    private javax.swing.JSpinner jSpinner4;
+    private javax.swing.JSpinner jSpinner5;
+    private javax.swing.JSpinner jSpinner6;
     private javax.swing.JSpinner jSpinnerEpsilon;
+    private javax.swing.JSpinner jSpinnerEpsilon1;
     private javax.swing.JSpinner jSpinnerMaxTemperatureCost;
+    private javax.swing.JSpinner jSpinnerMaxTemperatureCost1;
     private javax.swing.JSpinner jSpinnerMaxTemperatureParameters;
+    private javax.swing.JSpinner jSpinnerMaxTemperatureParameters1;
     private javax.swing.JSpinner jSpinnerSizeOfNeighborhoodInPercent;
     private javax.swing.JSpinner jSpinnerTAnnealScale;
+    private javax.swing.JSpinner jSpinnerTAnnealScale1;
     private javax.swing.JSpinner jSpinnerTRatioScale;
+    private javax.swing.JSpinner jSpinnerTRatioScale1;
     private javax.swing.JSpinner jSpinnerWrongSolutionsPerDirectionUntilBreak;
     private javax.swing.JSpinner jSpinnerWrongSolutionsUntilBreak;
     private javax.swing.JTabbedPane jTabbedPane1;

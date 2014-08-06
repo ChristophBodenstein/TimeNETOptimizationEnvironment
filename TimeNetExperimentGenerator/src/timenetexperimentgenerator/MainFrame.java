@@ -212,7 +212,7 @@ private String pathToR="";
     
     this.jComboBoxSimulationType.setRenderer(new EnabledJComboBoxRenderer(model));
     
-    //this.jComboBoxSimulationType.setModel(mySimulationTypeModel);
+    this.jComboBoxSimulationType.setModel(mySimulationTypeModel);
     }
 
 
