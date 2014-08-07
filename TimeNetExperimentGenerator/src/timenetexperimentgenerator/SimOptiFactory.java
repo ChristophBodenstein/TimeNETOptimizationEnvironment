@@ -19,7 +19,6 @@ public class SimOptiFactory {
 private static SimulationCache singleTonSimulationCache=new SimulationCache();
 
     public static Simulator getSimulator(){    
-//TODO, add support for typeOfSimulator !!!
 
         switch(support.getChosenSimulatorType()){
             case Local:
@@ -49,10 +48,27 @@ private static SimulationCache singleTonSimulationCache=new SimulationCache();
                 return new SimulatorLocal();
         }
     }
-    
 
+
+    
+    /**
+     * Returns a new Optimizer, based on chosen Optimizertype in MainFrame (support.getChosenOptimization())
+     * @return new Optimizer
+     * @see typedef
+     */
     public static Optimizer getOptimizer(){
-        switch (support.getChosenOptimizerType()){
+        return getOptimizer(support.getChosenOptimizerType());
+    }
+
+
+    /**
+     * Returns a new Optimizer, based on the given type
+     * @param type Type of Optimizer, Enum typedef.typeOfOptimization
+     * @return new Optimizer
+     * @see typedef
+     */
+    public static Optimizer getOptimizer(typedef.typeOfOptimization type){
+        switch (type){
             case HillClimbing:
                     return new OptimizerHill();
             case SimAnnealing:
@@ -64,12 +80,20 @@ private static SimulationCache singleTonSimulationCache=new SimulationCache();
             case Seidel3:
                     return new OptimizerASeidel3();
 
-
-            default: 
+            case MultiPhase:
+                    return new OptimizerMultiPhase();
+            default:
                     return new OptimizerHill();
         }
+
     }
 
+
+    /**
+     * Returns the singleton SimulationCache. This can be used to store every Simulation the Program triggers at runtime
+     * Besides this you can choose to use your own SimulationCache 
+     * @return SimulationCache for all simulations
+     */
     public static SimulationCache getSimulationCache(){
     return singleTonSimulationCache;
     }

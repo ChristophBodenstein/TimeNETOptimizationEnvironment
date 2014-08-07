@@ -51,6 +51,18 @@ public static final typeOfAnnealingParameterCalculation DEFAULT_CALC_NEXT_PARAME
 
 public static final int DEFAULT_CACHE_STUCK=2;//Optimizer can ask 2 times for simulating the same parameterset in a row. Then optimization will be aborted!
 
+
+public static final int DEFAULT_NumberOfPhases=2;
+public static final typeOfOptimization DEFAULT_typeOfUsedMultiPhaseOptimization=typeOfOptimization.HillClimbing;
+public static final int DEFAULT_ConfidenceIntervallStart=85;
+public static final int DEFAULT_ConfidenceIntervallEnd=99;
+public static final int DEFAULT_MaxRelErrorStart=1;
+public static final int DEFAULT_MaxRelErrorEnd=1;
+public static final int DEFAULT_InternalParameterStart=0;
+public static final int DEFAULT_InternalParameterEnd=0;
+public static final boolean DEFAULT_KeepDesignSpaceAndResolution=true;
+
+
 //End of program-wide default value definition
 
 

@@ -15,10 +15,8 @@ import java.util.Arrays;
 import java.util.Properties;
 import java.util.Vector;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListSelectionModel;
 import javax.swing.JSpinner.DefaultEditor;
 import javax.swing.SpinnerNumberModel;
-import timenetexperimentgenerator.helper.EnabledJComboBoxRenderer;
 import timenetexperimentgenerator.support;
 import timenetexperimentgenerator.typedef;
 import timenetexperimentgenerator.typedef.*;
@@ -46,6 +44,16 @@ private double pref_Epsilon;//Abort-Temperature for Simmulated Annealing
 private typeOfAnnealingParameterCalculation pref_CalculationOfNextParameterset;//Calc of next params for Sim Anealing
 private SpinnerNumberModel TRatioScaleSpinnerModel;
 
+
+private int pref_NumberOfPhases;
+private typeOfOptimization pref_typeOfUsedMultiPhaseOptimization;
+private int pref_ConfidenceIntervallStart;
+private int pref_ConfidenceIntervallEnd;
+private int pref_MaxRelErrorStart;
+private int pref_MaxRelErrorEnd;
+private int pref_InternalParameterStart;
+private int pref_InternalParameterEnd;
+private boolean pref_KeepDesignSpaceAndResolution;
 
 
 
@@ -145,7 +153,7 @@ private SpinnerNumberModel TRatioScaleSpinnerModel;
         jLabel17 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel18 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox();
+        jComboBoxNumberOfPhases = new javax.swing.JComboBox();
         jLabel19 = new javax.swing.JLabel();
         jComboBoxOptimizationType = new javax.swing.JComboBox();
         jLabel20 = new javax.swing.JLabel();
@@ -157,12 +165,13 @@ private SpinnerNumberModel TRatioScaleSpinnerModel;
         jSeparator1 = new javax.swing.JSeparator();
         jSeparator2 = new javax.swing.JSeparator();
         jSeparator3 = new javax.swing.JSeparator();
-        jSpinner1 = new javax.swing.JSpinner();
-        jSpinner2 = new javax.swing.JSpinner();
-        jSpinner3 = new javax.swing.JSpinner();
-        jSpinner4 = new javax.swing.JSpinner();
-        jSpinner5 = new javax.swing.JSpinner();
-        jSpinner6 = new javax.swing.JSpinner();
+        jSpinnerConfidenceIntervallStart = new javax.swing.JSpinner();
+        jSpinnerConfidenceIntervallEnd = new javax.swing.JSpinner();
+        jSpinnerMaxRelErrorEnd = new javax.swing.JSpinner();
+        jSpinnerMaxRelErrorStart = new javax.swing.JSpinner();
+        jSpinnerInternalParameterEnd = new javax.swing.JSpinner();
+        jSpinnerInternalParameterStart = new javax.swing.JSpinner();
+        jCheckBoxKeepDesignspaceAndResolution = new javax.swing.JCheckBox();
 
         jLabelStartvalueForParameters.setText("Startvalue for parameters");
 
@@ -452,9 +461,9 @@ private SpinnerNumberModel TRatioScaleSpinnerModel;
         jPanel2.add(jLabel18);
         jLabel18.setBounds(30, 70, 220, 16);
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "2", "3", "4", "5", "6", "7", "8", "9", "10" }));
-        jPanel2.add(jComboBox1);
-        jComboBox1.setBounds(260, 30, 72, 27);
+        jComboBoxNumberOfPhases.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "2", "3", "4", "5", "6", "7", "8", "9", "10" }));
+        jPanel2.add(jComboBoxNumberOfPhases);
+        jComboBoxNumberOfPhases.setBounds(260, 30, 72, 27);
 
         jLabel19.setText("Number of Optimization-Phases");
         jPanel2.add(jLabel19);
@@ -504,29 +513,33 @@ private SpinnerNumberModel TRatioScaleSpinnerModel;
         jPanel2.add(jSeparator3);
         jSeparator3.setBounds(30, 160, 400, 10);
 
-        jSpinner1.setModel(new javax.swing.SpinnerNumberModel(85, 85, 99, 1));
-        jPanel2.add(jSpinner1);
-        jSpinner1.setBounds(260, 110, 70, 28);
+        jSpinnerConfidenceIntervallStart.setModel(new javax.swing.SpinnerNumberModel(85, 85, 99, 1));
+        jPanel2.add(jSpinnerConfidenceIntervallStart);
+        jSpinnerConfidenceIntervallStart.setBounds(260, 110, 70, 28);
 
-        jSpinner2.setModel(new javax.swing.SpinnerNumberModel(99, 85, 99, 1));
-        jPanel2.add(jSpinner2);
-        jSpinner2.setBounds(260, 140, 70, 28);
+        jSpinnerConfidenceIntervallEnd.setModel(new javax.swing.SpinnerNumberModel(99, 85, 99, 1));
+        jPanel2.add(jSpinnerConfidenceIntervallEnd);
+        jSpinnerConfidenceIntervallEnd.setBounds(260, 140, 70, 28);
 
-        jSpinner3.setModel(new javax.swing.SpinnerNumberModel(1, 1, 15, 1));
-        jPanel2.add(jSpinner3);
-        jSpinner3.setBounds(260, 200, 70, 28);
+        jSpinnerMaxRelErrorEnd.setModel(new javax.swing.SpinnerNumberModel(1, 1, 15, 1));
+        jPanel2.add(jSpinnerMaxRelErrorEnd);
+        jSpinnerMaxRelErrorEnd.setBounds(260, 200, 70, 28);
 
-        jSpinner4.setModel(new javax.swing.SpinnerNumberModel(5, 1, 15, 1));
-        jPanel2.add(jSpinner4);
-        jSpinner4.setBounds(260, 170, 70, 28);
+        jSpinnerMaxRelErrorStart.setModel(new javax.swing.SpinnerNumberModel(5, 1, 15, 1));
+        jPanel2.add(jSpinnerMaxRelErrorStart);
+        jSpinnerMaxRelErrorStart.setBounds(260, 170, 70, 28);
 
-        jSpinner5.setModel(new javax.swing.SpinnerNumberModel(0, 0, 3, 1));
-        jPanel2.add(jSpinner5);
-        jSpinner5.setBounds(700, 50, 70, 28);
+        jSpinnerInternalParameterEnd.setModel(new javax.swing.SpinnerNumberModel(0, 0, 3, 1));
+        jPanel2.add(jSpinnerInternalParameterEnd);
+        jSpinnerInternalParameterEnd.setBounds(700, 50, 70, 28);
 
-        jSpinner6.setModel(new javax.swing.SpinnerNumberModel(0, 0, 3, 1));
-        jPanel2.add(jSpinner6);
-        jSpinner6.setBounds(700, 20, 70, 28);
+        jSpinnerInternalParameterStart.setModel(new javax.swing.SpinnerNumberModel(0, 0, 3, 1));
+        jPanel2.add(jSpinnerInternalParameterStart);
+        jSpinnerInternalParameterStart.setBounds(700, 20, 70, 28);
+
+        jCheckBoxKeepDesignspaceAndResolution.setText("Keep Designspace and Resolution");
+        jPanel2.add(jCheckBoxKeepDesignspaceAndResolution);
+        jCheckBoxKeepDesignspaceAndResolution.setBounds(510, 90, 260, 23);
 
         jTabbedPane1.addTab("Multi-Phase", jPanel2);
 
@@ -642,11 +655,12 @@ private SpinnerNumberModel TRatioScaleSpinnerModel;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JCheckBox jCheckBoxAddPrefsToLogfilename;
-    private javax.swing.JComboBox jComboBox1;
+    private javax.swing.JCheckBox jCheckBoxKeepDesignspaceAndResolution;
     private javax.swing.JComboBox jComboBoxCalculationOfNextParameterset;
     private javax.swing.JComboBox jComboBoxCalculationOfNextParameterset1;
     private javax.swing.JComboBox jComboBoxCoolingMethod;
     private javax.swing.JComboBox jComboBoxCoolingMethod1;
+    private javax.swing.JComboBox jComboBoxNumberOfPhases;
     private javax.swing.JComboBox jComboBoxOptimizationType;
     public javax.swing.JComboBox jComboBoxTypeOfNeighborhood;
     public javax.swing.JComboBox jComboBoxTypeOfStartValue;
@@ -686,14 +700,14 @@ private SpinnerNumberModel TRatioScaleSpinnerModel;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
-    private javax.swing.JSpinner jSpinner1;
-    private javax.swing.JSpinner jSpinner2;
-    private javax.swing.JSpinner jSpinner3;
-    private javax.swing.JSpinner jSpinner4;
-    private javax.swing.JSpinner jSpinner5;
-    private javax.swing.JSpinner jSpinner6;
+    private javax.swing.JSpinner jSpinnerConfidenceIntervallEnd;
+    private javax.swing.JSpinner jSpinnerConfidenceIntervallStart;
     private javax.swing.JSpinner jSpinnerEpsilon;
     private javax.swing.JSpinner jSpinnerEpsilon1;
+    private javax.swing.JSpinner jSpinnerInternalParameterEnd;
+    private javax.swing.JSpinner jSpinnerInternalParameterStart;
+    private javax.swing.JSpinner jSpinnerMaxRelErrorEnd;
+    private javax.swing.JSpinner jSpinnerMaxRelErrorStart;
     private javax.swing.JSpinner jSpinnerMaxTemperatureCost;
     private javax.swing.JSpinner jSpinnerMaxTemperatureCost1;
     private javax.swing.JSpinner jSpinnerMaxTemperatureParameters;
@@ -759,7 +773,28 @@ private SpinnerNumberModel TRatioScaleSpinnerModel;
 
         this.setPref_LogFileAddon(auto.getProperty("pref_LogFileAddon", ""));
     support.log("Loaded Optimizer_Logfile-Addon is "+this.jTextFieldLogFileAddon.getText());
-                
+
+
+        this.setPref_NumberOfPhases(support.loadIntFromProperties("pref_NumberOfPhases", support.DEFAULT_NumberOfPhases, auto));
+    support.log("Loaded pref_NumberOfPhases is "+this.getPref_NumberOfPhases());
+        this.setPref_ConfidenceIntervallStart(support.loadIntFromProperties("pref_ConfidenceIntervallStart", support.DEFAULT_ConfidenceIntervallStart, auto));
+    support.log("Loaded pref_ConfidenceIntervallStart is "+this.getPref_ConfidenceIntervallStart());
+        this.setPref_ConfidenceIntervallEnd(support.loadIntFromProperties("pref_ConfidenceIntervallEnd", support.DEFAULT_ConfidenceIntervallEnd, auto));
+    support.log("Loaded pref_ConfidenceIntervallEnd is "+this.getPref_ConfidenceIntervallEnd());
+        this.setPref_MaxRelErrorStart(support.loadIntFromProperties("pref_MaxRelErrorStart", support.DEFAULT_MaxRelErrorStart, auto));
+    support.log("Loaded pref_MaxRelErrorStart is "+this.getPref_MaxRelErrorStart());
+        this.setPref_MaxRelErrorEnd(support.loadIntFromProperties("pref_MaxRelErrorEnd", support.DEFAULT_MaxRelErrorEnd, auto));
+    support.log("Loaded pref_MaxRelErrorEnd is "+this.getPref_MaxRelErrorEnd());
+        this.setPref_InternalParameterStart(support.loadIntFromProperties("pref_InternalParameterStart", support.DEFAULT_InternalParameterStart, auto));
+    support.log("Loaded pref_InternalParameterStart is "+this.getPref_InternalParameterStart());
+        this.setPref_InternalParameterEnd(support.loadIntFromProperties("pref_InternalParameterEnd", support.DEFAULT_InternalParameterEnd, auto));
+    support.log("Loaded pref_InternalParameterEnd is "+this.getPref_InternalParameterEnd());
+
+        this.setPref_typeOfUsedMultiPhaseOptimization(typeOfOptimization.valueOf(auto.getProperty("pref_typeOfUsedMultiPhaseOptimization", support.DEFAULT_typeOfUsedMultiPhaseOptimization.toString())));
+    support.log("Loaded pref_typeOfUsedMultiPhaseOptimization is "+this.getPref_typeOfUsedMultiPhaseOptimization().toString());
+        this.setPref_KeepDesignSpaceAndResolution(Boolean.valueOf(auto.getProperty("pref_KeepDesignSpaceAndResolution", Boolean.toString(support.DEFAULT_KeepDesignSpaceAndResolution))));
+    support.log("Loaded pref_KeepDesignSpaceAndResolution is "+this.getPref_KeepDesignSpaceAndResolution());
+
 	} catch (IOException e) {
 		// Exception bearbeiten
             support.log("Error while loading Optimizer-Properties.");
@@ -773,6 +808,8 @@ private SpinnerNumberModel TRatioScaleSpinnerModel;
     public void savePreferences(){
     support.log("Saving Properties of Optimization");
         try{
+            
+        //Setting Parameters of HillClimbing
         auto.setProperty("pref_WrongSimulationsUntilBreak", Integer.toString(getPref_WrongSimulationsUntilBreak()));
         auto.setProperty("pref_WrongSimulationsPerDirection", Integer.toString(getPref_WrongSimulationsPerDirection()));
         auto.setProperty("pref_SizeOfNeighborhood", Integer.toString(getPref_SizeOfNeighborhood()));
@@ -780,22 +817,29 @@ private SpinnerNumberModel TRatioScaleSpinnerModel;
         auto.setProperty("pref_StartValue", getPref_StartValue().toString());
         auto.setProperty("pref_NeighborhoodType", getPref_NeighborhoodType().toString());
 
+        //Setting Parameters of Simulated Annealing
         auto.setProperty("pref_Cooling", getPref_Cooling().toString());
-
         auto.setProperty("pref_TScaleRatio", support.getString(this.getPref_TRatioScale()));
-
         auto.setProperty("pref_TAnnealScale", support.getString(this.getPref_TAnnealScale()));
-
         auto.setProperty("pref_MaxTempParameter", support.getString(this.getPref_MaxTempParameter()));
-
         auto.setProperty("pref_MaxTempCost", support.getString(this.getPref_MaxTempCost()));
-
         auto.setProperty("pref_Epsilon", Double.toString(getPref_Epsilon()) ) ;
 
+
+        //Setting Parameters of MultiPhase Optimization
+        auto.setProperty("pref_NumberOfPhases", Integer.toString(this.getPref_NumberOfPhases()));
+        auto.setProperty("pref_ConfidenceIntervallStart", Integer.toString(this.getPref_ConfidenceIntervallStart()));
+        auto.setProperty("pref_ConfidenceIntervallEnd", Integer.toString(this.getPref_ConfidenceIntervallEnd()));
+        auto.setProperty("pref_MaxRelErrorStart", Integer.toString(this.getPref_MaxRelErrorStart()));
+        auto.setProperty("pref_MaxRelErrorEnd", Integer.toString(this.getPref_MaxRelErrorEnd()));
+        auto.setProperty("pref_InternalParameterStart", Integer.toString(this.getPref_InternalParameterStart()));
+        auto.setProperty("pref_InternalParameterEnd", Integer.toString(this.getPref_InternalParameterEnd()));
+        auto.setProperty("pref_typeOfUsedMultiPhaseOptimization", this.getPref_typeOfUsedMultiPhaseOptimization().toString());
+        auto.setProperty("pref_KeepDesignSpaceAndResolution", Boolean.toString(this.getPref_KeepDesignSpaceAndResolution()));
+
+
         auto.setProperty("pref_LogFileAddon", this.jTextFieldLogFileAddon.getText());
-
         auto.setProperty("pref_CalculationOfNextParameterset", this.getPref_CalculationOfNextParameterset().toString());
-
         
         File parserprops =  new File(propertyFile);
         auto.store(new FileOutputStream(parserprops), "ExperimentGenerator-Properties");
@@ -1049,6 +1093,151 @@ private SpinnerNumberModel TRatioScaleSpinnerModel;
     public void setPref_CalculationOfNextParameterset(typeOfAnnealingParameterCalculation pref_CalculationOfNextParameterset) {
         this.jComboBoxCalculationOfNextParameterset.setSelectedItem(pref_CalculationOfNextParameterset);
         this.pref_CalculationOfNextParameterset = pref_CalculationOfNextParameterset;
+    }
+
+    /**
+     * @return the pref_NumberOfPhases
+     */
+    public int getPref_NumberOfPhases() {
+        this.pref_NumberOfPhases=Integer.valueOf(  (String)this.jComboBoxNumberOfPhases.getSelectedItem());
+        return pref_NumberOfPhases;
+    }
+
+    /**
+     * @param pref_NumberOfPhases the pref_NumberOfPhases to set
+     */
+    public void setPref_NumberOfPhases(int pref_NumberOfPhases) {
+        this.jComboBoxNumberOfPhases.setSelectedItem(Integer.toString(pref_NumberOfPhases));
+        this.pref_NumberOfPhases = pref_NumberOfPhases;
+    }
+
+    /**
+     * @return the pref_typeOfUsedMultiPhaseOptimization
+     */
+    public typeOfOptimization getPref_typeOfUsedMultiPhaseOptimization() {
+        this.pref_typeOfUsedMultiPhaseOptimization=(typeOfOptimization)this.jComboBoxOptimizationType.getSelectedItem();
+        return pref_typeOfUsedMultiPhaseOptimization;
+    }
+
+    /**
+     * @param pref_typeOfUsedMultiPhaseOptimization the pref_typeOfUsedMultiPhaseOptimization to set
+     */
+    public void setPref_typeOfUsedMultiPhaseOptimization(typeOfOptimization pref_typeOfUsedMultiPhaseOptimization) {
+        this.jComboBoxOptimizationType.setSelectedItem(pref_typeOfUsedMultiPhaseOptimization);
+        this.pref_typeOfUsedMultiPhaseOptimization = pref_typeOfUsedMultiPhaseOptimization;
+    }
+
+    /**
+     * @return the pref_ConfidenceIntervallStart
+     */
+    public int getPref_ConfidenceIntervallStart() {
+        this.pref_ConfidenceIntervallStart=(Integer)jSpinnerConfidenceIntervallStart.getValue();
+        return pref_ConfidenceIntervallStart;
+    }
+
+    /**
+     * @param pref_ConfidenceIntervallStart the pref_ConfidenceIntervallStart to set
+     */
+    public void setPref_ConfidenceIntervallStart(int pref_ConfidenceIntervallStart) {
+        this.jSpinnerConfidenceIntervallStart.setValue(pref_ConfidenceIntervallStart);
+        this.pref_ConfidenceIntervallStart = pref_ConfidenceIntervallStart;
+    }
+
+    /**
+     * @return the pref_ConfidenceIntervallEnd
+     */
+    public int getPref_ConfidenceIntervallEnd() {
+        this.pref_ConfidenceIntervallEnd=(Integer)jSpinnerConfidenceIntervallEnd.getValue();
+        return pref_ConfidenceIntervallEnd;
+    }
+
+    /**
+     * @param pref_ConfidenceIntervallEnd the pref_ConfidenceIntervallEnd to set
+     */
+    public void setPref_ConfidenceIntervallEnd(int pref_ConfidenceIntervallEnd) {
+        this.jSpinnerConfidenceIntervallEnd.setValue(pref_ConfidenceIntervallEnd);
+        this.pref_ConfidenceIntervallEnd = pref_ConfidenceIntervallEnd;
+    }
+
+    /**
+     * @return the pref_MaxRelErrorStart
+     */
+    public int getPref_MaxRelErrorStart() {
+        this.pref_MaxRelErrorStart=(Integer)jSpinnerMaxRelErrorStart.getValue();
+        return pref_MaxRelErrorStart;
+    }
+
+    /**
+     * @param pref_MaxRelErrorStart the pref_MaxRelErrorStart to set
+     */
+    public void setPref_MaxRelErrorStart(int pref_MaxRelErrorStart) {
+        this.jSpinnerMaxRelErrorStart.setValue(pref_MaxRelErrorStart);
+        this.pref_MaxRelErrorStart = pref_MaxRelErrorStart;
+    }
+
+    /**
+     * @return the pref_MaxRelErrorEnd
+     */
+    public int getPref_MaxRelErrorEnd() {
+        this.pref_MaxRelErrorEnd=(Integer)jSpinnerMaxRelErrorEnd.getValue();
+        return pref_MaxRelErrorEnd;
+    }
+
+    /**
+     * @param pref_MaxRelErrorEnd the pref_MaxRelErrorEnd to set
+     */
+    public void setPref_MaxRelErrorEnd(int pref_MaxRelErrorEnd) {
+        jSpinnerMaxRelErrorEnd.setValue(pref_MaxRelErrorEnd);
+        this.pref_MaxRelErrorEnd = pref_MaxRelErrorEnd;
+    }
+
+    /**
+     * @return the pref_InternalParameterStart
+     */
+    public int getPref_InternalParameterStart() {
+        this.pref_InternalParameterStart=(Integer)jSpinnerInternalParameterStart.getValue();
+        return pref_InternalParameterStart;
+    }
+
+    /**
+     * @param pref_InternalParameterStart the pref_InternalParameterStart to set
+     */
+    public void setPref_InternalParameterStart(int pref_InternalParameterStart) {
+        jSpinnerInternalParameterStart.setValue(pref_InternalParameterStart);
+        this.pref_InternalParameterStart = pref_InternalParameterStart;
+    }
+
+    /**
+     * @return the pref_InternalParameterEnd
+     */
+    public int getPref_InternalParameterEnd() {
+        this.pref_InternalParameterEnd=(Integer)jSpinnerInternalParameterEnd.getValue();
+        return pref_InternalParameterEnd;
+    }
+
+    /**
+     * @param pref_InternalParameterEnd the pref_InternalParameterEnd to set
+     */
+    public void setPref_InternalParameterEnd(int pref_InternalParameterEnd) {
+        jSpinnerInternalParameterEnd.setValue(pref_InternalParameterEnd);
+        this.pref_InternalParameterEnd = pref_InternalParameterEnd;
+    }
+
+
+    /**
+     * @return the pref_KeepDesignSpaceAndResolution
+     */
+    public boolean getPref_KeepDesignSpaceAndResolution() {
+        this.pref_KeepDesignSpaceAndResolution=jCheckBoxKeepDesignspaceAndResolution.isSelected();
+        return pref_KeepDesignSpaceAndResolution;
+    }
+
+    /**
+     * @param pref_KeepDesignSpaceAndResolution the pref_KeepDesignSpaceAndResolution to set
+     */
+    public void setPref_KeepDesignSpaceAndResolution(boolean pref_KeepDesignSpaceAndResolution) {
+        jCheckBoxKeepDesignspaceAndResolution.setSelected(pref_KeepDesignSpaceAndResolution);
+        this.pref_KeepDesignSpaceAndResolution = pref_KeepDesignSpaceAndResolution;
     }
     
 }
