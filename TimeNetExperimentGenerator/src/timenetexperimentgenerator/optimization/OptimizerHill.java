@@ -51,7 +51,6 @@ ArrayList<MeasureType> listOfMeasures=new ArrayList<MeasureType>();//Liste aller
 ArrayList<SimulationType> historyOfParsers=new ArrayList<SimulationType>();//History of all simulation runs
 ArrayList<parameter> parameterBase;//Base set of parameters, start/end-value, stepping, etc.
 SimulationCache mySimulationCache=new SimulationCache();
-double[] arrayOfIncrements;
 boolean optimized=false;//False until Optimization is ended
 JLabel infoLabel;
 double simulationTimeSum=0;
@@ -92,14 +91,8 @@ int stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;
     this.listOfMeasures=parent.getListOfActiveMeasureMentsToOptimize(); //((MeasurementForm)MeasureFormPane.getComponent(0)).getListOfMeasurements();
     support.log("# of Measures to be optimized: "+this.listOfMeasures.size());
 
-    //Alle Steppings auf Standard setzen
-    arrayOfIncrements=new double[parameterBase.size()];
-        for(int i=0;i<parameterBase.size();i++){
-        arrayOfIncrements[i]=support.getDouble(parameterBase.get(i).getStepping());
-        }
 
     this.filename=support.getOriginalFilename();// originalFilename;
-    //Ask for Tmp-Path
 
     this.tmpPath=support.getTmpPath();
     //Start this Thread
@@ -113,7 +106,7 @@ int stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;
     public void run() {
         ArrayList<parameter> lastParameterset;
         ArrayList<ArrayList<parameter>> newParameterset;
-        //Simulator init with initional parameterset
+        //Simulator init with initial parameterset
         Simulator mySimulator=SimOptiFactory.getSimulator();
         
         mySimulator.initSimulator(getParametersetAsArrayList(getFirstParameterset()), getSimulationCounter(), false);
