@@ -439,7 +439,7 @@ private SpinnerNumberModel TRatioScaleSpinnerModel;
         jPanel1.add(jSpinnerEpsilon1);
         jSpinnerEpsilon1.setBounds(260, 220, 90, 28);
 
-        jLabel17.setFont(new java.awt.Font("Lucida Grande", 1, 16)); // NOI18N
+        jLabel17.setFont(new java.awt.Font("Lucida Grande", 1, 16));
         jLabel17.setText("Parameters for second Phase are taken from Standard-Panel (Simulated Annealing)!!!");
         jPanel1.add(jLabel17);
         jLabel17.setBounds(20, 28, 787, 20);
@@ -503,16 +503,28 @@ private SpinnerNumberModel TRatioScaleSpinnerModel;
         jSeparator2.setBounds(30, 230, 400, 10);
         jPanel2.add(jSeparator3);
         jSeparator3.setBounds(30, 160, 400, 10);
+
+        jSpinner1.setModel(new javax.swing.SpinnerNumberModel(85, 85, 99, 1));
         jPanel2.add(jSpinner1);
         jSpinner1.setBounds(260, 110, 70, 28);
+
+        jSpinner2.setModel(new javax.swing.SpinnerNumberModel(99, 85, 99, 1));
         jPanel2.add(jSpinner2);
         jSpinner2.setBounds(260, 140, 70, 28);
+
+        jSpinner3.setModel(new javax.swing.SpinnerNumberModel(1, 1, 15, 1));
         jPanel2.add(jSpinner3);
         jSpinner3.setBounds(260, 200, 70, 28);
+
+        jSpinner4.setModel(new javax.swing.SpinnerNumberModel(5, 1, 15, 1));
         jPanel2.add(jSpinner4);
         jSpinner4.setBounds(260, 170, 70, 28);
+
+        jSpinner5.setModel(new javax.swing.SpinnerNumberModel(0, 0, 3, 1));
         jPanel2.add(jSpinner5);
         jSpinner5.setBounds(700, 50, 70, 28);
+
+        jSpinner6.setModel(new javax.swing.SpinnerNumberModel(0, 0, 3, 1));
         jPanel2.add(jSpinner6);
         jSpinner6.setBounds(700, 20, 70, 28);
 
