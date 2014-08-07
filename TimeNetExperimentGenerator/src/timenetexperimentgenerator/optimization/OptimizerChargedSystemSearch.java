@@ -435,4 +435,8 @@ public void initOptimizer()
         }
     }
 
+    public SimulationType getOptimum() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
 }

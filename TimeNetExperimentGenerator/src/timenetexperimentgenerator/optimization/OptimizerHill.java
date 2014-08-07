@@ -546,5 +546,8 @@ int stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;
         this.simulationCounter = simulationCounter;
     }
 
+    public SimulationType getOptimum(){
+    return this.bestSolution;
+    }
 
 }

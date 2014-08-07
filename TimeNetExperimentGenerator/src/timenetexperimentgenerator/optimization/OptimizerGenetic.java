@@ -477,4 +477,8 @@ public class OptimizerGenetic implements Runnable, Optimizer{
         }
     }
 
+    public SimulationType getOptimum() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
 }

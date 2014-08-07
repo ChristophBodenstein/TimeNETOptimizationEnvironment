@@ -6,10 +6,13 @@
 
 package timenetexperimentgenerator.optimization;
 
+import timenetexperimentgenerator.datamodel.SimulationType;
+
 /**
  *
  * @author Christoph Bodenstein
  */
 public interface Optimizer {
 public void initOptimizer();
+public SimulationType getOptimum();
 }
