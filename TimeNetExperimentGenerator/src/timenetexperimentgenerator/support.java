@@ -81,7 +81,7 @@ private static String remoteAddress=null;
 private static typedef.typeOfOptimization chosenOptimizerType=typeOfOptimization.HillClimbing;//0=Greedy, 1=?, 2=?
 private static typeOfSimulator chosenSimulatorType=typeOfSimulator.Local;//0=local, 1=cached, 2=distributed
 private static LogFrame myLogFrame=new LogFrame();
-
+private static ArrayList<parameter> parameterBase=null;//Base set of parameters, start/end-value, stepping, etc.
 
     /**
      * @return the myOptimizerPreferences a Reference to the Preferences-Frame
@@ -927,6 +927,20 @@ private static boolean logToConsole=false;
         support.log("Error loading property: "+name +". Setting to default Value: "+ defaultValue);
         return defaultValue;
         }
+    }
+
+    /**
+     * @return the parameterBase
+     */
+    public static ArrayList<parameter> getParameterBase() {
+        return parameterBase;
+    }
+
+    /**
+     * @param aParameterBase the parameterBase to set
+     */
+    public static void setParameterBase(ArrayList<parameter> aParameterBase) {
+        parameterBase = aParameterBase;
     }
 }
 

@@ -43,28 +43,74 @@ boolean keepSizeAndResolutionOfDesignspace=false;
      */
     public OptimizerMultiPhase() {
     super();
+    this.parent=support.getMainFrame();// parentTMP;
+    this.parameterBase=parent.getParameterBase();
     }
 
     public void run() {
-    ArrayList<parameter> lastParameterset;
     ArrayList<ArrayList<parameter>> newParameterset;
-    //Simulator init with initial parameterset
-    Optimizer mySimulator=SimOptiFactory.getOptimizer(support.getOptimizerPreferences().getPref_typeOfUsedMultiPhaseOptimization() );
+    //Optimizer init with initial parameterset
+    Optimizer myOptimizer;//=SimOptiFactory.getOptimizer(support.getOptimizerPreferences().getPref_typeOfUsedMultiPhaseOptimization() );
+    Optimizer lastOptimizer=null;
+    /*    Minimales Raster merken
+    Maximales Raster = Minimales Raster / 2^PhasenAnzahl
+    Pro Phase wird Raster um Faktor 2 verkleinert.
+    -->Raster bleibt scheinbar immer gleich groß (aus Sicht des OptiAlgorithmus)
+    Schrittweite ist Originalschrittweite*2^Phasenanzahl
+        Nur wenn es passt!. Prüfung einbauen, auch beim zurückskalieren
+    */
+
 
     //Tune size of Design space if Checkbox is not selected
-        if(!keepSizeAndResolutionOfDesignspace){
+        //if(!keepSizeAndResolutionOfDesignspace){
+
+
             for(int i=0;i<this.parameterBase.size();i++){
-                if(this.parameterBase.get(i).isIteratableAndIntern()){
+                parameter p=this.parameterBase.get(i);
+                if(p.isIteratableAndIntern()){
                 //Originalstepping sichern
                 //Stepping vergröbern, wenn möglich
-                //Größe des Designspace gleich lassen
+                p.setStepping(p.getStepping()*Math.pow(2, this.numberOfPhases));
+                //TODO Check if Stepping is smaller then design space!
 
+                /*double tmpDistance=(p.getEndValue()-p.getStartValue())/2;
+                p.setStartValue(p.getStartValue() + tmpDistance);
+                p.setEndValue(p.getEndValue()-tmpDistance);
+                */
                     //Im folgenden Phasen jeweils des Stepping wieder verkleinern
                     //Dabei Designspace verkleinern (jeweils halbieren), dabei Start UND Endwert anpassen,
                     //damit die Mitte wieder passt, und zwar zum gefundenen Parameterwert!
                 }
             }
-        }
+
+            support.setParameterBase(parameterBase);
+
+            for(int phaseCounter=0;phaseCounter<this.numberOfPhases;phaseCounter++){
+                if(lastOptimizer!=null){
+                //get Optimum from last Optimizer as start for next one
+                ArrayList<parameter> lastParamaterset=lastOptimizer.getOptimum().getListOfParameters();
+                    for(int i=0;i<lastParamaterset.size();i++){
+                    parameter p=lastParamaterset.get(i);
+                        if(p.isIteratableAndIntern()){
+                        //fit stepping
+                            p.setStepping(p.getStepping()*2);
+                        //fit start & end Value
+                        //set start value based on "value", half size but not smaller then original start-Value.
+                        //set end Value based on "value", halt size but not bigger then orininal end-Value.
+
+                        }
+                    }
+                }
+
+                myOptimizer=SimOptiFactory.getOptimizer(support.getOptimizerPreferences().getPref_typeOfUsedMultiPhaseOptimization() );
+                //TODO Set the parameterBase first!
+                //Push parameterset to support
+                //in Mainframe: if support has parameterbase then take this (if Multiphase-simulation)
+                myOptimizer.initOptimizer();
+            }
+
+
+        //}
 
     }
 

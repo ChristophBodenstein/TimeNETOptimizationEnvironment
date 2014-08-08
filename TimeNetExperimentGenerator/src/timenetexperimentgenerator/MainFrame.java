@@ -1431,6 +1431,13 @@ private String pathToR="";
      * @return List of Parameters from Table (Base of Parameter Iterations)
      **/
     public ArrayList<parameter> getParameterBase(){
+
+        //Return the saved parameterset in support-class for Multiphase-Opti
+        if(support.getParameterBase()!=null){
+        return support.getParameterBase();
+        }
+
+
     //int parameterCount=this.jTableParameterList.getModel().getRowCount();
     parameterTableModel tModel=(parameterTableModel) this.jTableParameterList.getModel();
     //String [][] parameterArray=tModel.getParameterArray();
