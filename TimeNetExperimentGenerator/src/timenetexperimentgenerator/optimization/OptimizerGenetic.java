@@ -191,6 +191,7 @@ public class OptimizerGenetic implements Runnable, Optimizer{
             simulationCounter = mySimulator.getSimulationCounter();
             
             population = mySimulator.getListOfCompletedSimulationParsers();
+            support.addLinesToLogFileFromListOfParser(population, logFileName);
             
             //evaluation phase --------------------------------------------------------------------------
             population = cutPopulation(population);
@@ -342,8 +343,7 @@ public class OptimizerGenetic implements Runnable, Optimizer{
                 pArray = roundToStepping(pArray);
             }
             population.get(i).setListOfParameters(pArray);            
-        }
-        
+        }       
     }
     
     /**

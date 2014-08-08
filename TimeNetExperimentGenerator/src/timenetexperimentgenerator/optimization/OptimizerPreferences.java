@@ -917,7 +917,7 @@ private boolean pref_KeepDesignSpaceAndResolution;
                 case ChargedSystemSearch:
                     //TODO Add Infos to this Algorithm here!
                     break;
-                case Seidel3:
+                case ABC:
                     //TODO Add Infos to this Algorithm here!
                     break;
             }

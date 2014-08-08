@@ -91,9 +91,10 @@ public void initOptimizer()
 //    }
 
     this.filename=support.getOriginalFilename();// originalFilename;
+    
     //Ask for Tmp-Path
-
     this.tmpPath=support.getTmpPath();
+    
     //Start this Thread
     new Thread(this).start();
 }
@@ -105,6 +106,7 @@ public void initOptimizer()
      */
     private void createNewRandomPopulation(int numOfCharges, boolean ignoreStepping)
     {
+        //init of needed data structures
         charges = new ArrayList<SimulationType>();
         //init of supporting-arrays
         distances = new double[numOfCharges];
@@ -175,7 +177,8 @@ public void initOptimizer()
     }
     
     private void calculateDistances()
-    {            
+    {   
+        setMeasureTargets(charges);
         for (int parserCount = 0; parserCount < charges.size(); ++ parserCount)
         {
             distances[parserCount] = charges.get(parserCount).getDistance();
@@ -203,11 +206,11 @@ public void initOptimizer()
         //compareCharge = the charge, which attracts the currentCharge
         for(int currentChargeNumber=0; currentChargeNumber<numberOfCharges; ++currentChargeNumber)
         {
-            ArrayList<parameter> currentMeasure = getParameters(currentChargeNumber);
+            ArrayList<parameter> currentParameterSet = getParameters(currentChargeNumber);
             
             for(int compareChargeNumber=0; compareChargeNumber<numberOfCharges;++compareChargeNumber)
             {
-                ArrayList<parameter> compareMeasure = getParameters(compareChargeNumber);
+                ArrayList<parameter> compareParemeterSet = getParameters(compareChargeNumber);
                 if (currentChargeNumber!=compareChargeNumber)
                 {
                     double attraction = powerOfCharges[compareChargeNumber] / powerOfCharges[currentChargeNumber];
@@ -219,10 +222,10 @@ public void initOptimizer()
                     
                     for (int parameterNumber = 0; parameterNumber<speedOfCharges[currentChargeNumber].length; ++parameterNumber)
                     {
-                        if (currentMeasure.get(parameterNumber).isIteratableAndIntern())
+                        if (currentParameterSet.get(parameterNumber).isIteratableAndIntern())
                         {
-                            double currentValue = currentMeasure.get(parameterNumber).getValue();
-                            double compareValue = compareMeasure.get(parameterNumber).getValue();
+                            double currentValue = currentParameterSet.get(parameterNumber).getValue();
+                            double compareValue = compareParemeterSet.get(parameterNumber).getValue();
                             double currentSpeed = speedOfCharges[currentChargeNumber][parameterNumber];
                         
                             double diffSpeed = (compareValue - currentValue) * attraction / maxAttraction;
@@ -230,31 +233,23 @@ public void initOptimizer()
                             currentValue += currentSpeed;
                         
                             //safety check to prevent charges to "fly" over the border
-                            if (currentValue < currentMeasure.get(parameterNumber).getStartValue())
+                            if (currentValue < currentParameterSet.get(parameterNumber).getStartValue())
                             {
-                                currentValue = currentMeasure.get(parameterNumber).getStartValue();
+                                currentValue = currentParameterSet.get(parameterNumber).getStartValue();
                             }
-                            else if (currentValue > currentMeasure.get(parameterNumber).getEndValue())
+                            else if (currentValue > currentParameterSet.get(parameterNumber).getEndValue())
                             {
-                            currentValue = currentMeasure.get(parameterNumber).getEndValue();
+                            currentValue = currentParameterSet.get(parameterNumber).getEndValue();
                             }
                         
                             speedOfCharges[currentChargeNumber][parameterNumber] = currentSpeed;
-                            currentMeasure.get(parameterNumber).setValue(currentValue);
+                            currentParameterSet.get(parameterNumber).setValue(currentValue);
                         } 
                     }
                 }
             }
-            setParameters(currentMeasure, currentChargeNumber);
-        }
-        
-        //copy back to charges
-//        charges.clear();
-//        for(int measureCount=0; measureCount<tempMeasure.size(); ++measureCount)
-//        {
-//            charges.add(Arrays.copyOf(tempMeasure.get(measureCount), tempMeasure.get(measureCount).length));
-//        }
-    }
+            setParameters(currentParameterSet, currentChargeNumber);
+        }    }
     
     private void updateTopMeasure()
     {
@@ -319,8 +314,9 @@ public void initOptimizer()
             mySimulator.initSimulator(parameterList, simulationCounter, false);
             support.waitForEndOfSimulator(mySimulator, simulationCounter, support.DEFAULT_TIMEOUT);
             simulationCounter = mySimulator.getSimulationCounter();
-            System.out.println("NumMeasuresOut: " + mySimulator.getListOfCompletedSimulationParsers().get(0).getMeasures().size());
+            support.log("NumMeasuresOut: " + mySimulator.getListOfCompletedSimulationParsers().get(0).getMeasures().size());
             charges = mySimulator.getListOfCompletedSimulationParsers();
+            support.addLinesToLogFileFromListOfParser(charges, logFileName);
             
             calculateDistances();
             updateTopMeasure();
@@ -331,7 +327,7 @@ public void initOptimizer()
         {
             String measureName  = listOfMeasures.get(measureCount).getMeasureName();
             MeasureType activeMeasure = topMeasure.getMeasureByName(measureName);
-            System.out.println(activeMeasure.getStateAsString());
+            support.log(activeMeasure.getStateAsString());
         }
         support.log("CCS Finished");
         
@@ -368,7 +364,7 @@ public void initOptimizer()
         {
             String message = "Charge " + i + ": " + distances[i];
             //support.log(message);
-            System.out.println(message);
+            support.log(message);
         }
     }
     
@@ -432,6 +428,21 @@ public void initOptimizer()
         if (newMaxNumberOfOptiCyclesWithoutImprovement > 0)
         {
             this.maxNumberOfOptiCyclesWithoutImprovement = newMaxNumberOfOptiCyclesWithoutImprovement;
+        }
+    }
+    
+    private void setMeasureTargets(ArrayList<SimulationType> pList)
+    {
+        MeasureType activeMeasure = null;
+        MeasureType activeMeasureFromInterface = null;
+        for(int measureCount=0;measureCount<listOfMeasures.size();measureCount++)
+        {
+            for(int populationCount = 0; populationCount < pList.size() ; populationCount++)
+            {
+                activeMeasure=pList.get(populationCount).getMeasureByName(listOfMeasures.get(measureCount).getMeasureName());
+                activeMeasureFromInterface=listOfMeasures.get(measureCount);//Contains Optimization targets
+                activeMeasure.setTargetValue(activeMeasureFromInterface.getTargetValue(), activeMeasureFromInterface.getTargetKindOf());
+            }
         }
     }
 

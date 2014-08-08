@@ -77,8 +77,8 @@ private static SimulationCache singleTonSimulationCache=new SimulationCache();
                     return new OptimizerChargedSystemSearch();
             case Genetic:
                     return new OptimizerGenetic();
-            case Seidel3:
-                    return new OptimizerASeidel3();
+            case ABC:
+                    return new OptimizerABC();
 
             case MultiPhase:
                     return new OptimizerMultiPhase();

@@ -768,7 +768,7 @@ private String pathToR="";
     }//GEN-LAST:event_jComboBoxOptimizationTypeActionPerformed
 
     private void jComboBoxSimulationTypeItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxSimulationTypeItemStateChanged
-        support.setChosenSimulatorType((typeOfSimulator)this.jComboBoxSimulationType.getSelectedItem());
+        support.setChosenSimulatorType((typedef.typeOfSimulator)this.jComboBoxSimulationType.getSelectedItem());
     }//GEN-LAST:event_jComboBoxSimulationTypeItemStateChanged
 
     private void jComboBoxOptimizationTypeItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxOptimizationTypeItemStateChanged
