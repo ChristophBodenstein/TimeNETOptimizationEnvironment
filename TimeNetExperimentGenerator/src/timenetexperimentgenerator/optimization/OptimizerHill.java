@@ -269,6 +269,21 @@ int stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;
                                 }
                             }
                             break;
+                case preset:
+                        //Nothing to to, Value is already set to the preferred start-Value
+                        //But let`s make sure, set it to middle if something is wrong
+                        for(int i=0;i<newParameterset.size();i++){
+                                parameter p = newParameterset.get(i);
+                                if(p.isIteratableAndIntern()){
+                                    if((p.getValue()<p.getStartValue()) || (p.getValue()>p.getEndValue())) {
+                                    double distance=p.getEndValue()-p.getStartValue();
+                                    distance=Math.round(0.5*distance/p.getStepping())*p.getStepping()+p.getStartValue();
+                                    p.setValue(distance);
+                                    }
+                                }
+                            }
+
+                        break;
 
             }
             return newParameterset;

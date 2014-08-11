@@ -16,7 +16,7 @@ public class typedef {
 /**
  * Some TypeDefinitions
  */
-public enum typeOfStartValueEnum{start, end, middle, random};
+public enum typeOfStartValueEnum{start, end, middle, random, preset};
 
 public enum typeOfNeighborhoodEnum{StepForward,StepForwardBackward,StepForwardBackRandom,RandomStepInNeighborhood,RandomStepInDesignspace,RandomSteplessInNeighborhood};
 

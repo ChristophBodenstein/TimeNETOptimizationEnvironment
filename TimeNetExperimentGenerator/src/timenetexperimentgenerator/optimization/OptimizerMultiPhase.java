@@ -115,8 +115,11 @@ String logFileName;
 
                         }
                     }
+
                 //Push parameterset to support
                 support.setParameterBase(lastParamaterset);
+                //Set first-Parameter-choosing-strategy to preset
+                support.getOptimizerPreferences().setPref_StartValue(typeOfStartValueEnum.preset);
                 }
 
                 myOptimizer=SimOptiFactory.getOptimizer(support.getOptimizerPreferences().getPref_typeOfUsedMultiPhaseOptimization() );
