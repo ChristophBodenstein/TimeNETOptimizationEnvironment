@@ -86,6 +86,9 @@ String logFileName;
 
             //Set Parameterbase for first use
             support.setParameterBase(parameterBase);
+            
+            //Start in the middle
+            support.getOptimizerPreferences().setPref_StartValue(typeOfStartValueEnum.middle);
 
             for(int phaseCounter=0;phaseCounter<this.numberOfPhases;phaseCounter++){
             support.log("Starting phase #"+ phaseCounter +" of "+this.numberOfPhases);
@@ -99,7 +102,7 @@ String logFileName;
                         p.setStepping(p.getStepping()/2);
                         //fit start & end Value
                         //set start value based on "value", half size but not smaller then original start-Value.
-                        //set end Value based on "value", halt size but not bigger then orininal end-Value.
+                        //set end Value based on "value", halt size but not bigger then original end-Value.
                         double tmpDistance=p.getEndValue()-p.getStartValue();
                         p.setStartValue(Math.max(p.getValue()-tmpDistance/2, p.getStartValue())) ;
 
