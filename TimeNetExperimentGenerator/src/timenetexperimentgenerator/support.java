@@ -63,6 +63,8 @@ public static final int DEFAULT_InternalParameterEnd=0;
 public static final boolean DEFAULT_KeepDesignSpaceAndResolution=true;
 
 
+public static final int DEFAULT_MINIMUM_DESIGNSPACE_SIZE_PER_PARAMETER=10;//Minimum Steps per Parameter.
+
 //End of program-wide default value definition
 
 

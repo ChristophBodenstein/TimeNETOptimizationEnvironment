@@ -35,7 +35,6 @@ private int stepCountTemp=100;
 private double sizeOfNeighborhood;//in percent
 private double Fx;//Current Distance
 private double Fy;//New Distance?
-private int typeOfNeighborhood=0;
 private static OptimizerPreferences myPreferences=new OptimizerPreferences();
 
 private int simulationCounter=0;
@@ -539,8 +538,18 @@ int stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;
         this.simulationCounter = simulationCounter;
     }
 
+
+    /**
+     * Returns the found optmium (SimulationType)
+     * If optimium is not found or optimizer is still running it returns null
+     * @return null if optimization not yet ended, else Optimum
+     */
     public SimulationType getOptimum(){
-    return this.bestSolution;
+        if(this.optimized){
+        return this.bestSolution;
+        }else{
+        return null;
+        }
     }
 
 }

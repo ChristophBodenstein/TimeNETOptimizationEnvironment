@@ -95,6 +95,7 @@ double actualTempCost=1;
         if(actualTempCost< support.getOptimizerPreferences().getPref_Epsilon() || actualTempParameter< support.getOptimizerPreferences().getPref_Epsilon()){
             //Set currentsolution=bestsolution so it will be printed as optimum
             currentSolution=bestSolution;
+            this.optimized=true;
             return true;
         }
 
