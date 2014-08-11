@@ -218,7 +218,7 @@ boolean log=true;
         java.util.Scanner s = new java.util.Scanner( p.getInputStream() ).useDelimiter( "\\Z" );//Scans output of process
         support.log( s.next() );//prints output of process into System.out
             try {
-                p.waitFor();
+                p.waitFor();//TODO Change this to exit if cancel is wanted!
             } catch (InterruptedException ex) {
                 Logger.getLogger(SimulatorLocal.class.getName()).log(Level.SEVERE, null, ex);
             }

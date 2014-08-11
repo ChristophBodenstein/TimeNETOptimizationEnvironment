@@ -121,7 +121,7 @@ int stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;
         
         lastParameterset=currentSolution.getListOfParameters();
         support.log("Start of Optimization-loop");
-            while(!optimized){
+            while(!optimized || !support.isCancelEverything()){
                 newParameterset=getNextParametersetAsArrayList(lastParameterset);
                 listOfCompletedSimulations=null;
                 //If result is already in cache, then count up corresponding counter
@@ -177,6 +177,11 @@ int stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;
         support.getStatusLabel().setText("Optimization ended. See Log.");
         support.printOptimizedMeasures(currentSolution, this.listOfMeasures);
         StatisticAggregator.printLastStatistic();
+
+        if(support.isCancelEverything()){
+        support.log("Optimization was canceled! Optimum might not found!");
+        }
+
     }
 
 

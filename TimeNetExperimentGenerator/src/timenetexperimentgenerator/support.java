@@ -84,6 +84,8 @@ private static typedef.typeOfOptimization chosenOptimizerType=typeOfOptimization
 private static typeOfSimulator chosenSimulatorType=typeOfSimulator.Local;//0=local, 1=cached, 2=distributed
 private static LogFrame myLogFrame=new LogFrame();
 private static ArrayList<parameter> parameterBase=null;//Base set of parameters, start/end-value, stepping, etc.
+private static boolean cancelEverything=false;//If set to true, everything is cancelled
+
 
     /**
      * @return the myOptimizerPreferences a Reference to the Preferences-Frame
@@ -787,6 +789,11 @@ private static boolean logToConsole=false;
                     if (timeoutCounter<=1){
                         support.log("Timeout for simulation reached. Aborting simulation.");
                         return false;}
+
+                    if(support.isCancelEverything()){
+                        support.log("Waiting for Simulator canceled by user.");
+                        return false;
+                    }
                 }
                 simulationCounter=mySimulator.getSimulationCounter();
                 getMainFrame().updateSimulationCounterLabel(simulationCounter);
@@ -943,6 +950,20 @@ private static boolean logToConsole=false;
      */
     public static void setParameterBase(ArrayList<parameter> aParameterBase) {
         parameterBase = aParameterBase;
+    }
+
+    /**
+     * @return the cancelEverything
+     */
+    public static boolean isCancelEverything() {
+        return cancelEverything;
+    }
+
+    /**
+     * @param aCancelEverything the cancelEverything to set
+     */
+    public static void setCancelEverything(boolean aCancelEverything) {
+        cancelEverything = aCancelEverything;
     }
 }
 

@@ -601,7 +601,8 @@ private String pathToR="";
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonOpenSCPNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonOpenSCPNActionPerformed
-
+    support.setCancelEverything(false);
+    
       javax.swing.filechooser.FileFilter myFilter=new javax.swing.filechooser.FileNameExtensionFilter("xml file", "xml");
       JFileChooser fileChooser = new JFileChooser(this.jTextFieldSCPNFile.getText());
       fileChooser.setCurrentDirectory(new java.io.File(this.jTextFieldSCPNFile.getText()+"/.."));
@@ -629,7 +630,8 @@ private String pathToR="";
     }//GEN-LAST:event_jButtonReloadActionPerformed
 
     private void jButtonExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonExportActionPerformed
-        
+    support.setCancelEverything(false);
+    
         //Ask for Export-Path
         //support.setTmpPath(support.getPathToDirByDialog("Dir for export of xml-Files.\n "+"Go INTO the dir to choose it!", null));
         support.setPathToTimeNet(pathToTimeNet);
@@ -648,13 +650,16 @@ private String pathToR="";
     }//GEN-LAST:event_jButtonExportActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-    this.cancelOperation=true;    
+    this.cancelOperation=true;
+    support.setCancelEverything(true);
+    support.log("Try to cancel everything.");
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * Start of batch simulation
      */
     private void jButtonStartBatchSimulationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonStartBatchSimulationActionPerformed
+        support.setCancelEverything(false);
         //Ask for Tmp-Path
         support.setTmpPath(support.getPathToDirByDialog("Dir for export TMP-Files and log.\n "+"Go INTO the dir to choose it!", new File(support.getOriginalFilename()).getPath() ));
         support.setPathToTimeNet(pathToTimeNet);
@@ -672,6 +677,7 @@ private String pathToR="";
     }//GEN-LAST:event_jButtonStartBatchSimulationActionPerformed
 
     private void jButtonGenerateListOfExperimentsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGenerateListOfExperimentsActionPerformed
+    support.setCancelEverything(false);
     this.restartGenerator();
     }//GEN-LAST:event_jButtonGenerateListOfExperimentsActionPerformed
 
