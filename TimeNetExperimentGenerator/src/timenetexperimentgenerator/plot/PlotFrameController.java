@@ -397,7 +397,14 @@ public class PlotFrameController extends javax.swing.JFrame {
             writer.println("library(plot3D)");
             writer.println("base<-read.csv(\"" + OpenFileTextField.getText().replace("\\", "/") + "\", sep=\";\", dec=\",\",check.names=FALSE)");
             
-            writer.println("sub<-subset(base,  base$MeasureName ==  \"" + MeasureComboBox.getSelectedItem().toString() + "\")");
+            if(MeasureComboBox.getSelectedItem() != null)
+            {
+                writer.println("sub<-subset(base,  base$MeasureName ==  \"" + MeasureComboBox.getSelectedItem().toString() + "\")");
+            }
+            else
+            {
+                writer.println("sub<-base");
+            }
             
             writer.println("setwd(\"" + userdir + "\")");
             writer.println("png(filename=\"rplot.png\")");
