@@ -198,7 +198,7 @@ int stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;
                 support.log("Choosing next solution for "+this.getClass().getSimpleName());
                 Fx=nextDistance;//Set global Distance Value
                 currentSolution=nextSolution;//Set Global Solution Value
-                bestSolution=currentSolution;//Set globa best Solution Value
+                bestSolution=currentSolution;//Set global best Solution Value
                 //Reset wrong-solution-counter
                 wrongSolutionCounter=support.getOptimizerPreferences().getPref_WrongSimulationsUntilBreak();
                 wrongSolutionPerDirectionCounter=support.getOptimizerPreferences().getPref_WrongSimulationsPerDirection();
@@ -342,6 +342,8 @@ int stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;
 
             //Don't Sort the parameterlist!
             //Collections.sort(lastParameterList);
+
+            support.log("Number of Parameters in List: "+lastParameterList.size());
 
             //For every Parameter check if it is iteratable and if it was changed last time
             int i=0;

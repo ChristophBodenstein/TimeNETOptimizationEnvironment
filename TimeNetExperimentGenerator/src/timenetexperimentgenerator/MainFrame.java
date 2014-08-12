@@ -682,6 +682,8 @@ private String pathToR="";
     }//GEN-LAST:event_jButtonGenerateListOfExperimentsActionPerformed
 
     private void jButtonStartOptimizationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonStartOptimizationActionPerformed
+    support.setCancelEverything(false);
+    
         if(this.sizeOfDesignSpace<=10){
         //TODO check , if opti is possible (target chosen etc.)
         support.log("Design space to small, no Optimization posible.");

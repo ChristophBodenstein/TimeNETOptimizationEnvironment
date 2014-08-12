@@ -8,12 +8,14 @@ package timenetexperimentgenerator.helper;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import timenetexperimentgenerator.support;
 
 /**
  *
  * @author Christoph Bodenstein
  */
 public class ProcMon implements Runnable {
+boolean stopThread=false;
 
   private final Process _proc;
   private volatile boolean _complete=false;
@@ -25,13 +27,25 @@ public class ProcMon implements Runnable {
   }
 
   public void run() {
-        try {
-            _proc.waitFor();
-            _complete = true;
-        } catch (InterruptedException ex) {
-            Logger.getLogger(ProcMon.class.getName()).log(Level.SEVERE, null, ex);
-            _complete=true;
+
+    while(!stopThread){
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException ex) {
+            }
+            
+        if(support.isCancelEverything()){
+        support.log("Will cancel a TimeNet-Instance. You should take care of existing client threads!");
+        _proc.destroy();
+        return;
         }
+
+    }
+  
+  }
+
+  public void stopThread(){
+  this.stopThread=true;
   }
 
   

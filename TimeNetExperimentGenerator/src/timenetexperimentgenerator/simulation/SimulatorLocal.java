@@ -213,12 +213,14 @@ boolean log=true;
         long timeStamp=Calendar.getInstance().getTimeInMillis();
 
 
-        java.lang.Process p = processBuilder.start();
+        final java.lang.Process p = processBuilder.start();
         
+
         java.util.Scanner s = new java.util.Scanner( p.getInputStream() ).useDelimiter( "\\Z" );//Scans output of process
         support.log( s.next() );//prints output of process into System.out
             try {
-                p.waitFor();//TODO Change this to exit if cancel is wanted!
+                createProcMon(p);
+                p.waitFor();
             } catch (InterruptedException ex) {
                 Logger.getLogger(SimulatorLocal.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -271,7 +273,7 @@ boolean log=true;
     this.cancelSimulations=true;
     }
 
-    public static ProcMon createProcMon(Process proc) {
+    public ProcMon createProcMon(Process proc) {
     ProcMon procMon = new ProcMon(proc);
     Thread t = new Thread(procMon);
     t.start();
