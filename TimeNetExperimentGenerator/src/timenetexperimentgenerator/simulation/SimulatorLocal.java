@@ -220,8 +220,9 @@ boolean log=true;
         java.util.Scanner s = new java.util.Scanner( p.getInputStream() ).useDelimiter( "\\Z" );//Scans output of process
         support.log( s.next() );//prints output of process into System.out
             try {
-                createProcMon(p);
+                ProcMon tmpProcMon=createProcMon(p);
                 p.waitFor();
+                tmpProcMon.stopThread();
             } catch (InterruptedException ex) {
                 Logger.getLogger(SimulatorLocal.class.getName()).log(Level.SEVERE, null, ex);
             }
