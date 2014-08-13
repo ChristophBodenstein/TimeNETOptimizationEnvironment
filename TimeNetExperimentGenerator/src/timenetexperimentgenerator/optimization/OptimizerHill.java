@@ -124,7 +124,7 @@ int stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;
         lastParameterset=currentSolution.getListOfParametersFittedToBaseParameterset();
         
         support.log("Start of Optimization-loop");
-            while(!optimized || !support.isCancelEverything()){
+            while(!optimized && !support.isCancelEverything()){
                 newParameterset=getNextParametersetAsArrayList(lastParameterset);
                 listOfCompletedSimulations=null;
                 //If result is already in cache, then count up corresponding counter
