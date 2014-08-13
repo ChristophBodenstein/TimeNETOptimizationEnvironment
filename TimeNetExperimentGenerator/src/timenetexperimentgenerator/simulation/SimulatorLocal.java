@@ -57,6 +57,7 @@ boolean log=true;
      * @param simulationCounterTMP start value of simulation counter
     */
     public void initSimulator(ArrayList< ArrayList<parameter> > listOfParameterSetsTMP, int simulationCounterTMP, boolean log){
+    this.status=0;
     this.listOfParameterSets=listOfParameterSetsTMP;
     this.log=log;
     this.originalFilename=support.getOriginalFilename();//  originalFilenameTMP;

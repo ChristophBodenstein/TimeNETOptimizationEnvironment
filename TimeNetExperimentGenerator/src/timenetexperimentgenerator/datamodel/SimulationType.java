@@ -154,7 +154,7 @@ private boolean isFromDistributedSimulation=false;//Is False, if local simulated
     }
     
     /** 
-     returns Array of Parameters incl. actual used Values, with empty fields for start/stop/step
+     * returns Array of Parameters incl. actual used Values, with empty fields for start/stop/step
      * @return Array of parameters
      */
     public ArrayList<parameter> getListOfParameters()
@@ -168,8 +168,17 @@ private boolean isFromDistributedSimulation=false;//Is False, if local simulated
 //        pArray[i]=parameterList.get(i);
 //        }
 //    return pArray;
+
         return this.parameterList;
     }
+
+    /**
+     * returns the Parameterset incl. used Values and filled with Start-End-Stepping from Baseparameterset
+     */
+    public ArrayList<parameter> getListOfParametersFittedToBaseParameterset(){
+    return support.fitParametersetToBaseParameterset(this.parameterList);
+    }
+
 
     /**
      * Sets List of parameters, internal stored as ArrayList

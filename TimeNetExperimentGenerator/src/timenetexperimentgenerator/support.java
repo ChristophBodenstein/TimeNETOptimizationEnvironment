@@ -12,6 +12,8 @@ package timenetexperimentgenerator;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
@@ -65,6 +67,8 @@ public static final boolean DEFAULT_KeepDesignSpaceAndResolution=true;
 
 public static final int DEFAULT_MINIMUM_DESIGNSPACE_SIZE_PER_PARAMETER=10;//Minimum Steps per Parameter.
 
+public static final String DEFAULT_LOG_FILE=".TimeNETLogFile.log";
+
 //End of program-wide default value definition
 
 
@@ -97,25 +101,9 @@ private static boolean cancelEverything=false;//If set to true, everything is ca
 
 private static final OptimizerPreferences myOptimizerPreferences = new OptimizerPreferences();
 
-    /**
-     * @return the typeOfStartValue
-     */
-//    public static typedef.typeOfStartValueEnum getTypeOfStartValue() {
-//        return typeOfStartValue;
-//    }
-
-    /**
-     * @param aTypeOfStartValue the typeOfStartValue to set
-     */
-//    public static void setTypeOfStartValue(typedef.typeOfStartValueEnum aTypeOfStartValue) {
-//        typeOfStartValue = aTypeOfStartValue;
-//    }
-
-
 
 private static boolean logToConsole=false;
- 
-//private static typedef.typeOfStartValueEnum typeOfStartValue=typedef.typeOfStartValueEnum.start;
+private static boolean logToFile=true;
 
     /**
      * Translates Parameternames from logfile to internal used Strings
@@ -126,6 +114,9 @@ private static boolean logToConsole=false;
     public final static String translateParameterNameFromLogFileToTable(String s){
         if(s.equals("Configured-ConfidenceIntervall")){
         return "ConfidenceIntervall";
+        }
+        if(s.equals("Used CPUTime")){
+        return "UsedCPUTIME";
         }
         
     return s;
@@ -540,6 +531,17 @@ private static boolean logToConsole=false;
         }else{
         myLogFrame.addText(s);
         }
+
+        if(logToFile){
+            try {
+                FileWriter fw = new FileWriter(System.getProperty("user.home") + File.separatorChar + DEFAULT_LOG_FILE, true);
+                fw.append(s+System.getProperty("line.separator") );
+                fw.close();
+            } catch (IOException ex) {
+                log("Error while saving logfile.");
+            }
+        }
+
     }
     
     /**
@@ -895,7 +897,6 @@ private static boolean logToConsole=false;
      */
     public static parameter getParameterByName(ArrayList<parameter> pList, String name){
     parameter outputValue=null;
-    
         for(int i=0;i<pList.size();i++){
             if(pList.get(i).getName().equals(name)){
             outputValue=pList.get(i);
@@ -903,7 +904,38 @@ private static boolean logToConsole=false;
         }
     return outputValue;
     }
-    
+
+
+    /**
+     * Fits every Paraemetr in ArrayList to BaseParameterset
+     * Start-End-Value and Stepping is set
+     * Name is changed if external parameter
+     *
+     */
+    public static ArrayList<parameter> fitParametersetToBaseParameterset(ArrayList<parameter> pList){
+    ArrayList<parameter> baseList = getParameterBase();
+
+    if(baseList==null){
+    log("ParameterBase is NULL! Please set it before starting Optimization Algorithm.");
+    return null;
+    }
+
+        for(int i=0;i<pList.size();i++){
+        parameter tmpP=pList.get(i);
+
+        //Change the names
+        tmpP.setName(translateParameterNameFromLogFileToTable(tmpP.getName()));
+        parameter baseP=getParameterByName(baseList, tmpP.getName());
+            if(baseP!=null){
+            tmpP.setStartValue(baseP.getStartValue());
+            tmpP.setEndValue(baseP.getEndValue());
+            tmpP.setStepping(baseP.getStepping());
+            }
+        }
+    return pList;
+    }
+
+
     /**
      * Return double value of loaded property
      * If any error occurs, the given default value is returned
@@ -964,6 +996,20 @@ private static boolean logToConsole=false;
      */
     public static void setCancelEverything(boolean aCancelEverything) {
         cancelEverything = aCancelEverything;
+    }
+
+    /**
+     * @return the logToFile
+     */
+    public static boolean isLogToFile() {
+        return logToFile;
+    }
+
+    /**
+     * @param aLogToFile the logToFile to set
+     */
+    public static void setLogToFile(boolean aLogToFile) {
+        logToFile = aLogToFile;
     }
 }
 

@@ -243,25 +243,6 @@ private int localSimulationCounter = 0;
     return true;
     }
     
-    /**
-    * Returns one Measure(given by name), selected by one parameterset(ParameterList)
-    * @param parameterList given Set of Parameters to by virtually simulated
-    * @param MeasureName given Name of Measure to get the simulaion value (needle)
-    * @return Measure
-    */
-//    public MeasureType getMeasureByParameterList(ArrayList<parameter> parameterList, String MeasureName){
-//    MeasureType tmpSimulation;
-//        //Go through all Measures, find the one with the same parameterlist
-//        for(int i=0;i<this.MeasureList.size();i++){
-//        tmpSimulation=this.MeasureList.get(i);
-//            if((tmpSimulation.getMeasureName().equals(MeasureName))&&(compareParameterList(parameterList, tmpSimulation.getParameterList()))){
-//            return tmpSimulation;
-//            }
-//        }
-//    //TODO: If not found, then find the nearest one       
-//    //Return null, if not found
-//    return null;
-//    }
 
     /**
     * Returns all Measures, selected by one parameterset(ParameterList)

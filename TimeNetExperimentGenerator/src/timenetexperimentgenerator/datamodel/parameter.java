@@ -22,7 +22,7 @@ private double value=0.0;
 private double startValue=0.0;
 private double endValue=0.0;
 private double stepping=1.0;
-private final String[] externalParameters={"ConfidenceIntervall","Seed","EndTime","MaxTime","MaxRelError"};
+private final String[] externalParameters={"ConfidenceIntervall","Seed","EndTime","MaxTime","MaxRelError","UsedCPUTIME"};
 private long idHash=0;
 
 
@@ -193,9 +193,13 @@ private long idHash=0;
      */ 
     public boolean isIteratable(){
         //TODO This check is not correct!
+        support.log("Checking Iteratability of parameter:"+this.getName());
+        support.log("StartValue: "+this.getStartValue()+" EndValue: "+this.getEndValue()+" Stepping: "+this.getStepping());
         if((this.endValue>this.startValue)&&(this.stepping<=(this.endValue-this.startValue))&&(this.value<=this.endValue)){
+        support.log("Is Iteratable!");
         return true;
         }else{
+        support.log("Is NOT Iteratable!");
         return false;
         }
     }

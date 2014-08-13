@@ -87,6 +87,8 @@ int stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;
     this.MeasureFormPane=support.getMeasureFormPane();//MeasureFormPaneTMP;
     this.parent=support.getMainFrame();// parentTMP;
     this.parameterBase=parent.getParameterBase();
+    support.setParameterBase(parameterBase);
+
     this.listOfMeasures=parent.getListOfActiveMeasureMentsToOptimize(); //((MeasurementForm)MeasureFormPane.getComponent(0)).getListOfMeasurements();
     support.log("# of Measures to be optimized: "+this.listOfMeasures.size());
 
@@ -119,16 +121,19 @@ int stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;
         bestSolution=currentSolution;
         ArrayList<SimulationType> listOfCompletedSimulations;
         
-        lastParameterset=currentSolution.getListOfParameters();
+        lastParameterset=currentSolution.getListOfParametersFittedToBaseParameterset();
+        
         support.log("Start of Optimization-loop");
             while(!optimized || !support.isCancelEverything()){
                 newParameterset=getNextParametersetAsArrayList(lastParameterset);
                 listOfCompletedSimulations=null;
                 //If result is already in cache, then count up corresponding counter
                 //Else start simulation
+                
+                //TODO Hier ist der Fehler: Wird bei abfrage ins Logfile geschrieben!!!
                 if(mySimulationCache.getListOfCompletedSimulationParsers(newParameterset, simulationCounter)!=null){
                 listOfCompletedSimulations=mySimulationCache.getListOfCompletedSimulationParsers(newParameterset, simulationCounter);
-                //Count up Eject-Counter for Cache
+                support.log("Getting List of Completed Simulations from Cache.");
 
                     //set all results to Cached, for statistics
                     for(int i=0;i<listOfCompletedSimulations.size();i++){
@@ -142,15 +147,31 @@ int stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;
                     }
 
                 }else{
+                support.log("Starting new Simulation, Parameterset not in Cache.");
                 stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;//Reset Stuck-Counter
                 mySimulator.initSimulator(newParameterset, getSimulationCounter(), false);
                 support.waitForEndOfSimulator(mySimulator, getSimulationCounter(), support.DEFAULT_TIMEOUT);
                 this.setSimulationCounter(mySimulator.getSimulationCounter());
                 listOfCompletedSimulations=mySimulator.getListOfCompletedSimulationParsers();
+
+                //Fit all resulting Simulation-Parameterlists
+                    for(int i1=0;i1<listOfCompletedSimulations.size();i1++){
+                    listOfCompletedSimulations.get(i1).setListOfParameters(listOfCompletedSimulations.get(i1).getListOfParametersFittedToBaseParameterset());
+                    }
+
                 //Add all Results to Cache
                 mySimulationCache.addListOfSimulationsToCache(listOfCompletedSimulations);
                 }
 
+            if(listOfCompletedSimulations==null){
+            support.log("Error. List of completed Simulations is NULL!");
+            return;
+            }
+
+            if(listOfCompletedSimulations.size()<1){
+            support.log("Error. List of completed Simulations is 0.");
+            return;
+            }
             //TODO Only last Simulation is used. For future use we should use all Simulations to paralelise to simulation
             nextSolution=listOfCompletedSimulations.get(0);
 
@@ -159,7 +180,7 @@ int stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;
 
             
             //Fy=this.getActualDistance(nextSolution);
-            lastParameterset=nextSolution.getListOfParameters();
+            lastParameterset=nextSolution.getListOfParametersFittedToBaseParameterset();
 
                 if(stuckInCacheCounter>=1){
                 //Check, if Optimization has ended!
