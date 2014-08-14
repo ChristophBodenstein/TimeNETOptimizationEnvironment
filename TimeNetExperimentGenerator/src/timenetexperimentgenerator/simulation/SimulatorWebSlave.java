@@ -12,6 +12,22 @@
 
 package timenetexperimentgenerator.simulation;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import timenetexperimentgenerator.support;
 
 /**
@@ -23,7 +39,48 @@ private boolean shouldEnd=false;
 
     public void run() {
         while(true){
-        //Enter your code here...
+        //Request the server Api to get the Status Code and response body.
+       // Getting the status code.
+       // While starting the tool the function should not call due to which exception is created.
+        HttpClient client = new DefaultHttpClient();
+        HttpGet httpGet = new HttpGet("http://localhost:8080/timenetws-server/rest/api/downloads/ND");     
+        HttpResponse response = null;
+        String responseString = null;
+            try {
+                response = client.execute(httpGet);
+                responseString = new BasicResponseHandler().handleResponse(response);
+            } catch (IOException ex) {
+                Logger.getLogger(SimulatorWebSlave.class.getName()).log(Level.SEVERE, null, ex);
+            }
+                        
+        int statusCode = response.getStatusLine().getStatusCode();
+        System.out.println("Response String ==========="+responseString);     
+        System.out.println("statusCode ==========="+statusCode);  
+        
+        List<String> lines = null;
+         
+     FileWriter fileWriter = null;
+        try {
+           
+            File newTextFile = new File("C:/Downloads/veer.txt");
+            fileWriter = new FileWriter(newTextFile);
+            fileWriter.write(responseString);
+            fileWriter.close();
+        } catch (IOException ex) {
+               } finally {
+            try {
+                fileWriter.close();
+            } catch (IOException ex) {
+               
+            }
+        }
+     /*       String content = "Hello File!";
+            String path = "file:///C://Downloads/veer.txt";
+            try {
+                Files.write( Paths.get(path), responseString.getBytes(), StandardOpenOption.CREATE);
+            } catch (IOException ex) {
+                Logger.getLogger(SimulatorWebSlave.class.getName()).log(Level.SEVERE, null, ex);
+            }   */
             try {
                 Thread.sleep(2000);
                 
