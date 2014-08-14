@@ -81,7 +81,7 @@ private static String pathToR=null;//The path to R
 private static String tmpPath=null;//The path, where all simulation files (xml), source files and logs will be stored
 private static SimulationCache mySimulationCache=null;  
 private static boolean cachedSimulationAvailable=false;
-private static boolean distributedSimulationAvailable=false;
+private static boolean distributedSimulationAvailable=true;
 private static boolean isRunningAsSlave=false;
 private static String remoteAddress=null;
 private static typedef.typeOfOptimization chosenOptimizerType=typeOfOptimization.HillClimbing;//0=Greedy, 1=?, 2=?
