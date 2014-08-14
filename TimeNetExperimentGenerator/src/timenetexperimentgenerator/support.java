@@ -995,6 +995,10 @@ private static boolean logToFile=true;
      * @param aCancelEverything the cancelEverything to set
      */
     public static void setCancelEverything(boolean aCancelEverything) {
+        if(aCancelEverything){
+        getStatusLabel().setText("All Operations will be canceled.");
+        }
+        
         cancelEverything = aCancelEverything;
     }
 
