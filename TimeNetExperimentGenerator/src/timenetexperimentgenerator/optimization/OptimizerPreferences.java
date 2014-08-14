@@ -273,23 +273,20 @@ private boolean pref_KeepDesignSpaceAndResolution;
                 .addContainerGap()
                 .addGroup(jPanelHillClimbingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanelHillClimbingLayout.createSequentialGroup()
-                        .addComponent(jLabelTypeOfNeighborhood, javax.swing.GroupLayout.PREFERRED_SIZE, 276, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabelTypeOfNeighborhood, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jComboBoxTypeOfNeighborhood, 0, 140, Short.MAX_VALUE)
-                        .addContainerGap(386, Short.MAX_VALUE))
+                        .addComponent(jComboBoxTypeOfNeighborhood, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel1)
                     .addGroup(jPanelHillClimbingLayout.createSequentialGroup()
                         .addGroup(jPanelHillClimbingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addGroup(jPanelHillClimbingLayout.createSequentialGroup()
-                                .addGroup(jPanelHillClimbingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabelWrongSolutionsUntilBreak)
-                                    .addComponent(jLabelWrongSolutionsPerDirectionUntilBreak))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanelHillClimbingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jSpinnerWrongSolutionsPerDirectionUntilBreak)
-                                    .addComponent(jSpinnerWrongSolutionsUntilBreak, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jSpinnerSizeOfNeighborhoodInPercent, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addContainerGap(392, Short.MAX_VALUE))))
+                            .addComponent(jLabelWrongSolutionsUntilBreak)
+                            .addComponent(jLabelWrongSolutionsPerDirectionUntilBreak))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanelHillClimbingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jSpinnerWrongSolutionsPerDirectionUntilBreak)
+                            .addComponent(jSpinnerWrongSolutionsUntilBreak, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jSpinnerSizeOfNeighborhoodInPercent, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(389, Short.MAX_VALUE))
         );
         jPanelHillClimbingLayout.setVerticalGroup(
             jPanelHillClimbingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -326,7 +323,7 @@ private boolean pref_KeepDesignSpaceAndResolution;
 
         jComboBoxCalculationOfNextParameterset.setModel(new DefaultComboBoxModel(typeOfAnnealingParameterCalculation.values()));
         jPanelSimAnnealing.add(jComboBoxCalculationOfNextParameterset);
-        jComboBoxCalculationOfNextParameterset.setBounds(260, 60, 170, 27);
+        jComboBoxCalculationOfNextParameterset.setBounds(240, 60, 190, 27);
 
         jLabel3.setText("Max. Temp. for Parameters(T-0-par)");
         jPanelSimAnnealing.add(jLabel3);
@@ -380,7 +377,7 @@ private boolean pref_KeepDesignSpaceAndResolution;
 
         jComboBoxCoolingMethod.setModel(new DefaultComboBoxModel(typeOfAnnealing.values()));
         jPanelSimAnnealing.add(jComboBoxCoolingMethod);
-        jComboBoxCoolingMethod.setBounds(260, 20, 170, 27);
+        jComboBoxCoolingMethod.setBounds(200, 20, 230, 27);
 
         jTabbedPane1.addTab("Simulated Annealing", jPanelSimAnnealing);
 
@@ -392,7 +389,7 @@ private boolean pref_KeepDesignSpaceAndResolution;
 
         jComboBoxCoolingMethod1.setModel(new DefaultComboBoxModel(typeOfAnnealing.values()));
         jPanel1.add(jComboBoxCoolingMethod1);
-        jComboBoxCoolingMethod1.setBounds(260, 60, 170, 27);
+        jComboBoxCoolingMethod1.setBounds(230, 60, 200, 27);
 
         jSpinnerTRatioScale1.setModel(TRatioScaleSpinnerModel);
         jSpinnerTRatioScale1.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerTRatioScale1, "#.#####"));
@@ -414,7 +411,7 @@ private boolean pref_KeepDesignSpaceAndResolution;
 
         jComboBoxCalculationOfNextParameterset1.setModel(new DefaultComboBoxModel(typeOfAnnealingParameterCalculation.values()));
         jPanel1.add(jComboBoxCalculationOfNextParameterset1);
-        jComboBoxCalculationOfNextParameterset1.setBounds(260, 100, 170, 27);
+        jComboBoxCalculationOfNextParameterset1.setBounds(230, 100, 200, 27);
 
         jLabel13.setText("Calculation of next Parameterset");
         jPanel1.add(jLabel13);
@@ -481,7 +478,7 @@ private boolean pref_KeepDesignSpaceAndResolution;
             }
         });
         jPanel2.add(jComboBoxOptimizationType);
-        jComboBoxOptimizationType.setBounds(260, 70, 150, 27);
+        jComboBoxOptimizationType.setBounds(260, 70, 170, 27);
 
         jLabel20.setText("Confidence-Intervall Start");
         jPanel2.add(jLabel20);
@@ -556,8 +553,8 @@ private boolean pref_KeepDesignSpaceAndResolution;
                                 .addGap(77, 77, 77)
                                 .addComponent(jLabelStartvalueForParameters, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jComboBoxTypeOfStartValue, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(121, 121, 121))
+                                .addComponent(jComboBoxTypeOfStartValue, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(71, 71, 71))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addGroup(layout.createSequentialGroup()
                                     .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -567,7 +564,7 @@ private boolean pref_KeepDesignSpaceAndResolution;
                                     .addComponent(jButton1))
                                 .addComponent(jCheckBoxAddPrefsToLogfilename)))
                         .addGap(292, 292, 292))
-                    .addComponent(jTabbedPane1)))
+                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 848, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
