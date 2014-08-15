@@ -384,7 +384,7 @@ int stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;
             support.log("Number of Last changed Parameter is "+numberOfLastParameter);
             
                 if(nextSolution==null){
-                support.log("Last Solution was not better then overlast solution. Counting up Wrong Solutions in one dircetion.");
+                support.log("Last Solution was not better then overlast solution. Counting up Wrong Solutions in one direction.");
                 wrongSolutionPerDirectionCounter--;
                 }
             
@@ -473,6 +473,7 @@ int stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;
                             p.setValue(nextValue);
                             }
                         }
+                        incResult=true;
                         break;
                 case RandomStepInDesignspace://Choose Value randomly out of complete designspace
                         for(int i=0;i<newParameterset.size();i++){
@@ -484,7 +485,7 @@ int stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;
                             p.setValue(nextValue);
                             }
                         }
-                    
+                        incResult=true;
                         break;
                 case RandomSteplessInNeighborhood: //Calculate neighborhood and choose next value randomly, Ignore Stepping!
                         for(int i=0;i<newParameterset.size();i++){
@@ -501,6 +502,7 @@ int stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;
                             p.setValue(nextValue);
                             }
                         }
+                        incResult=true;
                         break;
                 default: 
                         //Dont change the parameterset

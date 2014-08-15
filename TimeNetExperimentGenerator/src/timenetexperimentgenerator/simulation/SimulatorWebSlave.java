@@ -15,21 +15,15 @@ package timenetexperimentgenerator.simulation;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
 import timenetexperimentgenerator.Parser;
 import timenetexperimentgenerator.datamodel.SimulationType;
 import timenetexperimentgenerator.support;
@@ -50,7 +44,7 @@ private final String nameOfTempDirectory="14623786483530251523506521233052";
         //Request the server Api to get the Status Code and response body.
        // Getting the status code.
         HttpClient client = new DefaultHttpClient();
-        HttpGet httpGet = new HttpGet("http://localhost:8080/timenetws-server/rest/api/downloads/ND");     
+        HttpGet httpGet = new HttpGet("http://141.24.214.193:8080/TNServer/rest/api/downloads/ND");
         HttpResponse response = null;
         String responseString = null;
             try {

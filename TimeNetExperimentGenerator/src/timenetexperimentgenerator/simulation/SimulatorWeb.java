@@ -82,7 +82,7 @@ boolean log=true;
                     File file = new File(actualParameterFileName);
                         try {
         //Upload the file
-        executeMultiPartRequest("http://localhost:8080/timenetws-server/rest/file/upload",file,file.getName(), "File Uploaded :: WORDS") ;
+        executeMultiPartRequest("http://141.24.214.193:8080/TNServer/rest/file/upload",file,file.getName(), "File Uploaded :: WORDS") ;
     } catch (Exception ex) {
         Logger.getLogger(SimulatorWeb.class.getName()).log(Level.SEVERE, null, ex);
     }}

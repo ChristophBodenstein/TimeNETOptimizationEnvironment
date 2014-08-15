@@ -32,7 +32,7 @@ private ArrayList<parameter> parameterList=null;
 private int parseStatus=0;
 private double CPUTime=0;
 private String xmlFileName="";
-private boolean isFromCache=true;//is true, if from cache and false if logfile is parsed
+private boolean isFromCache=false;//is true, if from cache and false if logfile is parsed
 private boolean isFromDistributedSimulation=false;//Is False, if local simulated, true if simulated via Web
 
     /**
@@ -49,7 +49,7 @@ private boolean isFromDistributedSimulation=false;//Is False, if local simulated
         this.CPUTime=0;
         this.parameterList=null;
         this.xmlFileName="";
-        this.isFromCache=true;
+        this.isFromCache=false;
         this.isFromDistributedSimulation=false;
     }
 
