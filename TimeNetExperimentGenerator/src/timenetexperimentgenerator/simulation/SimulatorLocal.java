@@ -85,40 +85,57 @@ boolean keepSimulationFiles=false;
             
             support.log("Logfilename is:"+logFileName);
 
+            int simulationAttemptCounter=support.DEFAULT_LOCAL_SIMULATION_ATTEMPTS;
+
                 if(listOfParameterSets.size()>0){
                     for(int i=0;i<listOfParameterSets.size();i++){
-                    if(support.isCancelEverything()) return;
-                    ArrayList<parameter> actualParameterSet=listOfParameterSets.get(i);//get actual parameterset
-                    String actualParameterFileName=createLocalSimulationFile(actualParameterSet, this.simulationCounter);//create actual SCPN xml-file and save it in tmp-folder
-                    support.log("Simulating file:"+actualParameterFileName);
-                    startLocalSimulation(actualParameterFileName);//Returns, when Simulation has ended
-                    SimulationType myResults=new SimulationType();//create new SimulationResults
-                    //here the SimType has to get Data From Parser;
-                    Parser myParser = new Parser();
-                    myResults = myParser.parse(actualSimulationLogFile);//parse Log-file and xml-file
-                    
-                    if(myParser.isParsingSuccessfullFinished())
-                        {
-                            support.log("Parsing successful.");
-                            listOfCompletedSimulationParsers.add(myResults);
-                            if(this.log)
-                            {
-                                support.addLinesToLogFile(myResults, logFileName);
-                            }
 
-                            this.listOfCompletedSimulationParsers.add(myResults);//add parser to local list of completed simulations
-                            
-                            if(!keepSimulationFiles){
-                            support.log("Will delete XML-File and log-File.");
-                            support.del(new File(actualParameterFileName));
-                            support.del(new File(actualSimulationLogFile));
+                    //Try every simulation several times if TimeNet crashs
+                    //Reset Simulation-Attempt-Counter for next Parameterset
+                    simulationAttemptCounter=support.DEFAULT_LOCAL_SIMULATION_ATTEMPTS;
+
+                    while(simulationAttemptCounter>0){
+                        if(support.isCancelEverything()){
+                            support.log("Loacal Simulation canceld by user.");
+                            return;}
+                        ArrayList<parameter> actualParameterSet=listOfParameterSets.get(i);//get actual parameterset
+                        String actualParameterFileName=createLocalSimulationFile(actualParameterSet, this.simulationCounter);//create actual SCPN xml-file and save it in tmp-folder
+                        support.log("Simulating file:"+actualParameterFileName);
+                        startLocalSimulation(actualParameterFileName);//Returns, when Simulation has ended
+                        SimulationType myResults=new SimulationType();//create new SimulationResults
+                        //here the SimType has to get Data From Parser;
+                        Parser myParser = new Parser();
+                        myResults = myParser.parse(actualSimulationLogFile);//parse Log-file and xml-file
+
+                        if(myParser.isParsingSuccessfullFinished())
+                            {
+                                support.log("Parsing successful.");
+                                listOfCompletedSimulationParsers.add(myResults);
+                                if(this.log)
+                                {
+                                    support.addLinesToLogFile(myResults, logFileName);
+                                }
+
+                                this.listOfCompletedSimulationParsers.add(myResults);//add parser to local list of completed simulations
+
+                                if(!keepSimulationFiles){
+                                support.log("Will delete XML-File and log-File.");
+                                support.del(new File(actualParameterFileName));
+                                support.del(new File(actualSimulationLogFile));
+                                }
+                                simulationAttemptCounter=0;
+                            }
+                        else
+                        {
+                            simulationAttemptCounter--;
+                            support.log("Error Parsing the Simulation results. Maybe Simulation failure?");
+                            if(simulationAttemptCounter==0){
+                            support.log("Will end local simulation because of "+ support.DEFAULT_LOCAL_SIMULATION_ATTEMPTS+" failed simulation attempts");
                             }
                         }
-                    else
-                    {
-                        //TODO Simulate this file again!
-                        support.log("Error Parsing the Simulation results. Maybe Simulation failure?");
-                    }
+                    }//End of whileloop for several simulatio attempts
+
+
                     numberOfSimulations++;//increment local simulation counter
                     
                     this.status=numberOfSimulations*100 / listOfParameterSets.size(); //update status of local simulations (in %)

@@ -169,9 +169,10 @@ int stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;
             }
 
             if(listOfCompletedSimulations.size()<1){
-            support.log("Error. List of completed Simulations is 0.");
-            return;
+            support.log("Error. List of completed Simulations is 0. Will use last solution to provoke same simulation attempt.");
+            nextSolution=currentSolution;
             }
+                
             //TODO Only last Simulation is used. For future use we should use all Simulations to paralelise to simulation
             nextSolution=listOfCompletedSimulations.get(0);
 

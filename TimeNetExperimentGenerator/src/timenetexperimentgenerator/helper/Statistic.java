@@ -9,7 +9,6 @@
 
 package timenetexperimentgenerator.helper;
 
-import timenetexperimentgenerator.Parser;
 import timenetexperimentgenerator.datamodel.MeasureType;
 import timenetexperimentgenerator.datamodel.SimulationType;
 import timenetexperimentgenerator.support;

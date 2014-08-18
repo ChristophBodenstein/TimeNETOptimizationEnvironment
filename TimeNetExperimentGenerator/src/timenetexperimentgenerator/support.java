@@ -55,6 +55,7 @@ public static final typeOfAnnealingParameterCalculation DEFAULT_CALC_NEXT_PARAME
 
 
 public static final int DEFAULT_CACHE_STUCK=2;//Optimizer can ask 2 times for simulating the same parameterset in a row. Then optimization will be aborted!
+public static final int DEFAULT_LOCAL_SIMULATION_ATTEMPTS=5;//Loacla simulation is tried so many times until break
 
 
 public static final int DEFAULT_NumberOfPhases=2;
@@ -451,7 +452,7 @@ private static boolean logToFile=true;
     boolean writeHeader=false;
     String line;
         try{
-        support.log("Logfilename is:"+logFileName);
+        //support.log("Logfilename is:"+logFileName);
         //Öffnen des Logfiles und Schreiben der ersten Zeile
 
         File f=new File(logFileName);
@@ -477,11 +478,13 @@ private static boolean logToFile=true;
             for(int i=0;i<pList.size();i++){
             SimulationType myParser=pList.get(i);
             StatisticAggregator.addToStatistics(myParser, logFileName);
+            support.log("Writing Simulation number "+i+" to logFile.");
               try{
               //fw.write(line);
               //fw.append( System.getProperty("line.separator") );
                 for(int i1=0;i1<myParser.getMeasures().size();i1++){//Alle Measure schreiben
                 MeasureType exportMeasure=myParser.getMeasures().get(i1);
+                support.log("Writing measure number "+ i1+" to Logfile.");
                 /*support.log("Mean Value= "+support.getCommaFloat(exportMeasure.getMeanValue()));
                 support.log("Variance= "+support.getCommaFloat(exportMeasure.getVariance()));
                 support.log("Confidence-Min= "+support.getCommaFloat(exportMeasure.getConfidenceInterval()[0]));

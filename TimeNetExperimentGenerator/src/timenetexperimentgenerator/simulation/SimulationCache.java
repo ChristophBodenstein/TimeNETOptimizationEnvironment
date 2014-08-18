@@ -314,7 +314,7 @@ private int localSimulationCounter = 0;
      * @param pList List of Parametersets (ArrayList of Arrays)
      * @return ArrayList of parsers
      */
-    public ArrayList<SimulationType> getNearestParserListFromListOfParamaeterSets(ArrayList< ArrayList<parameter> > pList){
+    public ArrayList<SimulationType> getNearestParserListFromListOfParameterSets(ArrayList< ArrayList<parameter> > pList){
     ArrayList<SimulationType> returnList=new ArrayList<SimulationType>();
         for(int i=0;i<pList.size();i++){
         ArrayList<parameter> tmpPList=new ArrayList();
@@ -335,8 +335,8 @@ private int localSimulationCounter = 0;
     private double getDistanceOfParameterLists(ArrayList<parameter> listA, ArrayList<parameter> listB){
     double sum[]=new double[2];
     ArrayList<parameter> list[]=new ArrayList[2];
-    list[0]=listA;
-    list[1]=listB;
+    list[0]=this.getParameterListWithoutIgnorableParameters(listA);
+    list[1]=this.getParameterListWithoutIgnorableParameters(listB);
         for(int i=0;i<2;i++){
             sum[i]=0;
             for(int c=0;c<list[i].size();c++){
@@ -356,15 +356,31 @@ private int localSimulationCounter = 0;
     
     /**
      * Checks if two parametersets are equal
-     * @param listA will be compered to
+     * @param listA will be compared to
      * @param listB 
      * @return true if parametersets (only the values and names) are equal, else false
      */
-    public boolean compareParameterList(ArrayList<parameter> listA, ArrayList<parameter> listB){
+    public boolean compareParameterList(ArrayList<parameter> mylistA, ArrayList<parameter> mylistB){
     String nameA="";
     parameter tmpParameterA, tmpParameterB;
+    ArrayList<parameter> listA=this.getParameterListWithoutIgnorableParameters(mylistA);
+    ArrayList<parameter> listB=this.getParameterListWithoutIgnorableParameters(mylistB);
+
         if(listA.size()!=listB.size()){
         support.log("Size of needle-ParameterList is different from haystack-ParameterList.");
+        support.log("Size of A: "+ listA.size()+" vs. Size of B: "+listB.size());
+        support.log("List of ParameterNames of A is:");
+        for(int i=0;i<listA.size();i++){
+        support.log(listA.get(i).getName());
+        }
+
+        support.log("List of ParameterNames of B is:");
+        for(int i=0;i<listB.size();i++){
+        support.log(listB.get(i).getName());
+        }
+
+
+
         return false;
         }
         
@@ -490,7 +506,8 @@ private int localSimulationCounter = 0;
     public void addListOfSimulationsToCache(ArrayList<SimulationType> SimulationListToAdd){
         for(int i=0; i<SimulationListToAdd.size();i++)
         {
-            this.simulationList.add(SimulationListToAdd.get(i));
+            this.addSimulationToCache(SimulationListToAdd.get(i));
+            //this.simulationList.add(SimulationListToAdd.get(i));
         }
     }
 
@@ -501,5 +518,21 @@ private int localSimulationCounter = 0;
      */
     public void addSimulationToCache(SimulationType SimulationToAdd){
             this.simulationList.add(SimulationToAdd);
+    }
+
+    /**
+     * Removes all ignorable parameters from list
+     * It`s needed for comparision of parameterlist because some data is stored as a parameter but is just metadata
+     */
+    public ArrayList<parameter> getParameterListWithoutIgnorableParameters(ArrayList<parameter> pList){
+        ArrayList<parameter> returnList=new ArrayList<parameter>();
+        //Add only parameters that are not ignorable
+        for(int i=0;i<pList.size();i++){
+            parameter tmpParameter=pList.get(i);
+            if(!tmpParameter.isIgnorable()){
+            returnList.add(tmpParameter);
+            }
+        }
+    return returnList;
     }
 }

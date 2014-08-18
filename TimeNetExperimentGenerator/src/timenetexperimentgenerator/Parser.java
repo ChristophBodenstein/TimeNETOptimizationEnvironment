@@ -122,6 +122,12 @@ private boolean parsingSuccessfullFinished = false;
 
     
     this.logName=filename;
+    File logFile=new File(this.logName);
+        if(!logFile.exists()){
+        support.log("Log-File not found, eject.");
+        return null;
+        }
+
     try {
 		BufferedReader in = new BufferedReader(new FileReader(filename));
 		String line = null;

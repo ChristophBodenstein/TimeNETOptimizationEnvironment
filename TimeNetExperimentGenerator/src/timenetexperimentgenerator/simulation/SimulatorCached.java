@@ -51,7 +51,7 @@ private String logFileName;
         
         if((this.myListOfSimulations==null)||(this.myListOfSimulations.size()!=listOfParameterSetsTMP.size())){
         support.log("Not all Simulations found in local Cache.  Will take next possible parametersets from cache.");
-        myListOfSimulations=this.mySimulationCache.getNearestParserListFromListOfParamaeterSets(listOfParameterSetsTMP);
+        myListOfSimulations=this.mySimulationCache.getNearestParserListFromListOfParameterSets(listOfParameterSetsTMP);
         }
         
         if(this.myListOfSimulations!=null){

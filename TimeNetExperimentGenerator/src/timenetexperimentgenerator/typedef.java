@@ -28,6 +28,6 @@ public enum typeOfSimulator{Local, Cache_Only, Cached_Local, Distributed};
 
 public enum typeOfAnnealingParameterCalculation{Standard, Stepwise, Simple, SimpleStepwise};
 
-public static final String[] listOfParametersToIgnore={"TempPara","TempCost"};
+public static final String[] listOfParametersToIgnore={"TempPara","TempCost","UsedCPUTIME"};
 
 }

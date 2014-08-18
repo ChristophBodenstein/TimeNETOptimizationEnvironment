@@ -37,7 +37,7 @@ private static SimulationCache singleTonSimulationCache=new SimulationCache();
                 //no break;
             case Cached_Local:
                 //Return Cache&Local Simulator
-                SimulatorCached returnSimulator = new SimulatorCached();
+                SimulatorCachedLocal returnSimulator = new SimulatorCachedLocal();
                 returnSimulator.setMySimulationCache(singleTonSimulationCache);
                 return returnSimulator;
                 //no break;
