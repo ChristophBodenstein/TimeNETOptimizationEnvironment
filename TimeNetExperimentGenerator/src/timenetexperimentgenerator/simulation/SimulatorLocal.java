@@ -37,7 +37,6 @@ String pathToTimeNet;
 String tmpFilePath;
 private int status=0; //Status of simulations, 0..100%
 private int simulationCounter=0;//Startvalue for count of simulations, will be in the filename of sim and log
-boolean cancelSimulations=false;
 String logFileName;
 String actualSimulationLogFile="";//actual log-file for one local simulation
 private final String nameOfTempDirectory="14623786483530251523506521233052";
@@ -88,7 +87,7 @@ boolean keepSimulationFiles=false;
 
                 if(listOfParameterSets.size()>0){
                     for(int i=0;i<listOfParameterSets.size();i++){
-                    if(cancelSimulations) return;
+                    if(support.isCancelEverything()) return;
                     ArrayList<parameter> actualParameterSet=listOfParameterSets.get(i);//get actual parameterset
                     String actualParameterFileName=createLocalSimulationFile(actualParameterSet, this.simulationCounter);//create actual SCPN xml-file and save it in tmp-folder
                     support.log("Simulating file:"+actualParameterFileName);
@@ -272,13 +271,6 @@ boolean keepSimulationFiles=false;
         }
     }
 
-
-    /**
-     * cancels all remaining simulations and aborts the actual one
-    */
-    private void cancelSimulations(){
-    this.cancelSimulations=true;
-    }
 
     public ProcMon createProcMon(Process proc) {
     ProcMon procMon = new ProcMon(proc);
