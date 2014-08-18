@@ -10,7 +10,10 @@
 package timenetexperimentgenerator;
 
 import java.io.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -526,6 +529,9 @@ private static boolean logToFile=true;
      * @param s String to be logged.
      */
     public static void log(String s){
+    String timeStamp = new SimpleDateFormat("yyyy:MM.dd_HH:mm:ss").format(Calendar.getInstance().getTime());
+    s=timeStamp+": "+s;
+
         if(logToConsole){
         System.out.println(s);
         }else{

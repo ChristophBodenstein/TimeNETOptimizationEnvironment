@@ -79,18 +79,15 @@ boolean keepSimulationFiles=false;
     public void run(){
     this.status=0;
     this.listOfCompletedSimulationParsers=new ArrayList<SimulationType>();
-    String line="";
     int numberOfSimulations=0;
         if(support.checkTimeNetPath()){
             try{
             support.log("Timenet-Path ok, starting local simulations.");
             
             support.log("Logfilename is:"+logFileName);
-            //Open Logfile and write first line
-            FileWriter fw;
+
                 if(listOfParameterSets.size()>0){
                     for(int i=0;i<listOfParameterSets.size();i++){
-                    //fw = new FileWriter(logFileName, true);
                     if(cancelSimulations) return;
                     ArrayList<parameter> actualParameterSet=listOfParameterSets.get(i);//get actual parameterset
                     String actualParameterFileName=createLocalSimulationFile(actualParameterSet, this.simulationCounter);//create actual SCPN xml-file and save it in tmp-folder
@@ -120,6 +117,7 @@ boolean keepSimulationFiles=false;
                         }
                     else
                     {
+                        //TODO Simulate this file again!
                         support.log("Error Parsing the Simulation results. Maybe Simulation failure?");
                     }
                     numberOfSimulations++;//increment local simulation counter
@@ -127,7 +125,6 @@ boolean keepSimulationFiles=false;
                     this.status=numberOfSimulations*100 / listOfParameterSets.size(); //update status of local simulations (in %)
                     this.simulationCounter++;//increment given global simulation counter
 
-                    //fw.close();
                     }
 
                 }
