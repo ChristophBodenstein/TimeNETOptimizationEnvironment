@@ -42,6 +42,7 @@ String logFileName;
 String actualSimulationLogFile="";//actual log-file for one local simulation
 private final String nameOfTempDirectory="14623786483530251523506521233052";
 boolean log=true;
+boolean keepSimulationFiles=false;
 
     /**
      * Constructor
@@ -108,7 +109,14 @@ boolean log=true;
                             {
                                 support.addLinesToLogFile(myResults, logFileName);
                             }
+
                             this.listOfCompletedSimulationParsers.add(myResults);//add parser to local list of completed simulations
+                            
+                            if(!keepSimulationFiles){
+                            support.log("Will delete XML-File and log-File.");
+                            support.del(new File(actualParameterFileName));
+                            support.del(new File(actualSimulationLogFile));
+                            }
                         }
                     else
                     {
