@@ -511,14 +511,23 @@ int stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;
                         break;
         
             }
-        
-            if(incResult){
-            support.log("Parameter could be incremented.(or decremented)");
-            }else{
-            support.log("Parameter could NOT be incremented.(or decremented). Set WrongSolutionsPerDirectionCounter to 0.");
-            wrongSolutionPerDirectionCounter=0;
 
+
+            switch(support.getOptimizerPreferences().getPref_NeighborhoodType()){
+                case StepForward:
+                case StepForwardBackward:
+                    parameter p=support.getParameterByName(newParameterset, nameOfParameterToBeChanged);
+                    if(incResult){
+                    support.log("Parameter "+ p.getName() +" could be incremented.(or decremented)");
+                    }else{
+                    support.log("Parameter "+ p.getName() +" could NOT be incremented.(or decremented). Set WrongSolutionsPerDirectionCounter to 0 to change the direction next time.");
+                    wrongSolutionPerDirectionCounter=0;
+                    }
+                break;
+                default:break;
+            
             }
+
         return newParameterset;
         }
     

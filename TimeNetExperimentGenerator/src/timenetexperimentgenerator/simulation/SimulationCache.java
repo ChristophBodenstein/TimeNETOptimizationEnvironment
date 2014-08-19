@@ -310,6 +310,7 @@ private int localSimulationCounter = 0;
     
     /**
      * Wrapper. Return List of parsers for given list of parametersets (fuzzy-search)
+     * It is used for Cache-Only Optimization
      * 
      * @param pList List of Parametersets (ArrayList of Arrays)
      * @return ArrayList of parsers
@@ -478,6 +479,7 @@ private int localSimulationCounter = 0;
             //tmpParser.setSimulationTime(mList.get(i).getSimulationTime());
             //tmpParser.setCPUTime(support.getInt(mList.get(i).getCPUTime()));
             }
+        tmpParser.setIsFromCache(true);
         return tmpParser;
         }
     return null;

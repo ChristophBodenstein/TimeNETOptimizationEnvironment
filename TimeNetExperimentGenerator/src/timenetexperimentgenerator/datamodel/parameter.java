@@ -193,13 +193,13 @@ private long idHash=0;
      */ 
     public boolean isIteratable(){
         //TODO This check is not correct!
-        support.log("Checking Iteratability of parameter:"+this.getName());
-        support.log("StartValue: "+this.getStartValue()+" EndValue: "+this.getEndValue()+" Stepping: "+this.getStepping());
+        //support.log("Checking Iteratability of parameter:"+this.getName());
+        //support.log("StartValue: "+this.getStartValue()+" EndValue: "+this.getEndValue()+" Stepping: "+this.getStepping());
         if((this.endValue>this.startValue)&&(this.stepping<=(this.endValue-this.startValue))&&(this.value<=this.endValue)){
-        support.log("Is Iteratable!");
+        //support.log("Is Iteratable!");
         return true;
         }else{
-        support.log("Is NOT Iteratable!");
+        //support.log("Is NOT Iteratable!");
         return false;
         }
     }

@@ -478,20 +478,9 @@ private static boolean logToFile=true;
             for(int i=0;i<pList.size();i++){
             SimulationType myParser=pList.get(i);
             StatisticAggregator.addToStatistics(myParser, logFileName);
-            support.log("Writing Simulation number "+i+" to logFile.");
               try{
-              //fw.write(line);
-              //fw.append( System.getProperty("line.separator") );
                 for(int i1=0;i1<myParser.getMeasures().size();i1++){//Alle Measure schreiben
                 MeasureType exportMeasure=myParser.getMeasures().get(i1);
-                support.log("Writing measure number "+ i1+" to Logfile.");
-                /*support.log("Mean Value= "+support.getCommaFloat(exportMeasure.getMeanValue()));
-                support.log("Variance= "+support.getCommaFloat(exportMeasure.getVariance()));
-                support.log("Confidence-Min= "+support.getCommaFloat(exportMeasure.getConfidenceInterval()[0]));
-                support.log("Confidence-Max= "+support.getCommaFloat(exportMeasure.getConfidenceInterval()[1]));
-                support.log("Epsilon= "+support.getCommaFloat(exportMeasure.getEpsilon()));
-                support.log("Simulation-Time= "+support.getCommaFloat(exportMeasure.getSimulationTime()));
-                */
                 line=exportMeasure.getMeasureName()+";"+support.getCommaFloat(exportMeasure.getMeanValue())+";"+support.getCommaFloat(exportMeasure.getVariance())+";"+support.getCommaFloat(exportMeasure.getConfidenceInterval()[0])+";"+support.getCommaFloat(exportMeasure.getConfidenceInterval()[1])+";"+support.getCommaFloat(exportMeasure.getEpsilon())+";"+support.getCommaFloat(exportMeasure.getSimulationTime());
                     for(int c=0;c<myParser.getListOfParameters().size();c++)
                     {
