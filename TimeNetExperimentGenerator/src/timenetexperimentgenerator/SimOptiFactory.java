@@ -16,7 +16,7 @@ import timenetexperimentgenerator.optimization.*;
  * @author Christoph Bodenstein
  */
 public class SimOptiFactory {
-private static SimulationCache singleTonSimulationCache=new SimulationCache();
+//private static SimulationCache singleTonSimulationCache=new SimulationCache();
 
     public static Simulator getSimulator(){    
 
@@ -38,7 +38,7 @@ private static SimulationCache singleTonSimulationCache=new SimulationCache();
             case Cached_Local:
                 //Return Cache&Local Simulator
                 SimulatorCachedLocal returnSimulator = new SimulatorCachedLocal();
-                returnSimulator.setMySimulationCache(singleTonSimulationCache);
+                returnSimulator.setMySimulationCache(support.getMySimulationCache());
                 return returnSimulator;
                 //no break;
             case Distributed:
@@ -94,7 +94,7 @@ private static SimulationCache singleTonSimulationCache=new SimulationCache();
      * Besides this you can choose to use your own SimulationCache 
      * @return SimulationCache for all simulations
      */
-    public static SimulationCache getSimulationCache(){
-    return singleTonSimulationCache;
-    }
+    //public static SimulationCache getSimulationCache(){
+    //return singleTonSimulationCache;
+    //}
 }

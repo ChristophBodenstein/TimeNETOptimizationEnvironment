@@ -761,7 +761,10 @@ private String pathToR="";
       support.log("No input file chosen!");
       return;
       }  
-      this.mySimulationCache=SimOptiFactory.getSimulationCache();
+      //this.mySimulationCache=SimOptiFactory.getSimulationCache();
+    //TODO Should we empty the cache each time, or only at user-wish?
+    support.emptyCache();
+      this.mySimulationCache=support.getMySimulationCache();
         if(!mySimulationCache.parseSimulationCacheFile(inputFile,((MeasurementForm)this.jTabbedPane1.getComponent(0)).getListOfMeasurements(), (parameterTableModel)this.jTableParameterList.getModel(),this )){
             support.log("Wrong Simulation cache file for this SCPN!");
         }else{

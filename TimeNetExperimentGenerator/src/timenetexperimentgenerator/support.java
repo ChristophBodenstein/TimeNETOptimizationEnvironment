@@ -384,6 +384,8 @@ private static boolean logToFile=true;
      * @return the mySimulationCache
      */
     public static SimulationCache getMySimulationCache() {
+        //Empty Cache/Create new object, if not already done
+        if(mySimulationCache==null)emptyCache();
         return mySimulationCache;
     }
 
@@ -392,6 +394,14 @@ private static boolean logToFile=true;
      */
     public static void setMySimulationCache(SimulationCache aMySimulationCache) {
         mySimulationCache = aMySimulationCache;
+    }
+
+    /**
+     * Creates a new Cache for all simulations
+     * Used to "emptyY the cache-Object
+     */
+    public static void emptyCache(){
+        mySimulationCache=new SimulationCache();
     }
 
     /**
