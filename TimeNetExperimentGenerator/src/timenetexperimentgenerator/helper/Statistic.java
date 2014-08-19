@@ -22,7 +22,7 @@ private String name="";
 long CPUTimeFromCache=0;
 long CPUTimeFromLocal=0;
 long CPUTimeFromWeb=0;
-long numberOfSimulationsTotal=0;
+private long numberOfSimulationsTotal=0;
 long numberOfSimulationsFromCache=0;
 long numberOfSimulationsFromWeb=0;
 long numberOfSimulationsFromLocal=0;
@@ -43,7 +43,7 @@ double simulationTimeFromLocal=0;
      */
     public void addSimulation(SimulationType p){
     MeasureType statisticMeasure=p.getMeasures().get(0);//Take the first Measure as dummy incl. all nec. information    
-    numberOfSimulationsTotal++;
+        setNumberOfSimulationsTotal(getNumberOfSimulationsTotal() + 1);
     simulationTimeTotal+=statisticMeasure.getSimulationTime();
         if(p.isIsFromCache()){
         numberOfSimulationsFromCache++;
@@ -69,11 +69,11 @@ double simulationTimeFromLocal=0;
      */
     public void printStatisticToLog(){
         support.log("-----Statistics of Simulation: "+this.getName()+" ----- Start -----");
-        support.log("Total Number of Simulations: "+ this.numberOfSimulationsTotal);
+        support.log("Total Number of Simulations: "+ this.getNumberOfSimulationsTotal());
         support.log("Number of Cached Simulations: "+ this.numberOfSimulationsFromCache);
         support.log("Number of Web-Based Simulations: "+ this.numberOfSimulationsFromWeb);
         support.log("Number of local Simulations: "+ this.numberOfSimulationsFromLocal);
-        support.log("Ratio of Cached Simulations (Cache/Total): "+ ((double)this.numberOfSimulationsFromCache/(double)this.numberOfSimulationsTotal));
+        support.log("Ratio of Cached Simulations (Cache/Total): "+ ((double)this.numberOfSimulationsFromCache/(double)this.getNumberOfSimulationsTotal()));
         support.log("Theoretical used CPU-Time: " +(this.CPUTimeFromCache+this.CPUTimeFromLocal+this.CPUTimeFromWeb));
         support.log("Local used CPU-Time: " +this.CPUTimeFromLocal);
         support.log("Web-Based CPU-Time: " +this.CPUTimeFromWeb);
@@ -101,6 +101,20 @@ double simulationTimeFromLocal=0;
      */
     public void setName(String name) {
         this.name = name;
+    }
+
+    /**
+     * @return the numberOfSimulationsTotal
+     */
+    public long getNumberOfSimulationsTotal() {
+        return numberOfSimulationsTotal;
+    }
+
+    /**
+     * @param numberOfSimulationsTotal the numberOfSimulationsTotal to set
+     */
+    public void setNumberOfSimulationsTotal(long numberOfSimulationsTotal) {
+        this.numberOfSimulationsTotal = numberOfSimulationsTotal;
     }
     
 }

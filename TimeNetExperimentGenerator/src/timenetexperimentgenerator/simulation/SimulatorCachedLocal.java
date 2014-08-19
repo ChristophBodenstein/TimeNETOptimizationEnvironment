@@ -48,25 +48,32 @@ private String logFileName;
         //this.simulationCounter=mySimulationCache.getLocalSimulationCounter();
         }else{
         support.log("No local Simulation file loaded. Will build my own cache from scratch.");
-        this.mySimulationCache=new SimulationCache();
+        this.mySimulationCache=support.getMySimulationCache();
         }
         
         if(this.myListOfSimulationParsers==null){
         support.log("Simulations not found in local Cache. Starting local simulation.");
-        if(myLocalSimulator==null){myLocalSimulator=new SimulatorLocal();}
+
+            //if(myLocalSimulator==null){myLocalSimulator=new SimulatorLocal();}
+        
+        myLocalSimulator=new SimulatorLocal();
         myLocalSimulator.initSimulator(listOfParameterSetsTMP, this.simulationCounter, false);
-            support.waitForEndOfSimulator(myLocalSimulator, simulationCounter, support.DEFAULT_TIMEOUT);
+        support.waitForEndOfSimulator(myLocalSimulator, simulationCounter, support.DEFAULT_TIMEOUT);
             
         myListOfSimulationParsers=myLocalSimulator.getListOfCompletedSimulationParsers();
+        support.log("Size of resultList is " +myListOfSimulationParsers.size() );
+        
         this.mySimulationCache.addListOfSimulationsToCache(myListOfSimulationParsers);
         }
-        if(this.myListOfSimulationParsers!=null){
-        //Print out a log file    
-        support.addLinesToLogFileFromListOfParser(myListOfSimulationParsers, logFileName);
-        //Count up simulation-counter
-        this.simulationCounter+=myListOfSimulationParsers.size();
-        support.log("SimulationCounter is now: "+this.simulationCounter);
-        }
+
+            if(this.myListOfSimulationParsers!=null){
+            support.log("Adding " +myListOfSimulationParsers.size() +" Results to logfile.");
+            //Print out a log file
+            support.addLinesToLogFileFromListOfParser(myListOfSimulationParsers, logFileName);
+            //Count up simulation-counter
+            this.simulationCounter+=myListOfSimulationParsers.size();
+            support.log("SimulationCounter is now: "+this.simulationCounter);
+            }
         
     }
 

@@ -88,6 +88,7 @@ boolean keepSimulationFiles=false;
             int simulationAttemptCounter=support.DEFAULT_LOCAL_SIMULATION_ATTEMPTS;
 
                 if(listOfParameterSets.size()>0){
+                support.log("Supposed to simulate "+listOfParameterSets.size() +" parametersets.");
                     for(int i=0;i<listOfParameterSets.size();i++){
 
                     //Try every simulation several times if TimeNet crashs
@@ -102,15 +103,15 @@ boolean keepSimulationFiles=false;
                         String actualParameterFileName=createLocalSimulationFile(actualParameterSet, this.simulationCounter);//create actual SCPN xml-file and save it in tmp-folder
                         support.log("Simulating file:"+actualParameterFileName);
                         startLocalSimulation(actualParameterFileName);//Returns, when Simulation has ended
-                        SimulationType myResults=new SimulationType();//create new SimulationResults
+                        //SimulationType myResults=new SimulationType();//create new SimulationResults
                         //here the SimType has to get Data From Parser;
                         Parser myParser = new Parser();
-                        myResults = myParser.parse(actualSimulationLogFile);//parse Log-file and xml-file
+                        SimulationType myResults=myResults = myParser.parse(actualSimulationLogFile);//parse Log-file and xml-file
 
                         if(myParser.isParsingSuccessfullFinished())
                             {
                                 support.log("Parsing successful.");
-                                listOfCompletedSimulationParsers.add(myResults);
+                                //listOfCompletedSimulationParsers.add(myResults);
                                 if(this.log)
                                 {
                                     support.addLinesToLogFile(myResults, logFileName);

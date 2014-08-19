@@ -232,7 +232,7 @@ int stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;
                 support.log("Distance was higher, Solution not chosen. Counting up wrong-solution-counter.");
                 wrongSolutionCounter--;
                     if(wrongSolutionCounter<=1){
-                    support.log("There ware "+ support.getOptimizerPreferences().getPref_WrongSimulationsUntilBreak() +" wrong solutions. Assume optimum is already found.");
+                    support.log("There were "+ support.getOptimizerPreferences().getPref_WrongSimulationsUntilBreak() +" wrong solutions. Assume optimum is already found.");
                     return true;
                     }else{
                     return false;
@@ -421,7 +421,7 @@ int stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;
                     }
                 }else{
                 //Select old parameter to be changed again
-                    support.log("Changing again parameter "+ numberOfLastParameter);
+                    support.log("Changing parameter "+ numberOfLastParameter);
                     numberOfParameterToBeChanged=numberOfLastParameter;
                 }
             

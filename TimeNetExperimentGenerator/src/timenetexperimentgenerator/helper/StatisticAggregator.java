@@ -30,7 +30,7 @@ private static ArrayList<Statistic> listOfStatistics=new ArrayList<Statistic>();
     public static void addToStatistics(SimulationType p, String filename){
     Statistic myStatistic=getStatisticByName(filename);
         myStatistic.addSimulation(p);
-        
+        support.getMainFrame().updateSimulationCounterLabel(myStatistic.getNumberOfSimulationsTotal());
         //update cached list in PlotFrameController
         RPlugin.updateCachedListOfStatistics();
     }

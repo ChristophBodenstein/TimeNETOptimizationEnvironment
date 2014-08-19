@@ -1474,7 +1474,7 @@ private String pathToR="";
      * To display the actual Simulation Count
      * @param i value of simulationcounter to display
      */
-    public void updateSimulationCounterLabel(int i){
+    public void updateSimulationCounterLabel(long i){
         if(i>0){
         this.jLabelSimulationCount.setText(String.valueOf(i));
         }else{

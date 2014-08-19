@@ -54,7 +54,7 @@ public static final double DEFAULT_EPSILON=0.01;
 public static final typeOfAnnealingParameterCalculation DEFAULT_CALC_NEXT_PARAMETER=typeOfAnnealingParameterCalculation.Standard;
 
 
-public static final int DEFAULT_CACHE_STUCK=2;//Optimizer can ask 2 times for simulating the same parameterset in a row. Then optimization will be aborted!
+public static final int DEFAULT_CACHE_STUCK=10;//Optimizer can ask 2 times for simulating the same parameterset in a row. Then optimization will be aborted!
 public static final int DEFAULT_LOCAL_SIMULATION_ATTEMPTS=5;//Loacla simulation is tried so many times until break
 
 
@@ -462,7 +462,7 @@ private static boolean logToFile=true;
     boolean writeHeader=false;
     String line;
         try{
-        //support.log("Logfilename is:"+logFileName);
+        support.log("Number of Simulationtypes to add is "+pList.size());
         //Öffnen des Logfiles und Schreiben der ersten Zeile
 
         File f=new File(logFileName);
@@ -806,7 +806,7 @@ private static boolean logToFile=true;
                     }
                 }
                 simulationCounter=mySimulator.getSimulationCounter();
-                getMainFrame().updateSimulationCounterLabel(simulationCounter);
+                //getMainFrame().updateSimulationCounterLabel(simulationCounter);
                 //support.log("Simulation status:"+mySimulator.getStatus() +"%");
                 support.log("Simulation Counter: "+simulationCounter);
     return true;
