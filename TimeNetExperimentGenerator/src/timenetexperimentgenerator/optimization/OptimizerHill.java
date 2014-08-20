@@ -135,7 +135,10 @@ int stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;
                 listOfCompletedSimulations=mySimulationCache.getListOfCompletedSimulationParsers(newParameterset, simulationCounter);
                 support.log("Getting List of Completed Simulations from Cache.");
 
-                    //set all results to Cached, for statistics
+                //Shrink to first element of List
+                listOfCompletedSimulations=support.shrinkArrayListToFirstMember(listOfCompletedSimulations);
+
+                    //set all results to "cached", for statistics
                     for(int i=0;i<listOfCompletedSimulations.size();i++){
                     listOfCompletedSimulations.get(i).setIsFromCache(true);
                     }
@@ -154,6 +157,10 @@ int stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;
                 this.setSimulationCounter(mySimulator.getSimulationCounter());
                 listOfCompletedSimulations=mySimulator.getListOfCompletedSimulationParsers();
 
+                //Shrink to first element of List
+                listOfCompletedSimulations=support.shrinkArrayListToFirstMember(listOfCompletedSimulations);
+
+
                 //Fit all resulting Simulation-Parameterlists
                     for(int i1=0;i1<listOfCompletedSimulations.size();i1++){
                     listOfCompletedSimulations.get(i1).setListOfParameters(listOfCompletedSimulations.get(i1).getListOfParametersFittedToBaseParameterset());
@@ -171,6 +178,7 @@ int stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;
             if(listOfCompletedSimulations.size()<1){
             support.log("Error. List of completed Simulations is 0. Will use last solution to provoke same simulation attempt.");
             nextSolution=currentSolution;
+            listOfCompletedSimulations.add(currentSolution);
             }   else{
             
                 //TODO Only last Simulation is used. For future use we should use all Simulations to paralelise to simulation
@@ -181,7 +189,7 @@ int stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;
             this.historyOfParsers = support.appendListOfParsers(historyOfParsers, listOfCompletedSimulations);
 
             
-            //Fy=this.getActualDistance(nextSolution);
+            //Set the LastParameterset to be compared in next opti-loop
             lastParameterset=nextSolution.getListOfParametersFittedToBaseParameterset();
 
                 if(stuckInCacheCounter>=1){
@@ -199,7 +207,7 @@ int stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;
         support.addLinesToLogFile(currentSolution, logFileName);
         support.getStatusLabel().setText("Optimization ended. See Log.");
         support.printOptimizedMeasures(currentSolution, this.listOfMeasures);
-        StatisticAggregator.printLastStatistic();
+        StatisticAggregator.printStatistic(this.logFileName);
 
         if(support.isCancelEverything()){
         support.log("Optimization was canceled! Optimum might not found!");

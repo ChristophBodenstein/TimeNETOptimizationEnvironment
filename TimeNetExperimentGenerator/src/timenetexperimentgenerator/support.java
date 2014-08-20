@@ -462,12 +462,19 @@ private static boolean logToFile=true;
     boolean writeHeader=false;
     String line;
         try{
-        support.log("Number of Simulationtypes to add is "+pList.size());
+        //support.log("Number of Simulationtypes to add is "+pList.size());
         //Öffnen des Logfiles und Schreiben der ersten Zeile
 
         File f=new File(logFileName);
         if(!f.exists()){writeHeader=true;}
         FileWriter fw= new FileWriter(logFileName, true);
+
+        //Check if list is null, then exit
+        if(pList==null){
+        support.log("List of Simulations to add to logfile is null. Exit");
+        fw.close();
+        return;
+        }
 
             if(writeHeader){
                 MeasureType exportMeasure=pList.get(0).getMeasures().get(0);//Dummy, es wird das erste Measure abgefragt und die Parameterliste
@@ -1023,6 +1030,22 @@ private static boolean logToFile=true;
     public static void setLogToFile(boolean aLogToFile) {
         logToFile = aLogToFile;
     }
+
+    /**
+     * Shrink an ArrayList to it` first member
+     * needed by some Opti-Algorithms
+     */
+    public static ArrayList shrinkArrayListToFirstMember(ArrayList l){
+    if (l==null) {return null;}
+
+        if(l.size()>1){
+            for(int i=1;i<l.size()-1;i++){
+            l.remove(i);
+            }
+        }
+    return l;
+    }
+
 }
 
 

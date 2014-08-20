@@ -21,16 +21,13 @@ import timenetexperimentgenerator.typedef.*;
  * @author Christoph Bodenstein
  */
 public class OptimizerSimAnnealing extends OptimizerHill implements Runnable, Optimizer{
-private int SimI=1,SimT=0;
-private double maxTemp=20;
-private int stepCountTemp=100;
 
-private double TempCost=1.0, TempPara =1.0;
 private int accepted = 0, generated = 0;
 private double D;
 private double c;
 double actualTempParameter=1;
 double actualTempCost=1;
+String nameOfdummyLogfile;
 
 
     /**
@@ -44,6 +41,10 @@ double actualTempCost=1;
     c=c*Math.exp(-Math.log(support.getOptimizerPreferences().getPref_TAnnealScale())/this.D);
     actualTempCost=support.getOptimizerPreferences().getPref_MaxTempCost();
     actualTempParameter=support.getOptimizerPreferences().getPref_MaxTempParameter();
+    nameOfdummyLogfile=new String(this.logFileName);
+    nameOfdummyLogfile=support.removeExtention(nameOfdummyLogfile)+"_SA_Temperatures.csv";
+    support.addLinesToLogFileFromListOfParser(null, nameOfdummyLogfile);
+
     }
 
 
@@ -140,10 +141,6 @@ double actualTempCost=1;
 
             double nextValue=p.getEndValue()+1;
             double simpleValue=p.getEndValue()+1;
-            double simpleValueStepwise=p.getEndValue()+1;
-
-
-            
 
             while((nextValue<p.getStartValue() || nextValue>p.getEndValue()) &&(!support.isCancelEverything())){
             //while(r<1){
@@ -245,12 +242,11 @@ double actualTempCost=1;
         ArrayList<SimulationType> dummySimulationTypeList=new ArrayList<SimulationType>();
         dummySimulationTypeList.add(dummySim);
 
-        String nameOfdummyLogfile=this.logFileName;
-        nameOfdummyLogfile=support.removeExtention(nameOfdummyLogfile)+"_SA_Temperatures.csv";
+        
 
         support.addLinesToLogFileFromListOfParser(dummySimulationTypeList, nameOfdummyLogfile);
 
-        //End of loging the temperatures
+        //End of logging the temperatures
 
 
 
@@ -259,31 +255,6 @@ double actualTempCost=1;
         return newParameterset;
         
 
-    }
-
-
-
-    /**
-     * Get probability for chosing the actual parameterset as next solution
-     * @return probaility that actual Solution Fy is chosen as the next Fx
-     */
-    private double getProbabylity(double Fy, double Fx){
-    return Math.exp( -(Fy-Fx)/getNextTemperature(SimT) );
-    }
-
-    
-
-    /**
-     * Calculates the next temperature from max to min
-     * The higher SimT is, the lower the temperature is
-     */
-    private double getNextTemperature(int t){
-        if(t>=stepCountTemp-1){
-            return 0.001;
-        }else{
-        
-        return (maxTemp - (maxTemp/stepCountTemp)*t);
-        }
     }
 
 }
