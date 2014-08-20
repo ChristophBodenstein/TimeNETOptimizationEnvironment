@@ -140,6 +140,7 @@ double actualTempCost=1;
 
             double nextValue=p.getEndValue()+1;
             double simpleValue=p.getEndValue()+1;
+            double simpleValueStepwise=p.getEndValue()+1;
 
 
             
@@ -174,15 +175,6 @@ double actualTempCost=1;
             //Calculation of simple nextValue
             double range=(p.getEndValue()-p.getStartValue());
                             simpleValue=Math.round(Math.random()*range*actualTempParameter);
-                                if(Math.random()>=0.5){
-                                simpleValue=Math.min(p.getValue()+simpleValue,p.getEndValue());
-                                }else{
-                                simpleValue=Math.max(p.getValue()-simpleValue,p.getStartValue());
-                                }
-
-            double stepCount=(p.getEndValue()-p.getStartValue())/p.getStepping();
-
-
             
                 switch(support.getOptimizerPreferences().getPref_CalculationOfNextParameterset()){
                     default:
@@ -195,13 +187,30 @@ double actualTempCost=1;
                         //Do nothing
                         break;
                     case Simple:
-                        nextValue=simpleValue;
+                        support.log("SimpleVaue to add is "+simpleValue);
+                            if(Math.random()>=0.5){
+                            nextValue=p.getValue()+simpleValue;
+                            }else{
+                            nextValue=p.getValue()-simpleValue;
+                            }
                         break;
                     case SimpleStepwise:
-                        nextValue=Math.round(simpleValue/p.getStepping()) * p.getStepping();
+                        support.log("SimpleVaue to add is "+simpleValue);
+
+                            if(Math.random()>=0.5){
+                            nextValue=p.getValue() + Math.round(simpleValue/p.getStepping())*p.getStepping();
+                            }else{
+                            nextValue=p.getValue() - Math.round(simpleValue/p.getStepping())*p.getStepping();
+                            }
                         break;
 
                 }
+                
+            //Normalize between min and max value
+            nextValue=Math.min(nextValue, p.getEndValue());
+            nextValue=Math.max(nextValue, p.getStartValue());
+
+
             support.log("Try to set value to: "+nextValue);
             }
  
