@@ -331,6 +331,7 @@ int stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;
                 listOfChangableParameters.add(p);
                 }
             }
+    support.log("There are "+listOfChangableParameters.size()+" changable parameter.");
     return listOfChangableParameters;
     }
 

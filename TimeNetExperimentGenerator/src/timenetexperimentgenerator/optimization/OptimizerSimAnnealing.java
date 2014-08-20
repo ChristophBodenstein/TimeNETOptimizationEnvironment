@@ -42,6 +42,8 @@ double actualTempCost=1;
     D=this.getListOfChangableParameters(support.getMainFrame().getParameterBase()).size();//Number of changeable parameters
     c=-Math.log(support.getOptimizerPreferences().getPref_TRatioScale());
     c=c*Math.exp(-Math.log(support.getOptimizerPreferences().getPref_TAnnealScale())/this.D);
+    actualTempCost=support.getOptimizerPreferences().getPref_MaxTempCost();
+    actualTempParameter=support.getOptimizerPreferences().getPref_MaxTempParameter();
     }
 
 
@@ -142,7 +144,7 @@ double actualTempCost=1;
 
             
 
-            while(nextValue<p.getStartValue() || nextValue>p.getEndValue()){
+            while((nextValue<p.getStartValue() || nextValue>p.getEndValue()) &&(!support.isCancelEverything())){
             //while(r<1){
             r=Math.random();
             r=1-(r*2);
@@ -153,7 +155,7 @@ double actualTempCost=1;
             //Calculation of Standard nextValue
             //nextValue = p.getValue() + sign * actualTempParameter *(Math.pow(1+(1/actualTempParameter),Math.abs(2*r-1) )) * distanceMax;
             nextValue = p.getValue() + sign * actualTempParameter *(Math.pow(1+(1/actualTempParameter),Math.abs(2*r)-1 )) * distanceMax;
-            //support.log("Min:"+p.getStartValue()+" Max:"+p.getEndValue()+" NextValue:"+nextValue);
+            support.log("Min:"+p.getStartValue()+" Max:"+p.getEndValue()+" NextValue:"+nextValue +" Fit to Stepping: "+p.getStepping());
             /*
             support.log("xCurrent:"+p.getValue());
             support.log("sign:"+sign);
@@ -187,7 +189,7 @@ double actualTempCost=1;
                         //Do nothing
                         break;
                     case Stepwise:
-                        nextValue=Math.round(nextValue/stepCount) * p.getStepping();
+                        nextValue=Math.round(nextValue/p.getStepping()) * p.getStepping();
                         break;
                     case Standard:
                         //Do nothing
@@ -196,10 +198,11 @@ double actualTempCost=1;
                         nextValue=simpleValue;
                         break;
                     case SimpleStepwise:
-                        nextValue=Math.round(simpleValue/stepCount) * p.getStepping();
+                        nextValue=Math.round(simpleValue/p.getStepping()) * p.getStepping();
                         break;
 
                 }
+            support.log("Try to set value to: "+nextValue);
             }
  
             p.setValue(nextValue);
@@ -239,6 +242,10 @@ double actualTempCost=1;
         support.addLinesToLogFileFromListOfParser(dummySimulationTypeList, nameOfdummyLogfile);
 
         //End of loging the temperatures
+
+
+
+        if(support.isCancelEverything())return null;
 
         return newParameterset;
         
