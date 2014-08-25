@@ -62,7 +62,7 @@ private final int maxAttraction;//limit of attraction-force of 2 charges
 public OptimizerChargedSystemSearch()
 {
     this.maxAttraction = 100;
-    logFileName=support.getTmpPath()+File.separator+"Optimizing_with_CSS_"+Calendar.getInstance().getTimeInMillis()+"_ALL"+".csv";
+    logFileName = support.getTmpPath() + File.separator+"Optimizing_with_CSS_" + Calendar.getInstance().getTimeInMillis() + "_ALL" + ".csv";
 }
     
 public void initOptimizer()

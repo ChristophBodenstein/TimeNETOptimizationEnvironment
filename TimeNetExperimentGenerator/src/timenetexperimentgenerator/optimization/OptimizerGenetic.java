@@ -329,7 +329,6 @@ public class OptimizerGenetic implements Runnable, Optimizer{
         {
             SimulationType p = new SimulationType();
             population.add(p);
-            MeasureType newMeasure = new MeasureType();
             
             ArrayList<parameter> pArray = support.getCopyOfParameterSet(parameterBase);
             for (int j=0; j<pArray.size(); ++j)
