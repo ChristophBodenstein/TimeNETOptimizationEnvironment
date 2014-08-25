@@ -15,6 +15,7 @@ import timenetexperimentgenerator.optimization.*;
 import timenetexperimentgenerator.plot.*;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dialog.ModalityType;
 import java.io.*;
 import java.io.File;
 import java.io.IOException;
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Properties;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListSelectionModel;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -64,12 +66,21 @@ SimulatorWebSlave mySlave=new SimulatorWebSlave();
 private RPlugin rplugin;
 private String pathToR="";
 
+private AboutPanel aboutFrame=new AboutPanel();
+private JDialog aboutDialog;
 
     /** Creates new form MainFrame */
     public MainFrame() {
     support.setMainFrame(this);
     
         initComponents();
+
+        aboutDialog=new JDialog(this.getWindows()[0], ModalityType.DOCUMENT_MODAL);
+        aboutDialog.setContentPane(new AboutPanel());
+        aboutDialog.pack();
+        aboutDialog.setVisible(false);
+
+
         try {
                 FileInputStream in=new FileInputStream(propertyFile);
 		auto.load(in);
@@ -271,6 +282,8 @@ private String pathToR="";
         jMenu1 = new javax.swing.JMenu();
         jSeparator4 = new javax.swing.JPopupMenu.Separator();
         jSeparator5 = new javax.swing.JPopupMenu.Separator();
+        jMenuItem5 = new javax.swing.JMenuItem();
+        jSeparator6 = new javax.swing.JPopupMenu.Separator();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         jMenu3 = new javax.swing.JMenu();
@@ -439,6 +452,15 @@ private String pathToR="";
         jMenu1.setText("File");
         jMenu1.add(jSeparator4);
         jMenu1.add(jSeparator5);
+
+        jMenuItem5.setText("About");
+        jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem5ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem5);
+        jMenu1.add(jSeparator6);
 
         jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.META_MASK));
         jMenuItem1.setText("Quit");
@@ -870,6 +892,12 @@ private String pathToR="";
         rplugin.openPlotGui();
     }//GEN-LAST:event_jButtonPlotRActionPerformed
 
+    private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
+
+    
+    aboutDialog.setVisible(true);
+    }//GEN-LAST:event_jMenuItem5ActionPerformed
+
     /**
      * Calculates the design space, number of all permutations of parameters
      * with respect to the stepping sizes
@@ -986,12 +1014,14 @@ private String pathToR="";
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
+    private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JPopupMenu.Separator jSeparator4;
     private javax.swing.JPopupMenu.Separator jSeparator5;
+    private javax.swing.JPopupMenu.Separator jSeparator6;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTableParameterList;
     private javax.swing.JTextField jTextFieldSCPNFile;

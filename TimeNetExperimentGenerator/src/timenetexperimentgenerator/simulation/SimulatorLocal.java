@@ -91,6 +91,10 @@ boolean keepSimulationFiles=false;
                 support.log("Supposed to simulate "+listOfParameterSets.size() +" parametersets.");
                     for(int i=0;i<listOfParameterSets.size();i++){
 
+                        //Wait for some Time. Maybe this is needed on some Systems
+                        Thread.sleep(5000);
+
+
                     //Try every simulation several times if TimeNet crashs
                     //Reset Simulation-Attempt-Counter for next Parameterset
                     simulationAttemptCounter=support.DEFAULT_LOCAL_SIMULATION_ATTEMPTS;

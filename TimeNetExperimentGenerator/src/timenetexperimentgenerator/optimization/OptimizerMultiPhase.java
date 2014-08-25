@@ -146,7 +146,7 @@ String logFileName;
             support.addLinesToLogFile(bestSolution, logFileName);
             support.getStatusLabel().setText("Optimization ended. See Log.");
             support.printOptimizedMeasures(bestSolution, this.listOfMeasures);
-            StatisticAggregator.printLastStatistic();
+            StatisticAggregator.printStatistic(this.logFileName);
     }
 
     public void initOptimizer() {
