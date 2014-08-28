@@ -47,6 +47,7 @@ public class OptimizerABC implements Runnable, Optimizer
     
     private ArrayList<ArrayList<SimulationType>> foodSources = new ArrayList<ArrayList<SimulationType>>();
     private ArrayList<Integer> updateCyclesWithoutImprovementList = new ArrayList<Integer>();
+    private ArrayList<Integer> parametersToModify = new ArrayList<Integer>();
     
     private int numEmployedBees = 10;
     private int numOnlookerBees = 10;
@@ -83,8 +84,18 @@ public class OptimizerABC implements Runnable, Optimizer
         //Ask for Tmp-Path
         this.tmpPath=support.getTmpPath();
         
-        //Start this Thread
         randomGenerator = new Random();
+        
+        //check for iteratable parameters
+        for (int i = 0; i<this.parameterBase.size(); ++i)
+        {
+            if (this.parameterBase.get(i).isIteratable())
+            {
+                parametersToModify.add(i);
+            }
+        }
+        
+        //Start this Thread
         new Thread(this).start();
         
     }
@@ -122,6 +133,7 @@ public class OptimizerABC implements Runnable, Optimizer
         return newFoodSources;
     }
     
+    
     private ArrayList<ArrayList<SimulationType>> employedBeePhase(ArrayList<ArrayList<SimulationType>> foodSources, boolean ignoreStepping)
     {
         for (ArrayList<SimulationType> source : foodSources)
@@ -149,6 +161,7 @@ public class OptimizerABC implements Runnable, Optimizer
         return foodSources;
     }
     
+    //TODO: fill with values
     private ArrayList<ArrayList<SimulationType>> scoutBeePhase(ArrayList<ArrayList<SimulationType>> foodSources, boolean ignoreStepping)
     {
         for (int i = 0; i < numScoutBees; ++i)
@@ -303,11 +316,13 @@ public class OptimizerABC implements Runnable, Optimizer
             foodSources = onlookerBeePhase(foodSources, numOnlookerBees, false);
             foodSources = scoutBeePhase(foodSources, false);
             
-            for (ArrayList<SimulationType> source : foodSources)
+            for (int i=0; i<foodSources.size(); ++i)
             {
+                ArrayList<SimulationType> source = foodSources.get(i);
                 mySimulator.initSimulator(getNextParameterSetAsArrayList(source), optiCycleCounter, false);
                 support.waitForEndOfSimulator(mySimulator, optiCycleCounter, support.DEFAULT_TIMEOUT);
                 source = mySimulator.getListOfCompletedSimulationParsers();
+                foodSources.set(i, source);
                 support.addLinesToLogFileFromListOfParser(simulationResults, logFileName);
             }
                 
@@ -370,20 +385,21 @@ public class OptimizerABC implements Runnable, Optimizer
     {       
         //get new radom reference food source
         int refFoodSourceNumber = randomGenerator.nextInt(foodSources.size());
-        int paramaterNumberToModify = randomGenerator.nextInt(originalSource.getListOfParameters().size());
+        int paramaterNumberToModify = parametersToModify.get(randomGenerator.nextInt(parametersToModify.size()));
         SimulationType refFoodSource = foodSources.get(refFoodSourceNumber).get(0);
+        SimulationType newFoodSoure = new SimulationType(originalSource);
         
-        ArrayList<parameter> originalParameterSet = originalSource.getListOfParameters();
+        ArrayList<parameter> newlParameterSet = newFoodSoure.getListOfParameters();
         double originalParameterValue = originalSource.getListOfParameters().get(paramaterNumberToModify).getValue();
         double refParameterValue = refFoodSource.getListOfParameters().get(paramaterNumberToModify).getValue();        
         double scalingFactor = 2 * randomGenerator.nextDouble() - 1;
         double newParameterValue = originalParameterValue + scalingFactor * (originalParameterValue - refParameterValue);
         
-        originalParameterSet.get(paramaterNumberToModify).setValue(newParameterValue);
-        originalParameterSet = roundToStepping(originalParameterSet);
-        originalSource.setListOfParameters(originalParameterSet);
+        newlParameterSet.get(paramaterNumberToModify).setValue(newParameterValue);
+        newlParameterSet = roundToStepping(newlParameterSet);
+        newFoodSoure.setListOfParameters(newlParameterSet);
              
-        return originalSource;
+        return newFoodSoure;
     }
     
     private double getDistanceSum(ArrayList< ArrayList<SimulationType> > foodSources)
