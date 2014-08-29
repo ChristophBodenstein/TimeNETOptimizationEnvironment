@@ -28,34 +28,34 @@ import timenetexperimentgenerator.support;
  */
 
 
-public class OptimizerChargedSystemSearch implements Runnable, Optimizer{
+public class OptimizerChargedSystemSearch extends OptimizerPopulationBased implements Runnable, Optimizer{
 
 
-private String tmpPath = "";
-private String filename = "";//Original filename
-private String pathToTimeNet = "";
-private String logFileName = "";
-private MainFrame parent = null;
-private JTabbedPane MeasureFormPane;
-private ArrayList<MeasureType> listOfMeasures = new ArrayList<MeasureType>();//Liste aller Measures, abfragen von MeasureFormPane
-private ArrayList<parameter> parameterBase;//Base set of parameters, start/end-value, stepping, etc.
-private JLabel infoLabel;
-private double simulationTimeSum = 0;
-private double cpuTimeSum = 0;
+//private String tmpPath = "";
+//private String filename = "";//Original filename
+//private String pathToTimeNet = "";
+//private String logFileName = "";
+//private MainFrame parent = null;
+//private JTabbedPane MeasureFormPane;
+//private ArrayList<MeasureType> listOfMeasures = new ArrayList<MeasureType>();//Liste aller Measures, abfragen von MeasureFormPane
+//private ArrayList<parameter> parameterBase;//Base set of parameters, start/end-value, stepping, etc.
+//private JLabel infoLabel;
+//private double simulationTimeSum = 0;
+//private double cpuTimeSum = 0;
 
-private ArrayList<SimulationType> charges = new ArrayList<SimulationType>();//History of all simulation runs
+//private ArrayList<SimulationType> charges = new ArrayList<SimulationType>();//History of all simulation runs
 
 private int numberOfCharges = 5; //number of active charges to explore design space
-private int maxNumberOfOptiCycles = 100; //maximum number of cycles, before optimization terminates
-private int maxNumberOfOptiCyclesWithoutImprovement = 10; //how many cycles without improvement until break optimization loop
-private int currentNumberOfOptiCyclesWithoutImprovement = 0;
+//private int maxNumberOfOptiCycles = 100; //maximum number of cycles, before optimization terminates
+//private int maxNumberOfOptiCyclesWithoutImprovement = 10; //how many cycles without improvement until break optimization loop
+//private int currentNumberOfOptiCyclesWithoutImprovement = 0;
 
 private double[] distances; //current Distance of all objects
 private double[] powerOfCharges; // attraction power of every object
 private double[][] speedOfCharges; //current speed vector for all objects with all parameters;
 
-private SimulationType topMeasure;//temp top measure before implementing top-List
-private double topDistance = Double.POSITIVE_INFINITY;//temp top distance
+//private SimulationType topMeasure;//temp top measure before implementing top-List
+//private double topDistance = Double.POSITIVE_INFINITY;//temp top distance
 
 private final int maxAttraction;//limit of attraction-force of 2 charges
 
@@ -65,136 +65,13 @@ public OptimizerChargedSystemSearch()
     logFileName = support.getTmpPath() + File.separator+"Optimizing_with_CSS_" + Calendar.getInstance().getTimeInMillis() + "_ALL" + ".csv";
 }
     
-public void initOptimizer()
-{
-    this.infoLabel=support.getStatusLabel();//  infoLabel;
-    this.pathToTimeNet=support.getPathToTimeNet();// pathToTimeNetTMP;
-    this.MeasureFormPane=support.getMeasureFormPane();//MeasureFormPaneTMP;
-    this.parent=support.getMainFrame();// parentTMP;
-    this.parameterBase=parent.getParameterBase();
-    this.listOfMeasures=parent.getListOfActiveMeasureMentsToOptimize(); //((MeasurementForm)MeasureFormPane.getComponent(0)).getListOfMeasurements();
-    support.log("# of Measures to be optimized: "+this.listOfMeasures.size());
-       
-    charges = new ArrayList<SimulationType>();
-    distances = new double[numberOfCharges];
-    powerOfCharges = new double[numberOfCharges];
-    speedOfCharges = new double[numberOfCharges][parameterBase.size()];
-    
-    //allocate all measurements the same parameterbase
-//    if (listOfMeasures.size()>1)
-//    {
-//        for (int i=1; i<listOfMeasures.size(); ++i)
-//        {
-//            ArrayList<parameter> parameterList = listOfMeasures.get(0).getParameterList();
-//            listOfMeasures.get(i).setParameterList(parameterList);
-//        }
-//    }
-
-    this.filename=support.getOriginalFilename();// originalFilename;
-    
-    //Ask for Tmp-Path
-    this.tmpPath=support.getTmpPath();
-    
-    //Start this Thread
-    new Thread(this).start();
-}
-    
-   /**
-     * Creates random starting population
-     * @param numOfCharges number of charges to be created
-     * @param ignoreStepping set false to round created
-     */
-    private void createNewRandomPopulation(int numOfCharges, boolean ignoreStepping)
-    {
-        //init of needed data structures
-        charges = new ArrayList<SimulationType>();
-        //init of supporting-arrays
-        distances = new double[numOfCharges];
-        Arrays.fill(distances, 0);
-        speedOfCharges = new double[numOfCharges][parameterBase.size()];
-        for (int i=0; i<numOfCharges; ++i)
-        {
-            double[] newArray = new double[parameterBase.size()];
-            Arrays.fill(newArray, 0);
-            speedOfCharges[i] = newArray;
-        }
-        powerOfCharges = new double[numOfCharges];
-        Arrays.fill(powerOfCharges, 0);
-        
-        
-        //fill population with random values
-        for(int i=0; i<numOfCharges; ++i)
-        {
-            SimulationType p = new SimulationType();
-            charges.add(p);
-            MeasureType newMeasure = new MeasureType();
-            
-            ArrayList<parameter> pArray = support.getCopyOfParameterSet(parameterBase);
-            for (int j=0; j<pArray.size(); ++j)
-            {
-                //creates a random value between start and end value for each parameter
-                double newValue = pArray.get(j).getStartValue() + Math.random() * (pArray.get(j).getEndValue() - pArray.get(j).getStartValue());
-                pArray.get(j).setValue(newValue);
-            }
-            if(!ignoreStepping)
-            {
-                pArray = roundToStepping(pArray);
-            }
-            charges.get(i).setListOfParameters(pArray);            
-        }
-        
-    }
-    
-    /**
-     * 
-     * @param p array of parameters to be rounded
-     * @return 
-     */    
-    private ArrayList<parameter> roundToStepping(ArrayList<parameter> p)
-    {
-        double currentValue = 0;
-        double currentStepping = 0;
-        for (int i=0; i<p.size(); ++i)
-        {
-            currentValue = p.get(i).getValue();
-            currentStepping = p.get(i).getStepping();
-            
-            currentValue = Math.round(currentValue / currentStepping) * currentStepping;
-            
-            if (currentValue < p.get(i).getStartValue())
-            {
-                currentValue = p.get(i).getStartValue();
-            }
-            else if (currentValue > p.get(i).getEndValue())
-            {
-                currentValue = p.get(i).getEndValue();
-            }
-            
-            
-            p.get(i).setValue(currentValue);
-        }
-        return p;
-    }
-    
-    private void calculateDistances()
-    {   
-        setMeasureTargets(charges);
-        for (int parserCount = 0; parserCount < charges.size(); ++ parserCount)
-        {
-            distances[parserCount] = charges.get(parserCount).getDistance();
-        }        
-    }
-    
-
     
     private void calculatePower()
     {
-        calculateDistances();
-        
         //calculate attraction of each charge
-        for(int i=0; i<distances.length; ++i)
+        for(int i=0; i<population.size(); ++i)
         {
-            powerOfCharges[i] = 1 / distances[i]; //temporary function for calculating attraction. TODO: test other funktions
+            powerOfCharges[i] = 1 / population.get(i).get(0).getDistance(); //temporary function for calculating attraction. TODO: test other funktions
         }
     }
     
@@ -249,47 +126,32 @@ public void initOptimizer()
                 }
             }
             setParameters(currentParameterSet, currentChargeNumber);
-        }    }
-    
-    private void updateTopMeasure()
-    {
-        boolean newTopMeasurefound = false;
-        for (int i=0; i<distances.length; ++i)
-        {
-            if(distances[i]<topDistance)
-            {
-                topDistance = distances[i];
-                topMeasure = new SimulationType(charges.get(i));
-                newTopMeasurefound = true;
-            }
-        }
-        if (newTopMeasurefound)
-        {
-            currentNumberOfOptiCyclesWithoutImprovement = 0;
-        }
-        else
-        {
-            ++currentNumberOfOptiCyclesWithoutImprovement;
-        }
+        }    
     }
 
     public void run()
     {
-        int optiCycleCounter=0;
-        createNewRandomPopulation(numberOfCharges,false);
+        int optiCycleCounter = 0;
+        population = createRandomPopulation(numberOfCharges, false);
+        distances = new double[numberOfCharges];
+        powerOfCharges = new double[numberOfCharges];
+        speedOfCharges = new double[numberOfCharges][parameterBase.size()];
+        
+        Arrays.fill(distances, 0);
+        for (int i=0; i<numberOfCharges; ++i)
+        {
+            double[] newArray = new double[parameterBase.size()];
+            Arrays.fill(newArray, 0);
+            speedOfCharges[i] = newArray;
+        }
+        Arrays.fill(powerOfCharges, 0);
         
         Simulator mySimulator = SimOptiFactory.getSimulator();       
         mySimulator.initSimulator(getNextParameterSetAsArrayList(), optiCycleCounter, false);
         support.waitForEndOfSimulator(mySimulator, optiCycleCounter, support.DEFAULT_TIMEOUT);
-        //support.addLinesToLogFileFromListOfParser(mySimulator.getListOfCompletedSimulationParsers(), logFileName);
-                
-
-        System.out.println("NumMeasuresOut: " + mySimulator.getListOfCompletedSimulationParsers().get(0).getMeasures().size());
-        charges = mySimulator.getListOfCompletedSimulationParsers();
         
-        
-        calculateDistances();
-        printDistances();
+        ArrayList<SimulationType> simulationResults = mySimulator.getListOfCompletedSimulationParsers(); 
+        population = getPopulationFromSimulationResults(simulationResults);
         
         int simulationCounter = 0;
         while(optiCycleCounter < this.maxNumberOfOptiCycles)
@@ -314,13 +176,13 @@ public void initOptimizer()
             mySimulator.initSimulator(parameterList, simulationCounter, false);
             support.waitForEndOfSimulator(mySimulator, simulationCounter, support.DEFAULT_TIMEOUT);
             simulationCounter = mySimulator.getSimulationCounter();
-            support.log("NumMeasuresOut: " + mySimulator.getListOfCompletedSimulationParsers().get(0).getMeasures().size());
-            charges = mySimulator.getListOfCompletedSimulationParsers();
-            support.addLinesToLogFileFromListOfParser(charges, logFileName);
+            simulationResults = mySimulator.getListOfCompletedSimulationParsers();
+            support.addLinesToLogFileFromListOfParser(simulationResults, logFileName);
+            population = getPopulationFromSimulationResults(simulationResults);
             
-            calculateDistances();
+            //calculateDistances();
             updateTopMeasure();
-            printDistances();
+            printPopulationDistances();
             ++optiCycleCounter;
         }
         for(int measureCount=0;measureCount<listOfMeasures.size();measureCount++)
@@ -333,39 +195,14 @@ public void initOptimizer()
         
     }
     
-    //TODO: make only one function-->init charges with parameter, so could leave paramter of SimulationType blank (Why we need parameter[] in SimulationType?
-    //parser has an ArrayList of Measure, which contains the paramter[] already...)
-    private ArrayList< ArrayList<parameter> > getNextParameterSetAsArrayList()
-    {
-        ArrayList< ArrayList<parameter> > myParametersetList = new ArrayList< ArrayList<parameter> >();
-        for (SimulationType p : charges)
-        {
-            ArrayList<parameter> pArray = p.getListOfParameters();
-            myParametersetList.add(pArray);
-        }
-        return myParametersetList;
-    }
-    
     private ArrayList<parameter> getParameters(int indexOfCharge)
     {
-        return charges.get(indexOfCharge).getListOfParameters();
+        return population.get(indexOfCharge).get(0).getListOfParameters();
     }
     
     private void setParameters(ArrayList<parameter> parameterList, int indexOfCharge)
     {
-        charges.get(indexOfCharge).setListOfParameters(parameterList);        
-    }
-    
-
-    
-    private void printDistances()
-    {
-        for (int i = 0; i<distances.length; ++i)
-        {
-            String message = "Charge " + i + ": " + distances[i];
-            //support.log(message);
-            support.log(message);
-        }
+        population.get(indexOfCharge).get(0).setListOfParameters(parameterList);        
     }
     
     /**
@@ -429,25 +266,6 @@ public void initOptimizer()
         {
             this.maxNumberOfOptiCyclesWithoutImprovement = newMaxNumberOfOptiCyclesWithoutImprovement;
         }
-    }
-    
-    private void setMeasureTargets(ArrayList<SimulationType> pList)
-    {
-        MeasureType activeMeasure = null;
-        MeasureType activeMeasureFromInterface = null;
-        for(int measureCount=0;measureCount<listOfMeasures.size();measureCount++)
-        {
-            for(int populationCount = 0; populationCount < pList.size() ; populationCount++)
-            {
-                activeMeasure=pList.get(populationCount).getMeasureByName(listOfMeasures.get(measureCount).getMeasureName());
-                activeMeasureFromInterface=listOfMeasures.get(measureCount);//Contains Optimization targets
-                activeMeasure.setTargetValue(activeMeasureFromInterface.getTargetValue(), activeMeasureFromInterface.getTargetKindOf());
-            }
-        }
-    }
-
-    public SimulationType getOptimum() {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }
