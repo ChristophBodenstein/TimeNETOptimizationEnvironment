@@ -55,6 +55,11 @@ private int pref_InternalParameterStart;
 private int pref_InternalParameterEnd;
 private boolean pref_KeepDesignSpaceAndResolution;
 
+//parameters for genetic Optimization
+private int pref_geneticPopulationSize;
+private double pref_geneticMutationChance;
+private boolean pref_geneticMutateTopSolution;
+
 
 
     /**
@@ -173,6 +178,11 @@ private boolean pref_KeepDesignSpaceAndResolution;
         jSpinnerInternalParameterStart = new javax.swing.JSpinner();
         jCheckBoxKeepDesignspaceAndResolution = new javax.swing.JCheckBox();
         jPanel3 = new javax.swing.JPanel();
+        jLabelGeneticPopulationSize = new javax.swing.JLabel();
+        jLabelGeneticMutationChance = new javax.swing.JLabel();
+        jSpinnerGeneticPopulationSize = new javax.swing.JSpinner();
+        jSpinnerGeneticMutationChance = new javax.swing.JSpinner();
+        jCheckBoxGeneticMutateTopSolution = new javax.swing.JCheckBox();
         jPanel4 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
 
@@ -543,18 +553,65 @@ private boolean pref_KeepDesignSpaceAndResolution;
 
         jTabbedPane1.addTab("Multi-Phase", jPanel2);
 
+        jLabelGeneticPopulationSize.setText("Population Size");
+
+        jLabelGeneticMutationChance.setText("Mutation Chance %");
+
+        jSpinnerGeneticPopulationSize.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
+
+        jSpinnerGeneticMutationChance.setModel(new javax.swing.SpinnerNumberModel(0.0d, 0.0d, 100.0d, 1.0d));
+        jSpinnerGeneticMutationChance.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                jSpinnerGeneticMutationChancePropertyChange(evt);
+            }
+        });
+
+        jCheckBoxGeneticMutateTopSolution.setText("Mutate Top Solution");
+        jCheckBoxGeneticMutateTopSolution.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBoxGeneticMutateTopSolutionActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 824, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(22, 22, 22)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jCheckBoxGeneticMutateTopSolution)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabelGeneticPopulationSize)
+                                .addGap(45, 45, 45)
+                                .addComponent(jSpinnerGeneticPopulationSize))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabelGeneticMutationChance)
+                                .addGap(22, 22, 22)
+                                .addComponent(jSpinnerGeneticMutationChance, javax.swing.GroupLayout.DEFAULT_SIZE, 48, Short.MAX_VALUE)))
+                        .addGap(637, 637, 637))))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 272, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabelGeneticPopulationSize)
+                    .addComponent(jSpinnerGeneticPopulationSize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabelGeneticMutationChance)
+                    .addComponent(jSpinnerGeneticMutationChance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jCheckBoxGeneticMutateTopSolution)
+                .addContainerGap(180, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Population Based", jPanel3);
+        jTabbedPane1.addTab("Genetic", jPanel3);
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -691,10 +748,19 @@ private boolean pref_KeepDesignSpaceAndResolution;
 
     }//GEN-LAST:event_jSpinnerWrongSolutionsPerDirectionUntilBreakStateChanged
 
+    private void jSpinnerGeneticMutationChancePropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jSpinnerGeneticMutationChancePropertyChange
+        
+    }//GEN-LAST:event_jSpinnerGeneticMutationChancePropertyChange
+
+    private void jCheckBoxGeneticMutateTopSolutionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxGeneticMutateTopSolutionActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jCheckBoxGeneticMutateTopSolutionActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JCheckBox jCheckBoxAddPrefsToLogfilename;
+    private javax.swing.JCheckBox jCheckBoxGeneticMutateTopSolution;
     private javax.swing.JCheckBox jCheckBoxKeepDesignspaceAndResolution;
     private javax.swing.JComboBox jComboBoxCalculationOfNextParameterset;
     private javax.swing.JComboBox jComboBoxCalculationOfNextParameterset1;
@@ -702,7 +768,7 @@ private boolean pref_KeepDesignSpaceAndResolution;
     private javax.swing.JComboBox jComboBoxCoolingMethod1;
     private javax.swing.JComboBox jComboBoxNumberOfPhases;
     private javax.swing.JComboBox jComboBoxOptimizationType;
-    private javax.swing.JComboBox jComboBoxTypeOfNeighborhood;
+    public javax.swing.JComboBox jComboBoxTypeOfNeighborhood;
     public javax.swing.JComboBox jComboBoxTypeOfStartValue;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -729,6 +795,8 @@ private boolean pref_KeepDesignSpaceAndResolution;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JLabel jLabelGeneticMutationChance;
+    private javax.swing.JLabel jLabelGeneticPopulationSize;
     private javax.swing.JLabel jLabelStartvalueForParameters;
     private javax.swing.JLabel jLabelTypeOfNeighborhood;
     private javax.swing.JLabel jLabelWrongSolutionsPerDirectionUntilBreak;
@@ -747,6 +815,8 @@ private boolean pref_KeepDesignSpaceAndResolution;
     private javax.swing.JSpinner jSpinnerConfidenceIntervallStart;
     private javax.swing.JSpinner jSpinnerEpsilon;
     private javax.swing.JSpinner jSpinnerEpsilon1;
+    private javax.swing.JSpinner jSpinnerGeneticMutationChance;
+    private javax.swing.JSpinner jSpinnerGeneticPopulationSize;
     private javax.swing.JSpinner jSpinnerInternalParameterEnd;
     private javax.swing.JSpinner jSpinnerInternalParameterStart;
     private javax.swing.JSpinner jSpinnerMaxRelErrorEnd;
