@@ -44,6 +44,9 @@ public class SimOptiFactory {
             case Distributed:
                 //Return distributed simulator
                 return new SimulatorWeb();
+            case Benchmark:
+                //Return Simulator for Benchmark-Functions
+                return new SimulatorBenchmark();
             default:
                 return new SimulatorLocal();
         }

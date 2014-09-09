@@ -278,6 +278,7 @@ private JDialog aboutDialog;
         jButton2 = new javax.swing.JButton();
         jButtonPathToR = new javax.swing.JButton();
         jButtonPlotR = new javax.swing.JButton();
+        jButtonCreateDummyData = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jSeparator4 = new javax.swing.JPopupMenu.Separator();
@@ -350,7 +351,7 @@ private JDialog aboutDialog;
             }
         });
 
-        jButtonStartBatchSimulation.setText("Start batch simulation");
+        jButtonStartBatchSimulation.setText("Start batch sim");
         jButtonStartBatchSimulation.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonStartBatchSimulationActionPerformed(evt);
@@ -449,6 +450,13 @@ private JDialog aboutDialog;
             }
         });
 
+        jButtonCreateDummyData.setText("Create dummy data");
+        jButtonCreateDummyData.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonCreateDummyDataActionPerformed(evt);
+            }
+        });
+
         jMenu1.setText("File");
         jMenu1.add(jSeparator4);
         jMenu1.add(jSeparator5);
@@ -514,7 +522,7 @@ private JDialog aboutDialog;
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(layout.createSequentialGroup()
                         .add(10, 10, 10)
-                        .add(jSeparator1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 671, Short.MAX_VALUE))
+                        .add(jSeparator1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 672, Short.MAX_VALUE))
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(layout.createSequentialGroup()
@@ -534,23 +542,22 @@ private JDialog aboutDialog;
                                 .add(jButtonPlotR)))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(jLabelSimulationCount, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 285, Short.MAX_VALUE)
+                            .add(jLabelSimulationCount, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 286, Short.MAX_VALUE)
                             .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                             .add(layout.createSequentialGroup()
                                 .add(jButtonOpenSCPN, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)
                                 .add(5, 5, 5)
-                                .add(jButtonReload, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 126, Short.MAX_VALUE))
-                            .add(jSeparator2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 285, Short.MAX_VALUE)
+                                .add(jButtonReload, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE))
+                            .add(jSeparator2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 286, Short.MAX_VALUE)
                             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                                .add(jButtonExport, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 148, Short.MAX_VALUE)
+                                .add(jButtonExport, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 149, Short.MAX_VALUE)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                                 .add(jButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 137, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                            .add(jButtonGenerateListOfExperiments, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 285, Short.MAX_VALUE)
-                            .add(jButtonStartBatchSimulation, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 285, Short.MAX_VALUE)
-                            .add(jSeparator3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 285, Short.MAX_VALUE)
-                            .add(org.jdesktop.layout.GroupLayout.TRAILING, jButtonLoadCacheFile, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 285, Short.MAX_VALUE)
+                            .add(jButtonGenerateListOfExperiments, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 286, Short.MAX_VALUE)
+                            .add(jSeparator3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 286, Short.MAX_VALUE)
+                            .add(org.jdesktop.layout.GroupLayout.TRAILING, jButtonLoadCacheFile, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 286, Short.MAX_VALUE)
                             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                                .add(jComboBoxSimulationType, 0, 154, Short.MAX_VALUE)
+                                .add(jComboBoxSimulationType, 0, 155, Short.MAX_VALUE)
                                 .add(5, 5, 5)
                                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
                                     .add(jButton2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -558,12 +565,16 @@ private JDialog aboutDialog;
                                 .add(5, 5, 5))
                             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
                                 .add(org.jdesktop.layout.GroupLayout.TRAILING, jButtonStartOptimization, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .add(org.jdesktop.layout.GroupLayout.TRAILING, jLabelExportStatus, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)))))
+                                .add(org.jdesktop.layout.GroupLayout.TRAILING, jLabelExportStatus, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE))
+                            .add(layout.createSequentialGroup()
+                                .add(jButtonStartBatchSimulation, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 140, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                                .add(jButtonCreateDummyData, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 146, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))))
                 .add(20, 20, 20))
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(jButtonEnterURLToSimServer, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 192, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(492, Short.MAX_VALUE))
+                .addContainerGap(493, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -585,7 +596,9 @@ private JDialog aboutDialog;
                         .add(5, 5, 5)
                         .add(jButtonGenerateListOfExperiments)
                         .add(5, 5, 5)
-                        .add(jButtonStartBatchSimulation)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                            .add(jButtonStartBatchSimulation)
+                            .add(jButtonCreateDummyData))
                         .add(5, 5, 5)
                         .add(jSeparator3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 10, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .add(5, 5, 5)
@@ -898,6 +911,53 @@ private JDialog aboutDialog;
     aboutDialog.setVisible(true);
     }//GEN-LAST:event_jMenuItem5ActionPerformed
 
+    private void jButtonCreateDummyDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCreateDummyDataActionPerformed
+        //evtl. build this as a simulator!!!
+
+        // TODO add your handling code here:
+        //Assume Design space is created
+
+        //Ask for Name of Logfile/position of new logfile
+
+        //For every parameterset in this.ListOfParameterSetsToBeWritten do the following
+
+        //Create a Simulation Type
+        //Let the SimulaitonType calculate dummy data
+        //log it to the chosen logfile
+
+        /*parameter parameterTempParameter=new parameter();
+        parameterTempParameter.setName(typedef.listOfParametersToIgnore[0]);
+        parameterTempParameter.setValue(actualTempParameter);
+
+        parameter parameterCostParameter=new parameter();
+        parameterCostParameter.setName(typedef.listOfParametersToIgnore[1]);
+        parameterCostParameter.setValue(actualTempCost);
+
+        ArrayList<parameter> dummyParameterset=new ArrayList<parameter>();
+
+        dummyParameterset.add(parameterCostParameter);
+        dummyParameterset.add(parameterTempParameter);
+
+        MeasureType dummyMeasure=new MeasureType();
+        ArrayList<MeasureType> dummyMeasureList=new ArrayList<MeasureType>();
+
+        dummyMeasureList.add(dummyMeasure);
+
+        SimulationType dummySim=new SimulationType();
+        dummySim.setListOfParameters(dummyParameterset);
+        dummySim.setMeasures(dummyMeasureList);
+
+        ArrayList<SimulationType> dummySimulationTypeList=new ArrayList<SimulationType>();
+        dummySimulationTypeList.add(dummySim);
+
+
+
+        support.addLinesToLogFileFromListOfParser(dummySimulationTypeList, nameOfdummyLogfile);
+        */
+
+
+    }//GEN-LAST:event_jButtonCreateDummyDataActionPerformed
+
     /**
      * Calculates the design space, number of all permutations of parameters
      * with respect to the stepping sizes
@@ -990,6 +1050,7 @@ private JDialog aboutDialog;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButtonCreateDummyData;
     private javax.swing.JButton jButtonEnterURLToSimServer;
     private javax.swing.JButton jButtonExport;
     private javax.swing.JButton jButtonGenerateListOfExperiments;
@@ -1173,6 +1234,7 @@ private JDialog aboutDialog;
     myGenerator.start();
     this.waitForGenerator();
     jButtonStartBatchSimulation.setEnabled(true);
+    jButtonCreateDummyData.setEnabled(true);
     }
 
 
@@ -1197,6 +1259,7 @@ private JDialog aboutDialog;
     //support.log("Editing of Cell stopped, restarting generator.");
     //this.restartGenerator();
     jButtonStartBatchSimulation.setEnabled(false);
+    jButtonCreateDummyData.setEnabled(false);
     readStaticParametersFromTable();
     saveProperties();
     calculateDesignSpace();
@@ -1237,6 +1300,7 @@ private JDialog aboutDialog;
     protected final void deactivateExportButtons(){
     this.jButtonExport.setEnabled(false);
     this.jButtonStartBatchSimulation.setEnabled(false);
+    jButtonCreateDummyData.setEnabled(false);
     //this.jButtonOpenSCPN.setEnabled(false);
     this.jButtonReload.setEnabled(false);
     this.jButtonStartOptimization.setEnabled(false);
@@ -1280,6 +1344,7 @@ private JDialog aboutDialog;
     support.log("TimeNet should be here: "+tmpFile.getAbsolutePath());
         if(tmpFile.exists()){
         this.jButtonStartBatchSimulation.setEnabled(true);
+        jButtonCreateDummyData.setEnabled(true);
         //this.jLabelCheckPathToTimeNet.setVisible(false);
         jButtonPathToTimeNet.setBackground(Color.GREEN);
         jButtonPathToTimeNet.setOpaque(true);
@@ -1312,6 +1377,7 @@ private JDialog aboutDialog;
         }else{
         
         this.jButtonStartBatchSimulation.setEnabled(false);
+        jButtonCreateDummyData.setEnabled(false);
         //this.jLabelCheckPathToTimeNet.setVisible(true);
         jButtonPathToTimeNet.setBackground(Color.RED);
         jButtonPathToTimeNet.setOpaque(true);

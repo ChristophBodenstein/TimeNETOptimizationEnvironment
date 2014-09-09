@@ -105,7 +105,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
-                      <Component id="jSeparator1" pref="671" max="32767" attributes="0"/>
+                      <Component id="jSeparator1" pref="672" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="1" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
@@ -132,25 +132,24 @@
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jLabelSimulationCount" pref="285" max="32767" attributes="0"/>
+                          <Component id="jLabelSimulationCount" pref="286" max="32767" attributes="0"/>
                           <Component id="jTabbedPane1" alignment="0" pref="0" max="32767" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="jButtonOpenSCPN" pref="154" max="32767" attributes="1"/>
                               <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
-                              <Component id="jButtonReload" pref="126" max="32767" attributes="1"/>
+                              <Component id="jButtonReload" pref="127" max="32767" attributes="1"/>
                           </Group>
-                          <Component id="jSeparator2" alignment="0" pref="285" max="32767" attributes="1"/>
+                          <Component id="jSeparator2" alignment="0" pref="286" max="32767" attributes="1"/>
                           <Group type="102" alignment="1" attributes="0">
-                              <Component id="jButtonExport" pref="148" max="32767" attributes="0"/>
+                              <Component id="jButtonExport" pref="149" max="32767" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="jButton1" min="-2" pref="137" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="jButtonGenerateListOfExperiments" alignment="0" pref="285" max="32767" attributes="1"/>
-                          <Component id="jButtonStartBatchSimulation" alignment="0" pref="285" max="32767" attributes="1"/>
-                          <Component id="jSeparator3" alignment="0" pref="285" max="32767" attributes="1"/>
-                          <Component id="jButtonLoadCacheFile" alignment="1" pref="285" max="32767" attributes="0"/>
+                          <Component id="jButtonGenerateListOfExperiments" alignment="0" pref="286" max="32767" attributes="1"/>
+                          <Component id="jSeparator3" alignment="0" pref="286" max="32767" attributes="1"/>
+                          <Component id="jButtonLoadCacheFile" alignment="1" pref="286" max="32767" attributes="0"/>
                           <Group type="102" alignment="1" attributes="0">
-                              <Component id="jComboBoxSimulationType" pref="154" max="32767" attributes="0"/>
+                              <Component id="jComboBoxSimulationType" pref="155" max="32767" attributes="0"/>
                               <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                   <Component id="jButton2" max="32767" attributes="1"/>
@@ -162,6 +161,11 @@
                               <Component id="jButtonStartOptimization" alignment="1" max="32767" attributes="1"/>
                               <Component id="jLabelExportStatus" alignment="1" pref="265" max="32767" attributes="0"/>
                           </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="jButtonStartBatchSimulation" min="-2" pref="140" max="-2" attributes="1"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="jButtonCreateDummyData" min="-2" pref="146" max="-2" attributes="1"/>
+                          </Group>
                       </Group>
                   </Group>
               </Group>
@@ -170,7 +174,7 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jButtonEnterURLToSimServer" min="-2" pref="192" max="-2" attributes="0"/>
-              <EmptySpace pref="492" max="32767" attributes="0"/>
+              <EmptySpace pref="493" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -196,7 +200,10 @@
                       <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
                       <Component id="jButtonGenerateListOfExperiments" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
-                      <Component id="jButtonStartBatchSimulation" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="jButtonStartBatchSimulation" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jButtonCreateDummyData" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
                       <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
                       <Component id="jSeparator3" min="-2" pref="10" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
@@ -341,7 +348,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="jButtonStartBatchSimulation">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Start batch simulation"/>
+        <Property name="text" type="java.lang.String" value="Start batch sim"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonStartBatchSimulationActionPerformed"/>
@@ -484,6 +491,14 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonPlotRActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="jButtonCreateDummyData">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Create dummy data"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonCreateDummyDataActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

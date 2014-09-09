@@ -1050,6 +1050,25 @@ private static boolean logToFile=true;
     return l;
     }
 
+    /**
+     * Returns a list of Parameetrs that are intern and changable
+     */
+    public static ArrayList<parameter> getListOfChangableParameters(ArrayList<parameter> sourceList){
+    //ArrayList<parameter> parameterset = support.getCopyOfParameterSet(sourceList);
+    ArrayList<parameter> listOfChangableParameters = new ArrayList<parameter>();
+        //Count the number of changable parameters
+        //this.numberOfChangableParameters=0;
+        for(int i=0;i<sourceList.size();i++){
+                parameter p=sourceList.get(i);
+                if(p.isIteratableAndIntern()){
+                //this.numberOfChangableParameters++;
+                listOfChangableParameters.add(p);
+                }
+            }
+    support.log("There are "+listOfChangableParameters.size()+" changable parameter.");
+    return listOfChangableParameters;
+    }
+
 }
 
 

@@ -58,7 +58,7 @@ String logFileName;
 int wrongSolutionCounter=support.getOptimizerPreferences().getPref_WrongSimulationsUntilBreak();
 int wrongSolutionPerDirectionCounter=support.getOptimizerPreferences().getPref_WrongSimulationsPerDirection();
 //int numberOfLastChangedParameter=0;
-int numberOfChangableParameters=0;
+//int numberOfChangableParameters=0;
 boolean directionOfOptimization=true;//true->increment parameters, false->decrement parameters
 boolean directionOfOptimizationChanged=false;//True->direction already changed, False->you can change it one time
 int stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;
@@ -327,22 +327,6 @@ int stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;
     }
 
 
-    protected ArrayList<parameter> getListOfChangableParameters(ArrayList<parameter> sourceList){
-    //ArrayList<parameter> parameterset = support.getCopyOfParameterSet(sourceList);
-    ArrayList<parameter> listOfChangableParameters = new ArrayList<parameter>();
-        //Count the number of changable parameters
-        this.numberOfChangableParameters=0;
-        for(int i=0;i<sourceList.size();i++){
-                parameter p=sourceList.get(i);
-                if(p.isIteratableAndIntern()){
-                this.numberOfChangableParameters++;
-                listOfChangableParameters.add(p);
-                }
-            }
-    support.log("There are "+listOfChangableParameters.size()+" changable parameter.");
-    return listOfChangableParameters;
-    }
-
 
     /**
      * Returns the next parameterset in neighborhood
@@ -353,9 +337,9 @@ int stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;
      */
     protected ArrayList<parameter> getNextParameterset(ArrayList<parameter> actualParameterset){
     ArrayList<parameter> newParameterset=support.getCopyOfParameterSet(parameterBase);
-    ArrayList<parameter> listOfChangableParameters=this.getListOfChangableParameters(newParameterset);
+    ArrayList<parameter> listOfChangableParameters=support.getListOfChangableParameters(newParameterset);
     //Count the number of changable parameters
-    this.numberOfChangableParameters=listOfChangableParameters.size();
+    //this.numberOfChangableParameters=listOfChangableParameters.size();
         
     
         if(actualParameterset==null){

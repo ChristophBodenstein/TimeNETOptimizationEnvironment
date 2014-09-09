@@ -51,7 +51,7 @@ boolean keepSimulationFiles=false;
     }
 
     /**
-     * inits the simulator
+     * inits and starts the simulator
      * If simulationCounter is set to less then 0, the old value wil be used and continouusly increased
      * @param listOfParameterSetsTMP List of Parameter-sets to be simulated
      * @param simulationCounterTMP start value of simulation counter
