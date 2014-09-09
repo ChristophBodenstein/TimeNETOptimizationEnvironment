@@ -64,6 +64,14 @@ int status=0;
                 limitLower=-5.0;
                 limitUpper=5.0;
                 break;
+            case Booth:
+                limitUpper=10.0;
+                limitLower=-10.0;
+                break;
+            case Matya:
+                limitUpper=10.0;
+                limitLower=-10.0;
+                break;
             default:
                 break;
         }
@@ -98,6 +106,11 @@ int status=0;
                     break;
                 case Sphere:
                     sum+=(xNew*xNew);
+                    break;
+                case Booth:
+                    break;
+                case Matya:
+                    
                     break;
                 default:
                     sum+=0.0;

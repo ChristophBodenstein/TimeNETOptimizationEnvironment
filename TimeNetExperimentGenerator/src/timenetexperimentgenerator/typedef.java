@@ -28,7 +28,7 @@ public enum typeOfSimulator{Local, Cache_Only, Cached_Local, Distributed, Benchm
 
 public enum typeOfAnnealingParameterCalculation{Standard, Stepwise, Simple, SimpleStepwise};
 
-public enum typeOfBenchmarkFunction{Sphere, Ackley, Rosenbrock};
+public enum typeOfBenchmarkFunction{Sphere, Ackley, Rosenbrock, Booth, Matya};
 
 public static final String[] listOfParametersToIgnore={"TempPara","TempCost","UsedCPUTIME"};
 
