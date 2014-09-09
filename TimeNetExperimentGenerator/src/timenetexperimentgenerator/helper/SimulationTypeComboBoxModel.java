@@ -43,6 +43,11 @@ public class SimulationTypeComboBoxModel extends DefaultComboBoxModel{
                 super.setSelectedItem(anObject);
                 support.setChosenSimulatorType((typeOfSimulator)anObject);
             }
+
+            if ((anObject).equals(typeOfSimulator.Benchmark)){
+                super.setSelectedItem(anObject);
+                support.setChosenSimulatorType((typeOfSimulator)anObject);
+            }
             
 
         } else {
