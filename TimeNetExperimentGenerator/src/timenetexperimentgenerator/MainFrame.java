@@ -214,6 +214,7 @@ private JDialog aboutDialog;
     DefaultListSelectionModel model = new DefaultListSelectionModel();
     model.addSelectionInterval(0, 0);
     model.addSelectionInterval(2, 2);
+    model.addSelectionInterval(4, 4);
     if(support.isCachedSimulationAvailable()){
     model.addSelectionInterval(1, 1);
     }
@@ -278,7 +279,6 @@ private JDialog aboutDialog;
         jButton2 = new javax.swing.JButton();
         jButtonPathToR = new javax.swing.JButton();
         jButtonPlotR = new javax.swing.JButton();
-        jButtonCreateDummyData = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jSeparator4 = new javax.swing.JPopupMenu.Separator();
@@ -450,13 +450,6 @@ private JDialog aboutDialog;
             }
         });
 
-        jButtonCreateDummyData.setText("Create dummy data");
-        jButtonCreateDummyData.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonCreateDummyDataActionPerformed(evt);
-            }
-        });
-
         jMenu1.setText("File");
         jMenu1.add(jSeparator4);
         jMenu1.add(jSeparator5);
@@ -566,10 +559,7 @@ private JDialog aboutDialog;
                             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
                                 .add(org.jdesktop.layout.GroupLayout.TRAILING, jButtonStartOptimization, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .add(org.jdesktop.layout.GroupLayout.TRAILING, jLabelExportStatus, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE))
-                            .add(layout.createSequentialGroup()
-                                .add(jButtonStartBatchSimulation, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 140, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                                .add(jButtonCreateDummyData, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 146, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))))
+                            .add(jButtonStartBatchSimulation, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 286, Short.MAX_VALUE))))
                 .add(20, 20, 20))
             .add(layout.createSequentialGroup()
                 .addContainerGap()
@@ -596,9 +586,7 @@ private JDialog aboutDialog;
                         .add(5, 5, 5)
                         .add(jButtonGenerateListOfExperiments)
                         .add(5, 5, 5)
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                            .add(jButtonStartBatchSimulation)
-                            .add(jButtonCreateDummyData))
+                        .add(jButtonStartBatchSimulation)
                         .add(5, 5, 5)
                         .add(jSeparator3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 10, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .add(5, 5, 5)
@@ -800,7 +788,7 @@ private JDialog aboutDialog;
     //TODO Should we empty the cache each time, or only at user-wish?
     support.emptyCache();
       this.mySimulationCache=support.getMySimulationCache();
-        if(!mySimulationCache.parseSimulationCacheFile(inputFile,((MeasurementForm)this.jTabbedPane1.getComponent(0)).getListOfMeasurements(), (parameterTableModel)this.jTableParameterList.getModel(),this )){
+        if(!mySimulationCache.parseSimulationCacheFile(inputFile,((MeasurementForm)this.jTabbedPane1.getComponent(0)).getMeasurements(), (parameterTableModel)this.jTableParameterList.getModel(),this )){
             support.log("Wrong Simulation cache file for this SCPN!");
         }else{
         this.pathToLastSimulationCache=fileChooser.getSelectedFile().getPath();
@@ -911,53 +899,6 @@ private JDialog aboutDialog;
     aboutDialog.setVisible(true);
     }//GEN-LAST:event_jMenuItem5ActionPerformed
 
-    private void jButtonCreateDummyDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCreateDummyDataActionPerformed
-        //evtl. build this as a simulator!!!
-
-        // TODO add your handling code here:
-        //Assume Design space is created
-
-        //Ask for Name of Logfile/position of new logfile
-
-        //For every parameterset in this.ListOfParameterSetsToBeWritten do the following
-
-        //Create a Simulation Type
-        //Let the SimulaitonType calculate dummy data
-        //log it to the chosen logfile
-
-        /*parameter parameterTempParameter=new parameter();
-        parameterTempParameter.setName(typedef.listOfParametersToIgnore[0]);
-        parameterTempParameter.setValue(actualTempParameter);
-
-        parameter parameterCostParameter=new parameter();
-        parameterCostParameter.setName(typedef.listOfParametersToIgnore[1]);
-        parameterCostParameter.setValue(actualTempCost);
-
-        ArrayList<parameter> dummyParameterset=new ArrayList<parameter>();
-
-        dummyParameterset.add(parameterCostParameter);
-        dummyParameterset.add(parameterTempParameter);
-
-        MeasureType dummyMeasure=new MeasureType();
-        ArrayList<MeasureType> dummyMeasureList=new ArrayList<MeasureType>();
-
-        dummyMeasureList.add(dummyMeasure);
-
-        SimulationType dummySim=new SimulationType();
-        dummySim.setListOfParameters(dummyParameterset);
-        dummySim.setMeasures(dummyMeasureList);
-
-        ArrayList<SimulationType> dummySimulationTypeList=new ArrayList<SimulationType>();
-        dummySimulationTypeList.add(dummySim);
-
-
-
-        support.addLinesToLogFileFromListOfParser(dummySimulationTypeList, nameOfdummyLogfile);
-        */
-
-
-    }//GEN-LAST:event_jButtonCreateDummyDataActionPerformed
-
     /**
      * Calculates the design space, number of all permutations of parameters
      * with respect to the stepping sizes
@@ -1050,7 +991,6 @@ private JDialog aboutDialog;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButtonCreateDummyData;
     private javax.swing.JButton jButtonEnterURLToSimServer;
     private javax.swing.JButton jButtonExport;
     private javax.swing.JButton jButtonGenerateListOfExperiments;
@@ -1234,7 +1174,6 @@ private JDialog aboutDialog;
     myGenerator.start();
     this.waitForGenerator();
     jButtonStartBatchSimulation.setEnabled(true);
-    jButtonCreateDummyData.setEnabled(true);
     }
 
 
@@ -1259,7 +1198,6 @@ private JDialog aboutDialog;
     //support.log("Editing of Cell stopped, restarting generator.");
     //this.restartGenerator();
     jButtonStartBatchSimulation.setEnabled(false);
-    jButtonCreateDummyData.setEnabled(false);
     readStaticParametersFromTable();
     saveProperties();
     calculateDesignSpace();
@@ -1300,7 +1238,6 @@ private JDialog aboutDialog;
     protected final void deactivateExportButtons(){
     this.jButtonExport.setEnabled(false);
     this.jButtonStartBatchSimulation.setEnabled(false);
-    jButtonCreateDummyData.setEnabled(false);
     //this.jButtonOpenSCPN.setEnabled(false);
     this.jButtonReload.setEnabled(false);
     this.jButtonStartOptimization.setEnabled(false);
@@ -1344,7 +1281,6 @@ private JDialog aboutDialog;
     support.log("TimeNet should be here: "+tmpFile.getAbsolutePath());
         if(tmpFile.exists()){
         this.jButtonStartBatchSimulation.setEnabled(true);
-        jButtonCreateDummyData.setEnabled(true);
         //this.jLabelCheckPathToTimeNet.setVisible(false);
         jButtonPathToTimeNet.setBackground(Color.GREEN);
         jButtonPathToTimeNet.setOpaque(true);
@@ -1377,7 +1313,6 @@ private JDialog aboutDialog;
         }else{
         
         this.jButtonStartBatchSimulation.setEnabled(false);
-        jButtonCreateDummyData.setEnabled(false);
         //this.jLabelCheckPathToTimeNet.setVisible(true);
         jButtonPathToTimeNet.setBackground(Color.RED);
         jButtonPathToTimeNet.setOpaque(true);

@@ -144,7 +144,7 @@ private ArrayList<MeasureType> listOfMeasureMents=new ArrayList<MeasureType>();
     /**
      * Returns List of all possible Measurements for this form, which can be chosen to optimize
      */
-    public ArrayList<MeasureType> getListOfMeasurements(){
+    public ArrayList<MeasureType> getMeasurements(){
     return listOfMeasureMents;
     }
 

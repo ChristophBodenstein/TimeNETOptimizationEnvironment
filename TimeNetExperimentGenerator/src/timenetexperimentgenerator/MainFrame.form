@@ -161,11 +161,7 @@
                               <Component id="jButtonStartOptimization" alignment="1" max="32767" attributes="1"/>
                               <Component id="jLabelExportStatus" alignment="1" pref="265" max="32767" attributes="0"/>
                           </Group>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="jButtonStartBatchSimulation" min="-2" pref="140" max="-2" attributes="1"/>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="jButtonCreateDummyData" min="-2" pref="146" max="-2" attributes="1"/>
-                          </Group>
+                          <Component id="jButtonStartBatchSimulation" alignment="0" pref="286" max="32767" attributes="1"/>
                       </Group>
                   </Group>
               </Group>
@@ -200,10 +196,7 @@
                       <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
                       <Component id="jButtonGenerateListOfExperiments" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="jButtonStartBatchSimulation" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jButtonCreateDummyData" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
+                      <Component id="jButtonStartBatchSimulation" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
                       <Component id="jSeparator3" min="-2" pref="10" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
@@ -491,14 +484,6 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonPlotRActionPerformed"/>
-      </Events>
-    </Component>
-    <Component class="javax.swing.JButton" name="jButtonCreateDummyData">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Create dummy data"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonCreateDummyDataActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>
