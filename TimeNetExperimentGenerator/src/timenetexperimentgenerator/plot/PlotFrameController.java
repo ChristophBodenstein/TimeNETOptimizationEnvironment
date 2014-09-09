@@ -414,11 +414,11 @@ public class PlotFrameController extends javax.swing.JFrame {
             
             if(XValueLabel.getText() != "None" && YValueLabel.getText() != "None" && ZValueLabel.getText() == "None")
             {
-                writer.println("plot(as.numeric(sub$\"" + XValueLabel.getText() + "\"),as.numeric(sub$\"" + YValueLabel.getText() + "\"), xlab=\"" + XValueLabel.getText() + "\",ylab=\"" + YValueLabel.getText() + "\" , pch=\"x\")");
+                writer.println("plot(as.numeric(as.character( sub(\""+","+"\" , \""+"."+"\" , sub$\"" + XValueLabel.getText() + "\"))),as.numeric(as.character( sub(\""+","+"\" , \""+"."+"\" , sub$\"" + YValueLabel.getText() + "\"))), xlab=\"" + XValueLabel.getText() + "\",ylab=\"" + YValueLabel.getText() + "\" , pch=\"x\")");
             }
             else if(XValueLabel.getText() != "None" && YValueLabel.getText() != "None" && ZValueLabel.getText() != "None")
             {
-                writer.println("scatter3D(as.numeric(sub$\"" + XValueLabel.getText() + "\"),as.numeric(sub$\"" + YValueLabel.getText() + "\"),as.numeric(sub$\"" + ZValueLabel.getText() + "\"), xlab=\"" + XValueLabel.getText() + "\",ylab=\"" + YValueLabel.getText() + "\",zlab=\"" + ZValueLabel.getText() + "\", phi=15, theta=120, col=NULL, NAcol=\"white\", colkey=NULL, panel.first=NULL, clim=NULL, clab=NULL, bty=\"b2\", pch=\"x\", add=FALSE)");
+                writer.println("scatter3D(as.numeric(as.character( sub(\""+","+"\" , \""+"."+"\" , sub$\"" + XValueLabel.getText() + "\"))),as.numeric(as.character( sub(\""+","+"\" , \""+"."+"\" , sub$\"" + YValueLabel.getText() + "\"))),as.numeric(as.character( sub(\""+","+"\" , \""+"."+"\" , sub$\"" + ZValueLabel.getText() + "\"))), xlab=\"" + XValueLabel.getText() + "\",ylab=\"" + YValueLabel.getText() + "\",zlab=\"" + ZValueLabel.getText() + "\", phi=15, theta=120, col=NULL, NAcol=\"white\", colkey=NULL, panel.first=NULL, clim=NULL, clab=NULL, bty=\"b2\", pch=\"x\", add=FALSE)");
             }
             else
             {
