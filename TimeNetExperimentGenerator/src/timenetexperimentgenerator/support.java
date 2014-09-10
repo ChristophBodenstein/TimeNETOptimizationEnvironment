@@ -47,6 +47,7 @@ public static final typeOfStartValueEnum DEFAULT_TYPE_OF_STARTVALUE =typeOfStart
 public static final typeOfNeighborhoodEnum DEFAULT_TYPE_OF_NEIGHBORHOOD =typeOfNeighborhoodEnum.StepForwardBackward;
 public static final typeOfSimulator DEFAULT_TYPE_OF_SIMULATOR = typeOfSimulator.Local;
 public static final typeOfOptimization DEFAULT_TYPE_OF_OPTIMIZER = typeOfOptimization.HillClimbing;
+public static final typeOfBenchmarkFunction DEFAULT_TYPE_OF_BENCHMARKFUNCTION = typeOfBenchmarkFunction.Ackley;
 
 
 
@@ -74,6 +75,7 @@ public static final boolean DEFAULT_KeepDesignSpaceAndResolution=true;
 
 
 public static final int DEFAULT_MINIMUM_DESIGNSPACE_SIZE_PER_PARAMETER=10;//Minimum Steps per Parameter.
+public static final int DEFAULT_MINIMUM_DESIGNSPACE_FOR_OPTIMIZATION=50;//If DS is smaller, no Optimization is possible
 
 
 public static final String NAME_OF_PREF_DIR=System.getProperty("user.home") + File.separatorChar +".TNGenerator"+ File.separatorChar ;
@@ -105,12 +107,12 @@ private static boolean cachedSimulationAvailable=false;
 private static boolean distributedSimulationAvailable=true;
 private static boolean isRunningAsSlave=false;
 private static String remoteAddress=null;
-private static typedef.typeOfOptimization chosenOptimizerType=typeOfOptimization.HillClimbing;//0=Greedy, 1=?, 2=?
-private static typeOfSimulator chosenSimulatorType=typeOfSimulator.Local;//0=local, 1=cached, 2=distributed
+private static typedef.typeOfOptimization chosenOptimizerType=DEFAULT_TYPE_OF_OPTIMIZER;//0=Greedy, 1=?, 2=?
+private static typeOfSimulator chosenSimulatorType=DEFAULT_TYPE_OF_SIMULATOR;//0=local, 1=cached, 2=distributed
 private static LogFrame myLogFrame=new LogFrame();
 private static ArrayList<parameter> parameterBase=null;//Base set of parameters, start/end-value, stepping, etc.
 private static boolean cancelEverything=false;//If set to true, everything is cancelled
-
+private static typeOfBenchmarkFunction chosenBenchmarkFunction=DEFAULT_TYPE_OF_BENCHMARKFUNCTION;
 
     /**
      * @return the myOptimizerPreferences a Reference to the Preferences-Frame
@@ -750,6 +752,8 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
      */
     public static void setChosenSimulatorType(typeOfSimulator aChosenSimulatorType) {
         chosenSimulatorType = aChosenSimulatorType;
+        getMainFrame().setBenchmarkFunctionComboboxEnabled(chosenSimulatorType.equals(typeOfSimulator.Benchmark));
+
     }
 
     /**
@@ -1114,6 +1118,20 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
      */
     public static void setLogToWindow(boolean aLogToWindow) {
         logToWindow = aLogToWindow;
+    }
+
+    /**
+     * @return the chosenBenchmarkFunction
+     */
+    public static typeOfBenchmarkFunction getChosenBenchmarkFunction() {
+        return chosenBenchmarkFunction;
+    }
+
+    /**
+     * @param aChosenBenchmarkFunction the chosenBenchmarkFunction to set
+     */
+    public static void setChosenBenchmarkFunction(typeOfBenchmarkFunction aChosenBenchmarkFunction) {
+        chosenBenchmarkFunction = aChosenBenchmarkFunction;
     }
 
 }

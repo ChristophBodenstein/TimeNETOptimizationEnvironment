@@ -207,11 +207,12 @@ private boolean savePropertiesEnabled=false;
         }
         
         support.log(auto.getProperty("SimulationType"));
-
+        
         this.jComboBoxSimulationType.setSelectedItem(typeOfSimulator.valueOf(auto.getProperty("SimulationType",support.DEFAULT_TYPE_OF_SIMULATOR.toString() )));
         
-        
         this.jComboBoxOptimizationType.setSelectedItem(typeOfOptimization.valueOf(auto.getProperty("OptimizationType",support.DEFAULT_TYPE_OF_OPTIMIZER.toString() )));
+        
+        this.jComboBoxBenchmarkFunction.setSelectedItem(typeOfBenchmarkFunction.valueOf(auto.getProperty("BenchmarkType",support.DEFAULT_TYPE_OF_BENCHMARKFUNCTION.toString() )));
 
         savePropertiesEnabled=true;//Enable property saving after init of all components
     }
@@ -291,6 +292,7 @@ private boolean savePropertiesEnabled=false;
         jButton2 = new javax.swing.JButton();
         jButtonPathToR = new javax.swing.JButton();
         jButtonPlotR = new javax.swing.JButton();
+        jComboBoxBenchmarkFunction = new javax.swing.JComboBox();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jSeparator4 = new javax.swing.JPopupMenu.Separator();
@@ -384,6 +386,7 @@ private boolean savePropertiesEnabled=false;
         jTabbedPane1.addTab("Target 2", measurementForm2);
 
         jButtonStartOptimization.setText("Start Optimization");
+        jButtonStartOptimization.setEnabled(false);
         jButtonStartOptimization.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonStartOptimizationActionPerformed(evt);
@@ -462,6 +465,14 @@ private boolean savePropertiesEnabled=false;
         jButtonPlotR.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonPlotRActionPerformed(evt);
+            }
+        });
+
+        jComboBoxBenchmarkFunction.setModel(new DefaultComboBoxModel(typeOfBenchmarkFunction.values()));
+        jComboBoxBenchmarkFunction.setEnabled(false);
+        jComboBoxBenchmarkFunction.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jComboBoxBenchmarkFunctionItemStateChanged(evt);
             }
         });
 
@@ -555,7 +566,7 @@ private boolean savePropertiesEnabled=false;
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(layout.createSequentialGroup()
                         .add(10, 10, 10)
-                        .add(jSeparator1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 672, Short.MAX_VALUE))
+                        .add(jSeparator1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 673, Short.MAX_VALUE))
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(layout.createSequentialGroup()
@@ -575,23 +586,28 @@ private boolean savePropertiesEnabled=false;
                                 .add(jButtonPlotR)))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(jLabelSimulationCount, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 286, Short.MAX_VALUE)
+                            .add(jLabelSimulationCount, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
                             .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                             .add(layout.createSequentialGroup()
                                 .add(jButtonOpenSCPN, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)
                                 .add(5, 5, 5)
-                                .add(jButtonReload, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE))
-                            .add(jSeparator2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 286, Short.MAX_VALUE)
+                                .add(jButtonReload, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE))
+                            .add(jSeparator2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
                             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                                .add(jButtonExport, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 149, Short.MAX_VALUE)
+                                .add(jButtonExport, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 150, Short.MAX_VALUE)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                                 .add(jButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 137, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                            .add(jButtonGenerateListOfExperiments, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 286, Short.MAX_VALUE)
-                            .add(jSeparator3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 286, Short.MAX_VALUE)
-                            .add(org.jdesktop.layout.GroupLayout.TRAILING, jButtonLoadCacheFile, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 286, Short.MAX_VALUE)
+                            .add(jButtonGenerateListOfExperiments, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
+                            .add(jSeparator3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
+                            .add(org.jdesktop.layout.GroupLayout.TRAILING, jButtonLoadCacheFile, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
                             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                                .add(jComboBoxSimulationType, 0, 155, Short.MAX_VALUE)
-                                .add(5, 5, 5)
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                                    .add(layout.createSequentialGroup()
+                                        .add(jComboBoxSimulationType, 0, 156, Short.MAX_VALUE)
+                                        .add(5, 5, 5))
+                                    .add(layout.createSequentialGroup()
+                                        .add(jComboBoxBenchmarkFunction, 0, 155, Short.MAX_VALUE)
+                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)))
                                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
                                     .add(jButton2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .add(jComboBoxOptimizationType, 0, 121, Short.MAX_VALUE))
@@ -599,12 +615,12 @@ private boolean savePropertiesEnabled=false;
                             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
                                 .add(org.jdesktop.layout.GroupLayout.TRAILING, jButtonStartOptimization, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .add(org.jdesktop.layout.GroupLayout.TRAILING, jLabelExportStatus, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE))
-                            .add(jButtonStartBatchSimulation, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 286, Short.MAX_VALUE))))
+                            .add(jButtonStartBatchSimulation, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE))))
                 .add(20, 20, 20))
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(jButtonEnterURLToSimServer, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 192, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(493, Short.MAX_VALUE))
+                .addContainerGap(494, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -638,7 +654,9 @@ private boolean savePropertiesEnabled=false;
                             .add(jComboBoxSimulationType, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                             .add(jComboBoxOptimizationType, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jButton2))
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                            .add(jButton2)
+                            .add(jComboBoxBenchmarkFunction, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                         .add(5, 5, 5)
                         .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
@@ -971,6 +989,11 @@ private boolean savePropertiesEnabled=false;
 
     }//GEN-LAST:event_jMenuItemClearLogFileActionPerformed
 
+    private void jComboBoxBenchmarkFunctionItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxBenchmarkFunctionItemStateChanged
+    support.setChosenBenchmarkFunction((typeOfBenchmarkFunction)this.jComboBoxBenchmarkFunction.getSelectedItem());
+    this.saveProperties();
+    }//GEN-LAST:event_jComboBoxBenchmarkFunctionItemStateChanged
+
     /**
      * Calculates the design space, number of all permutations of parameters
      * with respect to the stepping sizes
@@ -979,6 +1002,14 @@ private boolean savePropertiesEnabled=false;
         myGenerator=new generator(ListOfParameterSetsToBeWritten, fileName, jLabelExportStatus, this, jTableParameterList);
         this.sizeOfDesignSpace=myGenerator.getSizeOfDesignspace();
         this.jLabelExportStatus.setText("Designspace-Size:"+ sizeOfDesignSpace);
+
+        if(sizeOfDesignSpace>support.DEFAULT_MINIMUM_DESIGNSPACE_FOR_OPTIMIZATION){
+        this.jButtonStartOptimization.setEnabled(true);
+        }else{
+        this.jButtonStartOptimization.setEnabled(false);
+        support.log("Design space smaller then "+support.DEFAULT_MINIMUM_DESIGNSPACE_FOR_OPTIMIZATION+". Optimization not possible!");
+        this.jLabelExportStatus.setText(jLabelExportStatus.getText()+". DS to small for Optimization.");
+        }
     }
 
     
@@ -1077,6 +1108,7 @@ private boolean savePropertiesEnabled=false;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemLogToFile;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemLogToWindow;
     private javax.swing.JCheckBox jCheckBoxSlaveSimulator;
+    private javax.swing.JComboBox jComboBoxBenchmarkFunction;
     private javax.swing.JComboBox jComboBoxOptimizationType;
     private javax.swing.JComboBox jComboBoxSimulationType;
     private javax.swing.JLabel jLabelExportStatus;
@@ -1325,7 +1357,7 @@ private boolean savePropertiesEnabled=false;
     this.jButtonExport.setEnabled(true);
     //this.jButtonOpenSCPN.setEnabled(true);
     this.jButtonReload.setEnabled(true);
-    this.jButtonStartOptimization.setEnabled(true);
+    //this.jButtonStartOptimization.setEnabled(true);
     this.jButtonGenerateListOfExperiments.setEnabled(true);
     this.checkIfTimeNetPathIsCorrect();
     }
@@ -1340,7 +1372,7 @@ private boolean savePropertiesEnabled=false;
      * Sets the Generate- and OptimizeButtons active
      */
     public void activateGenerateButtons(){
-    this.jButtonStartOptimization.setEnabled(true);
+    //this.jButtonStartOptimization.setEnabled(true);
     this.jButtonGenerateListOfExperiments.setEnabled(true);
     //this.jButtonStartBatchSimulation.setEnabled(true);
     }
@@ -1361,7 +1393,7 @@ private boolean savePropertiesEnabled=false;
         jButtonPathToTimeNet.setOpaque(true);
         jButtonPathToTimeNet.setBorderPainted(false);
         jButtonPathToTimeNet.setText("Reset Path To TimeNet");
-        jButtonStartOptimization.setEnabled(true);
+        //jButtonStartOptimization.setEnabled(true);
         support.setPathToTimeNet(path);
         this.pathToTimeNet=path;
         this.saveProperties();
@@ -1469,6 +1501,8 @@ private boolean savePropertiesEnabled=false;
     
     auto.setProperty("OptimizationType", support.getChosenOptimizerType().toString());
     auto.setProperty("SimulationType", support.getChosenSimulatorType().toString());
+    auto.setProperty("BenchmarkType", support.getChosenBenchmarkFunction().toString());
+    
     
     auto.setProperty("isRunningAsSlave", Boolean.toString(support.isIsRunningAsSlave()));
 
@@ -1639,7 +1673,14 @@ private boolean savePropertiesEnabled=false;
     private String getPathToR(){
     return this.pathToR;
     }
-    
+
+    /**
+     * Enables or disables the Combobox for chosing benchmark functions
+     * 
+     */
+    public void setBenchmarkFunctionComboboxEnabled(boolean b){
+    this.jComboBoxBenchmarkFunction.setEnabled(b);
+    }
     
     
 }
