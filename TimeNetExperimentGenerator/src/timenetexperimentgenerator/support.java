@@ -13,10 +13,7 @@ import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
@@ -36,7 +33,7 @@ import timenetexperimentgenerator.typedef.*;
 public class support {
 
 //This Version of TimeNetExperimentGenerator
-public static final String VERSION ="0.9.173";
+public static final String VERSION ="0.9.185";
 
 
 //Define some program-wide default values
@@ -77,6 +74,8 @@ public static final int DEFAULT_MINIMUM_DESIGNSPACE_SIZE_PER_PARAMETER=10;//Mini
 
 public static final String DEFAULT_LOG_FILE=".TimeNETLogFile.log";
 
+public static final int DEFAULT_MEMORYPRINT_INTERVALL=10;//in seconds
+
 //End of program-wide default value definition
 
 
@@ -111,7 +110,7 @@ private static final OptimizerPreferences myOptimizerPreferences = new Optimizer
 
 
 private static boolean logToConsole=false;
-private static boolean logToFile=true;
+private static boolean logToFile=false;
 
     /**
      * Translates Parameternames from logfile to internal used Strings
@@ -1067,6 +1066,18 @@ private static boolean logToFile=true;
             }
     support.log("There are "+listOfChangableParameters.size()+" changable parameter.");
     return listOfChangableParameters;
+    }
+
+    /**
+     * Prints stats abut memory usage to logfile and log-window
+     */
+    public static void printMemoryStats(){
+    int MegaBytes = 1024*1024;
+    long freeMemory = Runtime.getRuntime().freeMemory()/MegaBytes;
+    long totalMemory = Runtime.getRuntime().totalMemory()/MegaBytes;
+    long maxMemory = Runtime.getRuntime().maxMemory()/MegaBytes;
+
+    log("Memory usage: "+(maxMemory-freeMemory)*100/maxMemory +"% of "+maxMemory+" Mb . Init was "+totalMemory+" Mb.");
     }
 
 }

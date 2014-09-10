@@ -6,6 +6,8 @@
 
 package timenetexperimentgenerator;
 
+import java.util.Timer;
+import java.util.TimerTask;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -38,6 +40,15 @@ public class TimeNetController {
         public void run() {
             MainFrame myFrame=new MainFrame();
             myFrame.setVisible(true);
+
+            Timer timer = new Timer();
+            timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+            support.printMemoryStats();
+            }
+            }, 1000*support.DEFAULT_MEMORYPRINT_INTERVALL, 1000*support.DEFAULT_MEMORYPRINT_INTERVALL);
+
         }
     });
         

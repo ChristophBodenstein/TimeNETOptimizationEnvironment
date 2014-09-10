@@ -77,8 +77,6 @@ int status=0;
         }
 
 
-
-
         myListOfSimulations=new ArrayList<SimulationType>();
         
         for(int i=0;i<listOfParameterSetsTMP.size();i++){
@@ -89,15 +87,9 @@ int status=0;
 
         double sum=0.0;
         int dimension=tmpListOfChangableParameter.size();
+        double xNew=0.0;
 
-           for(int c=0;c<dimension;c++){
-           parameter p=tmpListOfChangableParameter.get(c);
-           //Check Range and align the value to map constraints
-
-               double xNew=(p.getValue()-p.getStartValue()) /(p.getEndValue()-p.getStartValue()) ;
-               xNew=xNew*(limitUpper-limitLower)+limitLower;
-
-                switch(benchmarkFunction){
+        switch(benchmarkFunction){
                 case Ackley:
 
                     break;
@@ -105,18 +97,27 @@ int status=0;
 
                     break;
                 case Sphere:
+                    sum=0.0;
+                    for(int c=0;c<dimension;c++){
+                    parameter p=tmpListOfChangableParameter.get(c);
+                    //Check Range and align the value to map constraints
+                    xNew=(p.getValue()-p.getStartValue()) /(p.getEndValue()-p.getStartValue()) ;
+                    xNew=xNew*(limitUpper-limitLower)+limitLower;
                     sum+=(xNew*xNew);
+                    }//End of for-c-loop
                     break;
                 case Booth:
                     break;
                 case Matya:
-                    
+
                     break;
                 default:
-                    sum+=0.0;
+                    sum=0.0;
                     break;
                 }
-           }//End of for-c-loop
+
+
+           
 
 
         ArrayList<MeasureType> tmpListOfMeasurements=((MeasurementForm)support.getMeasureFormPane().getComponentAt(0)).getMeasurements();
