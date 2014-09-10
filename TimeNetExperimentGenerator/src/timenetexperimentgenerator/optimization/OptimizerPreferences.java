@@ -26,7 +26,6 @@ import timenetexperimentgenerator.typedef.*;
  * @author Christoph Bodenstein
  */
 public class OptimizerPreferences extends javax.swing.JFrame {
-private String propertyFile=System.getProperty("user.home")+File.separatorChar+ ".OptimizerProperties.prop";
 private Properties auto=new Properties();
 
 private String pref_LogFileAddon="";
@@ -843,7 +842,7 @@ private boolean pref_geneticMutateTopSolution;
      */
     public void loadPreferences(){
     try {
-                FileInputStream in=new FileInputStream(propertyFile);
+                FileInputStream in=new FileInputStream(support.NAME_OF_OPTIMIZER_PREFFERENCES_FILE);
 		auto.load(in);
                 in.close();
 
@@ -954,7 +953,7 @@ private boolean pref_geneticMutateTopSolution;
         auto.setProperty("pref_LogFileAddon", this.jTextFieldLogFileAddon.getText());
         auto.setProperty("pref_CalculationOfNextParameterset", this.getPref_CalculationOfNextParameterset().toString());
         
-        File parserprops =  new File(propertyFile);
+        File parserprops =  new File(support.NAME_OF_OPTIMIZER_PREFFERENCES_FILE);
         auto.store(new FileOutputStream(parserprops), "ExperimentGenerator-Properties");
         }catch(IOException e){
         support.log("Problem Saving the properties.");

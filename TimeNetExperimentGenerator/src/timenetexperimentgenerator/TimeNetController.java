@@ -6,6 +6,7 @@
 
 package timenetexperimentgenerator;
 
+import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.UIManager;
@@ -38,6 +39,13 @@ public class TimeNetController {
         }
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
         public void run() {
+            //Try to create pref-dir
+            File prefdir=new File(support.NAME_OF_PREF_DIR);
+            if(!prefdir.exists()){
+            prefdir.mkdir();
+            }
+
+
             MainFrame myFrame=new MainFrame();
             myFrame.setVisible(true);
 

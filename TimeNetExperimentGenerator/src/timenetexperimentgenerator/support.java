@@ -72,7 +72,18 @@ public static final boolean DEFAULT_KeepDesignSpaceAndResolution=true;
 
 public static final int DEFAULT_MINIMUM_DESIGNSPACE_SIZE_PER_PARAMETER=10;//Minimum Steps per Parameter.
 
-public static final String DEFAULT_LOG_FILE=".TimeNETLogFile.log";
+
+public static final String NAME_OF_PREF_DIR=System.getProperty("user.home") + File.separatorChar +".TNGenerator"+ File.separatorChar ;
+public static final String NAME_OF_LOGFILE=NAME_OF_PREF_DIR + "TimeNETLogFile.log";
+public static final String NAME_OF_PREFERENCES_FILE=NAME_OF_PREF_DIR+"ApplicationPreferences.prop";
+public static final String NAME_OF_OPTIMIZER_PREFFERENCES_FILE=NAME_OF_PREF_DIR+"OptimizerPreferences.prop";
+
+
+
+public static final boolean DEFAULT_LOG_TO_WINDOW=true;
+public static final boolean DEFAULT_LOG_TO_FILE=false;
+
+
 
 public static final int DEFAULT_MEMORYPRINT_INTERVALL=10;//in seconds
 
@@ -109,8 +120,8 @@ private static boolean cancelEverything=false;//If set to true, everything is ca
 private static final OptimizerPreferences myOptimizerPreferences = new OptimizerPreferences();
 
 
-private static boolean logToConsole=false;
-private static boolean logToFile=false;
+private static boolean logToWindow=DEFAULT_LOG_TO_WINDOW;
+private static boolean logToFile=DEFAULT_LOG_TO_FILE;
 
     /**
      * Translates Parameternames from logfile to internal used Strings
@@ -544,15 +555,13 @@ private static boolean logToFile=false;
     String timeStamp = new SimpleDateFormat("yyyy:MM.dd_HH:mm:ss").format(Calendar.getInstance().getTime());
     s=timeStamp+": "+s;
 
-        if(logToConsole){
-        System.out.println(s);
-        }else{
+        if(isLogToWindow()){
         myLogFrame.addText(s);
         }
 
-        if(logToFile){
+        if(isLogToFile()){
             try {
-                FileWriter fw = new FileWriter(System.getProperty("user.home") + File.separatorChar + DEFAULT_LOG_FILE, true);
+                FileWriter fw = new FileWriter(NAME_OF_LOGFILE, true);
                 fw.append(s+System.getProperty("line.separator") );
                 fw.close();
             } catch (IOException ex) {
@@ -561,14 +570,24 @@ private static boolean logToFile=false;
         }
 
     }
-    
+
+    /**
+     * deletes the log file of application
+     */
+    public static void deleteLogFile(){
+    File f=new File(NAME_OF_LOGFILE);
+        if(f.exists()){
+        del(f);
+        }
+    }
+
     /**
      * determines if log to console or somewhere else
      * @param logToConsole_ logging to console or not
      */
     public static void setLogToConsole(boolean logToConsole_)
     {
-        logToConsole = logToConsole_;
+        setLogToWindow(logToConsole_);
     }
     
     /**
@@ -1078,6 +1097,20 @@ private static boolean logToFile=false;
     long maxMemory = Runtime.getRuntime().maxMemory()/MegaBytes;
 
     log("Memory usage: "+(maxMemory-freeMemory)*100/maxMemory +"% of "+maxMemory+" Mb . Init was "+totalMemory+" Mb.");
+    }
+
+    /**
+     * @return the logToWindow
+     */
+    public static boolean isLogToWindow() {
+        return logToWindow;
+    }
+
+    /**
+     * @param aLogToWindow the logToWindow to set
+     */
+    public static void setLogToWindow(boolean aLogToWindow) {
+        logToWindow = aLogToWindow;
     }
 
 }

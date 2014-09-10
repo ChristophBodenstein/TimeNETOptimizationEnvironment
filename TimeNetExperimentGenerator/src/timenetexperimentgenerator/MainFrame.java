@@ -25,6 +25,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -42,7 +43,6 @@ import timenetexperimentgenerator.typedef.*;
  * @author Christoph Bodenstein
  */
 public class MainFrame extends javax.swing.JFrame implements TableModelListener{
-private String propertyFile=System.getProperty("user.home")+File.separatorChar+ ".ExperimentGeneratorprops.prop";
 Properties auto = new Properties();
 private String fileName="";
 public boolean cancelOperation=false;
@@ -82,7 +82,7 @@ private JDialog aboutDialog;
 
 
         try {
-                FileInputStream in=new FileInputStream(propertyFile);
+                FileInputStream in=new FileInputStream(support.NAME_OF_PREFERENCES_FILE);
 		auto.load(in);
                 in.close();
 	} catch (IOException e) {
@@ -288,7 +288,10 @@ private JDialog aboutDialog;
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         jMenu3 = new javax.swing.JMenu();
-        jMenuItem3 = new javax.swing.JMenuItem();
+        jCheckBoxMenuItemLogToFile = new javax.swing.JCheckBoxMenuItem();
+        jMenuItemClearLogFile = new javax.swing.JMenuItem();
+        jCheckBoxMenuItemLogToWindow = new javax.swing.JCheckBoxMenuItem();
+        jMenuItemClearLogWindow = new javax.swing.JMenuItem();
         jMenuItem4 = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
 
@@ -479,13 +482,38 @@ private JDialog aboutDialog;
 
         jMenu3.setText("Log");
 
-        jMenuItem3.setText("Clear Log");
-        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem3ActionPerformed(evt);
+        jCheckBoxMenuItemLogToFile.setText("Log to file");
+        jCheckBoxMenuItemLogToFile.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jCheckBoxMenuItemLogToFileItemStateChanged(evt);
             }
         });
-        jMenu3.add(jMenuItem3);
+        jMenu3.add(jCheckBoxMenuItemLogToFile);
+
+        jMenuItemClearLogFile.setText("Clear Log File");
+        jMenuItemClearLogFile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemClearLogFileActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jMenuItemClearLogFile);
+
+        jCheckBoxMenuItemLogToWindow.setSelected(true);
+        jCheckBoxMenuItemLogToWindow.setText("Log to window");
+        jCheckBoxMenuItemLogToWindow.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jCheckBoxMenuItemLogToWindowItemStateChanged(evt);
+            }
+        });
+        jMenu3.add(jCheckBoxMenuItemLogToWindow);
+
+        jMenuItemClearLogWindow.setText("Clear Log window");
+        jMenuItemClearLogWindow.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemClearLogWindowActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jMenuItemClearLogWindow);
 
         jMenuItem4.setText("Print all Statistics in Log");
         jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
@@ -856,9 +884,9 @@ private JDialog aboutDialog;
     support.getMyLogFrame().setVisible(true);
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
-    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+    private void jMenuItemClearLogWindowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemClearLogWindowActionPerformed
     support.getMyLogFrame().clearText();
-    }//GEN-LAST:event_jMenuItem3ActionPerformed
+    }//GEN-LAST:event_jMenuItemClearLogWindowActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
     support.getOptimizerPreferences().setVisible(true);
@@ -898,6 +926,36 @@ private JDialog aboutDialog;
     
     aboutDialog.setVisible(true);
     }//GEN-LAST:event_jMenuItem5ActionPerformed
+
+    private void jCheckBoxMenuItemLogToWindowItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItemLogToWindowItemStateChanged
+    support.setLogToWindow(this.jCheckBoxMenuItemLogToWindow.isSelected());
+    }//GEN-LAST:event_jCheckBoxMenuItemLogToWindowItemStateChanged
+
+    private void jCheckBoxMenuItemLogToFileItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItemLogToFileItemStateChanged
+    support.setLogToFile(this.jCheckBoxMenuItemLogToFile.isSelected());
+    }//GEN-LAST:event_jCheckBoxMenuItemLogToFileItemStateChanged
+
+    private void jMenuItemClearLogFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemClearLogFileActionPerformed
+    //Show dialog, if yes, delete file
+    JOptionPane pane = new JOptionPane(
+        "To be or not to be ?\nThat is the question.");
+    Object[] options = new String[] { "Yes, Delete log file!", "No / Cancel" };
+    pane.setOptions(options);
+    JDialog dialog = pane.createDialog(new JFrame(), "Delete Log file?");
+    dialog.setVisible(true);
+    Object obj = pane.getValue();
+    int result = -1;
+        for (int k = 0; k < options.length; k++){
+            if (options[k].equals(obj)){
+            result = k;
+            }
+        }
+        
+        if(result==0){
+        support.deleteLogFile();
+        }
+
+    }//GEN-LAST:event_jMenuItemClearLogFileActionPerformed
 
     /**
      * Calculates the design space, number of all permutations of parameters
@@ -1002,6 +1060,8 @@ private JDialog aboutDialog;
     private javax.swing.JButton jButtonReload;
     private javax.swing.JButton jButtonStartBatchSimulation;
     private javax.swing.JButton jButtonStartOptimization;
+    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemLogToFile;
+    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemLogToWindow;
     private javax.swing.JCheckBox jCheckBoxSlaveSimulator;
     private javax.swing.JComboBox jComboBoxOptimizationType;
     private javax.swing.JComboBox jComboBoxSimulationType;
@@ -1013,9 +1073,10 @@ private JDialog aboutDialog;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
+    private javax.swing.JMenuItem jMenuItemClearLogFile;
+    private javax.swing.JMenuItem jMenuItemClearLogWindow;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
@@ -1398,7 +1459,7 @@ private JDialog aboutDialog;
 
     auto.setProperty("RemoteAddress", support.getReMoteAddress());
     
-    File parserprops =  new File(propertyFile);
+    File parserprops =  new File(support.NAME_OF_PREFERENCES_FILE);
     auto.store(new FileOutputStream(parserprops), "ExperimentGenerator-Properties");
         }catch(IOException e){
         support.log("Problem Saving the properties.");
