@@ -88,7 +88,7 @@ public static final String NAME_OF_OPTIMIZER_PREFFERENCES_FILE=NAME_OF_PREF_DIR+
 public static final boolean DEFAULT_LOG_TO_WINDOW=true;
 public static final boolean DEFAULT_LOG_TO_FILE=false;
 
-
+public static final char DEFAULT_PLOT_CHAR='.';
 
 public static final int DEFAULT_MEMORYPRINT_INTERVALL=10;//in seconds
 
@@ -113,6 +113,7 @@ private static LogFrame myLogFrame=new LogFrame();
 private static ArrayList<parameter> parameterBase=null;//Base set of parameters, start/end-value, stepping, etc.
 private static boolean cancelEverything=false;//If set to true, everything is cancelled
 private static typeOfBenchmarkFunction chosenBenchmarkFunction=DEFAULT_TYPE_OF_BENCHMARKFUNCTION;
+
 
     /**
      * @return the myOptimizerPreferences a Reference to the Preferences-Frame
