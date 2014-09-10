@@ -69,8 +69,11 @@ private String pathToR="";
 private AboutPanel aboutFrame=new AboutPanel();
 private JDialog aboutDialog;
 
+private boolean savePropertiesEnabled=false;
+
     /** Creates new form MainFrame */
     public MainFrame() {
+
     support.setMainFrame(this);
     
         initComponents();
@@ -116,28 +119,29 @@ private JDialog aboutDialog;
         //init r plugin
         rplugin = new RPlugin();
         
-        this.pConfidenceIntervall.setStartValue(this.loadDouble("ConfidenceIntervallStart",pConfidenceIntervall.getStartValue()));
-        this.pConfidenceIntervall.setEndValue(this.loadDouble("ConfidenceIntervallEnd",pConfidenceIntervall.getEndValue()));
-        this.pConfidenceIntervall.setStepping(this.loadDouble("ConfidenceIntervallStepping",pConfidenceIntervall.getStepping()));
+        this.pConfidenceIntervall.setStartValue(support.loadDoubleFromProperties("ConfidenceIntervallStart",pConfidenceIntervall.getStartValue(),auto));
+        this.pConfidenceIntervall.setEndValue(support.loadDoubleFromProperties("ConfidenceIntervallEnd",pConfidenceIntervall.getEndValue(),auto));
+        this.pConfidenceIntervall.setStepping(support.loadDoubleFromProperties("ConfidenceIntervallStepping",pConfidenceIntervall.getStepping(),auto));
 
-        this.pEndTime.setStartValue(this.loadDouble("EndTimeStart",pEndTime.getStartValue()));
-        this.pEndTime.setEndValue(this.loadDouble("EndTimeEnd",pEndTime.getEndValue()));
-        this.pEndTime.setStepping(this.loadDouble("EndTimeStepping",pEndTime.getStepping()));
+        this.pEndTime.setStartValue(support.loadDoubleFromProperties("EndTimeStart",pEndTime.getStartValue(),auto));
+        this.pEndTime.setEndValue(support.loadDoubleFromProperties("EndTimeEnd",pEndTime.getEndValue(),auto));
+        this.pEndTime.setStepping(support.loadDoubleFromProperties("EndTimeStepping",pEndTime.getStepping(),auto));
 
-        this.pMaxTime.setStartValue(this.loadDouble("MaxTimeStart",pMaxTime.getStartValue()));
-        this.pMaxTime.setEndValue(this.loadDouble("MaxTimeEnd",pMaxTime.getEndValue()));
-        this.pMaxTime.setStepping(this.loadDouble("MaxTimeStepping",pMaxTime.getStepping()));
+        this.pMaxTime.setStartValue(support.loadDoubleFromProperties("MaxTimeStart",pMaxTime.getStartValue(),auto));
+        this.pMaxTime.setEndValue(support.loadDoubleFromProperties("MaxTimeEnd",pMaxTime.getEndValue(),auto));
+        this.pMaxTime.setStepping(support.loadDoubleFromProperties("MaxTimeStepping",pMaxTime.getStepping(),auto));
 
-        this.pSeed.setStartValue(this.loadDouble("SeedStart",pSeed.getStartValue()));
-        this.pSeed.setEndValue(this.loadDouble("SeedEnd",pSeed.getEndValue()));
-        this.pSeed.setStepping(this.loadDouble("SeedStepping",pSeed.getStepping()));
+        this.pSeed.setStartValue(support.loadDoubleFromProperties("SeedStart",pSeed.getStartValue(),auto));
+        this.pSeed.setEndValue(support.loadDoubleFromProperties("SeedEnd",pSeed.getEndValue(),auto));
+        this.pSeed.setStepping(support.loadDoubleFromProperties("SeedStepping",pSeed.getStepping(),auto));
 
-        this.pMaxError.setStartValue(this.loadDouble("MaxErrorStart",pMaxError.getStartValue()));
-        this.pMaxError.setEndValue(this.loadDouble("MaxErrorEnd",pMaxError.getEndValue()));
-        this.pMaxError.setStepping(this.loadDouble("MaxErrorStepping",pMaxError.getStepping()));
+        this.pMaxError.setStartValue(support.loadDoubleFromProperties("MaxErrorStart",pMaxError.getStartValue(),auto));
+        this.pMaxError.setEndValue(support.loadDoubleFromProperties("MaxErrorEnd",pMaxError.getEndValue(),auto));
+        this.pMaxError.setStepping(support.loadDoubleFromProperties("MaxErrorStepping",pMaxError.getStepping(),auto));
 
         this.pathToLastSimulationCache=auto.getProperty("pathToLastSimulationCache", "");
 
+       
         support.setIsRunningAsSlave(Boolean.parseBoolean(auto.getProperty("isRunningAsSlave")));
 
         support.setRemoteAddress(auto.getProperty("RemoteAddress", ""));
@@ -202,6 +206,14 @@ private JDialog aboutDialog;
         new Thread(this.mySlave).start();
         }
         
+        support.log(auto.getProperty("SimulationType"));
+
+        this.jComboBoxSimulationType.setSelectedItem(typeOfSimulator.valueOf(auto.getProperty("SimulationType",support.DEFAULT_TYPE_OF_SIMULATOR.toString() )));
+        
+        
+        this.jComboBoxOptimizationType.setSelectedItem(typeOfOptimization.valueOf(auto.getProperty("OptimizationType",support.DEFAULT_TYPE_OF_OPTIMIZER.toString() )));
+
+        savePropertiesEnabled=true;//Enable property saving after init of all components
     }
 
 
@@ -831,10 +843,12 @@ private JDialog aboutDialog;
 
     private void jComboBoxSimulationTypeItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxSimulationTypeItemStateChanged
         support.setChosenSimulatorType((typedef.typeOfSimulator)this.jComboBoxSimulationType.getSelectedItem());
+        this.saveProperties();
     }//GEN-LAST:event_jComboBoxSimulationTypeItemStateChanged
 
     private void jComboBoxOptimizationTypeItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxOptimizationTypeItemStateChanged
         support.setChosenOptimizerType((typedef.typeOfOptimization)this.jComboBoxOptimizationType.getSelectedItem());
+        this.saveProperties();
     }//GEN-LAST:event_jComboBoxOptimizationTypeItemStateChanged
 
     private void jButtonEnterURLToSimServerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEnterURLToSimServerActionPerformed
@@ -1420,6 +1434,7 @@ private JDialog aboutDialog;
      * Saves program-properties to a local file in home-dir
      */
     private void saveProperties(){
+    if(!savePropertiesEnabled){return;}
     support.log("Saving Properties.");
         try{
     support.log("rpath = " + this.getPathToR());
@@ -1494,14 +1509,14 @@ private JDialog aboutDialog;
      * @param defaultValue The default to be returned, if error occurs
      * @return double value of property
      */
-    private double loadDouble(String name, double defaultValue){
+    /*private double loadDouble(String name, double defaultValue){
         try{
         return Double.valueOf(auto.getProperty(name));
         }catch(Exception e){
         support.log("Error loading property: "+name);
         return defaultValue;
         }
-    }
+    }*/
 
     /**
      * Prints 2 parametersets and it`s values to see the difference

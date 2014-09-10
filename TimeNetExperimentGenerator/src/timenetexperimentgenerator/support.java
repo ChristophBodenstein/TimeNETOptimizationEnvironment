@@ -45,6 +45,9 @@ public static final int DEFAULT_SIZE_OF_NEIGHBORHOOD=5;
 public static final typeOfAnnealing DEFAULT_TYPE_OF_ANNEALING=typeOfAnnealing.FastAnnealing;
 public static final typeOfStartValueEnum DEFAULT_TYPE_OF_STARTVALUE =typeOfStartValueEnum.random;
 public static final typeOfNeighborhoodEnum DEFAULT_TYPE_OF_NEIGHBORHOOD =typeOfNeighborhoodEnum.StepForwardBackward;
+public static final typeOfSimulator DEFAULT_TYPE_OF_SIMULATOR = typeOfSimulator.Local;
+public static final typeOfOptimization DEFAULT_TYPE_OF_OPTIMIZER = typeOfOptimization.HillClimbing;
+
 
 
 public static final double DEFAULT_T_RATIO_SCALE=0.00001;
