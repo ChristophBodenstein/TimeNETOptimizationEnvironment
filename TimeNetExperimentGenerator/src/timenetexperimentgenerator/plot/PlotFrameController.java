@@ -144,6 +144,8 @@ private String rScriptFilePath=System.getProperty("user.dir") + File.separator +
         XValueLabel = new javax.swing.JLabel();
         YValueLabel = new javax.swing.JLabel();
         ZValueLabel = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
+        jComboBoxPlotChar = new javax.swing.JComboBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -232,6 +234,10 @@ private String rScriptFilePath=System.getProperty("user.dir") + File.separator +
 
         ZValueLabel.setText("None");
 
+        jLabel1.setText("Plot-Char");
+
+        jComboBoxPlotChar.setModel(new javax.swing.DefaultComboBoxModel(new String[] { ".", "*", "+", "x", "X", "o", "O" }));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -253,9 +259,6 @@ private String rScriptFilePath=System.getProperty("user.dir") + File.separator +
                     .addGroup(layout.createSequentialGroup()
                         .addGap(8, 8, 8)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(PlotButton, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                     .addComponent(SetXButton, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -278,12 +281,20 @@ private String rScriptFilePath=System.getProperty("user.dir") + File.separator +
                                     .addComponent(XValueLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 333, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(2, 2, 2)
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(MeasureLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(2, 2, 2)
-                        .addComponent(MeasureComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(MeasureComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jComboBoxPlotChar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(PlotButton, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -330,7 +341,10 @@ private String rScriptFilePath=System.getProperty("user.dir") + File.separator +
                             .addComponent(MeasureComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(MeasureLabel))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(PlotButton)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(PlotButton)
+                            .addComponent(jLabel1)
+                            .addComponent(jComboBoxPlotChar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
             .addComponent(jSeparator1)
         );
@@ -393,6 +407,13 @@ private String rScriptFilePath=System.getProperty("user.dir") + File.separator +
 
     private void PlotButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PlotButtonActionPerformed
     char plotChar=support.DEFAULT_PLOT_CHAR;
+        
+        try{
+        plotChar=this.jComboBoxPlotChar.getSelectedItem().toString().charAt(0);
+        }   catch(Exception e){
+            }
+        
+        
         try
         {
             //Delete old script file and old image file
@@ -557,6 +578,8 @@ private String rScriptFilePath=System.getProperty("user.dir") + File.separator +
     private javax.swing.JLabel YValueLabel;
     private javax.swing.JLabel ZLabel;
     private javax.swing.JLabel ZValueLabel;
+    private javax.swing.JComboBox jComboBoxPlotChar;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;

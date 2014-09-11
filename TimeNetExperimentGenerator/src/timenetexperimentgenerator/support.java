@@ -90,7 +90,7 @@ public static final boolean DEFAULT_LOG_TO_FILE=false;
 
 public static final char DEFAULT_PLOT_CHAR='.';
 
-public static final int DEFAULT_MEMORYPRINT_INTERVALL=10;//in seconds
+public static final int DEFAULT_MEMORYPRINT_INTERVALL=100;//in seconds
 
 //End of program-wide default value definition
 
@@ -300,7 +300,7 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
             if(fileChooser.getSelectedFile().isDirectory() ){
                 outputDir=fileChooser.getSelectedFile().toString();
             }else{
-                outputDir=fileChooser.getCurrentDirectory().toString();
+                //outputDir=fileChooser.getCurrentDirectory().toString();
             }
             support.log("choosen dir: "+outputDir);
         }
@@ -1157,6 +1157,8 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
     if(oldChar.equals("/")){return "-";}
     return "-";
     }
+    
+    
 }
 
 

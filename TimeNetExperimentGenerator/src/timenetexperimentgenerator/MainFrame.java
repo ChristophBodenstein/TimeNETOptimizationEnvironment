@@ -742,7 +742,10 @@ private boolean savePropertiesEnabled=false;
     private void jButtonStartBatchSimulationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonStartBatchSimulationActionPerformed
         support.setCancelEverything(false);
         //Ask for Tmp-Path
-        support.setTmpPath(support.getPathToDirByDialog("Dir for export TMP-Files and log.\n "+"Go INTO the dir to choose it!", new File(support.getOriginalFilename()).getPath() ));
+        String tmpPath=support.getPathToDirByDialog("Dir for export TMP-Files and log.\n "+"Go INTO the dir to choose it!", new File(support.getOriginalFilename()).getPath() );
+        
+        if(tmpPath!=null){
+        support.setTmpPath(tmpPath);
         support.setPathToTimeNet(pathToTimeNet);
         support.setMainFrame(this);
         support.setOriginalFilename(fileName);
@@ -753,6 +756,7 @@ private boolean savePropertiesEnabled=false;
         //SimulatorLocal mySimulator=new SimulatorLocal();
         Simulator mySimulator=SimOptiFactory.getSimulator();
         mySimulator.initSimulator(ListOfParameterSetsToBeWritten, 0, true);
+        }
     
     }//GEN-LAST:event_jButtonStartBatchSimulationActionPerformed
 

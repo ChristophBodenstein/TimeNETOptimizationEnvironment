@@ -40,6 +40,7 @@ ArrayList<ArrayList <parameter> > listOfParameterSetsTMP;
      * Constructor
      */
      public SimulatorBenchmark(){
+     this.benchmarkFunction = support.getChosenBenchmarkFunction();
      logFileName=support.getTmpPath()+File.separator+"SimLog_Benchmark_"+benchmarkFunction.toString()+"_"+Calendar.getInstance().getTimeInMillis()+".csv";
      support.log("LogfileName:"+logFileName);
      }
