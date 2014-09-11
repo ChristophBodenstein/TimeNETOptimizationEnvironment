@@ -21,7 +21,6 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.*;
 import timenetexperimentgenerator.Parser;
 import timenetexperimentgenerator.datamodel.SimulationType;
-import timenetexperimentgenerator.helper.ProcMon;
 import timenetexperimentgenerator.datamodel.parameter;
 import timenetexperimentgenerator.support;
 
@@ -246,9 +245,9 @@ boolean keepSimulationFiles=false;
         java.util.Scanner s = new java.util.Scanner( p.getInputStream() ).useDelimiter( "\\Z" );//Scans output of process
         support.log( s.next() );//prints output of process into System.out
             try {
-                ProcMon tmpProcMon=support.createProcMon(p);
+                
                 p.waitFor();
-                tmpProcMon.stopThread();
+                
             } catch (InterruptedException ex) {
                 Logger.getLogger(SimulatorLocal.class.getName()).log(Level.SEVERE, null, ex);
             }

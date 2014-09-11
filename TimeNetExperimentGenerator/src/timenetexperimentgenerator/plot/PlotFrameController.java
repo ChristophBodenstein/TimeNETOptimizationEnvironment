@@ -12,16 +12,19 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import timenetexperimentgenerator.helper.ProcMon;
 import timenetexperimentgenerator.helper.Statistic;
 import timenetexperimentgenerator.helper.StatisticAggregator;
+import timenetexperimentgenerator.helper.nativeProcess;
+import timenetexperimentgenerator.helper.nativeProcessCallbacks;
 import timenetexperimentgenerator.support;
 
 /**
  *
  * @author Bastian Mauerer, Simon Niebler
  */
-public class PlotFrameController extends javax.swing.JFrame {
+public class PlotFrameController extends javax.swing.JFrame implements nativeProcessCallbacks {
+private String imageFilePath=System.getProperty("user.dir") + File.separator + "rplot.png";
+private String rScriptFilePath=System.getProperty("user.dir") + File.separator + "rscript.r";
 
     private PlotFrame plotFrame;
     /**
@@ -392,6 +395,10 @@ public class PlotFrameController extends javax.swing.JFrame {
     char plotChar=support.DEFAULT_PLOT_CHAR;
         try
         {
+            //Delete old script file and old image file
+            support.del(new File(imageFilePath));
+            support.del(new File(rScriptFilePath));
+
             PrintWriter writer = new PrintWriter("rscript.r", "UTF-8");
             String userdir = System.getProperty("user.dir");
             userdir = userdir.replace("\\", "/");
@@ -433,31 +440,27 @@ public class PlotFrameController extends javax.swing.JFrame {
             String command = support.getPathToR() + File.separator + "bin" + File.separator + "Rscript rscript.r 2> errorFile.Rout";
             support.log("executing command: " + command);
 
-            java.lang.ProcessBuilder processBuilder = new java.lang.ProcessBuilder(command);
-            java.lang.Process p = processBuilder.start();
-            java.util.Scanner s = new java.util.Scanner( p.getInputStream() ).useDelimiter( "\\Z" );//Scans output of process
-            support.log( s.next() );//prints output of process into System.out
-            try {
-                ProcMon tmpProcMon=support.createProcMon(p);
-                p.waitFor();
-                tmpProcMon.stopThread();
-            } catch (InterruptedException ex) {
-                support.log("Problem executing the Plot-Command.");
-            }
+            java.lang.ProcessBuilder processBuilder = new java.lang.ProcessBuilder(support.getPathToR() + File.separator + "bin" + File.separator + "Rscript", "rscript.r", "2>", "errorFile.Rout");
 
-            /*Process child = Runtime.getRuntime().exec(command);
-            try
-            {
-                child.waitFor();
-            }
-            catch(InterruptedException e)
-            {
-            }*/
+            nativeProcess myNativeProcess = new nativeProcess(processBuilder, support.getStatusLabel(), this);
+
         }
         catch(IOException e)
         {
         }
         
+        
+        
+        
+        
+    }//GEN-LAST:event_PlotButtonActionPerformed
+
+    /**
+     * Will show the image file, specified in the global vars of this class or Error-Message in log
+     * This method is called by the native Thread as a callback after creating the image file
+     */
+    public void processEnded(){
+    support.log("Try to show image at:"+imageFilePath);
         try
         {
             String userdir = System.getProperty("user.dir");
@@ -467,24 +470,22 @@ public class PlotFrameController extends javax.swing.JFrame {
                 FileReader errorReader = new FileReader(errorFile);
                 BufferedReader bufferedErrorReader = new BufferedReader(errorReader);
                 String error = null;
-                
+
                 while((error = bufferedErrorReader.readLine()) != null)
                 {
                     support.log(error);
                 }
-                
+
                 bufferedErrorReader.close();
                 errorReader.close();
                 errorFile.delete();
             }
         }
-        catch(Exception e)
-        {
+        catch(Exception e){
+        support.log("Error while reading the error file.");
         }
-        
-        
-        plotFrame.showImage(System.getProperty("user.dir") + File.separator + "rplot.png");
-    }//GEN-LAST:event_PlotButtonActionPerformed
+    plotFrame.showImage(imageFilePath);
+    }
 
     private void SetXButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SetXButtonActionPerformed
         if(!ColumnList.isSelectionEmpty())
@@ -560,4 +561,11 @@ public class PlotFrameController extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
     // End of variables declaration//GEN-END:variables
+
+    /**
+     * nativeProcessCallback interface method
+     */
+    public void errorOccured(String message) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

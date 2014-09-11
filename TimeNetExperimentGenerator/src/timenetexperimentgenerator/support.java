@@ -18,7 +18,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 import timenetexperimentgenerator.datamodel.*;
-import timenetexperimentgenerator.helper.ProcMon;
 import timenetexperimentgenerator.helper.StatisticAggregator;
 import timenetexperimentgenerator.optimization.OptimizerPreferences;
 import timenetexperimentgenerator.simulation.SimulationCache;
@@ -1134,19 +1133,6 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
      */
     public static void setChosenBenchmarkFunction(typeOfBenchmarkFunction aChosenBenchmarkFunction) {
         chosenBenchmarkFunction = aChosenBenchmarkFunction;
-    }
-
-    
-    /**
-     * creates and returns a Pocess-Monitor and starts it (Thread)
-     * @return created and started ProcMon
-     * @param proc Process to monitor
-     */
-    public static ProcMon createProcMon(Process proc) {
-    ProcMon procMon = new ProcMon(proc);
-    Thread t = new Thread(procMon);
-    t.start();
-    return procMon;
     }
 
 
