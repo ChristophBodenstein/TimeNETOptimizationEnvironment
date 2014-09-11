@@ -246,7 +246,7 @@ boolean keepSimulationFiles=false;
         java.util.Scanner s = new java.util.Scanner( p.getInputStream() ).useDelimiter( "\\Z" );//Scans output of process
         support.log( s.next() );//prints output of process into System.out
             try {
-                ProcMon tmpProcMon=createProcMon(p);
+                ProcMon tmpProcMon=support.createProcMon(p);
                 p.waitFor();
                 tmpProcMon.stopThread();
             } catch (InterruptedException ex) {
@@ -294,12 +294,7 @@ boolean keepSimulationFiles=false;
     }
 
 
-    public ProcMon createProcMon(Process proc) {
-    ProcMon procMon = new ProcMon(proc);
-    Thread t = new Thread(procMon);
-    t.start();
-    return procMon;
-    }
+    
 
     /**
      * Returns actual number of simulation

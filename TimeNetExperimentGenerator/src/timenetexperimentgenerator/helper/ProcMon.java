@@ -8,6 +8,7 @@ package timenetexperimentgenerator.helper;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JLabel;
 import timenetexperimentgenerator.support;
 
 /**
@@ -16,6 +17,7 @@ import timenetexperimentgenerator.support;
  */
 public class ProcMon implements Runnable {
 boolean stopThread=false;
+private JLabel localStatusLabel=support.getStatusLabel();
 
   private final Process _proc;
   private volatile boolean _complete=false;
@@ -31,6 +33,7 @@ boolean stopThread=false;
     while(!stopThread){
             try {
                 Thread.sleep(500);
+                support.spinInLabel(localStatusLabel);
             } catch (InterruptedException ex) {
             }
             
@@ -47,6 +50,20 @@ boolean stopThread=false;
   public void stopThread(){
   this.stopThread=true;
   }
+
+    /**
+     * @return the localStatusLabel
+     */
+    public JLabel getLocalStatusLabel() {
+        return localStatusLabel;
+    }
+
+    /**
+     * @param localStatusLabel the localStatusLabel to set
+     */
+    public void setLocalStatusLabel(JLabel localStatusLabel) {
+        this.localStatusLabel = localStatusLabel;
+    }
 
   
 }

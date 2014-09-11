@@ -12,6 +12,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import timenetexperimentgenerator.helper.ProcMon;
 import timenetexperimentgenerator.helper.Statistic;
 import timenetexperimentgenerator.helper.StatisticAggregator;
 import timenetexperimentgenerator.support;
@@ -431,14 +432,27 @@ public class PlotFrameController extends javax.swing.JFrame {
                
             String command = support.getPathToR() + File.separator + "bin" + File.separator + "Rscript rscript.r 2> errorFile.Rout";
             support.log("executing command: " + command);
-            Process child = Runtime.getRuntime().exec(command); 
+
+            java.lang.ProcessBuilder processBuilder = new java.lang.ProcessBuilder(command);
+            java.lang.Process p = processBuilder.start();
+            java.util.Scanner s = new java.util.Scanner( p.getInputStream() ).useDelimiter( "\\Z" );//Scans output of process
+            support.log( s.next() );//prints output of process into System.out
+            try {
+                ProcMon tmpProcMon=support.createProcMon(p);
+                p.waitFor();
+                tmpProcMon.stopThread();
+            } catch (InterruptedException ex) {
+                support.log("Problem executing the Plot-Command.");
+            }
+
+            /*Process child = Runtime.getRuntime().exec(command);
             try
             {
                 child.waitFor();
             }
             catch(InterruptedException e)
             {
-            }
+            }*/
         }
         catch(IOException e)
         {

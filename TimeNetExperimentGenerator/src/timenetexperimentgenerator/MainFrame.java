@@ -753,7 +753,6 @@ private boolean savePropertiesEnabled=false;
         //SimulatorLocal mySimulator=new SimulatorLocal();
         Simulator mySimulator=SimOptiFactory.getSimulator();
         mySimulator.initSimulator(ListOfParameterSetsToBeWritten, 0, true);
-        
     
     }//GEN-LAST:event_jButtonStartBatchSimulationActionPerformed
 
@@ -765,14 +764,15 @@ private boolean savePropertiesEnabled=false;
     private void jButtonStartOptimizationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonStartOptimizationActionPerformed
     support.setCancelEverything(false);
     
-        if(this.sizeOfDesignSpace<=10){
+        if(this.sizeOfDesignSpace<=support.DEFAULT_MINIMUM_DESIGNSPACE_FOR_OPTIMIZATION){
         //TODO check , if opti is possible (target chosen etc.)
         support.log("Design space to small, no Optimization posible.");
+        support.getStatusLabel().setText("Designspace to small for Opti.");
         }else{
                 if(this.getListOfActiveMeasureMentsToOptimize().size()>=1){
                 //Ask for Tmp-Path
                 support.setTmpPath(support.getPathToDirByDialog("Dir for export TMP-Files and log.\n "+"Go INTO the dir to choose it!",  new File(support.getOriginalFilename()).getPath()) );
-                //TODO if tmpPath is empty or null --> return
+                //if tmpPath is empty or null --> return
                     if(support.getTmpPath()!=null){
                     support.setPathToTimeNet(pathToTimeNet);
                     support.setMainFrame(this);
@@ -789,6 +789,7 @@ private boolean savePropertiesEnabled=false;
                     
                 }else{
                 support.log("No Measurements to optimize for are chosen.");
+                support.getStatusLabel().setText("No Measurements chosen. No Opti possible.");
                 }
              }
     }//GEN-LAST:event_jButtonStartOptimizationActionPerformed
@@ -1256,18 +1257,6 @@ private boolean savePropertiesEnabled=false;
     }
 
     
-    /**
-     * Returns next spinning char for displaying a spinning wheel in a label
-     * @param oldChar actual char in label to calculate the next
-     * @return next char to be displayed in label
-     */
-    public String getNextSpinningChar(String oldChar){
-    if(oldChar.equals("-")){return "\\";}
-    if(oldChar.equals("\\")){return "|";}
-    if(oldChar.equals("|")){return "/";}
-    if(oldChar.equals("/")){return "-";}
-    return "-";
-    }
 
     /**
      * Starts and restarts the generator Thread

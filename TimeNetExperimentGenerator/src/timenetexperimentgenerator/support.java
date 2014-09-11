@@ -18,6 +18,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 import timenetexperimentgenerator.datamodel.*;
+import timenetexperimentgenerator.helper.ProcMon;
 import timenetexperimentgenerator.helper.StatisticAggregator;
 import timenetexperimentgenerator.optimization.OptimizerPreferences;
 import timenetexperimentgenerator.simulation.SimulationCache;
@@ -1135,6 +1136,41 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
         chosenBenchmarkFunction = aChosenBenchmarkFunction;
     }
 
+    
+    /**
+     * creates and returns a Pocess-Monitor and starts it (Thread)
+     * @return created and started ProcMon
+     * @param proc Process to monitor
+     */
+    public static ProcMon createProcMon(Process proc) {
+    ProcMon procMon = new ProcMon(proc);
+    Thread t = new Thread(procMon);
+    t.start();
+    return procMon;
+    }
+
+
+    /**
+     * Shows a little spinning indicator in a given JLabel
+     * useful to show, that something is going on...
+     * @param l JLabel to show the spinning characters
+     */
+    public static void spinInLabel(JLabel l){
+    l.setText(getNextSpinningChar(l.getText()));
+    }
+
+    /**
+     * Returns next spinning char for displaying a spinning wheel in a label
+     * @param oldChar actual char in label to calculate the next
+     * @return next char to be displayed in label
+     */
+    public static String getNextSpinningChar(String oldChar){
+    if(oldChar.equals("-")){return "\\";}
+    if(oldChar.equals("\\")){return "|";}
+    if(oldChar.equals("|")){return "/";}
+    if(oldChar.equals("/")){return "-";}
+    return "-";
+    }
 }
 
 
