@@ -513,6 +513,10 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
 
 
             for(int i=0;i<pList.size();i++){
+            //set indicator
+            support.getStatusLabel().setText("Writing: "+i+1 + "/"+ pList.size());
+            support.getStatusLabel().updateUI();
+            
             SimulationType myParser=pList.get(i);
             StatisticAggregator.addToStatistics(myParser, logFileName);
               try{
@@ -1091,7 +1095,7 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
                 listOfChangableParameters.add(p);
                 }
             }
-    support.log("There are "+listOfChangableParameters.size()+" changable parameter.");
+    //support.log("There are "+listOfChangableParameters.size()+" changable parameter.");
     return listOfChangableParameters;
     }
 

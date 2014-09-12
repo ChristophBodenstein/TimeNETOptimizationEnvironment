@@ -172,7 +172,7 @@ ArrayList<ArrayList <parameter> > listOfParameterSetsTMP;
             //TODO make deep copy of Parameterlist
 
         //set indicator
-        support.getStatusLabel().setText(i+1 + "/"+ listOfParameterSetsTMP.size());
+        support.getStatusLabel().setText("Simulating: "+i+1 + "/"+ listOfParameterSetsTMP.size());
         support.getStatusLabel().updateUI();
 
         double sum=0.0;
