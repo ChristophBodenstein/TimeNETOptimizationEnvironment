@@ -174,7 +174,7 @@ private String[][] parameterArray;
      */
     public double getDoubleValueByName(String name, String col){
 
-       return Double.valueOf(this.getValueByName(name, col));
+       return support.getDouble(this.getValueByName(name, col));
 
     }
 

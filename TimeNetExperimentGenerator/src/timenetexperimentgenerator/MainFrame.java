@@ -853,6 +853,8 @@ private boolean savePropertiesEnabled=false;
       this.mySimulationCache=support.getMySimulationCache();
         if(!mySimulationCache.parseSimulationCacheFile(inputFile,((MeasurementForm)this.jTabbedPane1.getComponent(0)).getMeasurements(), (parameterTableModel)this.jTableParameterList.getModel(),this )){
             support.log("Wrong Simulation cache file for this SCPN!");
+            support.getStatusLabel().setText("Error loading cache-file!");
+            return;
         }else{
         this.pathToLastSimulationCache=fileChooser.getSelectedFile().getPath();
         this.saveProperties();

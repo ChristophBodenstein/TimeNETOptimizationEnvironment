@@ -71,7 +71,13 @@ private int localSimulationCounter = 0;
         //Check length of List of Parameter
         if(listOfCachedParameterNames.length!=myParameterTableModel.getRowCount()){
             support.log("Count of cached Parameters differs from Count of given Parameters.");
-        return false;
+            support.log(listOfCachedParameterNames.length+" parameters in cache while "+myParameterTableModel.getRowCount()+" in table.");
+            support.log("List of Parameters in Cache:");
+            for(int i=0;i<listOfCachedParameterNames.length;i++){
+            support.log(support.translateParameterNameFromLogFileToTable(listOfStringLines.get(0)[i+7]));
+            }
+            support.log("End of List of Parameters in Cache.");
+            return false;
         }   support.log("Count of cached Parameters seems correct.");
 
 
@@ -171,8 +177,11 @@ private int localSimulationCounter = 0;
                 tmpMeasure.setEpsilon(support.getDouble(listOfStringLines.get(lineNumber)[5]));
                 tmpMeasure.setSimulationTime(support.getDouble(listOfStringLines.get(lineNumber)[6]));
                 //CPU-Time is in last column
+                support.log("printing CPU-Time for experiment:"+i);
+                support.log("LineNumber: "+lineNumber);
+                support.log("CPUTime is in Col: "+(7+listOfCachedParameterNames.length));
                 tmpMeasure.setCPUTime(support.getDouble(listOfStringLines.get(lineNumber)[7+listOfCachedParameterNames.length]));
-                //support.log("CPU-Time of "+tmpSimulation.getMeasureName() +" is " +tmpSimulation.getCPUTime()+".");
+                support.log("CPU-Time of "+tmpMeasure.getMeasureName()+" is " +tmpMeasure.getCPUTime()+".");
             
                 if (tmpSimulation.getListOfParameters() == null) //list of parameters for current simulation not set
                 {
@@ -226,9 +235,11 @@ private int localSimulationCounter = 0;
         //Names are equal --> format the table so that Start-,End-,Stepping-Value match
         for(int i=0;i<listOfCachedParameterNames.length;i++){
             myTableModel.setValueByName(listOfCachedParameterNames[i], "StartValue", listOfCachedParameterMin[i]);
+            support.log("Setting StartValue to "+listOfCachedParameterMin[i]);
             myTableModel.setValueByName(listOfCachedParameterNames[i], "EndValue", listOfCachedParameterMax[i]);
+            support.log("Setting EndValue to "+listOfCachedParameterMax[i]);
             myTableModel.setValueByName(listOfCachedParameterNames[i], "Stepping", listOfCachedParameterStepping[i]);
-
+            support.log("Setting Stepping to "+listOfCachedParameterStepping[i]);
         }
     }
     

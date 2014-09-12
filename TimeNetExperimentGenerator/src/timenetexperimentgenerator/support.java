@@ -33,7 +33,7 @@ import timenetexperimentgenerator.typedef.*;
 public class support {
 
 //This Version of TimeNetExperimentGenerator
-public static final String VERSION ="0.9.185";
+public static final String VERSION ="0.9.196";
 
 
 //Define some program-wide default values
@@ -60,7 +60,8 @@ public static final typeOfAnnealingParameterCalculation DEFAULT_CALC_NEXT_PARAME
 
 
 public static final int DEFAULT_CACHE_STUCK=10;//Optimizer can ask 2 times for simulating the same parameterset in a row. Then optimization will be aborted!
-public static final int DEFAULT_LOCAL_SIMULATION_ATTEMPTS=5;//Loacla simulation is tried so many times until break
+public static final int DEFAULT_LOCAL_SIMULATION_ATTEMPTS=5;//Local simulation is tried so many times until break
+public static final int DEFAULT_TIME_BETWEEN_LOCAL_SIMULATIONS=3000;//in ms
 
 
 public static final int DEFAULT_NumberOfPhases=2;
@@ -481,6 +482,16 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
     public static void addLinesToLogFileFromListOfParser(ArrayList<SimulationType> pList, String logFileName){
     boolean writeHeader=false;
     String line;
+        //Add empty CPU-Time-Parameter for compatibility
+        if (support.getParameterByName(pList.get(0).getListOfParameters(), "Used CPUTime")==null){
+                    parameter tmpP=new parameter();
+                    tmpP.setName("Used CPUTime");
+                    tmpP.setValue(0.0);
+                    tmpP.setStartValue(0.0);
+                    tmpP.setEndValue(0.0);
+                    pList.get(0).getListOfParameters().add(tmpP);
+        }
+    
         try{
         //support.log("Number of Simulationtypes to add is "+pList.size());
         //Öffnen des Logfiles und Schreiben der ersten Zeile
@@ -514,10 +525,22 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
 
             for(int i=0;i<pList.size();i++){
             //set indicator
-            support.getStatusLabel().setText("Writing: "+i+1 + "/"+ pList.size());
+            support.getStatusLabel().setText("Writing: "+(i+1) + "/"+ pList.size());
             support.getStatusLabel().updateUI();
-            
             SimulationType myParser=pList.get(i);
+            
+            //Add empty CPU-Time-Parameter for compatibility
+            if (support.getParameterByName(myParser.getListOfParameters(), "Used CPUTime")==null){
+                        parameter tmpP=new parameter();
+                        tmpP.setName("Used CPUTime");
+                        tmpP.setValue(0.0);
+                        tmpP.setStartValue(0.0);
+                        tmpP.setEndValue(0.0);
+                        myParser.getListOfParameters().add(tmpP);
+            }
+            
+            
+            
             StatisticAggregator.addToStatistics(myParser, logFileName);
               try{
                 for(int i1=0;i1<myParser.getMeasures().size();i1++){//Alle Measure schreiben

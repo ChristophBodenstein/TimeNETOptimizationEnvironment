@@ -91,7 +91,7 @@ boolean keepSimulationFiles=false;
                     for(int i=0;i<listOfParameterSets.size();i++){
 
                         //Wait for some Time. Maybe this is needed on some Systems
-                        Thread.sleep(5000);
+                        Thread.sleep(support.DEFAULT_TIME_BETWEEN_LOCAL_SIMULATIONS);
 
 
                     //Try every simulation several times if TimeNet crashs

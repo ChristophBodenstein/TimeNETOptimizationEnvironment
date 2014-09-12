@@ -172,7 +172,7 @@ ArrayList<ArrayList <parameter> > listOfParameterSetsTMP;
             //TODO make deep copy of Parameterlist
 
         //set indicator
-        support.getStatusLabel().setText("Simulating: "+i+1 + "/"+ listOfParameterSetsTMP.size());
+        support.getStatusLabel().setText("Simulating: "+(i+1) + "/"+ listOfParameterSetsTMP.size());
         support.getStatusLabel().updateUI();
 
         double sum=0.0;
@@ -287,7 +287,8 @@ ArrayList<ArrayList <parameter> > listOfParameterSetsTMP;
             tmpMeasurement.setMeanValue(sum);
             //TODO fill out all other imformation
             newListOfMeasurements.add(tmpMeasurement);
-
+            tmpMeasurement.setCPUTime(2.22);
+            
             }//end of for-d-loop
 
         tmpSimulation.setListOfParameters(tmpParameterList);
