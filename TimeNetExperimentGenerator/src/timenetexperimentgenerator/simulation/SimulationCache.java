@@ -177,11 +177,11 @@ private int localSimulationCounter = 0;
                 tmpMeasure.setEpsilon(support.getDouble(listOfStringLines.get(lineNumber)[5]));
                 tmpMeasure.setSimulationTime(support.getDouble(listOfStringLines.get(lineNumber)[6]));
                 //CPU-Time is in last column
-                support.log("printing CPU-Time for experiment:"+i);
-                support.log("LineNumber: "+lineNumber);
-                support.log("CPUTime is in Col: "+(7+listOfCachedParameterNames.length));
+                //support.log("printing CPU-Time for experiment:"+i);
+                //support.log("LineNumber: "+lineNumber);
+                //support.log("CPUTime is in Col: "+(7+listOfCachedParameterNames.length));
                 tmpMeasure.setCPUTime(support.getDouble(listOfStringLines.get(lineNumber)[7+listOfCachedParameterNames.length]));
-                support.log("CPU-Time of "+tmpMeasure.getMeasureName()+" is " +tmpMeasure.getCPUTime()+".");
+                //support.log("CPU-Time of "+tmpMeasure.getMeasureName()+" is " +tmpMeasure.getCPUTime()+".");
             
                 if (tmpSimulation.getListOfParameters() == null) //list of parameters for current simulation not set
                 {

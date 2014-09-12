@@ -482,15 +482,6 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
     public static void addLinesToLogFileFromListOfParser(ArrayList<SimulationType> pList, String logFileName){
     boolean writeHeader=false;
     String line;
-        //Add empty CPU-Time-Parameter for compatibility
-        if (support.getParameterByName(pList.get(0).getListOfParameters(), "Used CPUTime")==null){
-                    parameter tmpP=new parameter();
-                    tmpP.setName("Used CPUTime");
-                    tmpP.setValue(0.0);
-                    tmpP.setStartValue(0.0);
-                    tmpP.setEndValue(0.0);
-                    pList.get(0).getListOfParameters().add(tmpP);
-        }
     
         try{
         //support.log("Number of Simulationtypes to add is "+pList.size());
@@ -508,7 +499,17 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
         }
 
             if(writeHeader){
-                MeasureType exportMeasure=pList.get(0).getMeasures().get(0);//Dummy, es wird das erste Measure abgefragt und die Parameterliste
+                //Add empty CPU-Time-Parameter for compatibility
+                if (support.getParameterByName(pList.get(0).getListOfParameters(), "Used CPUTime")==null){
+                    parameter tmpP=new parameter();
+                    tmpP.setName("Used CPUTime");
+                    tmpP.setValue(0.0);
+                    tmpP.setStartValue(0.0);
+                    tmpP.setEndValue(0.0);
+                    pList.get(0).getListOfParameters().add(tmpP);
+                }
+                
+                MeasureType exportMeasure=pList.get(0).getMeasures().get(0);//First Measure will be used to determine the lsit of Parameters
                 line="MeasureName;Mean Value; Variance; Conf.Interval-Min;Conf.Interval-Max;Epsilon;"+"Simulation Time";
                     for(int i1=0;i1<pList.get(0).getListOfParameters().size();i1++)
                     {
