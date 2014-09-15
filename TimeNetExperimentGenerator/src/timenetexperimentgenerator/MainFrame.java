@@ -796,7 +796,7 @@ private boolean savePropertiesEnabled=false;
         if(this.sizeOfDesignSpace<=support.DEFAULT_MINIMUM_DESIGNSPACE_FOR_OPTIMIZATION){
         //TODO check , if opti is possible (target chosen etc.)
         support.log("Design space to small, no Optimization posible.");
-        support.getStatusLabel().setText("Designspace to small for Opti.");
+        support.setStatusText("Designspace to small for Opti.");
         }else{
                 if(this.getListOfActiveMeasureMentsToOptimize().size()>=1){
                 //Ask for Tmp-Path
@@ -820,7 +820,7 @@ private boolean savePropertiesEnabled=false;
                     
                 }else{
                 support.log("No Measurements to optimize for are chosen.");
-                support.getStatusLabel().setText("No Measurements chosen. No Opti possible.");
+                support.setStatusText("No Measurements chosen. No Opti possible.");
                 }
              }
     }//GEN-LAST:event_jButtonStartOptimizationActionPerformed
@@ -880,7 +880,7 @@ private boolean savePropertiesEnabled=false;
       this.mySimulationCache=support.getMySimulationCache();
         if(!mySimulationCache.parseSimulationCacheFile(inputFile,((MeasurementForm)this.jTabbedPane1.getComponent(0)).getMeasurements(), (parameterTableModel)this.jTableParameterList.getModel(),this )){
             support.log("Wrong Simulation cache file for this SCPN!");
-            support.getStatusLabel().setText("Error loading cache-file!");
+            support.setStatusText("Error loading cache-file!");
             return;
         }else{
         this.pathToLastSimulationCache=fileChooser.getSelectedFile().getPath();

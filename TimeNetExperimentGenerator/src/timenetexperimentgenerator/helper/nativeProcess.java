@@ -32,9 +32,8 @@ private PlotFrameController pfc=null;
      * @param l JLabel to display a spinning char
      * @param PFController a Controller-object with callback showImage();
      */
-    public nativeProcess(ProcessBuilder p, JLabel l, PlotFrameController PFController) {
+    public nativeProcess(ProcessBuilder p, PlotFrameController PFController) {
     this.myProcessBuilder=p;
-    statusLabel=l;
     this.pfc=PFController;
     new Thread(this).start();
     }

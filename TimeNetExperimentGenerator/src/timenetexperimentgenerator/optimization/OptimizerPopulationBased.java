@@ -57,7 +57,6 @@ public abstract class OptimizerPopulationBased implements Runnable, Optimizer
     
     public void initOptimizer() 
     {
-        this.infoLabel=support.getStatusLabel();//  infoLabel;
         this.pathToTimeNet=support.getPathToTimeNet();// pathToTimeNetTMP;
         this.MeasureFormPane=support.getMeasureFormPane();//MeasureFormPaneTMP;
         this.parent=support.getMainFrame();// parentTMP;

@@ -34,7 +34,6 @@ MainFrame parent;
     exporter(ArrayList< ArrayList<parameter> > ListOfParameterSetsToBeWritten){
     this.ListOfParameterSetsToBeWritten=ListOfParameterSetsToBeWritten;
     this.filename=support.getOriginalFilename();// filename;
-    this.infoLabel=support.getStatusLabel();//infoLabel;
     this.parent=support.getMainFrame();//parent;
     
     new Thread(this).start();

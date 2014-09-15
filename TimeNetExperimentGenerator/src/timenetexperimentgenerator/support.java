@@ -171,9 +171,9 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
      * Returns reference to status-label
      * @return the statusLabel
      */
-    public static JLabel getStatusLabel() {
-        return statusLabel;
-    }
+    //public static JLabel getStatusLabel() {
+    //    return statusLabel;
+    //}
 
     /**
      * sets the reference to status-label
@@ -485,6 +485,12 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
     boolean writeHeader=false;
     String line;
     
+        parameter dummyParameterForCPUTime=new parameter();
+        dummyParameterForCPUTime.setName("UsedCPUTIME");
+        dummyParameterForCPUTime.setValue(0.0);
+        dummyParameterForCPUTime.setStartValue(0.0);
+        dummyParameterForCPUTime.setEndValue(0.0);
+    
         try{
         //support.log("Number of Simulationtypes to add is "+pList.size());
         //Öffnen des Logfiles und Schreiben der ersten Zeile
@@ -502,13 +508,8 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
 
             if(writeHeader){
                 //Add empty CPU-Time-Parameter for compatibility
-                if (support.getParameterByName(pList.get(0).getListOfParameters(), "Used CPUTime")==null){
-                    parameter tmpP=new parameter();
-                    tmpP.setName("Used CPUTime");
-                    tmpP.setValue(0.0);
-                    tmpP.setStartValue(0.0);
-                    tmpP.setEndValue(0.0);
-                    pList.get(0).getListOfParameters().add(tmpP);
+                if (support.getParameterByName(pList.get(0).getListOfParameters(), "UsedCPUTIME")==null){
+                    pList.get(0).getListOfParameters().add(dummyParameterForCPUTime);
                 }
                 
                 MeasureType exportMeasure=pList.get(0).getMeasures().get(0);//First Measure will be used to determine the lsit of Parameters
@@ -528,18 +529,12 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
 
             for(int i=0;i<pList.size();i++){
             //set indicator
-            support.getStatusLabel().setText("Writing: "+(i+1) + "/"+ pList.size());
-            support.getStatusLabel().updateUI();
+            setStatusText("Writing: "+(i+1) + "/"+ pList.size());
             SimulationType myParser=pList.get(i);
             
             //Add empty CPU-Time-Parameter for compatibility
-            if (support.getParameterByName(myParser.getListOfParameters(), "Used CPUTime")==null){
-                        parameter tmpP=new parameter();
-                        tmpP.setName("Used CPUTime");
-                        tmpP.setValue(0.0);
-                        tmpP.setStartValue(0.0);
-                        tmpP.setEndValue(0.0);
-                        myParser.getListOfParameters().add(tmpP);
+            if (support.getParameterByName(myParser.getListOfParameters(), "UsedCPUTIME")==null){
+                        myParser.getListOfParameters().add(dummyParameterForCPUTime);
             }
             
             
@@ -850,7 +845,7 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
     public static boolean waitForEndOfSimulator(Simulator mySimulator, int simulationCounter, long timeout){
     long timeoutCounter=timeout;
     support.log("wait for Simulator has 100% completed.");
-            getStatusLabel().setText("Simulations started.");
+            setStatusText("Simulations started.");
                 while(mySimulator.getStatus()<100){
                     try {
                         Thread.sleep(1000);
@@ -858,7 +853,7 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
                         support.log("InterruptedException in main loop of optimization. Optimization aborted.");
                         statusLabel.setText("Aborted / Error");
                     }
-                getStatusLabel().setText("Done "+ mySimulator.getStatus() +"% ");
+                setStatusText("Done "+ mySimulator.getStatus() +"% ");
                 
                 
                 timeoutCounter--;
@@ -1071,7 +1066,7 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
      */
     public static void setCancelEverything(boolean aCancelEverything) {
         if(aCancelEverything){
-        getStatusLabel().setText("All Operations will be canceled.");
+        setStatusText("All Operations will be canceled.");
         }
         
         cancelEverything = aCancelEverything;
@@ -1216,6 +1211,13 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
         originalParameterBase = aOriginalParameterBase;
     }
     
+    /**
+     * Sets the text of status label
+     * 
+     */
+    public static void setStatusText(String s){
+    statusLabel.setText(s);
+    }
     
 }
 

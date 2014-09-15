@@ -18,6 +18,7 @@ import timenetexperimentgenerator.datamodel.parameter;
 import timenetexperimentgenerator.datamodel.SimulationType;
 import timenetexperimentgenerator.datamodel.MeasureType;
 import timenetexperimentgenerator.support;
+import static timenetexperimentgenerator.support.setStatusText;
 import timenetexperimentgenerator.typedef.*;
 import timenetexperimentgenerator.typedef.typeOfBenchmarkFunction;
 
@@ -172,8 +173,7 @@ ArrayList<ArrayList <parameter> > listOfParameterSetsTMP;
             //TODO make deep copy of Parameterlist?
 
         //set indicator
-        support.getStatusLabel().setText("Simulating: "+(i+1) + "/"+ listOfParameterSetsTMP.size());
-        support.getStatusLabel().updateUI();
+        support.setStatusText("Simulating: "+(i+1) + "/"+ listOfParameterSetsTMP.size());
 
         double sum=0.0;
         int dimension=tmpListOfChangableParameter.size();

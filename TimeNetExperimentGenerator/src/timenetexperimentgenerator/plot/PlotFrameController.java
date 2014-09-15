@@ -17,6 +17,7 @@ import timenetexperimentgenerator.helper.StatisticAggregator;
 import timenetexperimentgenerator.helper.nativeProcess;
 import timenetexperimentgenerator.helper.nativeProcessCallbacks;
 import timenetexperimentgenerator.support;
+import static timenetexperimentgenerator.support.setStatusText;
 
 /**
  *
@@ -463,7 +464,7 @@ private String rScriptFilePath=System.getProperty("user.dir") + File.separator +
 
             java.lang.ProcessBuilder processBuilder = new java.lang.ProcessBuilder(support.getPathToR() + File.separator + "bin" + File.separator + "Rscript", "rscript.r", "2>", "errorFile.Rout");
 
-            nativeProcess myNativeProcess = new nativeProcess(processBuilder, support.getStatusLabel(), this);
+            nativeProcess myNativeProcess = new nativeProcess(processBuilder, this);
 
         }
         catch(IOException e)
@@ -506,6 +507,7 @@ private String rScriptFilePath=System.getProperty("user.dir") + File.separator +
         support.log("Error while reading the error file.");
         }
     plotFrame.showImage(imageFilePath);
+    support.setStatusText("");
     }
 
     private void SetXButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SetXButtonActionPerformed

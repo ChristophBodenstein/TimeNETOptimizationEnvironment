@@ -82,7 +82,6 @@ int stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;
      *
      */
     public void initOptimizer() {
-    this.infoLabel=support.getStatusLabel();//  infoLabel;
     this.pathToTimeNet=support.getPathToTimeNet();// pathToTimeNetTMP;
     this.MeasureFormPane=support.getMeasureFormPane();//MeasureFormPaneTMP;
     this.parent=support.getMainFrame();// parentTMP;
@@ -205,7 +204,7 @@ int stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;
             }
         support.log(this.getClass().getSimpleName()+" has ended, printing optimal value:");
         support.addLinesToLogFile(currentSolution, logFileName);
-        support.getStatusLabel().setText("Optimization ended. See Log.");
+        support.setStatusText("Optimization ended. See Log.");
         support.printOptimizedMeasures(currentSolution, this.listOfMeasures);
         StatisticAggregator.printStatistic(this.logFileName);
 
