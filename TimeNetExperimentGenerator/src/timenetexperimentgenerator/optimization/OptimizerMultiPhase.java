@@ -21,6 +21,8 @@ import timenetexperimentgenerator.datamodel.SimulationType;
 import timenetexperimentgenerator.datamodel.parameter;
 import timenetexperimentgenerator.helper.StatisticAggregator;
 import timenetexperimentgenerator.support;
+import static timenetexperimentgenerator.support.getCopyOfParameterSet;
+import static timenetexperimentgenerator.support.setOriginalParameterBase;
 import timenetexperimentgenerator.typedef;
 import timenetexperimentgenerator.typedef.*;
 
@@ -52,19 +54,18 @@ String logFileName;
     super();
     this.parent=support.getMainFrame();// parentTMP;
     this.parameterBase=parent.getParameterBase();
+    support.setParameterBase(parameterBase);
     logFileName=support.getTmpPath()+File.separator+this.getClass().getSimpleName()+"_"+Calendar.getInstance().getTimeInMillis()+support.getOptimizerPreferences().getPref_LogFileAddon()+".csv";
     support.log("LogfileName:"+logFileName);
     }
 
     public void run() {
     ArrayList<ArrayList<parameter>> newParameterset;
-    ArrayList<parameter> originalParameterset;
+    ArrayList<parameter> originalParameterset=support.getOriginalParameterBase();
     //Optimizer init with initial parameterset
     Optimizer myOptimizer;//=SimOptiFactory.getOptimizer(support.getOptimizerPreferences().getPref_typeOfUsedMultiPhaseOptimization() );
     Optimizer lastOptimizer=null;
 
-    //Save original Parameterset, for stepping and designspace borders
-    originalParameterset=support.getCopyOfParameterSet(this.parameterBase);
     
     //Prepare parameterset for first Optimization run
             for(int i=0;i<this.parameterBase.size();i++){

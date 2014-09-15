@@ -266,4 +266,19 @@ private long idHash=0;
         }
     }
 
+    /**
+     * prints some interesting information about itself to log
+     */
+    public void printInfo(){
+    String s="Parameter "+ this.getName()+": Start="+this.getStartValue()+", End="+this.getEndValue();
+    s+=", Stepping="+this.getStepping()+", Value="+this.getValue()+", is ";
+    if(!isIgnorable())s+="NOT";
+    s+=" ignorable, is ";
+    if(!isIteratable())s+="NOT";
+    s+=" iteratable, is ";
+    if(!isExternalParameter())s+="NOT";
+    s+=" external.";
+    support.log(s);
+    }
+    
 }

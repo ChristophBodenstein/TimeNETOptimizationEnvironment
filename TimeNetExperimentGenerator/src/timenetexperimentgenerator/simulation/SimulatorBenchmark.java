@@ -169,7 +169,7 @@ ArrayList<ArrayList <parameter> > listOfParameterSetsTMP;
         SimulationType tmpSimulation=new SimulationType();
         ArrayList<parameter> tmpParameterList=listOfParameterSetsTMP.get(i);
         ArrayList<parameter> tmpListOfChangableParameter=support.getListOfChangableParameters(tmpParameterList);
-            //TODO make deep copy of Parameterlist
+            //TODO make deep copy of Parameterlist?
 
         //set indicator
         support.getStatusLabel().setText("Simulating: "+(i+1) + "/"+ listOfParameterSetsTMP.size());
@@ -179,10 +179,14 @@ ArrayList<ArrayList <parameter> > listOfParameterSetsTMP;
         int dimension=tmpListOfChangableParameter.size();
         double xNew=0.0;
         double x[]=new double[dimension];
+        double value=0.0;
         for(int c=0;c<dimension;c++){
         parameter p=tmpListOfChangableParameter.get(c);
+        value=p.getValue();
+        p=support.getParameterByName(support.getOriginalParameterBase(), p.getName());
         //Check Range and align the value to map constraints
-        xNew=(p.getValue()-p.getStartValue()) /(p.getEndValue()-p.getStartValue()) ;
+        //p.printInfo();
+        xNew=(value-p.getStartValue()) /(p.getEndValue()-p.getStartValue()) ;
         x[c]=xNew*(limitUpper-limitLower)+limitLower;
         }
 
@@ -211,8 +215,10 @@ ArrayList<ArrayList <parameter> > listOfParameterSetsTMP;
                     sum=0.0;
                     for(int c=0;c<dimension;c++){
                     parameter p=tmpListOfChangableParameter.get(c);
+                    value=p.getValue();
+                    p=support.getParameterByName(support.getOriginalParameterBase(), p.getName());
                     //Check Range and align the value to map constraints
-                    xNew=(p.getValue()-p.getStartValue()) /(p.getEndValue()-p.getStartValue()) ;
+                    xNew=(value-p.getStartValue()) /(p.getEndValue()-p.getStartValue()) ;
                     xNew=xNew*(limitUpper-limitLower)+limitLower;
                     sum+=(xNew*xNew);
                     }//End of for-c-loop

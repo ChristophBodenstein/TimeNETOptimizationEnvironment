@@ -112,6 +112,8 @@ private static typedef.typeOfOptimization chosenOptimizerType=DEFAULT_TYPE_OF_OP
 private static typeOfSimulator chosenSimulatorType=DEFAULT_TYPE_OF_SIMULATOR;//0=local, 1=cached, 2=distributed
 private static LogFrame myLogFrame=new LogFrame();
 private static ArrayList<parameter> parameterBase=null;//Base set of parameters, start/end-value, stepping, etc.
+private static ArrayList<parameter> originalParameterBase=null;//Base set of parameters, This will remain unchanged even in Multistage-Mode
+
 private static boolean cancelEverything=false;//If set to true, everything is cancelled
 private static typeOfBenchmarkFunction chosenBenchmarkFunction=DEFAULT_TYPE_OF_BENCHMARKFUNCTION;
 
@@ -980,7 +982,7 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
 
 
     /**
-     * Fits every Paraemetr in ArrayList to BaseParameterset
+     * Fits every Parameter in ArrayList to BaseParameterset
      * Start-End-Value and Stepping is set
      * Name is changed if external parameter
      *
@@ -1198,6 +1200,20 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
     if(oldChar.equals("|")){return "/";}
     if(oldChar.equals("/")){return "-";}
     return "-";
+    }
+
+    /**
+     * @return the originalParameterBase
+     */
+    public static ArrayList<parameter> getOriginalParameterBase() {
+        return originalParameterBase;
+    }
+
+    /**
+     * @param aOriginalParameterBase the originalParameterBase to set
+     */
+    public static void setOriginalParameterBase(ArrayList<parameter> aOriginalParameterBase) {
+        originalParameterBase = aOriginalParameterBase;
     }
     
     

@@ -777,6 +777,8 @@ private boolean savePropertiesEnabled=false;
     
         //LocalBatchSimulatorEngine mySimulator=new LocalBatchSimulatorEngine(ListOfParameterSetsToBeWritten);
         //SimulatorLocal mySimulator=new SimulatorLocal();
+        //Save original Parameterset, for stepping and designspace borders
+        support.setOriginalParameterBase(support.getCopyOfParameterSet(this.getParameterBase()));
         Simulator mySimulator=SimOptiFactory.getSimulator();
         mySimulator.initSimulator(ListOfParameterSetsToBeWritten, 0, true);
         }
@@ -807,6 +809,8 @@ private boolean savePropertiesEnabled=false;
                     support.setStatusLabel(jLabelExportStatus);
                     support.setMeasureFormPane(jTabbedPane1);
                     //support.setTypeOfStartValue((typeOfStartValueEnum)support.getOptimizerPreferences().jComboBoxTypeOfStartValue.getSelectedItem());
+                    //Save original Parameterset, for stepping and designspace borders
+                    support.setOriginalParameterBase(support.getCopyOfParameterSet(this.getParameterBase()));
                     Optimizer myOptimizer=SimOptiFactory.getOptimizer();
                     myOptimizer.initOptimizer();
                     }else{
