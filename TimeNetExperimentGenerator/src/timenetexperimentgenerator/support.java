@@ -91,7 +91,7 @@ public static final boolean DEFAULT_LOG_TO_FILE=false;
 
 public static final char DEFAULT_PLOT_CHAR='.';
 
-public static final int DEFAULT_MEMORYPRINT_INTERVALL=100;//in seconds
+public static final int DEFAULT_MEMORYPRINT_INTERVALL=1;//in seconds
 
 //End of program-wide default value definition
 
@@ -1131,9 +1131,23 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
     long freeMemory = Runtime.getRuntime().freeMemory()/MegaBytes;
     long totalMemory = Runtime.getRuntime().totalMemory()/MegaBytes;
     long maxMemory = Runtime.getRuntime().maxMemory()/MegaBytes;
-
+    
     log("Memory usage: "+(maxMemory-freeMemory)*100/maxMemory +"% of "+maxMemory+" Mb . Init was "+totalMemory+" Mb.");
     }
+    
+    /**
+     * Update an info label or spinner
+     */
+    public static void updateMemoryPrograssbar(){
+    int MegaBytes = 1024*1024;
+    long freeMemory = Runtime.getRuntime().freeMemory()/MegaBytes;
+    long totalMemory = Runtime.getRuntime().totalMemory()/MegaBytes;
+    long maxMemory = Runtime.getRuntime().maxMemory()/MegaBytes;
+    
+    getMainFrame().setMemoryProgressbar((int) ((maxMemory-freeMemory)*100/maxMemory) );
+    
+    }
+    
 
     /**
      * @return the logToWindow

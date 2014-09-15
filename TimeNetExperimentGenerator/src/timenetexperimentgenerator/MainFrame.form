@@ -158,7 +158,6 @@
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jLabelSimulationCount" pref="287" max="32767" attributes="0"/>
                           <Component id="jTabbedPane1" alignment="0" pref="0" max="32767" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="jButtonOpenSCPN" pref="154" max="32767" attributes="1"/>
@@ -191,11 +190,23 @@
                               </Group>
                               <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
                           </Group>
-                          <Group type="103" alignment="1" groupAlignment="0" max="-2" attributes="0">
-                              <Component id="jButtonStartOptimization" alignment="1" max="32767" attributes="1"/>
-                              <Component id="jLabelExportStatus" alignment="1" pref="265" max="32767" attributes="0"/>
-                          </Group>
                           <Component id="jButtonStartBatchSimulation" alignment="0" pref="287" max="32767" attributes="1"/>
+                          <Group type="102" alignment="1" attributes="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="102" attributes="0">
+                                      <Component id="jLabelExportStatus" min="-2" pref="265" max="-2" attributes="0"/>
+                                      <EmptySpace min="0" pref="17" max="32767" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" attributes="0">
+                                      <Component id="jLabelMemoryUsage" min="-2" pref="110" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="jProgressBarMemoryUsage" min="-2" pref="152" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="jLabelSimulationCount" pref="16" max="32767" attributes="0"/>
+                          </Group>
+                          <Component id="jButtonStartOptimization" alignment="0" max="32767" attributes="1"/>
                       </Group>
                   </Group>
               </Group>
@@ -271,7 +282,13 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jCheckBoxSlaveSimulator" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
-              <Component id="jLabelSimulationCount" min="-2" pref="24" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="jLabelSimulationCount" min="-2" pref="24" max="-2" attributes="0"/>
+                  <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
+                      <Component id="jLabelMemoryUsage" alignment="0" max="32767" attributes="0"/>
+                      <Component id="jProgressBarMemoryUsage" alignment="0" max="32767" attributes="0"/>
+                  </Group>
+              </Group>
           </Group>
       </Group>
     </DimensionLayout>
@@ -534,6 +551,19 @@
       <Events>
         <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="jComboBoxBenchmarkFunctionItemStateChanged"/>
       </Events>
+    </Component>
+    <Component class="javax.swing.JProgressBar" name="jProgressBarMemoryUsage">
+      <Properties>
+        <Property name="toolTipText" type="java.lang.String" value="Memory-Usage. Click to print Values to log."/>
+      </Properties>
+      <Events>
+        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jProgressBarMemoryUsageMouseClicked"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabelMemoryUsage">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Memory Usage"/>
+      </Properties>
     </Component>
   </SubComponents>
 </Form>

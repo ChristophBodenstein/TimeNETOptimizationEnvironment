@@ -293,6 +293,8 @@ private boolean savePropertiesEnabled=false;
         jButtonPathToR = new javax.swing.JButton();
         jButtonPlotR = new javax.swing.JButton();
         jComboBoxBenchmarkFunction = new javax.swing.JComboBox();
+        jProgressBarMemoryUsage = new javax.swing.JProgressBar();
+        jLabelMemoryUsage = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jSeparator4 = new javax.swing.JPopupMenu.Separator();
@@ -476,6 +478,15 @@ private boolean savePropertiesEnabled=false;
             }
         });
 
+        jProgressBarMemoryUsage.setToolTipText("Memory-Usage. Click to print Values to log.");
+        jProgressBarMemoryUsage.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jProgressBarMemoryUsageMouseClicked(evt);
+            }
+        });
+
+        jLabelMemoryUsage.setText("Memory Usage");
+
         jMenu1.setText("File");
         jMenu1.add(jSeparator4);
         jMenu1.add(jSeparator5);
@@ -572,7 +583,7 @@ private boolean savePropertiesEnabled=false;
                             .add(layout.createSequentialGroup()
                                 .add(11, 11, 11)
                                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                    .add(jTextFieldSCPNFile, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 373, Short.MAX_VALUE)
+                                    .add(jTextFieldSCPNFile)
                                     .add(layout.createSequentialGroup()
                                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                                             .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 373, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
@@ -586,7 +597,6 @@ private boolean savePropertiesEnabled=false;
                                 .add(jButtonPlotR)))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(jLabelSimulationCount, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
                             .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                             .add(layout.createSequentialGroup()
                                 .add(jButtonOpenSCPN, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)
@@ -612,10 +622,19 @@ private boolean savePropertiesEnabled=false;
                                     .add(jButton2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .add(jComboBoxOptimizationType, 0, 121, Short.MAX_VALUE))
                                 .add(5, 5, 5))
-                            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                                .add(org.jdesktop.layout.GroupLayout.TRAILING, jButtonStartOptimization, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .add(org.jdesktop.layout.GroupLayout.TRAILING, jLabelExportStatus, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE))
-                            .add(jButtonStartBatchSimulation, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE))))
+                            .add(jButtonStartBatchSimulation, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
+                            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                    .add(layout.createSequentialGroup()
+                                        .add(jLabelExportStatus, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 265, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                        .add(0, 17, Short.MAX_VALUE))
+                                    .add(layout.createSequentialGroup()
+                                        .add(jLabelMemoryUsage, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 110, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                        .add(jProgressBarMemoryUsage, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 152, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(jLabelSimulationCount, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 16, Short.MAX_VALUE))
+                            .add(jButtonStartOptimization, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .add(20, 20, 20))
             .add(layout.createSequentialGroup()
                 .addContainerGap()
@@ -675,7 +694,11 @@ private boolean savePropertiesEnabled=false;
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jCheckBoxSlaveSimulator)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .add(jLabelSimulationCount, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 24, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jLabelSimulationCount, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 24, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
+                        .add(org.jdesktop.layout.GroupLayout.LEADING, jLabelMemoryUsage, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .add(org.jdesktop.layout.GroupLayout.LEADING, jProgressBarMemoryUsage, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
         pack();
@@ -1001,6 +1024,10 @@ private boolean savePropertiesEnabled=false;
     this.saveProperties();
     }//GEN-LAST:event_jComboBoxBenchmarkFunctionItemStateChanged
 
+    private void jProgressBarMemoryUsageMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jProgressBarMemoryUsageMouseClicked
+    support.printMemoryStats();
+    }//GEN-LAST:event_jProgressBarMemoryUsageMouseClicked
+
     /**
      * Calculates the design space, number of all permutations of parameters
      * with respect to the stepping sizes
@@ -1119,6 +1146,7 @@ private boolean savePropertiesEnabled=false;
     private javax.swing.JComboBox jComboBoxOptimizationType;
     private javax.swing.JComboBox jComboBoxSimulationType;
     private javax.swing.JLabel jLabelExportStatus;
+    private javax.swing.JLabel jLabelMemoryUsage;
     private javax.swing.JLabel jLabelSimulationCount;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
@@ -1130,6 +1158,7 @@ private boolean savePropertiesEnabled=false;
     private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItemClearLogFile;
     private javax.swing.JMenuItem jMenuItemClearLogWindow;
+    private javax.swing.JProgressBar jProgressBarMemoryUsage;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
@@ -1677,5 +1706,15 @@ private boolean savePropertiesEnabled=false;
     this.jComboBoxBenchmarkFunction.setEnabled(b);
     }
     
+    /**
+     * Sets the progressbar for Memory-Usage to a value between 0..100
+     */
+    public void setMemoryProgressbar(int s){
+    
+        if((s<=100)&&(s>=0)){
+        this.jProgressBarMemoryUsage.setValue(s);
+        }
+        
+    }
     
 }

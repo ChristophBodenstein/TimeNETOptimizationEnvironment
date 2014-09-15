@@ -53,7 +53,8 @@ public class TimeNetController {
             timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-            support.printMemoryStats();
+            //support.printMemoryStats();
+            support.updateMemoryPrograssbar();
             }
             }, 1000*support.DEFAULT_MEMORYPRINT_INTERVALL, 1000*support.DEFAULT_MEMORYPRINT_INTERVALL);
 
