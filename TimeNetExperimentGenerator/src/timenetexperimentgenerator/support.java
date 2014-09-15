@@ -64,8 +64,8 @@ public static final int DEFAULT_LOCAL_SIMULATION_ATTEMPTS=5;//Local simulation i
 public static final int DEFAULT_TIME_BETWEEN_LOCAL_SIMULATIONS=3000;//in ms
 
 
-public static final int DEFAULT_NumberOfPhases=2;
-public static final typeOfOptimization DEFAULT_typeOfUsedMultiPhaseOptimization=typeOfOptimization.HillClimbing;
+public static final int DEFAULT_NumberOfPhases=2;//Default number of phases in multi-stage-optimization
+public static final typeOfOptimization DEFAULT_typeOfUsedMultiPhaseOptimization=typeOfOptimization.HillClimbing;//default type of optimization in multi-stage-opti
 public static final int DEFAULT_ConfidenceIntervallStart=85;
 public static final int DEFAULT_ConfidenceIntervallEnd=99;
 public static final int DEFAULT_MaxRelErrorStart=1;
@@ -79,19 +79,19 @@ public static final int DEFAULT_MINIMUM_DESIGNSPACE_SIZE_PER_PARAMETER=10;//Mini
 public static final int DEFAULT_MINIMUM_DESIGNSPACE_FOR_OPTIMIZATION=50;//If DS is smaller, no Optimization is possible
 
 
-public static final String NAME_OF_PREF_DIR=System.getProperty("user.home") + File.separatorChar +".TNGenerator"+ File.separatorChar ;
-public static final String NAME_OF_LOGFILE=NAME_OF_PREF_DIR + "TimeNETLogFile.log";
-public static final String NAME_OF_PREFERENCES_FILE=NAME_OF_PREF_DIR+"ApplicationPreferences.prop";
-public static final String NAME_OF_OPTIMIZER_PREFFERENCES_FILE=NAME_OF_PREF_DIR+"OptimizerPreferences.prop";
+public static final String NAME_OF_PREF_DIR=System.getProperty("user.home") + File.separatorChar +".TNGenerator"+ File.separatorChar ;//The dir in which all pref-files will be stored
+public static final String NAME_OF_LOGFILE=NAME_OF_PREF_DIR + "TimeNETLogFile.log";//the name of the program logfile, if logging to file is active
+public static final String NAME_OF_PREFERENCES_FILE=NAME_OF_PREF_DIR+"ApplicationPreferences.prop";//name of the pref-file for program-wide prefs
+public static final String NAME_OF_OPTIMIZER_PREFFERENCES_FILE=NAME_OF_PREF_DIR+"OptimizerPreferences.prop";//name of the pref file for optimization parameters
 
 
 
 public static final boolean DEFAULT_LOG_TO_WINDOW=true;
 public static final boolean DEFAULT_LOG_TO_FILE=false;
 
-public static final char DEFAULT_PLOT_CHAR='.';
+public static final char DEFAULT_PLOT_CHAR='.';//Default Char to be used in R-Plot-Scripts
 
-public static final int DEFAULT_MEMORYPRINT_INTERVALL=1;//in seconds
+public static final int DEFAULT_MEMORYPRINT_INTERVALL=1;//in seconds. Default Interval between updating the memory-usage-progressbar
 
 //End of program-wide default value definition
 
