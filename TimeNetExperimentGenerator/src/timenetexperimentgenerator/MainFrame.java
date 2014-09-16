@@ -249,9 +249,16 @@ private boolean savePropertiesEnabled=false;
     
         if(mySimulationCache!=null){
             if(mySimulationCache.checkIfAllParameterMatchTable((parameterTableModel)this.jTableParameterList.getModel())){
+            support.log("Cached Simulation available, all Parameetr match.");
             support.setMySimulationCache(mySimulationCache);
             support.setCachedSimulationEnabled(true);
+            }else{
+            support.log("Cached Simulation not available, all Parameetr match.");
+            support.setCachedSimulationEnabled(false);
             }
+        }else{
+        support.log("Cached Simulation not available, no simulation cache given.");    
+        support.setCachedSimulationEnabled(false);
         }
     this.updateComboBoxSimulationType();
     }    
