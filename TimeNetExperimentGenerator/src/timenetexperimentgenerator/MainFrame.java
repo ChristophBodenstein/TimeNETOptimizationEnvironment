@@ -777,8 +777,24 @@ private boolean savePropertiesEnabled=false;
     
         //LocalBatchSimulatorEngine mySimulator=new LocalBatchSimulatorEngine(ListOfParameterSetsToBeWritten);
         //SimulatorLocal mySimulator=new SimulatorLocal();
-        //Save original Parameterset, for stepping and designspace borders
-        support.setOriginalParameterBase(support.getCopyOfParameterSet(this.getParameterBase()));
+        
+        //We use the first parameterset as base for batch simulation
+        support.setOriginalParameterBase(ListOfParameterSetsToBeWritten.get(0));
+        support.setParameterBase(ListOfParameterSetsToBeWritten.get(0));
+        
+            //If ListOfParameterSetsToBeWritten is null -->eject
+            if(ListOfParameterSetsToBeWritten==null){
+            support.setStatusText("No Parametersets to simulate.");
+            support.log("No Parametersets to simulate.");
+            return;
+            }
+            //If Parameterbase is null -->eject (This is needed for benchmark-simulations)
+            if(support.getParameterBase()==null){
+            support.setStatusText("No Paramaterbase set.");
+            support.log("No Paramaterbase set. No Simulation possible.");
+            return;
+            }
+            
         Simulator mySimulator=SimOptiFactory.getSimulator();
         mySimulator.initSimulator(ListOfParameterSetsToBeWritten, 0, true);
         }
@@ -809,8 +825,16 @@ private boolean savePropertiesEnabled=false;
                     support.setStatusLabel(jLabelExportStatus);
                     support.setMeasureFormPane(jTabbedPane1);
                     //support.setTypeOfStartValue((typeOfStartValueEnum)support.getOptimizerPreferences().jComboBoxTypeOfStartValue.getSelectedItem());
+                    
+                    //If Parameterbase is null -->eject
+                    if(support.getParameterBase()==null){
+                    support.setStatusText("No Paramaterbase set.");
+                    support.log("No Paramaterbase set. No Simulation possible.");
+                    return;
+                    }
+                    
                     //Save original Parameterset, for stepping and designspace borders
-                    support.setOriginalParameterBase(support.getCopyOfParameterSet(this.getParameterBase()));
+                    support.setOriginalParameterBase(support.getCopyOfParameterSet(support.getParameterBase()));
                     Optimizer myOptimizer=SimOptiFactory.getOptimizer();
                     myOptimizer.initOptimizer();
                     }else{
@@ -1039,14 +1063,14 @@ private boolean savePropertiesEnabled=false;
     public void calculateDesignSpace(){
         myGenerator=new generator(ListOfParameterSetsToBeWritten, fileName, jLabelExportStatus, this, jTableParameterList);
         this.sizeOfDesignSpace=myGenerator.getSizeOfDesignspace();
-        this.jLabelExportStatus.setText("Designspace-Size:"+ sizeOfDesignSpace);
+        support.setStatusText("Designspace-Size:"+ sizeOfDesignSpace);
 
         if(sizeOfDesignSpace>support.DEFAULT_MINIMUM_DESIGNSPACE_FOR_OPTIMIZATION){
         this.jButtonStartOptimization.setEnabled(true);
         }else{
         this.jButtonStartOptimization.setEnabled(false);
         support.log("Design space smaller then "+support.DEFAULT_MINIMUM_DESIGNSPACE_FOR_OPTIMIZATION+". Optimization not possible!");
-        this.jLabelExportStatus.setText(jLabelExportStatus.getText()+". DS to small for Optimization.");
+        support.setStatusText(jLabelExportStatus.getText()+". DS to small for Optimization.");
         }
     }
 
@@ -1601,7 +1625,7 @@ private boolean savePropertiesEnabled=false;
      */
     public void addToListOfParameterSetsToBeWritten(ArrayList<parameter> p){
     ListOfParameterSetsToBeWritten.add(p);
-    this.jLabelExportStatus.setText("Building Parametersets:"+ListOfParameterSetsToBeWritten.size()*100/this.sizeOfDesignSpace +"%");
+    support.setStatusText("Building Parametersets:"+ListOfParameterSetsToBeWritten.size()*100/this.sizeOfDesignSpace +"%");
 
     }
 

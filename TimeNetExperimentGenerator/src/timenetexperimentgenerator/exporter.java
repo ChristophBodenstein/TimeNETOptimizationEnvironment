@@ -152,50 +152,16 @@ boolean isRunning=false;
     parameterTableModel tModel=(parameterTableModel) this.jTableParameterList.getModel();
     String [][] parameterArray=tModel.getParameterArray();
 
-    //ArrayListe aufbauen und Funktion mit dieser Liste aufrufen
-    ArrayList <parameter>ListOfParameterAsFromTable=new ArrayList();//wird in rekursiver Funktion verkleinert
-        for (int i=0; i<tModel.getRowCount();i++){
-        parameter tmpParameter=new parameter();
-        tmpParameter.setName(tModel.getValueAt(i, 0).toString());
-        tmpParameter.setValue(tModel.getDoubleValueAt(i, 1));
-        tmpParameter.setStartValue(tModel.getDoubleValueAt(i, 1));//=StartValue
-        tmpParameter.setEndValue(tModel.getDoubleValueAt(i, 2));
-        tmpParameter.setStepping(tModel.getDoubleValueAt(i, 3));
-        ListOfParameterAsFromTable.add(tmpParameter);
-        }
-    //StartParametersatz bilden
-    ArrayList<parameter> lastParameterSet = new ArrayList<parameter>();
-    double[][] parameterValues=new double[tModel.getRowCount()][4];
-                //Je Parameter: 0-> Value, 1->StartValue, 2->EndValue, 3->Stepping
+    //Build initial ArrayList of parameters
+    ArrayList <parameter>ListOfParameterAsFromTable=tModel.getListOfParameter();
+    //build first parameterset
+    ArrayList<parameter> lastParameterSet = support.getCopyOfParameterSet(ListOfParameterAsFromTable);
 
-        for (int i=0; i<tModel.getRowCount();i++)
-        {
-        parameter tmpParameter = new parameter();
-        tmpParameter.setName(tModel.getValueAt(i, 0).toString());
-        tmpParameter.setValue(tModel.getDoubleValueAt(i, 1));
-        parameterValues[i][0]=tModel.getDoubleValueAt(i, 1);
-
-        tmpParameter.setStartValue(tModel.getDoubleValueAt(i, 1));//=StartValue
-        parameterValues[i][1]=tModel.getDoubleValueAt(i, 1);
-
-
-        tmpParameter.setEndValue(tModel.getDoubleValueAt(i, 2));
-        parameterValues[i][2]=tModel.getDoubleValueAt(i, 2);
-        
-        tmpParameter.setStepping(tModel.getDoubleValueAt(i, 3));
-        parameterValues[i][3]=tModel.getDoubleValueAt(i, 3);
-        lastParameterSet.add(tmpParameter);
-        }
-
-        parameter[] tmpParameterSet=new parameter[tModel.getRowCount()];
-        //for(int i=0; i<tModel.getRowCount();i++){
-
-        //}
-
-
-    //Gesamtgröße errechnen lassen
+    //Calculate size of designspace
     parent.calculateDesignSpace();
-    //Rekursive Funktion aufrufen!
+    support.setStatusText("Designspace-Size:"+ this.getSizeOfDesignspace());
+    
+    //call recursive generation-function!
     parent.buildListOfParameterSetsToExport(ListOfParameterSetsToBeWritten, ListOfParameterAsFromTable, lastParameterSet, infoLabel);
 
 
@@ -228,12 +194,27 @@ boolean isRunning=false;
         tmpParameter.setValue(tModel.getDoubleValueAt(i, 1));
         tmpParameter.setStartValue(tModel.getDoubleValueAt(i, 1));//=StartValue
         tmpParameter.setEndValue(tModel.getDoubleValueAt(i, 2));
+            //If StartValue>EndValue --> exchange them
+            if(tmpParameter.getStartValue()>tmpParameter.getEndValue()){
+            double tmpValue=tmpParameter.getStartValue();
+            tmpParameter.setStartValue(tmpParameter.getEndValue());
+            tmpParameter.setEndValue(tmpValue);
+            }
+        
+        
         tmpParameter.setStepping(tModel.getDoubleValueAt(i, 3));
         //ListOfParameterAsFromTable.add(tmpParameter);
 
         double start,end,step,spaceCounter=1;
         start=support.getDouble(tModel.getValueAt(i, 1).toString());
         end=support.getDouble(tModel.getValueAt(i, 2).toString());
+        
+            //If start>end then exchange them
+            if(start>end){
+            step=start;
+            start=end;
+            end=step;
+            }
         step=support.getDouble(tModel.getValueAt(i, 3).toString());
             if((end-start)>0 &&(step!=0) ){
                 spaceCounter=(end-start)/step +1;

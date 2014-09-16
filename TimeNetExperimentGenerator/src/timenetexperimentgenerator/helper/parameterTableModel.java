@@ -8,9 +8,11 @@
 
 package timenetexperimentgenerator.helper;
 
+import java.util.ArrayList;
 import javax.swing.table.AbstractTableModel;
 import org.w3c.dom.*;
 import timenetexperimentgenerator.MainFrame;
+import timenetexperimentgenerator.datamodel.parameter;
 import timenetexperimentgenerator.support;
 
 /**
@@ -79,6 +81,11 @@ private String[][] parameterArray;
         parameterArray[i][3]=support.getString(parent.pMaxError.getStepping());
     }
 
+    /**
+     * Returns raw String values from Table cells as Array
+     * 
+     * @return 2-Dimensional Array of Strings with table contents
+     */
     public String[][] getParameterArray(){
     return this.parameterArray;    
     }
@@ -232,5 +239,28 @@ private String[][] parameterArray;
         
     }
 
-
+    /**
+     * Returns ArrayList of Parameters as shown in table, used as base parameterset
+     * @return ArrayList of Parameters, Base Parameterset for Optimization and Batch-Simulation
+     */
+    public ArrayList<parameter> getListOfParameter(){
+    //Build initial ArrayList of parameters
+    ArrayList <parameter>ListOfParameterAsFromTable=new ArrayList();//will be reduced recursively
+        for (int i=0; i<this.getRowCount();i++){
+        parameter tmpParameter=new parameter();
+        tmpParameter.setName(this.getValueAt(i, 0).toString());
+        tmpParameter.setValue(this.getDoubleValueAt(i, 1));
+        tmpParameter.setStartValue(this.getDoubleValueAt(i, 1));//=StartValue
+        tmpParameter.setEndValue(this.getDoubleValueAt(i, 2));
+            //If StartValue>EndValue --> exchange them
+            if(tmpParameter.getStartValue()>tmpParameter.getEndValue()){
+            double tmpValue=tmpParameter.getStartValue();
+            tmpParameter.setStartValue(tmpParameter.getEndValue());
+            tmpParameter.setEndValue(tmpValue);
+            }
+        tmpParameter.setStepping(this.getDoubleValueAt(i, 3));
+        ListOfParameterAsFromTable.add(tmpParameter);
+        }
+    return ListOfParameterAsFromTable;
+    }
 }
