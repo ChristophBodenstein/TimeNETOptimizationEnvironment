@@ -245,12 +245,41 @@ private int localSimulationCounter = 0;
     
     public boolean checkIfAllParameterMatchTable(parameterTableModel myTableModel){
     if (listOfCachedParameterNames==null){return false;}
-        //Names are equal --> format the table so that Start-,End-,Stepping-Value match
+    ArrayList<parameter> parameterListFromTable=myTableModel.getListOfParameter();
+    
+        //Names are equal (this should be checked before)--> now check if End-Start-Step-Value match or are subset of cache
+    
         for(int i=0;i<listOfCachedParameterNames.length;i++){
-            if(myTableModel.getDoubleValueByName(listOfCachedParameterNames[i], "StartValue") == (listOfCachedParameterMin[i])){}else{return false;}
-            if(myTableModel.getDoubleValueByName(listOfCachedParameterNames[i], "EndValue") == (listOfCachedParameterMax[i])){}else{return false;}
-            if(myTableModel.getDoubleValueByName(listOfCachedParameterNames[i], "Stepping") == (listOfCachedParameterStepping[i])){}else{return false;}
+            parameter p=parameterListFromTable.get(i);
+            boolean[] strike={false,false,false};//if all 3 are true, this parameter is cached correctly
+            /*
+            0->Stepping is ok
+            1->StartValue is ok
+            2->EndValue is ok
+            */
+            
+            //Check stepping separately but first
+            //Check if p.getStepping() modulo cached-Stepping is 0
+            if((p.getStepping() % listOfCachedParameterStepping[i])==0.0){
+            //The original Stepping is bigger but reachable with the new stepping
+            strike[0]=true;
+            }
+
+            //Go through all possible values
+            //if startvalue is reachable ->true
+            //if end-value is reachable ->true
+            double tmpValue=listOfCachedParameterMin[i];
+
+            while(tmpValue<=listOfCachedParameterMax[i]){
+            if(tmpValue==p.getStartValue())strike[1]=true;
+            if(tmpValue==p.getEndValue())strike[2]=true;    
+            tmpValue=tmpValue+listOfCachedParameterStepping[i];
+            }
+            
+            
+        if(!strike[0]||!strike[1]||!strike[2])return false;//If less then all 3 conditions are met, then exit with false    
         }
+        //format the table so that Start-,End-,Stepping-Value match
     return true;
     }
     

@@ -249,11 +249,11 @@ private boolean savePropertiesEnabled=false;
     
         if(mySimulationCache!=null){
             if(mySimulationCache.checkIfAllParameterMatchTable((parameterTableModel)this.jTableParameterList.getModel())){
-            support.log("Cached Simulation available, all Parameetr match.");
+            support.log("Cached Simulation available, all Parameter match.");
             support.setMySimulationCache(mySimulationCache);
             support.setCachedSimulationEnabled(true);
             }else{
-            support.log("Cached Simulation not available, all Parameetr match.");
+            support.log("Cached Simulation not available, but all Parameter match. Maybe Stepping or Range is wrong.");
             support.setCachedSimulationEnabled(false);
             }
         }else{

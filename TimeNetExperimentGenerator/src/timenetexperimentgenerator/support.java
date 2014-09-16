@@ -1102,7 +1102,7 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
     }
 
     /**
-     * Returns a list of Parameetrs that are intern and changable
+     * Returns a list of Parameters that are intern and changable
      */
     public static ArrayList<parameter> getListOfChangableParameters(ArrayList<parameter> sourceList){
     //ArrayList<parameter> parameterset = support.getCopyOfParameterSet(sourceList);
