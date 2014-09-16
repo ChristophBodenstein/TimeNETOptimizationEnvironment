@@ -46,10 +46,7 @@ private PlotFrameController pfc=null;
         while(isRunning()){
             try {
                 Thread.sleep(100);
-                if (statusLabel != null) {
-                    support.spinInLabel(statusLabel);
-                }
-
+                support.spinInLabel();
                 if(support.isCancelEverything()){
                 //TODO Kill native Thread and set Running to false
                 }

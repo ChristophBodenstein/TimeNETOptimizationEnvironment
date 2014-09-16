@@ -1180,8 +1180,8 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
      * useful to show, that something is going on...
      * @param l JLabel to show the spinning characters
      */
-    public static void spinInLabel(JLabel l){
-    l.setText(getNextSpinningChar(l.getText()));
+    public static void spinInLabel(){
+    statusLabel.setText(getNextSpinningChar(statusLabel.getText()));
     }
 
     /**
