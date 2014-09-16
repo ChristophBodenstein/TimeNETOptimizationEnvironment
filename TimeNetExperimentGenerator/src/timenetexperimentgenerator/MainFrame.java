@@ -778,10 +778,10 @@ private boolean savePropertiesEnabled=false;
         //LocalBatchSimulatorEngine mySimulator=new LocalBatchSimulatorEngine(ListOfParameterSetsToBeWritten);
         //SimulatorLocal mySimulator=new SimulatorLocal();
         
-        //We use the first parameterset as base for batch simulation
-        support.setOriginalParameterBase(ListOfParameterSetsToBeWritten.get(0));
-        support.setParameterBase(ListOfParameterSetsToBeWritten.get(0));
-        
+        //Set base parameterset and orignal base parameterset in support
+        support.setOriginalParameterBase(((parameterTableModel)jTableParameterList.getModel()).getListOfParameter());
+        support.setParameterBase(((parameterTableModel)jTableParameterList.getModel()).getListOfParameter());
+    
             //If ListOfParameterSetsToBeWritten is null -->eject
             if(ListOfParameterSetsToBeWritten==null){
             support.setStatusText("No Parametersets to simulate.");
@@ -808,6 +808,11 @@ private boolean savePropertiesEnabled=false;
 
     private void jButtonStartOptimizationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonStartOptimizationActionPerformed
     support.setCancelEverything(false);
+    
+    //Set base parameterset and orignal base parameterset in support
+    support.setOriginalParameterBase(((parameterTableModel)jTableParameterList.getModel()).getListOfParameter());
+    support.setParameterBase(((parameterTableModel)jTableParameterList.getModel()).getListOfParameter());
+        
     
         if(this.sizeOfDesignSpace<=support.DEFAULT_MINIMUM_DESIGNSPACE_FOR_OPTIMIZATION){
         //TODO check , if opti is possible (target chosen etc.)
@@ -1120,7 +1125,7 @@ private boolean savePropertiesEnabled=false;
                 usedValue=start+(double)i*step;
                 usedValue=support.round(usedValue);
                 ArrayList<parameter> nextParameterSet = new ArrayList<parameter>();
-                    //Get copy of paremeterset
+                    //Get copy of parameterset
                     for(int c=0;c<lastParameterSet.size();c++){
                         try{nextParameterSet.add((parameter) lastParameterSet.get(c).clone());}
                         catch(CloneNotSupportedException e){

@@ -141,7 +141,7 @@ private String rScriptFilePath=System.getProperty("user.dir") + File.separator +
         ZLabel = new javax.swing.JLabel();
         MeasureLabel = new javax.swing.JLabel();
         MeasureComboBox = new javax.swing.JComboBox();
-        PlotButton = new javax.swing.JButton();
+        JButtonPlot = new javax.swing.JButton();
         XValueLabel = new javax.swing.JLabel();
         YValueLabel = new javax.swing.JLabel();
         ZValueLabel = new javax.swing.JLabel();
@@ -222,10 +222,10 @@ private String rScriptFilePath=System.getProperty("user.dir") + File.separator +
             }
         });
 
-        PlotButton.setText("Plot");
-        PlotButton.addActionListener(new java.awt.event.ActionListener() {
+        JButtonPlot.setText("Plot");
+        JButtonPlot.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                PlotButtonActionPerformed(evt);
+                JButtonPlotActionPerformed(evt);
             }
         });
 
@@ -295,7 +295,7 @@ private String rScriptFilePath=System.getProperty("user.dir") + File.separator +
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jComboBoxPlotChar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(PlotButton, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(JButtonPlot, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -343,7 +343,7 @@ private String rScriptFilePath=System.getProperty("user.dir") + File.separator +
                             .addComponent(MeasureLabel))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(PlotButton)
+                            .addComponent(JButtonPlot)
                             .addComponent(jLabel1)
                             .addComponent(jComboBoxPlotChar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
@@ -406,7 +406,7 @@ private String rScriptFilePath=System.getProperty("user.dir") + File.separator +
         // TODO add your handling code here:
     }//GEN-LAST:event_MeasureComboBoxActionPerformed
 
-    private void PlotButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PlotButtonActionPerformed
+    private void JButtonPlotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JButtonPlotActionPerformed
     char plotChar=support.DEFAULT_PLOT_CHAR;
         
         try{
@@ -465,6 +465,8 @@ private String rScriptFilePath=System.getProperty("user.dir") + File.separator +
             java.lang.ProcessBuilder processBuilder = new java.lang.ProcessBuilder(support.getPathToR() + File.separator + "bin" + File.separator + "Rscript", "rscript.r", "2>", "errorFile.Rout");
 
             nativeProcess myNativeProcess = new nativeProcess(processBuilder, this);
+            
+            this.JButtonPlot.setEnabled(false);
 
         }
         catch(IOException e)
@@ -475,7 +477,7 @@ private String rScriptFilePath=System.getProperty("user.dir") + File.separator +
         
         
         
-    }//GEN-LAST:event_PlotButtonActionPerformed
+    }//GEN-LAST:event_JButtonPlotActionPerformed
 
     /**
      * Will show the image file, specified in the global vars of this class or Error-Message in log
@@ -508,6 +510,7 @@ private String rScriptFilePath=System.getProperty("user.dir") + File.separator +
         }
     plotFrame.showImage(imageFilePath);
     support.setStatusText("");
+    this.JButtonPlot.setEnabled(true);
     }
 
     private void SetXButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SetXButtonActionPerformed
@@ -564,13 +567,13 @@ private String rScriptFilePath=System.getProperty("user.dir") + File.separator +
     private javax.swing.JLabel CachedFilesLabel;
     private javax.swing.JList CachedFilesList;
     private javax.swing.JList ColumnList;
+    private javax.swing.JButton JButtonPlot;
     private javax.swing.JButton LoadButton;
     private javax.swing.JLabel LoadFileLabel;
     private javax.swing.JComboBox MeasureComboBox;
     private javax.swing.JLabel MeasureLabel;
     private javax.swing.JButton OpenButton;
     private javax.swing.JTextField OpenFileTextField;
-    private javax.swing.JButton PlotButton;
     private javax.swing.JButton SetXButton;
     private javax.swing.JButton SetYButton;
     private javax.swing.JButton SetZButton;
@@ -591,6 +594,8 @@ private String rScriptFilePath=System.getProperty("user.dir") + File.separator +
      * nativeProcessCallback interface method
      */
     public void errorOccured(String message) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        this.JButtonPlot.setEnabled(true);
+        support.log("Error occured durin Plot.");
+        support.setStatusText("Plot Error!");
     }
 }
