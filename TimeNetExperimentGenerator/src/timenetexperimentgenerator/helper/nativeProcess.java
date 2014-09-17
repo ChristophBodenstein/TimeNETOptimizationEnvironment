@@ -48,7 +48,9 @@ private PlotFrameController pfc=null;
                 Thread.sleep(100);
                 support.spinInLabel();
                 if(support.isCancelEverything()){
-                //TODO Kill native Thread and set Running to false
+                //Kill native Thread and set Running to false
+                support.log("Try to kill the started process.");
+                myNativeProcess.killProcess();
                 }
 
             } catch (InterruptedException ex) {
@@ -95,6 +97,7 @@ private PlotFrameController pfc=null;
 
 class realNativeProcess extends Thread{
 nativeProcess myNativeProcess=null;
+Process p=null;
 
     public realNativeProcess(nativeProcess p) {
     myNativeProcess=p;
@@ -104,7 +107,7 @@ nativeProcess myNativeProcess=null;
     public void run(){
         if(myNativeProcess!=null){
             try {
-                Process p = myNativeProcess.getMyProcessBuilder().start();
+                p = myNativeProcess.getMyProcessBuilder().start();
                 p.waitFor();
                 myNativeProcess.setRunning(false);
             } catch (Exception ex) {
@@ -113,6 +116,16 @@ nativeProcess myNativeProcess=null;
 
         }else{
         support.log("No Process given, could not start anything.");
+        }
+    }
+    
+    /**
+     * Kills the running process.
+     * Remember, the started simulation-executable might still be running!
+     */
+    public void killProcess(){
+        if(p!=null){
+        p.destroyForcibly();
         }
     }
 }
