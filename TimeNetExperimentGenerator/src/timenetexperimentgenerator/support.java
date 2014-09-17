@@ -486,7 +486,7 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
     String line;
     
         parameter dummyParameterForCPUTime=new parameter();
-        dummyParameterForCPUTime.setName("UsedCPUTIME");
+        dummyParameterForCPUTime.setName("Used CPUTime");
         dummyParameterForCPUTime.setValue(0.0);
         dummyParameterForCPUTime.setStartValue(0.0);
         dummyParameterForCPUTime.setEndValue(0.0);
@@ -511,7 +511,7 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
                 //Write header of logfile
                 
                 //Add empty CPU-Time-Parameter for compatibility
-                if (support.getParameterByName(pList.get(0).getListOfParameters(), "UsedCPUTIME")==null){
+                if (support.getParameterByName(pList.get(0).getListOfParameters(), "Used CPUTime")==null){
                     pList.get(0).getListOfParameters().add(dummyParameterForCPUTime);
                 }
                 
@@ -536,7 +536,7 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
             SimulationType myParser=pList.get(i);
             
             //Add empty CPU-Time-Parameter for compatibility
-            if (support.getParameterByName(myParser.getListOfParameters(), "UsedCPUTIME")==null){
+            if (support.getParameterByName(myParser.getListOfParameters(), "Used CPUTime")==null){
                         myParser.getListOfParameters().add(dummyParameterForCPUTime);
             }
             
