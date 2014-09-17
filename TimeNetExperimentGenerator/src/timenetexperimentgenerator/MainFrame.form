@@ -202,8 +202,7 @@
                               </Group>
                               <EmptySpace max="32767" attributes="0"/>
                               <Component id="jLabelSpinning" min="-2" pref="18" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jLabelSimulationCount" max="32767" attributes="0"/>
+                              <EmptySpace min="-2" pref="23" max="-2" attributes="0"/>
                           </Group>
                           <Component id="jButtonStartOptimization" alignment="0" max="32767" attributes="1"/>
                       </Group>
@@ -282,13 +281,13 @@
               <Component id="jCheckBoxSlaveSimulator" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jLabelSimulationCount" min="-2" pref="24" max="-2" attributes="0"/>
                   <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
                       <Component id="jLabelMemoryUsage" alignment="0" max="32767" attributes="0"/>
                       <Component id="jProgressBarMemoryUsage" alignment="0" max="32767" attributes="0"/>
                   </Group>
                   <Component id="jLabelSpinning" min="-2" max="-2" attributes="0"/>
               </Group>
+              <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -443,8 +442,6 @@
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonStartOptimizationActionPerformed"/>
       </Events>
-    </Component>
-    <Component class="javax.swing.JLabel" name="jLabelSimulationCount">
     </Component>
     <Component class="javax.swing.JButton" name="jButtonPathToTimeNet">
       <Properties>

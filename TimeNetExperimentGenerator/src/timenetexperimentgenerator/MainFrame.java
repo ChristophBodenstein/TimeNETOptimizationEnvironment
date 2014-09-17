@@ -288,7 +288,6 @@ private boolean savePropertiesEnabled=false;
         measurementForm1 = new timenetexperimentgenerator.MeasurementForm();
         measurementForm2 = new timenetexperimentgenerator.MeasurementForm();
         jButtonStartOptimization = new javax.swing.JButton();
-        jLabelSimulationCount = new javax.swing.JLabel();
         jButtonPathToTimeNet = new javax.swing.JButton();
         jLabelExportStatus = new javax.swing.JLabel();
         jButtonLoadCacheFile = new javax.swing.JButton();
@@ -642,8 +641,7 @@ private boolean savePropertiesEnabled=false;
                                         .add(jProgressBarMemoryUsage, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 152, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .add(jLabelSpinning, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 18, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(jLabelSimulationCount, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .add(23, 23, 23))
                             .add(jButtonStartOptimization, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .add(20, 20, 20))
             .add(layout.createSequentialGroup()
@@ -705,11 +703,11 @@ private boolean savePropertiesEnabled=false;
                 .add(jCheckBoxSlaveSimulator)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jLabelSimulationCount, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 24, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
                         .add(org.jdesktop.layout.GroupLayout.LEADING, jLabelMemoryUsage, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .add(org.jdesktop.layout.GroupLayout.LEADING, jProgressBarMemoryUsage, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .add(jLabelSpinning)))
+                    .add(jLabelSpinning))
+                .add(4, 4, 4))
         );
 
         pack();
@@ -1191,7 +1189,6 @@ private boolean savePropertiesEnabled=false;
     private javax.swing.JComboBox jComboBoxSimulationType;
     private javax.swing.JLabel jLabelExportStatus;
     private javax.swing.JLabel jLabelMemoryUsage;
-    private javax.swing.JLabel jLabelSimulationCount;
     protected javax.swing.JLabel jLabelSpinning;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
@@ -1679,19 +1676,7 @@ private boolean savePropertiesEnabled=false;
         }
     return parameterArray;
     }
-
-    /**
-     * To display the actual Simulation Count
-     * @param i value of simulationcounter to display
-     */
-    public void updateSimulationCounterLabel(long i){
-        if(i>0){
-        this.jLabelSimulationCount.setText(String.valueOf(i));
-        }else{
-        this.jLabelSimulationCount.setText("");
-        }
-    }
-    
+ 
     
     /**
      * Returns list of MeasureTypes to be optimized
