@@ -13,7 +13,6 @@
 package timenetexperimentgenerator.helper;
 
 import javax.swing.JLabel;
-import timenetexperimentgenerator.plot.PlotFrameController;
 import timenetexperimentgenerator.support;
 
 /**
@@ -24,17 +23,17 @@ public class nativeProcess extends Thread{
 private ProcessBuilder myProcessBuilder=null;
 JLabel statusLabel=null;
 private boolean running=true;
-private PlotFrameController pfc=null;
+private nativeProcessCallbacks pfc=null;
 
     /**
      * Contructor
      * @param p ProcessBuilder Object, this process will be started
+     * @param processCallbackHandler Callback handler (must implement Callback-methods)
      * @param l JLabel to display a spinning char
-     * @param PFController a Controller-object with callback showImage();
      */
-    public nativeProcess(ProcessBuilder p, PlotFrameController PFController) {
+    public nativeProcess(ProcessBuilder p, nativeProcessCallbacks processCallbackHandler) {
     this.myProcessBuilder=p;
-    this.pfc=PFController;
+    this.pfc=processCallbackHandler;
     new Thread(this).start();
     }
 
@@ -126,6 +125,7 @@ Process p=null;
     public void killProcess(){
         if(p!=null){
         p.destroyForcibly();
+        support.log("Process will be killed. Check for running simulation binaries and kill them manually!!!");
         }
     }
 }
