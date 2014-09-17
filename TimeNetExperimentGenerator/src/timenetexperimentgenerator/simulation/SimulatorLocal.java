@@ -94,6 +94,7 @@ long timeStamp=0;//TimeStamp for measuring the runtime of one simulation
                 support.log("Supposed to simulate "+listOfParameterSets.size() +" parametersets.");
                     for(int i=0;i<listOfParameterSets.size();i++){
 
+                        support.setStatusText("wating to start sim "+(i+1)+"/"+listOfParameterSets.size());
                         //Wait for some Time. Maybe this is needed on some Systems
                         Thread.sleep(support.DEFAULT_TIME_BETWEEN_LOCAL_SIMULATIONS);
 
@@ -101,10 +102,15 @@ long timeStamp=0;//TimeStamp for measuring the runtime of one simulation
                     //Try every simulation several times if TimeNet crashs
                     //Reset Simulation-Attempt-Counter for next Parameterset
                     simulationAttemptCounter=support.DEFAULT_LOCAL_SIMULATION_ATTEMPTS;
-
+                    
+                    
                     while(simulationAttemptCounter>0){
+                    
+                    support.setStatusText("Sim "+(i+1) +"/"+listOfParameterSets.size()+ " attempt "+(support.DEFAULT_LOCAL_SIMULATION_ATTEMPTS-simulationAttemptCounter+1));
+                        
                         if(support.isCancelEverything()){
-                            support.log("Loacal Simulation canceld by user.");
+                            support.log("Local Simulation canceld by user.");
+                            support.setStatusText("Operations canceled.");
                             return;}
                         ArrayList<parameter> actualParameterSet=listOfParameterSets.get(i);//get actual parameterset
                         String actualParameterFileName=createLocalSimulationFile(actualParameterSet, this.simulationCounter);//create actual SCPN xml-file and save it in tmp-folder
@@ -160,7 +166,7 @@ long timeStamp=0;//TimeStamp for measuring the runtime of one simulation
         }else{
         support.log("Timenet-Path NOT ok!");
         }
-        
+    support.setStatusText("Local simulation finished.");    
     }
 
 
@@ -243,23 +249,12 @@ long timeStamp=0;//TimeStamp for measuring the runtime of one simulation
         timeStamp=Calendar.getInstance().getTimeInMillis();
 
         nativeProcess myNativeProcess=new nativeProcess(processBuilder, this);
-
-        //final java.lang.Process p = processBuilder.start();
-        
-
-        //java.util.Scanner s = new java.util.Scanner( p.getInputStream() ).useDelimiter( "\\Z" );//Scans output of process
-        //support.log( s.next() );//prints output of process into System.out
-            //try {
         
                 //We wait until the process is ended or aborted
                 while(myNativeProcess.isRunning()){
+                    Thread.sleep(1000);
                 }
-                
-                //p.waitFor();
-                
-            //} catch (InterruptedException ex) {
-            //    Logger.getLogger(SimulatorLocal.class.getName()).log(Level.SEVERE, null, ex);
-            //}
+
         timeStamp=(Calendar.getInstance().getTimeInMillis()-timeStamp) / 1000;//Time for calculation in seconds
 
 
