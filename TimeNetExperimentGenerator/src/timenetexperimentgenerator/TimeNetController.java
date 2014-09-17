@@ -55,6 +55,7 @@ public class TimeNetController {
             public void run() {
             //support.printMemoryStats();
             support.updateMemoryPrograssbar();
+            support.checkSpinningShowTime();
             }
             }, 1000*support.DEFAULT_MEMORYPRINT_INTERVALL, 1000*support.DEFAULT_MEMORYPRINT_INTERVALL);
 

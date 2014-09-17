@@ -116,7 +116,7 @@ private static ArrayList<parameter> originalParameterBase=null;//Base set of par
 
 private static boolean cancelEverything=false;//If set to true, everything is cancelled
 private static typeOfBenchmarkFunction chosenBenchmarkFunction=DEFAULT_TYPE_OF_BENCHMARKFUNCTION;
-
+private static long lastTimeOfSpinning=0;
 
     /**
      * @return the myOptimizerPreferences a Reference to the Preferences-Frame
@@ -1181,9 +1181,21 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
      * @param l JLabel to show the spinning characters
      */
     public static void spinInLabel(){
-    statusLabel.setText(getNextSpinningChar(statusLabel.getText()));
+    mainFrame.jLabelSpinning.setText(getNextSpinningChar(mainFrame.jLabelSpinning.getText()));
+    lastTimeOfSpinning=(Calendar.getInstance().getTimeInMillis());
     }
 
+    /**
+     * Checks if spinning label should be seen anymore
+     * If spinning showtime is over, spinning-labe is set to empty
+     */
+    public static void checkSpinningShowTime(){
+        if(((Calendar.getInstance().getTimeInMillis())-lastTimeOfSpinning)>=DEFAULT_MEMORYPRINT_INTERVALL){
+        mainFrame.jLabelSpinning.setText("");
+        }
+    }
+    
+    
     /**
      * Returns next spinning char for displaying a spinning wheel in a label
      * @param oldChar actual char in label to calculate the next

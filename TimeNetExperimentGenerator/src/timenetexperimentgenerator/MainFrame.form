@@ -131,7 +131,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
-                      <Component id="jSeparator1" pref="673" max="32767" attributes="0"/>
+                      <Component id="jSeparator1" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="1" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
@@ -160,27 +160,27 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="jTabbedPane1" alignment="0" pref="0" max="32767" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="jButtonOpenSCPN" pref="154" max="32767" attributes="1"/>
+                              <Component id="jButtonOpenSCPN" max="32767" attributes="1"/>
                               <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
-                              <Component id="jButtonReload" pref="128" max="32767" attributes="1"/>
+                              <Component id="jButtonReload" max="32767" attributes="1"/>
                           </Group>
-                          <Component id="jSeparator2" alignment="0" pref="287" max="32767" attributes="1"/>
+                          <Component id="jSeparator2" alignment="0" max="32767" attributes="1"/>
                           <Group type="102" alignment="1" attributes="0">
-                              <Component id="jButtonExport" pref="150" max="32767" attributes="0"/>
+                              <Component id="jButtonExport" pref="182" max="32767" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="jButton1" min="-2" pref="137" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="jButtonGenerateListOfExperiments" alignment="0" pref="287" max="32767" attributes="1"/>
-                          <Component id="jSeparator3" alignment="0" pref="287" max="32767" attributes="1"/>
-                          <Component id="jButtonLoadCacheFile" alignment="1" pref="287" max="32767" attributes="0"/>
+                          <Component id="jButtonGenerateListOfExperiments" alignment="0" max="32767" attributes="1"/>
+                          <Component id="jSeparator3" alignment="0" max="32767" attributes="1"/>
+                          <Component id="jButtonLoadCacheFile" alignment="1" max="32767" attributes="0"/>
                           <Group type="102" alignment="1" attributes="0">
                               <Group type="103" groupAlignment="1" attributes="0">
                                   <Group type="102" attributes="0">
-                                      <Component id="jComboBoxSimulationType" pref="156" max="32767" attributes="0"/>
+                                      <Component id="jComboBoxSimulationType" max="32767" attributes="0"/>
                                       <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
                                   </Group>
                                   <Group type="102" alignment="1" attributes="0">
-                                      <Component id="jComboBoxBenchmarkFunction" pref="155" max="32767" attributes="0"/>
+                                      <Component id="jComboBoxBenchmarkFunction" max="32767" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                   </Group>
                               </Group>
@@ -190,7 +190,7 @@
                               </Group>
                               <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="jButtonStartBatchSimulation" alignment="0" pref="287" max="32767" attributes="1"/>
+                          <Component id="jButtonStartBatchSimulation" alignment="0" max="32767" attributes="1"/>
                           <Group type="102" alignment="1" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="jLabelExportStatus" min="-2" pref="265" max="-2" attributes="0"/>
@@ -200,8 +200,10 @@
                                       <Component id="jProgressBarMemoryUsage" min="-2" pref="152" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
-                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                              <Component id="jLabelSimulationCount" pref="16" max="32767" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
+                              <Component id="jLabelSpinning" min="-2" pref="18" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="jLabelSimulationCount" max="32767" attributes="0"/>
                           </Group>
                           <Component id="jButtonStartOptimization" alignment="0" max="32767" attributes="1"/>
                       </Group>
@@ -212,7 +214,7 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jButtonEnterURLToSimServer" min="-2" pref="192" max="-2" attributes="0"/>
-              <EmptySpace pref="494" max="32767" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -285,6 +287,7 @@
                       <Component id="jLabelMemoryUsage" alignment="0" max="32767" attributes="0"/>
                       <Component id="jProgressBarMemoryUsage" alignment="0" max="32767" attributes="0"/>
                   </Group>
+                  <Component id="jLabelSpinning" min="-2" max="-2" attributes="0"/>
               </Group>
           </Group>
       </Group>
@@ -561,6 +564,14 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Memory Usage"/>
       </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabelSpinning">
+      <Properties>
+        <Property name="text" type="java.lang.String" value=".."/>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="4"/>
+      </AuxValues>
     </Component>
   </SubComponents>
 </Form>
