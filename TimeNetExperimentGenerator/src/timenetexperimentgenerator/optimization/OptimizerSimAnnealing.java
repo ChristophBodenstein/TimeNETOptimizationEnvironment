@@ -14,7 +14,6 @@ import timenetexperimentgenerator.datamodel.SimulationType;
 import timenetexperimentgenerator.datamodel.parameter;
 import timenetexperimentgenerator.support;
 import timenetexperimentgenerator.typedef;
-import timenetexperimentgenerator.typedef.*;
 
 /**
  *
@@ -230,6 +229,7 @@ String nameOfdummyLogfile;
         dummyParameterset.add(parameterTempParameter);
 
         MeasureType dummyMeasure=new MeasureType();
+        dummyMeasure.setMeasureName("SimAnnealingTemperature");
         ArrayList<MeasureType> dummyMeasureList=new ArrayList<MeasureType>();
 
         dummyMeasureList.add(dummyMeasure);

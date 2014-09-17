@@ -493,20 +493,23 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
     
         try{
         //support.log("Number of Simulationtypes to add is "+pList.size());
-        //Öffnen des Logfiles und Schreiben der ersten Zeile
-
+            
+        //Check if list is null, then exit
+        if(pList==null){
+        support.log("List of Simulations to add to logfile is null. Exit");
+        return;
+        }
+            
+            
         File f=new File(logFileName);
         if(!f.exists()){writeHeader=true;}
         FileWriter fw= new FileWriter(logFileName, true);
 
-        //Check if list is null, then exit
-        if(pList==null){
-        support.log("List of Simulations to add to logfile is null. Exit");
-        fw.close();
-        return;
-        }
+        
 
             if(writeHeader){
+                //Write header of logfile
+                
                 //Add empty CPU-Time-Parameter for compatibility
                 if (support.getParameterByName(pList.get(0).getListOfParameters(), "UsedCPUTIME")==null){
                     pList.get(0).getListOfParameters().add(dummyParameterForCPUTime);
