@@ -22,13 +22,15 @@ import org.w3c.dom.*;
 import timenetexperimentgenerator.Parser;
 import timenetexperimentgenerator.datamodel.SimulationType;
 import timenetexperimentgenerator.datamodel.parameter;
+import timenetexperimentgenerator.helper.nativeProcess;
+import timenetexperimentgenerator.helper.nativeProcessCallbacks;
 import timenetexperimentgenerator.support;
 
 /**
  *
  * @author Christoph Bodenstein
  */
-public class SimulatorLocal implements Runnable, Simulator{
+public class SimulatorLocal implements Runnable, Simulator, nativeProcessCallbacks{
 ArrayList< ArrayList<parameter> > listOfParameterSets;
 ArrayList<SimulationType> listOfCompletedSimulationParsers;
 String originalFilename;
@@ -41,6 +43,8 @@ String actualSimulationLogFile="";//actual log-file for one local simulation
 private final String nameOfTempDirectory="14623786483530251523506521233052";
 boolean log=true;
 boolean keepSimulationFiles=false;
+long timeStamp=0;//TimeStamp for measuring the runtime of one simulation
+
 
     /**
      * Constructor
@@ -236,21 +240,26 @@ boolean keepSimulationFiles=false;
         support.log("Command is: "+processBuilder.command().toString());
 
         // Start new process
-        long timeStamp=Calendar.getInstance().getTimeInMillis();
+        timeStamp=Calendar.getInstance().getTimeInMillis();
 
+        nativeProcess myNativeProcess=new nativeProcess(processBuilder, this);
 
-        final java.lang.Process p = processBuilder.start();
+        //final java.lang.Process p = processBuilder.start();
         
 
-        java.util.Scanner s = new java.util.Scanner( p.getInputStream() ).useDelimiter( "\\Z" );//Scans output of process
-        support.log( s.next() );//prints output of process into System.out
-            try {
+        //java.util.Scanner s = new java.util.Scanner( p.getInputStream() ).useDelimiter( "\\Z" );//Scans output of process
+        //support.log( s.next() );//prints output of process into System.out
+            //try {
+        
+                //We wait until the process is ended or aborted
+                while(myNativeProcess.isRunning()){
+                }
                 
-                p.waitFor();
+                //p.waitFor();
                 
-            } catch (InterruptedException ex) {
-                Logger.getLogger(SimulatorLocal.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            //} catch (InterruptedException ex) {
+            //    Logger.getLogger(SimulatorLocal.class.getName()).log(Level.SEVERE, null, ex);
+            //}
         timeStamp=(Calendar.getInstance().getTimeInMillis()-timeStamp) / 1000;//Time for calculation in seconds
 
 
@@ -271,8 +280,8 @@ boolean keepSimulationFiles=false;
     
         support.log("Delete Path to tmp files: "+path);
         support.del(new File(path));
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            support.log("Problem simulating local.");
         }
     }
 
@@ -318,6 +327,14 @@ boolean keepSimulationFiles=false;
      */
     public int getStatus(){
     return this.status;
+    }
+
+    public void processEnded() {
+        support.log("Local Simulation ended.");
+    }
+
+    public void errorOccured(String message) {
+        support.log("Error while local simulation.");
     }
     
 
