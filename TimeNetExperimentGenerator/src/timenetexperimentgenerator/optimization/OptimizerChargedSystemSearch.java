@@ -57,7 +57,7 @@ private double[][] speedOfCharges; //current speed vector for all objects with a
 //private SimulationType topMeasure;//temp top measure before implementing top-List
 //private double topDistance = Double.POSITIVE_INFINITY;//temp top distance
 
-private final int maxAttraction;//limit of attraction-force of 2 charges
+private double maxAttraction;//limit of attraction-force of 2 charges
 
 public OptimizerChargedSystemSearch()
 {

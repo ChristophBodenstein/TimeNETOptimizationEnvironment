@@ -58,6 +58,21 @@ public static final double DEFAULT_MAXTEMP_COST=1.0;
 public static final double DEFAULT_EPSILON=0.01;
 public static final typeOfAnnealingParameterCalculation DEFAULT_CALC_NEXT_PARAMETER=typeOfAnnealingParameterCalculation.Standard;
 
+//default values for genetic Optimization
+public static final int DEFAULT_GENETIC_POPULATION_SIZE = 10;
+public static final double DEFAULT_GENETIC_MUTATION_CHANCE = 20;
+public static final boolean DEFAULT_GENETIC_MUTATE_TOP_SOLUTION = false;
+
+//default values for CSS Optimization
+public static final int DEFAULT_CSS_POPULATION_SIZE = 10;
+public static final double DEFAULT_CSS_MAX_ATTRACTION = 100;
+
+//default values for ABC Optimization
+public static final int DEFAULT_ABC_NumEmployedBees = 10;
+public static final int DEFAULT_ABC_NumOnlookerBees = 10;
+public static final int DEFAULT_ABC_NumScoutBees = 2;
+public static final int DEFAULT_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement = 3;
+
 
 public static final int DEFAULT_CACHE_STUCK=10;//Optimizer can ask 2 times for simulating the same parameterset in a row. Then optimization will be aborted!
 public static final int DEFAULT_LOCAL_SIMULATION_ATTEMPTS=5;//Local simulation is tried so many times until break

@@ -7,6 +7,7 @@
 
 package timenetexperimentgenerator.optimization;
 
+import com.sun.jmx.snmp.BerDecoder;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -55,9 +56,19 @@ private int pref_InternalParameterEnd;
 private boolean pref_KeepDesignSpaceAndResolution;
 
 //parameters for genetic Optimization
-private int pref_geneticPopulationSize;
-private double pref_geneticMutationChance;
-private boolean pref_geneticMutateTopSolution;
+private int pref_GeneticPopulationSize;
+private double pref_GeneticMutationChance;
+private boolean pref_GeneticMutateTopSolution;
+
+//parameters for CSS Optimization
+private int pref_CSS_PopulationSize;
+private double pref_CSS_maxAttraction;
+
+//parameters for ABC Optiization
+private int pref_ABC_NumEmployedBees;
+private int pref_ABC_NumOnlookerBees;
+private int pref_ABC_NumScoutBees;
+private int pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement;
 
 
 
@@ -183,7 +194,19 @@ private boolean pref_geneticMutateTopSolution;
         jSpinnerGeneticMutationChance = new javax.swing.JSpinner();
         jCheckBoxGeneticMutateTopSolution = new javax.swing.JCheckBox();
         jPanel4 = new javax.swing.JPanel();
+        jSpinnerCSSPopulationSize = new javax.swing.JSpinner();
+        jLabelCSSPopulationSize = new javax.swing.JLabel();
+        jSpinnerCSSMaxAttraction = new javax.swing.JSpinner();
+        jLabelCSSMaxAttraction = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
+        jSpinnerABCNumEmployedBees = new javax.swing.JSpinner();
+        jLabelABCNumEmployedBees = new javax.swing.JLabel();
+        jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement = new javax.swing.JSpinner();
+        jSpinnerABCNumScoutBees = new javax.swing.JSpinner();
+        jSpinnerABCNumOnlookerBees = new javax.swing.JSpinner();
+        jLabelABCNumOnlookerBees = new javax.swing.JLabel();
+        jLabelABCNumScoutBees = new javax.swing.JLabel();
+        jLabelABCMaxNumberOfFoodUpdateCyclesWithoutImprovement = new javax.swing.JLabel();
 
         jLabelStartvalueForParameters.setText("Startvalue for parameters");
 
@@ -298,7 +321,7 @@ private boolean pref_geneticMutateTopSolution;
                             .addComponent(jSpinnerWrongSolutionsPerDirectionUntilBreak)
                             .addComponent(jSpinnerWrongSolutionsUntilBreak, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jSpinnerSizeOfNeighborhoodInPercent, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(397, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanelHillClimbingLayout.setVerticalGroup(
             jPanelHillClimbingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -322,7 +345,7 @@ private boolean pref_geneticMutateTopSolution;
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabelWrongSolutionsPerDirectionUntilBreak, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(6, 6, 6)))
-                .addContainerGap(129, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("HillClimbing", jPanelHillClimbing);
@@ -557,6 +580,11 @@ private boolean pref_geneticMutateTopSolution;
         jLabelGeneticMutationChance.setText("Mutation Chance %");
 
         jSpinnerGeneticPopulationSize.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
+        jSpinnerGeneticPopulationSize.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                jSpinnerGeneticPopulationSizePropertyChange(evt);
+            }
+        });
 
         jSpinnerGeneticMutationChance.setModel(new javax.swing.SpinnerNumberModel(0.0d, 0.0d, 100.0d, 1.0d));
         jSpinnerGeneticMutationChance.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
@@ -577,22 +605,21 @@ private boolean pref_geneticMutateTopSolution;
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(22, 22, 22)
+                .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jCheckBoxGeneticMutateTopSolution)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
-                                .addComponent(jLabelGeneticPopulationSize)
-                                .addGap(45, 45, 45)
-                                .addComponent(jSpinnerGeneticPopulationSize))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
-                                .addComponent(jLabelGeneticMutationChance)
-                                .addGap(22, 22, 22)
-                                .addComponent(jSpinnerGeneticMutationChance, javax.swing.GroupLayout.DEFAULT_SIZE, 48, Short.MAX_VALUE)))
-                        .addGap(637, 637, 637))))
+                        .addGap(86, 86, 86))
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
+                            .addComponent(jLabelGeneticPopulationSize)
+                            .addGap(45, 45, 45)
+                            .addComponent(jSpinnerGeneticPopulationSize))
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
+                            .addComponent(jLabelGeneticMutationChance)
+                            .addGap(22, 22, 22)
+                            .addComponent(jSpinnerGeneticMutationChance))))
+                .addGap(653, 653, 653))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -607,33 +634,139 @@ private boolean pref_geneticMutateTopSolution;
                     .addComponent(jSpinnerGeneticMutationChance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jCheckBoxGeneticMutateTopSolution)
-                .addContainerGap(180, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Genetic", jPanel3);
+
+        jSpinnerCSSPopulationSize.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
+        jSpinnerCSSPopulationSize.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                jSpinnerCSSPopulationSizePropertyChange(evt);
+            }
+        });
+
+        jLabelCSSPopulationSize.setText("Population Size");
+
+        jSpinnerCSSMaxAttraction.setModel(new javax.swing.SpinnerNumberModel(0, 0, 100, 1));
+        jSpinnerCSSMaxAttraction.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                jSpinnerCSSMaxAttractionPropertyChange(evt);
+            }
+        });
+
+        jLabelCSSMaxAttraction.setText("Max Attraction");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 824, Short.MAX_VALUE)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jLabelCSSPopulationSize, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
+                    .addComponent(jLabelCSSMaxAttraction, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(64, 64, 64)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jSpinnerCSSMaxAttraction)
+                    .addComponent(jSpinnerCSSPopulationSize, javax.swing.GroupLayout.DEFAULT_SIZE, 57, Short.MAX_VALUE))
+                .addGap(649, 649, 649))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 272, Short.MAX_VALUE)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabelCSSPopulationSize)
+                    .addComponent(jSpinnerCSSPopulationSize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabelCSSMaxAttraction)
+                    .addComponent(jSpinnerCSSMaxAttraction, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Charged System Search", jPanel4);
+
+        jSpinnerABCNumEmployedBees.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
+        jSpinnerABCNumEmployedBees.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                jSpinnerABCNumEmployedBeesPropertyChange(evt);
+            }
+        });
+
+        jLabelABCNumEmployedBees.setText("Employed Bees");
+
+        jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
+        jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovementPropertyChange(evt);
+            }
+        });
+
+        jSpinnerABCNumScoutBees.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
+        jSpinnerABCNumScoutBees.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                jSpinnerABCNumScoutBeesPropertyChange(evt);
+            }
+        });
+
+        jSpinnerABCNumOnlookerBees.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
+        jSpinnerABCNumOnlookerBees.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                jSpinnerABCNumOnlookerBeesPropertyChange(evt);
+            }
+        });
+
+        jLabelABCNumOnlookerBees.setText("Onlooker Bees");
+
+        jLabelABCNumScoutBees.setText("Scout Bees");
+
+        jLabelABCMaxNumberOfFoodUpdateCyclesWithoutImprovement.setText("Max Missed Update Cycles");
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 824, Short.MAX_VALUE)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(jLabelABCNumEmployedBees)
+                        .addGap(81, 81, 81)
+                        .addComponent(jSpinnerABCNumEmployedBees))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabelABCMaxNumberOfFoodUpdateCyclesWithoutImprovement, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabelABCNumScoutBees, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabelABCNumOnlookerBees, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(26, 26, 26)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jSpinnerABCNumOnlookerBees, javax.swing.GroupLayout.DEFAULT_SIZE, 58, Short.MAX_VALUE)
+                            .addComponent(jSpinnerABCNumScoutBees)
+                            .addComponent(jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement))))
+                .addGap(649, 649, 649))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 272, Short.MAX_VALUE)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabelABCNumEmployedBees)
+                    .addComponent(jSpinnerABCNumEmployedBees, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabelABCNumOnlookerBees)
+                    .addComponent(jSpinnerABCNumOnlookerBees, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabelABCNumScoutBees)
+                    .addComponent(jSpinnerABCNumScoutBees, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabelABCMaxNumberOfFoodUpdateCyclesWithoutImprovement)
+                    .addComponent(jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(193, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Artifical Bee Colony", jPanel5);
@@ -755,6 +888,34 @@ private boolean pref_geneticMutateTopSolution;
         // TODO add your handling code here:
     }//GEN-LAST:event_jCheckBoxGeneticMutateTopSolutionActionPerformed
 
+    private void jSpinnerGeneticPopulationSizePropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jSpinnerGeneticPopulationSizePropertyChange
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jSpinnerGeneticPopulationSizePropertyChange
+
+    private void jSpinnerCSSPopulationSizePropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jSpinnerCSSPopulationSizePropertyChange
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jSpinnerCSSPopulationSizePropertyChange
+
+    private void jSpinnerCSSMaxAttractionPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jSpinnerCSSMaxAttractionPropertyChange
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jSpinnerCSSMaxAttractionPropertyChange
+
+    private void jSpinnerABCNumEmployedBeesPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jSpinnerABCNumEmployedBeesPropertyChange
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jSpinnerABCNumEmployedBeesPropertyChange
+
+    private void jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovementPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovementPropertyChange
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovementPropertyChange
+
+    private void jSpinnerABCNumScoutBeesPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jSpinnerABCNumScoutBeesPropertyChange
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jSpinnerABCNumScoutBeesPropertyChange
+
+    private void jSpinnerABCNumOnlookerBeesPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jSpinnerABCNumOnlookerBeesPropertyChange
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jSpinnerABCNumOnlookerBeesPropertyChange
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
@@ -794,6 +955,12 @@ private boolean pref_geneticMutateTopSolution;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JLabel jLabelABCMaxNumberOfFoodUpdateCyclesWithoutImprovement;
+    private javax.swing.JLabel jLabelABCNumEmployedBees;
+    private javax.swing.JLabel jLabelABCNumOnlookerBees;
+    private javax.swing.JLabel jLabelABCNumScoutBees;
+    private javax.swing.JLabel jLabelCSSMaxAttraction;
+    private javax.swing.JLabel jLabelCSSPopulationSize;
     private javax.swing.JLabel jLabelGeneticMutationChance;
     private javax.swing.JLabel jLabelGeneticPopulationSize;
     private javax.swing.JLabel jLabelStartvalueForParameters;
@@ -810,6 +977,12 @@ private boolean pref_geneticMutateTopSolution;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
+    private javax.swing.JSpinner jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement;
+    private javax.swing.JSpinner jSpinnerABCNumEmployedBees;
+    private javax.swing.JSpinner jSpinnerABCNumOnlookerBees;
+    private javax.swing.JSpinner jSpinnerABCNumScoutBees;
+    private javax.swing.JSpinner jSpinnerCSSMaxAttraction;
+    private javax.swing.JSpinner jSpinnerCSSPopulationSize;
     private javax.swing.JSpinner jSpinnerConfidenceIntervallEnd;
     private javax.swing.JSpinner jSpinnerConfidenceIntervallStart;
     private javax.swing.JSpinner jSpinnerEpsilon;
@@ -906,6 +1079,31 @@ private boolean pref_geneticMutateTopSolution;
     support.log("Loaded pref_typeOfUsedMultiPhaseOptimization is "+this.getPref_typeOfUsedMultiPhaseOptimization().toString());
         this.setPref_KeepDesignSpaceAndResolution(Boolean.valueOf(auto.getProperty("pref_KeepDesignSpaceAndResolution", Boolean.toString(support.DEFAULT_KeepDesignSpaceAndResolution))));
     support.log("Loaded pref_KeepDesignSpaceAndResolution is "+this.getPref_KeepDesignSpaceAndResolution());
+    
+    //load settings for Genetic Optimization
+        this.setPref_GeneticPopulationSize(support.loadIntFromProperties("pref_GeneticPopulationSize", support.DEFAULT_GENETIC_POPULATION_SIZE, auto));
+    support.log("Loaded pref_GeneticPopulationSize is " +  this.getPref_GeneticPopulationSize());
+        this.setPref_GeneticMutationChance(support.loadDoubleFromProperties("pref_GeneticMutationChance", support.DEFAULT_GENETIC_MUTATION_CHANCE, auto));
+    support.log("Loaded pref_GeneticMutationChance is " + this.getPref_GeneticMutationChance());
+        this.setPref_GeneticMutateTopSolution(Boolean.valueOf(auto.getProperty("pref_GeneticMutateTopSolution",Boolean.toString(support.DEFAULT_GENETIC_MUTATE_TOP_SOLUTION))));
+    support.log("Loaded pref_GeneticMutateTopSolution is " + this.getPref_GeneticMutateTopSolution());
+    
+    //load settings for CSS Optimization
+        this.setPref_CSS_PopulationSize(support.loadIntFromProperties("pref_CSS_PopulationSize", support.DEFAULT_CSS_POPULATION_SIZE, auto));
+    support.log("Loaded pref_CSS_PopulationSize is " + this.getPref_CSS_PopulationSize());
+        this.setPref_CSS_MaxAttraction(support.loadDoubleFromProperties("pref_CSS_MaxAttraction", support.DEFAULT_CSS_MAX_ATTRACTION, auto));
+    support.log("Loaded pref_CSS_MaxAttraction is " + this.getPref_CSS_MaxAttraction());
+    
+    //load settings for ABC Optimization
+        this.setPref_ABC_NumEmployedBees(support.loadIntFromProperties("pref_ABC_NumEmployedBees", support.DEFAULT_ABC_NumEmployedBees, auto));
+    support.log("Loaded pref_ABC_NumEmployedBees is " + this.getPref_ABC_NumEmployedBees());    
+        this.setPref_ABC_NumOnlookerBees(support.loadIntFromProperties("pref_ABC_NumOnlookerBees", support.DEFAULT_ABC_NumOnlookerBees, auto));
+    support.log("Loaded pref_ABC_NumOnlookerBees is " + this.getPref_ABC_NumOnlookerBees());    
+        this.setPref_ABC_NumScoutBees(support.loadIntFromProperties("pref_ABC_NumScoutBees", support.DEFAULT_ABC_NumScoutBees, auto));
+    support.log("Loaded pref_ABC_NumScoutBees is " + this.getPref_ABC_NumScoutBees());    
+        this.setPref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement(support.loadIntFromProperties(
+                "pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement", support.DEFAULT_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement, auto));
+    support.log("Loaded pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement is " + this.getPref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement());
 
 	} catch (IOException e) {
 		// Exception bearbeiten
@@ -952,6 +1150,21 @@ private boolean pref_geneticMutateTopSolution;
 
         auto.setProperty("pref_LogFileAddon", this.jTextFieldLogFileAddon.getText());
         auto.setProperty("pref_CalculationOfNextParameterset", this.getPref_CalculationOfNextParameterset().toString());
+        
+        //setting parameters for genetic optimization
+        auto.setProperty("pref_GeneticPopulationSize", Integer.toString(this.getPref_GeneticPopulationSize()));
+        auto.setProperty("pref_GeneticMutationChance", Double.toString(this.getPref_GeneticMutationChance()));
+        auto.setProperty("pref_GeneticMutateTopSolution", Boolean.toString(this.getPref_GeneticMutateTopSolution()));
+        
+        //setting parameters for CSS optimization
+        auto.setProperty("pref_CSS_PopulationSize", Integer.toString(this.getPref_CSS_PopulationSize()));
+        auto.setProperty("pref_CSS_MaxAttraction", Double.toString(this.getPref_CSS_MaxAttraction()));
+        
+        //setting parameters for ABC optimization
+        auto.setProperty("pref_ABC_NumEmployedBees", Integer.toString(this.getPref_ABC_NumEmployedBees()));
+        auto.setProperty("pref_ABC_NumOnlookerBees", Integer.toString(this.getPref_ABC_NumOnlookerBees()));
+        auto.setProperty("pref_ABC_NumScoutBees", Integer.toString(this.getPref_ABC_NumScoutBees()));
+        auto.setProperty("pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement", Integer.toString(this.getPref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement()));
         
         File parserprops =  new File(support.NAME_OF_OPTIMIZER_PREFFERENCES_FILE);
         auto.store(new FileOutputStream(parserprops), "ExperimentGenerator-Properties");
@@ -1352,4 +1565,111 @@ private boolean pref_geneticMutateTopSolution;
         this.pref_KeepDesignSpaceAndResolution = pref_KeepDesignSpaceAndResolution;
     }
     
+    public int getPref_CSS_PopulationSize()
+    {
+        this.pref_CSS_PopulationSize = (Integer)jSpinnerCSSPopulationSize.getValue();
+        return this.pref_CSS_PopulationSize;
+    }
+    
+    public void setPref_CSS_PopulationSize(int Pref_CSS_PopulationSize)
+    {
+        jSpinnerCSSPopulationSize.setValue(Pref_CSS_PopulationSize);
+        this.pref_CSS_PopulationSize = Pref_CSS_PopulationSize;
+    }
+    
+    public double getPref_CSS_MaxAttraction()
+    {
+        this.pref_CSS_maxAttraction = (Double)jSpinnerCSSMaxAttraction.getValue();
+        return this.pref_CSS_maxAttraction;
+    }
+    
+    public void setPref_CSS_MaxAttraction(double Pref_CSS_MaxAttraction)
+    {
+        jSpinnerCSSMaxAttraction.setValue(Pref_CSS_MaxAttraction);
+        this.pref_CSS_maxAttraction = Pref_CSS_MaxAttraction;
+    }
+    
+    public int getPref_GeneticPopulationSize()
+    {
+        this.pref_GeneticPopulationSize = (Integer)jSpinnerGeneticPopulationSize.getValue();
+        return this.pref_GeneticPopulationSize;
+    }
+    
+    public void setPref_GeneticPopulationSize(int Pref_geneticPopulationSize)
+    {
+        jSpinnerGeneticPopulationSize.setValue(Pref_geneticPopulationSize);
+        this.pref_GeneticPopulationSize = Pref_geneticPopulationSize;
+    }
+    
+    public double getPref_GeneticMutationChance()
+    {
+        this.pref_GeneticMutationChance = (Double)jSpinnerGeneticMutationChance.getValue();
+        return this.pref_GeneticMutationChance;
+    }
+    
+    public void setPref_GeneticMutationChance(double Pref_geneticMutationChance)
+    {
+        jSpinnerGeneticMutationChance.setValue(Pref_geneticMutationChance);
+        this.pref_GeneticMutationChance = Pref_geneticMutationChance;
+    }
+
+    public boolean getPref_GeneticMutateTopSolution()
+    {
+        this.pref_GeneticMutateTopSolution = (boolean)jCheckBoxGeneticMutateTopSolution.isSelected();
+        return this.pref_GeneticMutateTopSolution;
+    }
+    
+    public void setPref_GeneticMutateTopSolution(boolean pref_geneticMutateTopSolution)
+    {
+        jCheckBoxGeneticMutateTopSolution.setSelected(pref_geneticMutateTopSolution);
+        this.pref_GeneticMutateTopSolution = pref_geneticMutateTopSolution;
+    }
+    
+    public int getPref_ABC_NumEmployedBees()
+    {
+        this.pref_ABC_NumEmployedBees = (Integer)jSpinnerABCNumEmployedBees.getValue();
+        return this.pref_ABC_NumEmployedBees;
+    }
+    
+    public void setPref_ABC_NumEmployedBees(int Pref_ABC_NumEmployedBees)
+    {
+        jSpinnerABCNumEmployedBees.setValue(Pref_ABC_NumEmployedBees);
+        this.pref_ABC_NumEmployedBees = Pref_ABC_NumEmployedBees;
+    }
+    
+    public int getPref_ABC_NumOnlookerBees()
+    {
+        this.pref_ABC_NumOnlookerBees = (Integer)jSpinnerABCNumOnlookerBees.getValue();
+        return this.pref_ABC_NumOnlookerBees;
+    }
+    
+    public void setPref_ABC_NumOnlookerBees(int Pref_ABC_NumOnlookerBees)
+    {
+        jSpinnerABCNumOnlookerBees.setValue(Pref_ABC_NumOnlookerBees);
+        this.pref_ABC_NumOnlookerBees = Pref_ABC_NumOnlookerBees;
+    }
+    
+    public int getPref_ABC_NumScoutBees()
+    {
+        this.pref_ABC_NumScoutBees = (Integer)jSpinnerABCNumScoutBees.getValue();
+        return this.pref_ABC_NumScoutBees;
+    }
+    
+    public void setPref_ABC_NumScoutBees(int Pref_ABC_NumScoutBees)
+    {
+        jSpinnerABCNumScoutBees.setValue(Pref_ABC_NumScoutBees);
+        this.pref_ABC_NumScoutBees = Pref_ABC_NumScoutBees;
+    }
+    
+    public int getPref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement()
+    {
+        this.pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement = (Integer)jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement.getValue();
+        return this.pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement;
+    }
+    
+    public void setPref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement(int Pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement)
+    {
+        jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement.setValue(Pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement);
+        this.pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement = Pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement;
+    }
 }
