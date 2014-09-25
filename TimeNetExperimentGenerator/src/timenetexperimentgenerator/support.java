@@ -10,6 +10,8 @@
 package timenetexperimentgenerator;
 
 import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -680,6 +682,7 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
         }
     }
     
+    
     /**
      * returns address of simulation server incl. path
      * @return address url to simulation server as String
@@ -692,10 +695,13 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
      * Sets the address of simulation server incl. path
      * @param address url to simulation server
      */
-    public static void setRemoteAddress(String address){
+    
+    public static void setRemoteAddress(String address) throws IOException{
     remoteAddress=address;
     //TODO DISTRIBUTEDSERVER
     //Check if address is correct.
+    distributedSimulationAvailable = checkRemoteAddress(address);
+    mainFrame.updateComboBoxSimulationType();        
     //If Address is correct, set distributedSimulationAvailable to TRUE!
     //e.i. call the method checkRemoteAddress(String ere)
     //After that, please call updateComboBoxSimulationType() in MainFrame.java
@@ -707,7 +713,36 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
      * @return True if URL is correct and server is working, else false
      * To be modified by: Group studies 2014
      */
-    public static boolean checkRemoteAddress(String urlString){
+    public static boolean checkRemoteAddress(String urlString) throws IOException{
+        //TODO DISTRIBUTEDSERVER
+    try {
+        URL url = new URL(urlString);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        //System.out.println(String.format("Fetching %s ...", url));
+   
+        int responseCode = conn.getResponseCode();
+        if (responseCode == 200 || responseCode == 500) {
+            //System.out.println(String.format("Site is up, content length = %s", conn.getHeaderField("content-length")));
+            return true;
+        } else {
+            //System.out.println(String.format("Site is up, but returns non-ok status = %d", responseCode));
+            return false;
+        }
+    } catch (java.net.UnknownHostException e) {
+        System.out.println("Site is down");
+    }
+    return false;
+    }
+    
+    
+    /**
+     * Checks, if the given remoteAddress (URL to Sim.-Server) is correct
+     * @param urlString The URL as String to be checked, if this is the available Sim.-Server
+     * @return True if URL is correct and server is working, else false
+     * To be modified by: Group studies 2014
+     */
+    public static boolean getRemoteAddress(String urlString){
         //TODO DISTRIBUTEDSERVER
     return true;
     }

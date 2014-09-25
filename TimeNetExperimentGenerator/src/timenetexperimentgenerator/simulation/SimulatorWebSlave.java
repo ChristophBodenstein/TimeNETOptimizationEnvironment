@@ -22,10 +22,12 @@ import java.util.logging.Logger;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
-import timenetexperimentgenerator.Parser;
-import timenetexperimentgenerator.datamodel.SimulationType;
 import timenetexperimentgenerator.support;
 
 /**
@@ -35,6 +37,7 @@ import timenetexperimentgenerator.support;
 public class SimulatorWebSlave implements Runnable{
 private boolean shouldEnd=false;
 String pathToTimeNet;
+String simid="";
 String actualSimulationLogFile="";//actual log-file for one local simulation
 private final String nameOfTempDirectory="14623786483530251523506521233052";
 
@@ -44,32 +47,34 @@ private final String nameOfTempDirectory="14623786483530251523506521233052";
         //Request the server Api to get the Status Code and response body.
        // Getting the status code.
         HttpClient client = new DefaultHttpClient();
-        HttpGet httpGet = new HttpGet("http://141.24.214.193:8080/TNServer/rest/api/downloads/ND");
+        HttpGet httpGet = new HttpGet(support.getReMoteAddress() + "/rest/api/downloads/ND");
         HttpResponse response = null;
         String responseString = null;
             try {
                 response = client.execute(httpGet);
-                responseString = new BasicResponseHandler().handleResponse(response);
-            } catch (IOException ex) {
-                Logger.getLogger(SimulatorWebSlave.class.getName()).log(Level.SEVERE, null, ex);
-            }
-                        
-        int statusCode = response.getStatusLine().getStatusCode();
-
-        
-        List<String> lines = null;
-         
-     FileWriter fileWriter = null;
-        try {
-
+                int statusCode = response.getStatusLine().getStatusCode();
+        if(statusCode == 200) {
+            responseString = new BasicResponseHandler().handleResponse(response);
+            FileWriter fileWriter = null;
             String filename = response.getFirstHeader("filename").getValue();
+            simid = response.getFirstHeader("simid").getValue();
             System.out.println("filename======="+filename);
-            String exportFileName=this.pathToTimeNet+File.separator+filename;
+            String exportFileName=pathToTimeNet+File.separator+filename;
             File newTextFile = new File(exportFileName);
             fileWriter = new FileWriter(newTextFile);
             fileWriter.write(responseString);
             fileWriter.close();
             startLocalSimulation(exportFileName);
+            
+        }
+            } catch (IOException ex) {
+                Logger.getLogger(SimulatorWebSlave.class.getName()).log(Level.SEVERE, null, ex);
+            }
+                        
+        
+        /*try {
+
+
             SimulationType myResults=new SimulationType();//create new SimulationResults
                     //here the SimType has to get Data From Parser;
                     Parser myParser = new Parser();
@@ -90,13 +95,8 @@ private final String nameOfTempDirectory="14623786483530251523506521233052";
                         support.log("Error Parsing the Simulation results. Maybe Simulation failure?");
                     }
         } catch (IOException ex) {
-               } finally {
-            try {
-                fileWriter.close();
-            } catch (IOException ex) {
-               
-            }
-        }
+               } */
+        
      /*       String content = "Hello File!";
             String path = "file:///C://Downloads/veer.txt";
             try {
@@ -113,7 +113,7 @@ private final String nameOfTempDirectory="14623786483530251523506521233052";
             } catch (InterruptedException ex) {
                 support.log("Error while sleeping Thread of Slave Web simulator.");
             }
-        support.log("Dummy Thread started to download and simulate SCPNs.");
+            support.log("Dummy Thread started to download and simulate SCPNs.");
         
             if(this.shouldEnd){
             support.log("Slave Thread will end now.");
@@ -147,7 +147,6 @@ private final String nameOfTempDirectory="14623786483530251523506521233052";
         // Start new process
         long timeStamp=Calendar.getInstance().getTimeInMillis();
 
-
         java.lang.Process p = processBuilder.start();
         
         java.util.Scanner s = new java.util.Scanner( p.getInputStream() ).useDelimiter( "\\Z" );//Scans output of process
@@ -158,7 +157,6 @@ private final String nameOfTempDirectory="14623786483530251523506521233052";
                 Logger.getLogger(SimulatorLocal.class.getName()).log(Level.SEVERE, null, ex);
             }
         timeStamp=(Calendar.getInstance().getTimeInMillis()-timeStamp) / 1000;//Time for calculation in seconds
-
 
         //Copy results.log
         String sourceFile=support.removeExtention(exportFileName)+".result"+File.separator+"results.log";
@@ -171,6 +169,8 @@ private final String nameOfTempDirectory="14623786483530251523506521233052";
             tmpFile.delete();
             support.log("Deleted original Log-file and directory.");
             this.actualSimulationLogFile=sinkFile;
+            File logFile=new File(sinkFile);
+            executeMultiPartRequest(support.getReMoteAddress() + "/rest/log/upload",logFile,logFile.getName(), "File Uploaded :: WORDS", simid) ;
             }
         File file = new File(exportFileName);
         String path=file.getAbsolutePath().substring(0,file.getAbsolutePath().lastIndexOf(File.separator)) +File.separator+nameOfTempDirectory;
@@ -179,7 +179,42 @@ private final String nameOfTempDirectory="14623786483530251523506521233052";
         support.del(new File(path));
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (Exception ex) {
+        Logger.getLogger(SimulatorWebSlave.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    }
+public void executeMultiPartRequest(String urlString, File file, String fileName, String fileDescription, String simid) throws Exception 
+    {
+    	HttpClient client = new DefaultHttpClient() ;
+        HttpPost postRequest = new HttpPost (urlString) ;
+        try
+        {
+        	//Set various attributes 
+            MultipartEntity multiPartEntity = new MultipartEntity () ;
+            multiPartEntity.addPart("fileDescription", new StringBody(fileDescription != null ? fileDescription : "")) ;
+            multiPartEntity.addPart("fileName", new StringBody(fileName != null ? fileName : file.getName())) ;
+            multiPartEntity.addPart("simid", new StringBody(simid)) ;
+ 
+            //FileBody fileBody = new FileBody(file, "application/octect-stream") ;
+            FileBody fileBody = new FileBody(file, "multipart/form-data");
+            //Prepare payload
+            multiPartEntity.addPart("attachment", fileBody) ;
+ 
+            //Set to request body
+            postRequest.setEntity(multiPartEntity) ;
+            
+            //Send request
+            HttpResponse response = client.execute(postRequest) ;
+            
+            //Verify response if any
+            if (response != null)
+            {
+                System.out.println(response.getStatusLine().getStatusCode());
+            }
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace() ;
         }
     }
-
 }

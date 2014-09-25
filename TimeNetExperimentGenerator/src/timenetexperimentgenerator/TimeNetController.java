@@ -7,8 +7,11 @@
 package timenetexperimentgenerator;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -39,25 +42,29 @@ public class TimeNetController {
         }
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
         public void run() {
-            //Try to create pref-dir
-            File prefdir=new File(support.NAME_OF_PREF_DIR);
-            if(!prefdir.exists()){
-            prefdir.mkdir();
+            try {
+                //Try to create pref-dir
+                File prefdir=new File(support.NAME_OF_PREF_DIR);
+                if(!prefdir.exists()){
+                    prefdir.mkdir();
+                }
+                
+                
+                MainFrame myFrame=new MainFrame();
+                myFrame.setVisible(true);
+                
+                Timer timer = new Timer();
+                timer.scheduleAtFixedRate(new TimerTask() {
+                    @Override
+                    public void run() {
+                        //support.printMemoryStats();
+                        support.updateMemoryPrograssbar();
+                        support.checkSpinningShowTime();
+                    }
+                }, 1000*support.DEFAULT_MEMORYPRINT_INTERVALL, 1000*support.DEFAULT_MEMORYPRINT_INTERVALL);
+            } catch (IOException ex) {
+                Logger.getLogger(TimeNetController.class.getName()).log(Level.SEVERE, null, ex);
             }
-
-
-            MainFrame myFrame=new MainFrame();
-            myFrame.setVisible(true);
-
-            Timer timer = new Timer();
-            timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-            //support.printMemoryStats();
-            support.updateMemoryPrograssbar();
-            support.checkSpinningShowTime();
-            }
-            }, 1000*support.DEFAULT_MEMORYPRINT_INTERVALL, 1000*support.DEFAULT_MEMORYPRINT_INTERVALL);
 
         }
     });

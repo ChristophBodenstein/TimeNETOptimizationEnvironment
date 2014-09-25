@@ -21,6 +21,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.JDialog;
@@ -72,7 +74,7 @@ private JDialog aboutDialog;
 private boolean savePropertiesEnabled=false;
 
     /** Creates new form MainFrame */
-    public MainFrame() {
+    public MainFrame() throws IOException {
 
     support.setMainFrame(this);
     
@@ -223,7 +225,7 @@ private boolean savePropertiesEnabled=false;
      * if cache is available --> Selection is possible
      * if server is available --> Selection of Distr. is available
      */
-    private void updateComboBoxSimulationType(){
+    public void updateComboBoxSimulationType(){
     DefaultListSelectionModel model = new DefaultListSelectionModel();
     model.addSelectionInterval(0, 0);
     model.addSelectionInterval(2, 2);
@@ -954,9 +956,13 @@ private boolean savePropertiesEnabled=false;
 
         //If a string was returned, say so.
         if ((s != null) && (s.length() > 0)) {
-        support.log("URL of Simulation-Server as given from user is " + s + "!");
-        support.setRemoteAddress(s);
-        this.saveProperties();
+            try {
+                support.log("URL of Simulation-Server as given from user is " + s + "!");
+                support.setRemoteAddress(s);
+                this.saveProperties();
+            } catch (IOException ex) {
+                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }else{
         support.log("URL of Simulation-Server was not entered!");    
         }
