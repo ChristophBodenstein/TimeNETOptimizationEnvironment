@@ -725,9 +725,11 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
             int responseCode = conn.getResponseCode();
             if (responseCode == 200 || responseCode == 500) {
                 //System.out.println(String.format("Site is up, content length = %s", conn.getHeaderField("content-length")));
+                support.log("URL seems correct. Distributed Simulation will be activated.");
                 return true;
             } else {
                 //System.out.println(String.format("Site is up, but returns non-ok status = %d", responseCode));
+                support.log("URL seems wrong or server is not available.");
                 return false;
             }
             
