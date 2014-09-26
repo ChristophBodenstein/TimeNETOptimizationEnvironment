@@ -716,22 +716,28 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
     public static boolean checkRemoteAddress(String urlString) throws IOException{
         //TODO DISTRIBUTEDSERVER
     try {
-        URL url = new URL(urlString);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("GET");
-        //System.out.println(String.format("Fetching %s ...", url));
-   
-        int responseCode = conn.getResponseCode();
-        if (responseCode == 200 || responseCode == 500) {
-            //System.out.println(String.format("Site is up, content length = %s", conn.getHeaderField("content-length")));
-            return true;
-        } else {
-            //System.out.println(String.format("Site is up, but returns non-ok status = %d", responseCode));
-            return false;
-        }
-    } catch (java.net.UnknownHostException e) {
+        try{
+            URL url = new URL(urlString);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            //System.out.println(String.format("Fetching %s ...", url));
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200 || responseCode == 500) {
+                //System.out.println(String.format("Site is up, content length = %s", conn.getHeaderField("content-length")));
+                return true;
+            } else {
+                //System.out.println(String.format("Site is up, but returns non-ok status = %d", responseCode));
+                return false;
+            }
+            
+        }   catch(java.net.MalformedURLException e){
+            support.log("Wrong URL format, maybe protocol is missing.");
+            }
+        
+    }   catch (java.net.UnknownHostException e) {
         System.out.println("Site is down");
-    }
+        }
     return false;
     }
     
