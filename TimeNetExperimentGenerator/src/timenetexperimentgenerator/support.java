@@ -715,6 +715,7 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
      */
     public static boolean checkRemoteAddress(String urlString) throws IOException{
         //TODO DISTRIBUTEDSERVER
+        //TODO remove tail \ !!!
     try {
         try{
             URL url = new URL(urlString);
@@ -737,8 +738,8 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
             support.log("Wrong URL format, maybe protocol is missing.");
             }
         
-    }   catch (java.net.UnknownHostException e) {
-        System.out.println("Site is down");
+    }   catch (Exception e) {
+        support.log("Site is down or network error.");
         }
     return false;
     }

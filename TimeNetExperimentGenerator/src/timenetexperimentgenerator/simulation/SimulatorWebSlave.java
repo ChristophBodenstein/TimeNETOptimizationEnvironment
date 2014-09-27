@@ -53,6 +53,7 @@ private final String nameOfTempDirectory="14623786483530251523506521233052";
             try {
                 response = client.execute(httpGet);
                 int statusCode = response.getStatusLine().getStatusCode();
+                support.log("Response for "+httpGet.toString() +"is "+statusCode);
         if(statusCode == 200) {
             responseString = new BasicResponseHandler().handleResponse(response);
             FileWriter fileWriter = null;

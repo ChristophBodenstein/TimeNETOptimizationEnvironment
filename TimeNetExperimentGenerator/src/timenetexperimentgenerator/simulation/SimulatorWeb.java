@@ -258,6 +258,7 @@ while(i < listOfParameterSets.size()){
         HttpPost postRequest = new HttpPost (urlString) ;
         try
         {
+            support.log("Try to connect "+urlString);
             
         	//Set various attributes 
             MultipartEntity multiPartEntity = new MultipartEntity () ;
@@ -281,6 +282,7 @@ while(i < listOfParameterSets.size()){
             if (response != null)
             {
                 System.out.println(response.getStatusLine().getStatusCode());
+                //TODO show Error in log and statuslabel
             }
         }
         catch (Exception ex)
