@@ -76,7 +76,7 @@ public static final int DEFAULT_ABC_NumScoutBees = 2;
 public static final int DEFAULT_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement = 3;
 
 
-public static final int DEFAULT_CACHE_STUCK=10;//Optimizer can ask 2 times for simulating the same parameterset in a row. Then optimization will be aborted!
+public static final int DEFAULT_CACHE_STUCK=100;//Optimizer can ask 2 times for simulating the same parameterset in a row. Then optimization will be aborted!
 public static final int DEFAULT_LOCAL_SIMULATION_ATTEMPTS=5;//Local simulation is tried so many times until break
 public static final int DEFAULT_TIME_BETWEEN_LOCAL_SIMULATIONS=3000;//in ms
 

@@ -776,7 +776,7 @@ private boolean savePropertiesEnabled=false;
     private void jButtonStartBatchSimulationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonStartBatchSimulationActionPerformed
         support.setCancelEverything(false);
         //Ask for Tmp-Path
-        String tmpPath=support.getPathToDirByDialog("Dir for export TMP-Files and log.\n "+"Go INTO the dir to choose it!", new File(support.getOriginalFilename()).getPath() );
+        String tmpPath=support.getPathToDirByDialog("Dir for export TMP-Files and log.\n ", new File(support.getOriginalFilename()).getPath() );
         
         if(tmpPath!=null){
         support.setTmpPath(tmpPath);
@@ -832,7 +832,7 @@ private boolean savePropertiesEnabled=false;
         }else{
                 if(this.getListOfActiveMeasureMentsToOptimize().size()>=1){
                 //Ask for Tmp-Path
-                support.setTmpPath(support.getPathToDirByDialog("Dir for export TMP-Files and log.\n "+"Go INTO the dir to choose it!",  new File(support.getOriginalFilename()).getPath()) );
+                support.setTmpPath(support.getPathToDirByDialog("Dir for export TMP-Files and log.\n ",  new File(support.getOriginalFilename()).getPath()) );
                 //if tmpPath is empty or null --> return
                     if(support.getTmpPath()!=null){
                     support.setPathToTimeNet(pathToTimeNet);
@@ -971,13 +971,34 @@ private boolean savePropertiesEnabled=false;
     private void jCheckBoxSlaveSimulatorItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBoxSlaveSimulatorItemStateChanged
         //set Property for startup
         //start the Slave-Thread
-        support.setIsRunningAsSlave(this.jCheckBoxSlaveSimulator.isSelected());
-        this.saveProperties();
-        if(support.isIsRunningAsSlave()){
         
-        new Thread(this.mySlave).start();
-        }else{
+        //If is selected and will be unselected then stop thread
+        if(!this.jCheckBoxSlaveSimulator.isSelected()){
         this.mySlave.setShouldEnd(true);
+        support.setIsRunningAsSlave(false);
+        this.saveProperties();
+        //TODO Activate all Buttons!
+        }else{
+        String tmpPath=support.getPathToDirByDialog("Dir for export TMP-Files and log.\n ", new File(support.getOriginalFilename()).getPath() );
+        
+            if(tmpPath!=null){
+            support.setTmpPath(tmpPath);
+                if(support.checkTimeNetPath()){
+                //TimeNet-Path ok, we can start
+                support.setIsRunningAsSlave(this.jCheckBoxSlaveSimulator.isSelected());
+                support.log("Tmp Path ok and timenetpath ok, try to start slave-thread.");
+                
+                this.saveProperties();
+                new Thread(this.mySlave).start();
+                //TODO deactivate all Buttons!
+                }
+            }else{
+            //No tmp path selected -->eject
+            support.log("No Tmp Path selected for slave mode.");
+            this.jCheckBoxSlaveSimulator.setSelected(false);
+            support.setIsRunningAsSlave(false);
+            this.saveProperties();
+            }
         }
         
     }//GEN-LAST:event_jCheckBoxSlaveSimulatorItemStateChanged

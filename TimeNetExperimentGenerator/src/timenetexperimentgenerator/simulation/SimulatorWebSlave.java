@@ -42,7 +42,7 @@ String actualSimulationLogFile="";//actual log-file for one local simulation
 private final String nameOfTempDirectory="14623786483530251523506521233052";
 
     public void run() {
-        while(true){
+        while(!shouldEnd){
         this.pathToTimeNet=support.getPathToTimeNet();//  pathToTimeNetTMP;
         //Request the server Api to get the Status Code and response body.
        // Getting the status code.
@@ -114,14 +114,14 @@ private final String nameOfTempDirectory="14623786483530251523506521233052";
             } catch (InterruptedException ex) {
                 support.log("Error while sleeping Thread of Slave Web simulator.");
             }
-            support.log("Dummy Thread started to download and simulate SCPNs.");
-        
+            //support.log("Dummy Thread started to download and simulate SCPNs.");
+            support.spinInLabel();
+            support.setStatusText("Waiting for simulation tasks.");
+            
             if(this.shouldEnd){
             support.log("Slave Thread will end now.");
-            this.shouldEnd=false;
-            return;
+            support.setStatusText("");
             }
-        
         }
     }
 
