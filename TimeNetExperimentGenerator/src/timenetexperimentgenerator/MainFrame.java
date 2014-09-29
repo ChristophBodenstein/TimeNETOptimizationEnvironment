@@ -1541,8 +1541,8 @@ private boolean savePropertiesEnabled=false;
     if(!savePropertiesEnabled){return;}
     support.log("Saving Properties.");
         try{
-    support.log("rpath = " + this.getPathToR());
-    support.log("timenetpath = " + this.getPathToTimeNet());
+    //support.log("rpath = " + this.getPathToR());
+    //support.log("timenetpath = " + this.getPathToTimeNet());
     
     
     auto.setProperty("timenetpath", this.getPathToTimeNet());
