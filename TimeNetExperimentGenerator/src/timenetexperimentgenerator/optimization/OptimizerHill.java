@@ -124,12 +124,13 @@ int stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;
         
         support.log("Start of Optimization-loop");
             while(!optimized && !support.isCancelEverything()){
+                support.spinInLabel();
+                
                 newParameterset=getNextParametersetAsArrayList(lastParameterset);
                 listOfCompletedSimulations=null;
                 //If result is already in cache, then count up corresponding counter
                 //Else start simulation
                 
-                //TODO Hier ist der Fehler: Wird bei abfrage ins Logfile geschrieben!!!
                 if(mySimulationCache.getListOfCompletedSimulationParsers(newParameterset, simulationCounter)!=null){
                 listOfCompletedSimulations=mySimulationCache.getListOfCompletedSimulationParsers(newParameterset, simulationCounter);
                 support.log("Getting List of Completed Simulations from Cache.");
