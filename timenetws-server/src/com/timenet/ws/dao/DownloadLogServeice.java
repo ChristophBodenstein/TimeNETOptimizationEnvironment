@@ -32,7 +32,8 @@ public class DownloadLogServeice {
 		logList eList =null;
 	    String SQLQuerry=" from "+ logList.class.getName()+" where distribute_flag=? and upload_sim_manager=?";
 	    std=(logList) HibernateTemplate.findList(SQLQuerry, 0, 1, "ND", simid).get(0);
-		
+		//TODO What if list is empty??? Build empt response? get(0)->Nullpointerexception
+	    
 		if (std!=null) {
 			ResponseBuilder response = Response.ok((Object) std.getLogData());
 			response.type(MediaType.APPLICATION_XML);
