@@ -714,8 +714,6 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
      * To be modified by: Group studies 2014
      */
     public static boolean checkRemoteAddress(String urlString) throws IOException{
-        //TODO DISTRIBUTEDSERVER
-        //TODO remove tail \ !!!
         support.log("Given remote-URL: "+urlString);
         if(urlString.endsWith("/") || urlString.endsWith("\\")){
             urlString = urlString.substring(0, urlString.length() - 1);
