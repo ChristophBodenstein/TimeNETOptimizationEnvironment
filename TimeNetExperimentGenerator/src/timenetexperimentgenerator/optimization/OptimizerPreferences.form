@@ -680,7 +680,7 @@
               </Properties>
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-                  <AbsoluteConstraints x="260" y="30" width="-1" height="-1"/>
+                  <AbsoluteConstraints x="260" y="30" width="90" height="-1"/>
                 </Constraint>
               </Constraints>
             </Component>
@@ -987,7 +987,7 @@
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                          <Component id="jLabelCSSPopulationSize" alignment="0" pref="90" max="32767" attributes="0"/>
+                          <Component id="jLabelCSSPopulationSize" alignment="0" pref="0" max="32767" attributes="0"/>
                           <Component id="jLabelCSSMaxAttraction" alignment="0" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="64" max="-2" attributes="0"/>
