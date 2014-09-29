@@ -50,6 +50,9 @@ private nativeProcessCallbacks pfc=null;
                 //Kill native Thread and set Running to false
                 support.log("Try to kill the started process.");
                 myNativeProcess.killProcess();
+                this.setRunning(false);
+                this.pfc.errorOccured("Plot canceled.");
+                return;
                 }
 
             } catch (InterruptedException ex) {

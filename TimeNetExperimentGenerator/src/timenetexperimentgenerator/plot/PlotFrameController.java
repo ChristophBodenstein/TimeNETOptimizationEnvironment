@@ -597,5 +597,6 @@ private String rScriptFilePath=System.getProperty("user.dir") + File.separator +
         this.JButtonPlot.setEnabled(true);
         support.log("Error occured durin Plot.");
         support.setStatusText("Plot Error!");
+        this.JButtonPlot.setEnabled(true);
     }
 }
