@@ -92,11 +92,13 @@ boolean keepSimulationFiles=false;
                     String actualParameterFileName=createLocalSimulationFile(actualParameterSet, this.simulationCounter);//create actual SCPN xml-file and save it in tmp-folder
                     File file = new File(actualParameterFileName);
                         try {
-        //Upload the file
-        executeMultiPartRequest(support.getReMoteAddress() + "/rest/file/upload",file,file.getName(), "File Uploaded :: WORDS",simid) ;
-    } catch (Exception ex) {
-        Logger.getLogger(SimulatorWeb.class.getName()).log(Level.SEVERE, null, ex);
-    }}
+                            //Upload the file
+                            executeMultiPartRequest(support.getReMoteAddress() + "/rest/file/upload",file,file.getName(), "File Uploaded :: WORDS",simid) ;
+                        } catch (Exception ex) {
+                            Logger.getLogger(SimulatorWeb.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    this.simulationCounter++;
+                    }
                 }
                }catch(Exception e){
                support.log("Error while creating local simulation file or log-file.");
