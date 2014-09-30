@@ -3,8 +3,7 @@ package com.timenet.ws.dao;
  * auto GeneratedValue
  * @author Veeranna
  */
-import java.io.File;
-import java.io.FileOutputStream;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
@@ -84,20 +83,20 @@ public class UploadLogFileService {
 	}
 
 	// save to somewhere
-	private void writeFile(byte[] content, String filename) throws IOException {
+	/*private void writeFile(byte[] content, String filename) throws IOException {
 
 		File file = new File(filename);
 		if (!file.exists()) 
 		{
 			file.createNewFile();
 		}
-		logList fm = new logList();
+		//logList fm = new logList();
 		FileOutputStream fop = new FileOutputStream(file);
 		fop.write(content);
 		fop.flush();
 		fop.close();
 
-	}
+	}*/
 
 	private int saveFileInDb(byte[] content, String fileName, String simid) {
 		int fileId = -1;

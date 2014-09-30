@@ -22,6 +22,7 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 import com.timenet.ws.models.simulationList;
 import com.timenet.ws.util.HibernateTemplate;
+import com.timenet.ws.util.LogFile;
 
 @Path("/file")
 public class UploadFileService {
@@ -108,7 +109,7 @@ public class UploadFileService {
 		fm.setFile_size(content.length);
 
 		fileId = (Integer) HibernateTemplate.save(fm);
-		System.out.println("--------Simulation XML file Stored in Server ---------"+fileName);
+		LogFile.info("--------Simulation XML file Stored in Server ---------"+fileName);
 		return fileId;
 
 	}

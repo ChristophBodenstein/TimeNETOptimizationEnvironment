@@ -1,8 +1,5 @@
 package com.timenet.ws.models;
 
-import java.math.BigInteger;
-import java.sql.Date;
-import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
