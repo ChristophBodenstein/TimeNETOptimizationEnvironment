@@ -205,7 +205,10 @@ private boolean savePropertiesEnabled=false;
         this.updateComboBoxSimulationType();
         
         if(support.isIsRunningAsSlave()){
+        this.jCheckBoxSlaveSimulator.setSelected(true);
         new Thread(this.mySlave).start();
+        }else{
+        this.jCheckBoxSlaveSimulator.setSelected(false);
         }
         
         support.log(auto.getProperty("SimulationType"));
@@ -455,6 +458,11 @@ private boolean savePropertiesEnabled=false;
         jCheckBoxSlaveSimulator.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 jCheckBoxSlaveSimulatorItemStateChanged(evt);
+            }
+        });
+        jCheckBoxSlaveSimulator.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jCheckBoxSlaveSimulatorMouseClicked(evt);
             }
         });
 
@@ -969,37 +977,7 @@ private boolean savePropertiesEnabled=false;
     }//GEN-LAST:event_jButtonEnterURLToSimServerActionPerformed
 
     private void jCheckBoxSlaveSimulatorItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBoxSlaveSimulatorItemStateChanged
-        //set Property for startup
-        //start the Slave-Thread
-        
-        //If is selected and will be unselected then stop thread
-        if(!this.jCheckBoxSlaveSimulator.isSelected()){
-        this.mySlave.setShouldEnd(true);
-        support.setIsRunningAsSlave(false);
-        this.saveProperties();
-        //TODO Activate all Buttons!
-        }else{
-        String tmpPath=support.getPathToDirByDialog("Dir for export TMP-Files and log.\n ", new File(support.getOriginalFilename()).getPath() );
-        
-            if(tmpPath!=null){
-            support.setTmpPath(tmpPath);
-                if(support.checkTimeNetPath()){
-                //TimeNet-Path ok, we can start
-                support.setIsRunningAsSlave(this.jCheckBoxSlaveSimulator.isSelected());
-                support.log("Tmp Path ok and timenetpath ok, try to start slave-thread.");
-                
-                this.saveProperties();
-                new Thread(this.mySlave).start();
-                //TODO deactivate all Buttons!
-                }
-            }else{
-            //No tmp path selected -->eject
-            support.log("No Tmp Path selected for slave mode.");
-            this.jCheckBoxSlaveSimulator.setSelected(false);
-            support.setIsRunningAsSlave(false);
-            this.saveProperties();
-            }
-        }
+        //Removed functionality
         
     }//GEN-LAST:event_jCheckBoxSlaveSimulatorItemStateChanged
 
@@ -1096,6 +1074,41 @@ private boolean savePropertiesEnabled=false;
     private void jProgressBarMemoryUsageMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jProgressBarMemoryUsageMouseClicked
     support.printMemoryStats();
     }//GEN-LAST:event_jProgressBarMemoryUsageMouseClicked
+
+    private void jCheckBoxSlaveSimulatorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jCheckBoxSlaveSimulatorMouseClicked
+         //set Property for startup
+        //start the Slave-Thread
+        
+        //If is selected and will be unselected then stop thread
+        if(!this.jCheckBoxSlaveSimulator.isSelected()){
+        this.mySlave.setShouldEnd(true);
+        support.setIsRunningAsSlave(false);
+        this.saveProperties();
+        //TODO Activate all Buttons!
+        }else{
+        String tmpPath=support.getPathToDirByDialog("Dir for export TMP-Files and log.\n ", new File(support.getOriginalFilename()).getPath() );
+        
+            if(tmpPath!=null){
+            support.setTmpPath(tmpPath);
+                if(support.checkTimeNetPath()){
+                //TimeNet-Path ok, we can start
+                support.setIsRunningAsSlave(true);
+                support.log("Tmp Path ok and timenetpath ok, try to start slave-thread.");
+                this.mySlave.setShouldEnd(false);
+                this.saveProperties();
+                new Thread(this.mySlave).start();
+                this.jCheckBoxSlaveSimulator.setSelected(true);
+                //TODO deactivate all Buttons!
+                }
+            }else{
+            //No tmp path selected -->eject
+            support.log("No Tmp Path selected for slave mode.");
+            this.jCheckBoxSlaveSimulator.setSelected(false);
+            support.setIsRunningAsSlave(false);
+            this.saveProperties();
+            }
+        }
+    }//GEN-LAST:event_jCheckBoxSlaveSimulatorMouseClicked
 
     /**
      * Calculates the design space, number of all permutations of parameters
