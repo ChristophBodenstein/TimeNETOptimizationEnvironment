@@ -60,7 +60,7 @@ private final String nameOfTempDirectory="14623786483530251523506521233052";
             String filename = response.getFirstHeader("filename").getValue();
             simid = response.getFirstHeader("simid").getValue();
             System.out.println("filename======="+filename);
-            String exportFileName=pathToTimeNet+File.separator+filename;
+            String exportFileName=support.getTmpPath()+File.separator+filename;
             File newTextFile = new File(exportFileName);
             fileWriter = new FileWriter(newTextFile);
             fileWriter.write(responseString);
