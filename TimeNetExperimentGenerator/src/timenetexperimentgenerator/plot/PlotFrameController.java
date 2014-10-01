@@ -20,6 +20,7 @@ import timenetexperimentgenerator.helper.nativeProcessCallbacks;
 import timenetexperimentgenerator.support;
 import java.awt.ComponentOrientation;
 import javax.swing.JColorChooser;
+import java.io.FileOutputStream;
 import static timenetexperimentgenerator.support.setStatusText;
 
 /**
@@ -56,6 +57,7 @@ Color plotColor = Color.black;
         setResizable(false);
         
         jButton1.setBackground(Color.black);
+        jCheckBox1.setEnabled(false);
         
         //jlist alignment
         CachedFilesList.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
@@ -65,6 +67,9 @@ Color plotColor = Color.black;
     
     public void loadCSV(String fileName)
     {
+        jCheckBox1.setSelected(false);
+        jCheckBox1.setEnabled(false);
+        
         File file = new File(fileName);
         try
         {
@@ -162,6 +167,7 @@ Color plotColor = Color.black;
         jLabel1 = new javax.swing.JLabel();
         jComboBoxPlotChar = new javax.swing.JComboBox();
         jButton1 = new javax.swing.JButton();
+        jCheckBox1 = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -262,6 +268,13 @@ Color plotColor = Color.black;
             }
         });
 
+        jCheckBox1.setText("Hold");
+        jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBox1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -288,6 +301,8 @@ Color plotColor = Color.black;
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButton1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jCheckBox1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(JButtonPlot, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -373,7 +388,8 @@ Color plotColor = Color.black;
                             .addComponent(JButtonPlot)
                             .addComponent(jLabel1)
                             .addComponent(jComboBoxPlotChar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton1))))
+                            .addComponent(jButton1)
+                            .addComponent(jCheckBox1))))
                 .addContainerGap())
             .addComponent(jSeparator1)
         );
@@ -445,64 +461,107 @@ Color plotColor = Color.black;
         
         try
         {
-            //Delete old script file and old image file
-            support.del(new File(imageFilePath));
-            support.del(new File(rScriptFilePath));
+            if(!jCheckBox1.isSelected())
+            {
+                //Delete old script file and old image file
+                support.del(new File(imageFilePath));
+                support.del(new File(rScriptFilePath));
 
-            PrintWriter writer = new PrintWriter("rscript.r", "UTF-8");
-            String userdir = System.getProperty("user.dir");
-            userdir = userdir.replace("\\", "/");
-            
-            writer.println("library(plot3D)");
-            writer.println("base<-read.csv(\"" + OpenFileTextField.getText().replace("\\", "/") + "\", sep=\";\", dec=\",\",check.names=FALSE)");
-            
-            if(MeasureComboBox.getSelectedItem() != null)
-            {
-                writer.println("sub<-subset(base,  base$MeasureName ==  \"" + MeasureComboBox.getSelectedItem().toString() + "\")");
-            }
-            else
-            {
-                writer.println("sub<-base");
-            }
-            
-            writer.println("setwd(\"" + userdir + "\")");
-            writer.println("png(filename=\"rplot.png\")");
-            //writer.println("svg(filename=\"rplot.svg\")");
-            //writer.println("values <- c(1, 3, 6, 4, 9)");
-            //writer.println("plot(values, type=\"o\", col=\"blue\")");
-            
-            if(XValueLabel.getText() != "None" && YValueLabel.getText() != "None" && ZValueLabel.getText() == "None")
-            {
-                writer.println("plot(as.numeric(as.character( sub(\""+","+"\" , \""+"."+
-                        "\" , sub$\"" + XValueLabel.getText() + "\"))),as.numeric(as.character( sub(\""+","+"\" , \""+"."+
-                        "\" , sub$\"" + YValueLabel.getText() + "\"))), xlab=\"" + XValueLabel.getText() + 
-                        "\",ylab=\"" + YValueLabel.getText() + "\" , pch=\""+plotChar+"\")");
-            }
-            else if(XValueLabel.getText() != "None" && YValueLabel.getText() != "None" && ZValueLabel.getText() != "None")
-            {
-                writer.println("scatter3D(as.numeric(as.character( sub(\""+","+"\" , \""+"."+"\" , sub$\"" + XValueLabel.getText() + 
-                        "\"))),as.numeric(as.character( sub(\""+","+"\" , \""+"."+"\" , sub$\"" + YValueLabel.getText() + 
-                        "\"))),as.numeric(as.character( sub(\""+","+"\" , \""+"."+"\" , sub$\"" + ZValueLabel.getText() + 
-                        "\"))), xlab=\"" + XValueLabel.getText() + "\",ylab=\"" + YValueLabel.getText() + "\",zlab=\"" + 
-                        ZValueLabel.getText() + "\", phi=15, theta=120, col=\"" + String.format("#%02X%02X%02X", plotColor.getRed(), plotColor.getGreen(), plotColor.getBlue()) +
-                        "\", NAcol=\"white\", colkey=NULL, panel.first=NULL, clim=NULL, clab=NULL, bty=\"b2\", pch=\""+plotChar+"\", add=FALSE)");
-            }
-            else
-            {
+                PrintWriter writer = new PrintWriter("rscript.r", "UTF-8");
+                String userdir = System.getProperty("user.dir");
+                userdir = userdir.replace("\\", "/");
+
+                writer.println("library(plot3D)");
+                writer.println("base<-read.csv(\"" + OpenFileTextField.getText().replace("\\", "/") + "\", sep=\";\", dec=\",\",check.names=FALSE)");
+
+                if(MeasureComboBox.getSelectedItem() != null)
+                {
+                    writer.println("sub<-subset(base,  base$MeasureName ==  \"" + MeasureComboBox.getSelectedItem().toString() + "\")");
+                }
+                else
+                {
+                    writer.println("sub<-base");
+                }
+
+                writer.println("setwd(\"" + userdir + "\")");
+                writer.println("png(filename=\"rplot.png\")");
+                //writer.println("svg(filename=\"rplot.svg\")");
+                //writer.println("values <- c(1, 3, 6, 4, 9)");
+                //writer.println("plot(values, type=\"o\", col=\"blue\")");
+
+                if(XValueLabel.getText() != "None" && YValueLabel.getText() != "None" && ZValueLabel.getText() == "None")
+                {
+                    writer.println("plot(as.numeric(as.character( sub(\""+","+"\" , \""+"."+
+                            "\" , sub$\"" + XValueLabel.getText() + "\"))),as.numeric(as.character( sub(\""+","+"\" , \""+"."+
+                            "\" , sub$\"" + YValueLabel.getText() + "\"))), xlab=\"" + XValueLabel.getText() + 
+                            "\",ylab=\"" + YValueLabel.getText() + "\" , pch=\""+plotChar+"\", col=\"" + 
+                            String.format("#%02X%02X%02X", plotColor.getRed(), plotColor.getGreen(), plotColor.getBlue()) + "\")");
+                }
+                else if(XValueLabel.getText() != "None" && YValueLabel.getText() != "None" && ZValueLabel.getText() != "None")
+                {
+                    writer.println("scatter3D(as.numeric(as.character( sub(\""+","+"\" , \""+"."+"\" , sub$\"" + XValueLabel.getText() + 
+                            "\"))),as.numeric(as.character( sub(\""+","+"\" , \""+"."+"\" , sub$\"" + YValueLabel.getText() + 
+                            "\"))),as.numeric(as.character( sub(\""+","+"\" , \""+"."+"\" , sub$\"" + ZValueLabel.getText() + 
+                            "\"))), xlab=\"" + XValueLabel.getText() + "\",ylab=\"" + YValueLabel.getText() + "\",zlab=\"" + 
+                            ZValueLabel.getText() + "\", phi=15, theta=120, col=\"" + String.format("#%02X%02X%02X", plotColor.getRed(), plotColor.getGreen(), plotColor.getBlue()) +
+                            "\", NAcol=\"white\", colkey=NULL, panel.first=NULL, clim=NULL, clab=NULL, bty=\"b2\", pch=\""+plotChar+"\", add=FALSE)");
+                }
+                else
+                {
+                    writer.close();
+                    return;
+                }
+
                 writer.close();
-                return;
+
+                String command = support.getPathToR() + File.separator + "bin" + File.separator + "Rscript rscript.r 2> errorFile.Rout";
+                support.log("executing command: " + command);
+
+                java.lang.ProcessBuilder processBuilder = new java.lang.ProcessBuilder(support.getPathToR() + File.separator + "bin" + File.separator + "Rscript", "rscript.r", "2>", "errorFile.Rout");
+
+                nativeProcess myNativeProcess = new nativeProcess(processBuilder, this);
+
+                this.JButtonPlot.setEnabled(false);
+                jCheckBox1.setEnabled(true);
             }
-            
-            writer.close();
-               
-            String command = support.getPathToR() + File.separator + "bin" + File.separator + "Rscript rscript.r 2> errorFile.Rout";
-            support.log("executing command: " + command);
+            else
+            {
+                PrintWriter writer = new PrintWriter(new FileOutputStream(new File( "rscript.r"),true));
+                
+                if(XValueLabel.getText() != "None" && YValueLabel.getText() != "None" && ZValueLabel.getText() == "None")
+                {
+                    writer.println("points(as.numeric(as.character( sub(\""+","+"\" , \""+"."+
+                            "\" , sub$\"" + XValueLabel.getText() + "\"))),as.numeric(as.character( sub(\""+","+"\" , \""+"."+
+                            "\" , sub$\"" + YValueLabel.getText() + "\"))), xlab=\"" + XValueLabel.getText() + 
+                            "\",ylab=\"" + YValueLabel.getText() + "\" , pch=\""+plotChar+"\", col=\"" + 
+                            String.format("#%02X%02X%02X", plotColor.getRed(), plotColor.getGreen(), plotColor.getBlue()) + "\")");
+                }
+                else if(XValueLabel.getText() != "None" && YValueLabel.getText() != "None" && ZValueLabel.getText() != "None")
+                {
+                    writer.println("scatter3D(as.numeric(as.character( sub(\""+","+"\" , \""+"."+"\" , sub$\"" + XValueLabel.getText() + 
+                            "\"))),as.numeric(as.character( sub(\""+","+"\" , \""+"."+"\" , sub$\"" + YValueLabel.getText() + 
+                            "\"))),as.numeric(as.character( sub(\""+","+"\" , \""+"."+"\" , sub$\"" + ZValueLabel.getText() + 
+                            "\"))), xlab=\"" + XValueLabel.getText() + "\",ylab=\"" + YValueLabel.getText() + "\",zlab=\"" + 
+                            ZValueLabel.getText() + "\", col=\"" + String.format("#%02X%02X%02X", plotColor.getRed(), plotColor.getGreen(), plotColor.getBlue()) +
+                            "\", NAcol=\"white\", colkey=NULL, panel.first=NULL, clim=NULL, clab=NULL, bty=\"b2\", pch=\""+plotChar+"\", add=TRUE)");
+                }
+                else
+                {
+                    writer.close();
+                    return;
+                }
+                
+                writer.close();
 
-            java.lang.ProcessBuilder processBuilder = new java.lang.ProcessBuilder(support.getPathToR() + File.separator + "bin" + File.separator + "Rscript", "rscript.r", "2>", "errorFile.Rout");
+                String command = support.getPathToR() + File.separator + "bin" + File.separator + "Rscript rscript.r 2> errorFile.Rout";
+                support.log("executing command: " + command);
 
-            nativeProcess myNativeProcess = new nativeProcess(processBuilder, this);
-            
-            this.JButtonPlot.setEnabled(false);
+                java.lang.ProcessBuilder processBuilder = new java.lang.ProcessBuilder(support.getPathToR() + File.separator + "bin" + File.separator + "Rscript", "rscript.r", "2>", "errorFile.Rout");
+
+                nativeProcess myNativeProcess = new nativeProcess(processBuilder, this);
+
+                this.JButtonPlot.setEnabled(false);
+            }
 
         }
         catch(IOException e)
@@ -576,6 +635,10 @@ Color plotColor = Color.black;
         
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jCheckBox1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -633,6 +696,7 @@ Color plotColor = Color.black;
     private javax.swing.JLabel ZLabel;
     private javax.swing.JLabel ZValueLabel;
     private javax.swing.JButton jButton1;
+    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JComboBox jComboBoxPlotChar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
