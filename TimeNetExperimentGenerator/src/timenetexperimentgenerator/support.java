@@ -51,6 +51,9 @@ public static final typeOfSimulator DEFAULT_TYPE_OF_SIMULATOR = typeOfSimulator.
 public static final typeOfOptimization DEFAULT_TYPE_OF_OPTIMIZER = typeOfOptimization.HillClimbing;
 public static final typeOfBenchmarkFunction DEFAULT_TYPE_OF_BENCHMARKFUNCTION = typeOfBenchmarkFunction.Ackley;
 
+//default values for distributed simulation
+public static final int DEFAULT_SLEEPING_TIME=2000;
+public static final int DEFAULT_NUMBER_OF_SLEEPING_TIMES_AS_TIMEOUT = 20;
 
 
 public static final double DEFAULT_T_RATIO_SCALE=0.00001;
@@ -720,6 +723,7 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
             remoteAddress=urlString;
         }
         
+        //TODO remove tail \ !!!
     try {
         try{
             URL url = new URL(urlString);
