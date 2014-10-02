@@ -859,8 +859,12 @@ private ArrayList<Boolean> listOfUIStatesPushed;
 
     private void jButtonGenerateListOfExperimentsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGenerateListOfExperimentsActionPerformed
     this.switchUIState(uiState.processRunning);
-    support.setCancelEverything(false);
-    this.restartGenerator();
+    int i=JOptionPane.showConfirmDialog(this,"Really generate Designspace? This could take some time.","Generate Design space?",JOptionPane.YES_NO_OPTION);
+    System.out.println("Chosen option:"+i);
+        if(i==0){
+        support.setCancelEverything(false);
+        this.restartGenerator();
+        }
     this.popUIState();
     jButtonStartBatchSimulation.setEnabled(true);
     }//GEN-LAST:event_jButtonGenerateListOfExperimentsActionPerformed
