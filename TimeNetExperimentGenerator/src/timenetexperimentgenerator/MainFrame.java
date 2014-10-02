@@ -899,6 +899,7 @@ private ArrayList<Boolean> listOfUIStatesPushed;
                     if(support.getParameterBase()==null){
                     support.setStatusText("No Paramaterbase set.");
                     support.log("No Paramaterbase set. No Simulation possible.");
+                    this.popUIState();
                     return;
                     }
                     
