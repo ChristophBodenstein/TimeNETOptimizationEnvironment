@@ -22,13 +22,15 @@ public enum typeOfNeighborhoodEnum{StepForward,StepForwardBackward,StepForwardBa
 
 public enum typeOfAnnealing{Boltzmann, FastAnnealing, VeryFastAnnealing};
 
-public enum typeOfOptimization{HillClimbing, SimAnnealing, TwoPhase, ChargedSystemSearch, Genetic, ABC, MultiPhase};
+public enum typeOfOptimization{HillClimbing, SimAnnealing, TwoPhase, ChargedSystemSearch, Genetic, ABC, MultiPhase, MVMO};
 
 public enum typeOfSimulator{Local, Cache_Only, Cached_Local, Distributed, Benchmark};
 
 public enum typeOfAnnealingParameterCalculation{Standard, Stepwise, Simple, SimpleStepwise};
 
 public enum typeOfBenchmarkFunction{Sphere, Ackley, Rosenbrock, Matya, Easom, Schwefel, Rastrigin};
+
+public enum typeOfMVMOMutationSelection{Random, RandomWithMovingSingle, MovingGroupSingleStep, MovingGroupMultiStep};
 
 public static final String[] listOfParametersToIgnore={"TempPara","TempCost","UsedCPUTIME"};
 

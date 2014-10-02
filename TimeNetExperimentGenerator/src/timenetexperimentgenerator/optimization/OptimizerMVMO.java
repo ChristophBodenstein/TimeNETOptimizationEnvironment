@@ -1,6 +1,9 @@
 /*
  * Optimization-Algorithm implemented bei Andy Seidel during Diploma Thesis 2014
  *
+ * Mean-Variance-Mapping-Optimization
+ * Original Paper: Erlich, Ganesh, Worawat ; 2010:
+ * A Mean-Variance Optimization Algorithm
  */
 
 package timenetexperimentgenerator.optimization;
@@ -13,17 +16,20 @@ import timenetexperimentgenerator.datamodel.parameter;
 import timenetexperimentgenerator.datamodel.SimulationType;
 import timenetexperimentgenerator.simulation.Simulator;
 import timenetexperimentgenerator.support;
+import timenetexperimentgenerator.typedef;
 
 /**
  *
  * @author A. Seidel
  */
 
-public class OptimizerGenetic extends OptimizerPopulationBased implements Runnable, Optimizer
+public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable, Optimizer
 {
     private int populationSize = support.getOptimizerPreferences().getPref_GeneticPopulationSize(); //size of population after selection-phase
-    private double mutationChance = support.getOptimizerPreferences().getPref_GeneticMutationChance(); // chance of genes to Mutate
     private boolean mutateTopMeasure = support.getOptimizerPreferences().getPref_GeneticMutateTopSolution();
+    
+    private ArrayList<Double> parameterMeanValues;
+    private ArrayList<Double> parameterVarianceValues;
 
     /**
      * returnes the population size used for optimization
@@ -88,18 +94,9 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
         }
     }
     
-    public double getMutatuionChance()
-    {
-        return this.mutationChance;
-    }
-    
-    public void setMutationChance(double newMutationChance)
-    {
-        this.mutationChance = newMutationChance;
-    }
             
 
-    public OptimizerGenetic()
+    public OptimizerMVMO()
     {
         logFileName=support.getTmpPath()+File.separator+"Optimizing_with_Genetic_Algorithm_"+Calendar.getInstance().getTimeInMillis()+"_ALL"+".csv";
     }
@@ -126,8 +123,10 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
             }
             
             //modification phase -----------------------------------------------------------------------
-            population = crossPopulation(population, populationSize); //doubles population
-            population = mutatePopulation(population, mutationChance); //
+            population = sortPopulation(population); //sort them, so the best one is number one
+            parameterMeanValues = getMeanValues(population);
+            parameterVarianceValues = getVarianceValues(population);
+            SimulationType candidate = createCandidate(population, parameterMeanValues, parameterVarianceValues);
             
             
             //simulation phase -----------------------------------------------------------------------
@@ -154,6 +153,41 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
             ++optiCycleCounter;
         }
 
+    }
+    
+    
+    
+    private ArrayList<Double> getMeanValues(ArrayList<ArrayList<SimulationType>> population)
+    {
+        ArrayList<Double> meanValues = new ArrayList<Double>();
+        int numParameters = population.get(0).get(0).getListOfParameters().size();
+        for (int parameterIndex = 0; parameterIndex<numParameters; ++parameterIndex)
+        {
+            double sum = 0;
+            for (int populationIndex = 0; populationIndex<population.size(); ++populationIndex)
+            {
+                sum += population.get(populationIndex).get(0).getListOfParameters().get(parameterIndex).getValue();
+            }
+            meanValues.add(sum / population.size());            
+        }        
+        return meanValues;
+    }
+    
+    private ArrayList<Double> getVarianceValues(ArrayList<ArrayList<SimulationType>> population)
+    {
+        ArrayList<Double> varianceValues = new ArrayList<Double>();
+                int numParameters = population.get(0).get(0).getListOfParameters().size();
+        for (int parameterIndex = 0; parameterIndex<numParameters; ++parameterIndex)
+        {
+            double sum = 0;
+            for (int populationIndex = 0; populationIndex<population.size(); ++populationIndex)
+            {
+                double value = population.get(populationIndex).get(0).getListOfParameters().get(parameterIndex).getValue();
+                sum += (value - parameterMeanValues.get(parameterIndex))*(value - parameterMeanValues.get(parameterIndex));
+            }
+            varianceValues.add(sum / population.size());            
+        }  
+        return varianceValues;
     }
     
     /**
@@ -218,7 +252,9 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
         return population;
     }
     
-    private ArrayList< ArrayList<SimulationType> > mutatePopulation(ArrayList< ArrayList<SimulationType> > population, double mutationProbability)
+    private ArrayList< ArrayList<SimulationType> > mutatePopulation(
+            ArrayList< ArrayList<SimulationType> > population,
+            typedef.typeOfMVMOMutationSelection mutationStratety)
     {
         int mutationStart = 1;
         if (mutateTopMeasure)
@@ -226,20 +262,20 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
         
         for (int popCounter = mutationStart; popCounter< population.size(); ++popCounter)
         {
-            SimulationType p = population.get(popCounter).get(0);
-            ArrayList<parameter> pArray = p.getListOfParameters();
+            SimulationType topMeasure = population.get(popCounter).get(0);
+            ArrayList<parameter> pArray = topMeasure.getListOfParameters();
             for (int i = 0; i<pArray.size(); ++i)
             {
                 if (pArray.get(i).isIteratableAndIntern())
                 {
-                    if (randomGenerator.nextDouble() <= mutationProbability)
-                    {
-                        pArray.set(i, mutate(pArray.get(i)));
-                    }   
+//                    if (randomGenerator.nextDouble() <= mutationProbability)
+//                    {
+//                        pArray.set(i, mutate(pArray.get(i)));
+//                    }   
                 }
             }
             pArray = roundToStepping(pArray);
-            p.setListOfParameters(pArray);
+            topMeasure.setListOfParameters(pArray);
         }      
         return population;
     }
@@ -275,4 +311,12 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
                
         return newPopulation; 
     }   
+
+    private SimulationType createCandidate(ArrayList<ArrayList<SimulationType>> population, ArrayList<Double> parameterMeanValues, ArrayList<Double> parameterVarianceValues)
+    {
+        SimulationType candidate = new SimulationType();
+        
+        
+        return candidate;
+    }
 }

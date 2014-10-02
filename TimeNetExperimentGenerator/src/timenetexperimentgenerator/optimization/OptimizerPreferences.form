@@ -29,7 +29,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="77" max="-2" attributes="0"/>
-                      <Component id="jLabelStartvalueForParameters" max="32767" attributes="0"/>
+                      <Component id="jLabelStartvalueForParameters" pref="243" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jComboBoxTypeOfStartValue" min="-2" pref="217" max="-2" attributes="1"/>
                       <EmptySpace min="-2" pref="71" max="-2" attributes="0"/>
@@ -47,11 +47,7 @@
               </Group>
               <EmptySpace min="-2" pref="292" max="-2" attributes="0"/>
           </Group>
-          <Group type="102" attributes="0">
-              <EmptySpace min="-2" pref="19" max="-2" attributes="0"/>
-              <Component id="jTabbedPane1" max="32767" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-          </Group>
+          <Component id="jTabbedPane1" alignment="1" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
@@ -62,9 +58,9 @@
                   <Component id="jLabelStartvalueForParameters" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jComboBoxTypeOfStartValue" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="13" max="-2" attributes="0"/>
               <Component id="jTabbedPane1" max="32767" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="jCheckBoxAddPrefsToLogfilename" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -993,7 +989,7 @@
                       <EmptySpace min="-2" pref="64" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="1" attributes="0">
                           <Component id="jSpinnerCSSMaxAttraction" max="32767" attributes="0"/>
-                          <Component id="jSpinnerCSSPopulationSize" pref="57" max="32767" attributes="0"/>
+                          <Component id="jSpinnerCSSPopulationSize" pref="86" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="649" max="-2" attributes="0"/>
                   </Group>
@@ -1078,7 +1074,7 @@
                               </Group>
                               <EmptySpace min="26" pref="26" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="jSpinnerABCNumOnlookerBees" alignment="0" pref="58" max="32767" attributes="0"/>
+                                  <Component id="jSpinnerABCNumOnlookerBees" alignment="0" pref="87" max="32767" attributes="0"/>
                                   <Component id="jSpinnerABCNumScoutBees" alignment="0" max="32767" attributes="0"/>
                                   <Component id="jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement" alignment="0" max="32767" attributes="0"/>
                               </Group>

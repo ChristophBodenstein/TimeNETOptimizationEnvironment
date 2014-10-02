@@ -35,10 +35,10 @@ public class OptimizerABC extends OptimizerPopulationBased implements Runnable, 
 {
     private ArrayList<Integer> updateCyclesWithoutImprovementList = new ArrayList<Integer>(); //to abandom individual food sources
     
-    private int numEmployedBees = 10;
-    private int numOnlookerBees = 10;
-    private int numScoutBees = 1;
-    private int maxNumberOfFoodUpdateCyclesWithoutImprovement = 3;
+    private int numEmployedBees = support.getOptimizerPreferences().getPref_ABC_NumEmployedBees();
+    private int numOnlookerBees = support.getOptimizerPreferences().getPref_ABC_NumOnlookerBees();
+    private int numScoutBees = support.getOptimizerPreferences().getPref_ABC_NumScoutBees();
+    private int maxNumberOfFoodUpdateCyclesWithoutImprovement = support.getOptimizerPreferences().getPref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement();
     
     //************************ Constructors ****************************************************************************************************
     public OptimizerABC()

@@ -45,7 +45,8 @@ public class OptimizerChargedSystemSearch extends OptimizerPopulationBased imple
 
 //private ArrayList<SimulationType> charges = new ArrayList<SimulationType>();//History of all simulation runs
 
-private int numberOfCharges = 5; //number of active charges to explore design space
+private int numberOfCharges = support.getOptimizerPreferences().getPref_CSS_PopulationSize(); //number of active charges to explore design space
+private double maxAttraction = support.getOptimizerPreferences().getPref_CSS_MaxAttraction();//limit of attraction-force of 2 charges
 //private int maxNumberOfOptiCycles = 100; //maximum number of cycles, before optimization terminates
 //private int maxNumberOfOptiCyclesWithoutImprovement = 10; //how many cycles without improvement until break optimization loop
 //private int currentNumberOfOptiCyclesWithoutImprovement = 0;
@@ -57,11 +58,10 @@ private double[][] speedOfCharges; //current speed vector for all objects with a
 //private SimulationType topMeasure;//temp top measure before implementing top-List
 //private double topDistance = Double.POSITIVE_INFINITY;//temp top distance
 
-private double maxAttraction;//limit of attraction-force of 2 charges
+
 
 public OptimizerChargedSystemSearch()
 {
-    this.maxAttraction = 100;
     logFileName = support.getTmpPath() + File.separator+"Optimizing_with_CSS_" + Calendar.getInstance().getTimeInMillis() + "_ALL" + ".csv";
 }
     
