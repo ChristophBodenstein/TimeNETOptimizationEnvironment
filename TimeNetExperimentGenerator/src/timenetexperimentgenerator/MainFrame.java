@@ -73,6 +73,9 @@ private JDialog aboutDialog;
 
 private boolean savePropertiesEnabled=false;
 
+private ArrayList<Component> listOfUIComponents=new ArrayList<Component>();//List of all Components
+private ArrayList<Boolean> listOfUIStates=new ArrayList<Boolean>();
+private ArrayList<Boolean> listOfUIStatesPushed;
     /** Creates new form MainFrame */
     public MainFrame() throws IOException {
 
@@ -183,7 +186,7 @@ private boolean savePropertiesEnabled=false;
         this.readSCPNFile(jTextFieldSCPNFile.getText());
         support.setStatusLabel(jLabelExportStatus);
         support.setMainFrame(this);
-        support.setMeasureFormPane(jTabbedPane1);
+        support.setMeasureFormPane(jTabbedPaneOptiTargets);
         support.setPathToTimeNet(pathToTimeNet);
         support.setPathToR(pathToR);
         
@@ -220,6 +223,33 @@ private boolean savePropertiesEnabled=false;
         this.jComboBoxBenchmarkFunction.setSelectedItem(typeOfBenchmarkFunction.valueOf(auto.getProperty("BenchmarkType",support.DEFAULT_TYPE_OF_BENCHMARKFUNCTION.toString() )));
 
         savePropertiesEnabled=true;//Enable property saving after init of all components
+        
+        //Add all Components to ListOfUIComponents
+        listOfUIComponents.add(this.jTextFieldSCPNFile);        
+        listOfUIComponents.add(this.jButtonReload);
+        listOfUIComponents.add(this.jButtonExport);
+        listOfUIComponents.add(this.jButtonCancel);
+        listOfUIComponents.add(this.jButtonGenerateListOfExperiments);
+        listOfUIComponents.add(this.jButtonStartBatchSimulation);
+        listOfUIComponents.add(this.jButtonStartOptimization);
+        listOfUIComponents.add(this.jButtonLoadCacheFile);
+        listOfUIComponents.add(this.jButtonOptiOptions);
+        listOfUIComponents.add(this.jButtonPathToTimeNet);
+        listOfUIComponents.add(this.jButtonPathToR);
+        listOfUIComponents.add(this.jButtonEnterURLToSimServer);
+        listOfUIComponents.add(this.jButtonPlotR);
+        listOfUIComponents.add(this.jTableParameterList);
+        listOfUIComponents.add(this.jTabbedPaneOptiTargets);
+        listOfUIComponents.add(this.jCheckBoxSlaveSimulator);
+        listOfUIComponents.add(this.jComboBoxBenchmarkFunction);
+        listOfUIComponents.add(this.jComboBoxSimulationType);
+        listOfUIComponents.add(this.jComboBoxOptimizationType);
+        listOfUIComponents.add(this.jButtonOpenSCPN);
+        
+        this.switchUIState(uiState.defaultState);
+        if(support.isIsRunningAsSlave()){
+        this.switchUIState(uiState.clientState);
+        }
     }
 
 
@@ -283,13 +313,13 @@ private boolean savePropertiesEnabled=false;
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableParameterList = new javax.swing.JTable();
         jButtonExport = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        jButtonCancel = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JSeparator();
         jSeparator2 = new javax.swing.JSeparator();
         jButtonStartBatchSimulation = new javax.swing.JButton();
         jButtonGenerateListOfExperiments = new javax.swing.JButton();
         jSeparator3 = new javax.swing.JSeparator();
-        jTabbedPane1 = new javax.swing.JTabbedPane();
+        jTabbedPaneOptiTargets = new javax.swing.JTabbedPane();
         measurementForm1 = new timenetexperimentgenerator.MeasurementForm();
         measurementForm2 = new timenetexperimentgenerator.MeasurementForm();
         jButtonStartOptimization = new javax.swing.JButton();
@@ -300,7 +330,7 @@ private boolean savePropertiesEnabled=false;
         jComboBoxOptimizationType = new javax.swing.JComboBox();
         jButtonEnterURLToSimServer = new javax.swing.JButton();
         jCheckBoxSlaveSimulator = new javax.swing.JCheckBox();
-        jButton2 = new javax.swing.JButton();
+        jButtonOptiOptions = new javax.swing.JButton();
         jButtonPathToR = new javax.swing.JButton();
         jButtonPlotR = new javax.swing.JButton();
         jComboBoxBenchmarkFunction = new javax.swing.JComboBox();
@@ -375,10 +405,10 @@ private boolean savePropertiesEnabled=false;
             }
         });
 
-        jButton1.setText("Cancel");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        jButtonCancel.setText("Cancel");
+        jButtonCancel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                jButtonCancelActionPerformed(evt);
             }
         });
 
@@ -396,8 +426,8 @@ private boolean savePropertiesEnabled=false;
             }
         });
 
-        jTabbedPane1.addTab("Target 1", measurementForm1);
-        jTabbedPane1.addTab("Target 2", measurementForm2);
+        jTabbedPaneOptiTargets.addTab("Target 1", measurementForm1);
+        jTabbedPaneOptiTargets.addTab("Target 2", measurementForm2);
 
         jButtonStartOptimization.setText("Start Optimization");
         jButtonStartOptimization.setEnabled(false);
@@ -465,11 +495,16 @@ private boolean savePropertiesEnabled=false;
                 jCheckBoxSlaveSimulatorMouseClicked(evt);
             }
         });
-
-        jButton2.setText("Options");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        jCheckBoxSlaveSimulator.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                jCheckBoxSlaveSimulatorActionPerformed(evt);
+            }
+        });
+
+        jButtonOptiOptions.setText("Options");
+        jButtonOptiOptions.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonOptiOptionsActionPerformed(evt);
             }
         });
 
@@ -616,7 +651,7 @@ private boolean savePropertiesEnabled=false;
                                 .add(jButtonPlotR)))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                            .add(jTabbedPaneOptiTargets, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                             .add(layout.createSequentialGroup()
                                 .add(jButtonOpenSCPN, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .add(5, 5, 5)
@@ -625,7 +660,7 @@ private boolean savePropertiesEnabled=false;
                             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                                 .add(jButtonExport, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 182, Short.MAX_VALUE)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                                .add(jButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 137, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                                .add(jButtonCancel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 137, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                             .add(jButtonGenerateListOfExperiments, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .add(jSeparator3)
                             .add(org.jdesktop.layout.GroupLayout.TRAILING, jButtonLoadCacheFile, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -638,7 +673,7 @@ private boolean savePropertiesEnabled=false;
                                         .add(jComboBoxBenchmarkFunction, 0, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)))
                                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                                    .add(jButton2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .add(jButtonOptiOptions, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .add(jComboBoxOptimizationType, 0, 121, Short.MAX_VALUE))
                                 .add(5, 5, 5))
                             .add(jButtonStartBatchSimulation, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -673,7 +708,7 @@ private boolean savePropertiesEnabled=false;
                     .add(layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                             .add(jButtonExport)
-                            .add(jButton1))
+                            .add(jButtonCancel))
                         .add(5, 5, 5)
                         .add(jSeparator2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 10, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .add(5, 5, 5)
@@ -683,7 +718,7 @@ private boolean savePropertiesEnabled=false;
                         .add(5, 5, 5)
                         .add(jSeparator3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 10, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .add(5, 5, 5)
-                        .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .add(jTabbedPaneOptiTargets, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .add(5, 5, 5)
                         .add(jButtonLoadCacheFile)
                         .add(5, 5, 5)
@@ -692,7 +727,7 @@ private boolean savePropertiesEnabled=false;
                             .add(jComboBoxOptimizationType, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                            .add(jButton2)
+                            .add(jButtonOptiOptions)
                             .add(jComboBoxBenchmarkFunction, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                         .add(5, 5, 5)
@@ -761,7 +796,7 @@ private boolean savePropertiesEnabled=false;
         support.setMainFrame(this);
         support.setOriginalFilename(fileName);
         support.setStatusLabel(jLabelExportStatus);
-        support.setMeasureFormPane(jTabbedPane1);
+        support.setMeasureFormPane(jTabbedPaneOptiTargets);
         
         if(ListOfParameterSetsToBeWritten!=null){
         support.log("Length of ParameterSet-List: "+ListOfParameterSetsToBeWritten.size());
@@ -772,17 +807,19 @@ private boolean savePropertiesEnabled=false;
     this.cancelOperation=false;
     }//GEN-LAST:event_jButtonExportActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void jButtonCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelActionPerformed
     this.cancelOperation=true;
     support.setCancelEverything(true);
     support.log("Try to cancel everything.");
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_jButtonCancelActionPerformed
 
     /**
      * Start of batch simulation
      */
     private void jButtonStartBatchSimulationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonStartBatchSimulationActionPerformed
         support.setCancelEverything(false);
+        this.switchUIState(uiState.processRunning);
+        
         //Ask for Tmp-Path
         String tmpPath=support.getPathToDirByDialog("Dir for export TMP-Files and log.\n ", new File(support.getOriginalFilename()).getPath() );
         
@@ -792,7 +829,7 @@ private boolean savePropertiesEnabled=false;
         support.setMainFrame(this);
         support.setOriginalFilename(fileName);
         support.setStatusLabel(jLabelExportStatus);
-        support.setMeasureFormPane(jTabbedPane1);
+        support.setMeasureFormPane(jTabbedPaneOptiTargets);
     
         //LocalBatchSimulatorEngine mySimulator=new LocalBatchSimulatorEngine(ListOfParameterSetsToBeWritten);
         //SimulatorLocal mySimulator=new SimulatorLocal();
@@ -817,16 +854,20 @@ private boolean savePropertiesEnabled=false;
         Simulator mySimulator=SimOptiFactory.getSimulator();
         mySimulator.initSimulator(ListOfParameterSetsToBeWritten, 0, true);
         }
-    
+    this.popUIState();
     }//GEN-LAST:event_jButtonStartBatchSimulationActionPerformed
 
     private void jButtonGenerateListOfExperimentsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGenerateListOfExperimentsActionPerformed
+    this.switchUIState(uiState.processRunning);
     support.setCancelEverything(false);
     this.restartGenerator();
+    this.popUIState();
+    jButtonStartBatchSimulation.setEnabled(true);
     }//GEN-LAST:event_jButtonGenerateListOfExperimentsActionPerformed
 
     private void jButtonStartOptimizationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonStartOptimizationActionPerformed
     support.setCancelEverything(false);
+    this.switchUIState(uiState.processRunning);
     
     //Set base parameterset and orignal base parameterset in support
     support.setOriginalParameterBase(((parameterTableModel)jTableParameterList.getModel()).getListOfParameter());
@@ -847,7 +888,7 @@ private boolean savePropertiesEnabled=false;
                     support.setMainFrame(this);
                     support.setOriginalFilename(fileName);
                     support.setStatusLabel(jLabelExportStatus);
-                    support.setMeasureFormPane(jTabbedPane1);
+                    support.setMeasureFormPane(jTabbedPaneOptiTargets);
                     //support.setTypeOfStartValue((typeOfStartValueEnum)support.getOptimizerPreferences().jComboBoxTypeOfStartValue.getSelectedItem());
                     
                     //If Parameterbase is null -->eject
@@ -861,6 +902,18 @@ private boolean savePropertiesEnabled=false;
                     support.setOriginalParameterBase(support.getCopyOfParameterSet(support.getParameterBase()));
                     Optimizer myOptimizer=SimOptiFactory.getOptimizer();
                     myOptimizer.initOptimizer();
+                    //Wait for end of Optimizer
+                    
+                        while(myOptimizer.getOptimum()==null){
+                            try {
+                                Thread.sleep(500);
+                            } catch (InterruptedException ex) {
+                                support.log("Problem while waiting for Optimizer.");
+                            }
+                        }
+                    
+                    support.log("Optimum found, activating the UIComponents");
+                    
                     }else{
                     support.log("No Tmp-Path given, Optimization not possible.");
                     }
@@ -871,6 +924,7 @@ private boolean savePropertiesEnabled=false;
                 support.setStatusText("No Measurements chosen. No Opti possible.");
                 }
              }
+    this.popUIState();
     }//GEN-LAST:event_jButtonStartOptimizationActionPerformed
 
     private void jButtonPathToTimeNetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPathToTimeNetActionPerformed
@@ -926,7 +980,7 @@ private boolean savePropertiesEnabled=false;
     //TODO Should we empty the cache each time, or only at user-wish?
     support.emptyCache();
       this.mySimulationCache=support.getMySimulationCache();
-        if(!mySimulationCache.parseSimulationCacheFile(inputFile,((MeasurementForm)this.jTabbedPane1.getComponent(0)).getMeasurements(), (parameterTableModel)this.jTableParameterList.getModel(),this )){
+        if(!mySimulationCache.parseSimulationCacheFile(inputFile,((MeasurementForm)this.jTabbedPaneOptiTargets.getComponent(0)).getMeasurements(), (parameterTableModel)this.jTableParameterList.getModel(),this )){
             support.log("Wrong Simulation cache file for this SCPN!");
             support.setStatusText("Error loading cache-file!");
             return;
@@ -997,11 +1051,11 @@ private boolean savePropertiesEnabled=false;
     support.getMyLogFrame().clearText();
     }//GEN-LAST:event_jMenuItemClearLogWindowActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void jButtonOptiOptionsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonOptiOptionsActionPerformed
     support.getOptimizerPreferences().setVisible(true);
 
 
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_jButtonOptiOptionsActionPerformed
 
     private void jButtonPathToRActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPathToRActionPerformed
         JFileChooser fileChooser = new JFileChooser(this.getPathToR());
@@ -1082,9 +1136,11 @@ private boolean savePropertiesEnabled=false;
         //If is selected and will be unselected then stop thread
         if(!this.jCheckBoxSlaveSimulator.isSelected()){
         this.mySlave.setShouldEnd(true);
-        support.setIsRunningAsSlave(false);
+        if(support.isIsRunningAsSlave()){
+            this.popUIState();            
+        }
+        support.setIsRunningAsSlave(false);               
         this.saveProperties();
-        //TODO Activate all Buttons!
         }else{
         String tmpPath=support.getPathToDirByDialog("Dir for export TMP-Files and log.\n ", new File(support.getOriginalFilename()).getPath() );
         
@@ -1098,7 +1154,7 @@ private boolean savePropertiesEnabled=false;
                 this.saveProperties();
                 new Thread(this.mySlave).start();
                 this.jCheckBoxSlaveSimulator.setSelected(true);
-                //TODO deactivate all Buttons!
+                this.switchUIState(uiState.clientState);
                 }
             }else{
             //No tmp path selected -->eject
@@ -1109,6 +1165,10 @@ private boolean savePropertiesEnabled=false;
             }
         }
     }//GEN-LAST:event_jCheckBoxSlaveSimulatorMouseClicked
+
+    private void jCheckBoxSlaveSimulatorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxSlaveSimulatorActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jCheckBoxSlaveSimulatorActionPerformed
 
     /**
      * Calculates the design space, number of all permutations of parameters
@@ -1208,13 +1268,13 @@ private boolean savePropertiesEnabled=false;
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButtonCancel;
     private javax.swing.JButton jButtonEnterURLToSimServer;
     private javax.swing.JButton jButtonExport;
     private javax.swing.JButton jButtonGenerateListOfExperiments;
     private javax.swing.JButton jButtonLoadCacheFile;
     private javax.swing.JButton jButtonOpenSCPN;
+    private javax.swing.JButton jButtonOptiOptions;
     private javax.swing.JButton jButtonPathToR;
     private javax.swing.JButton jButtonPathToTimeNet;
     private javax.swing.JButton jButtonPlotR;
@@ -1248,7 +1308,7 @@ private boolean savePropertiesEnabled=false;
     private javax.swing.JPopupMenu.Separator jSeparator4;
     private javax.swing.JPopupMenu.Separator jSeparator5;
     private javax.swing.JPopupMenu.Separator jSeparator6;
-    private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTabbedPane jTabbedPaneOptiTargets;
     private javax.swing.JTable jTableParameterList;
     private javax.swing.JTextField jTextFieldSCPNFile;
     private timenetexperimentgenerator.MeasurementForm measurementForm1;
@@ -1287,8 +1347,8 @@ private boolean savePropertiesEnabled=false;
             Measures.add(tmpMeasure);
             }
         
-            for(int i=0;i<this.jTabbedPane1.getComponentCount();i++){
-            ((MeasurementForm)this.jTabbedPane1.getComponent(i)).setMeasurements(Measures);
+            for(int i=0;i<this.jTabbedPaneOptiTargets.getComponentCount();i++){
+            ((MeasurementForm)this.jTabbedPaneOptiTargets.getComponent(i)).setMeasurements(Measures);
             }
         
         }
@@ -1386,7 +1446,6 @@ private boolean savePropertiesEnabled=false;
     myGenerator=new generator(ListOfParameterSetsToBeWritten, fileName, jLabelExportStatus, this, jTableParameterList);
     myGenerator.start();
     this.waitForGenerator();
-    jButtonStartBatchSimulation.setEnabled(true);
     }
 
 
@@ -1397,6 +1456,7 @@ private boolean savePropertiesEnabled=false;
         try{
             while(this.myGenerator.isAlive()){
             Thread.sleep(500);
+            support.spinInLabel();
             }
         }catch (InterruptedException e){
             support.log("Error while waiting for Generator.");
@@ -1725,8 +1785,8 @@ private boolean savePropertiesEnabled=false;
     public ArrayList<MeasureType> getListOfActiveMeasureMentsToOptimize(){
     ArrayList<MeasureType> myTmpList=new ArrayList<MeasureType>();//((MeasurementForm)this.jTabbedPane1.getComponent(0)).getListOfMeasurements();
 
-        for(int i=0; i<this.jTabbedPane1.getComponentCount();i++){
-            MeasurementForm tmpMeasurementForm=(MeasurementForm)this.jTabbedPane1.getComponent(i);
+        for(int i=0; i<this.jTabbedPaneOptiTargets.getComponentCount();i++){
+            MeasurementForm tmpMeasurementForm=(MeasurementForm)this.jTabbedPaneOptiTargets.getComponent(i);
             if(tmpMeasurementForm.isActive()){
             MeasureType tmpMeasure=tmpMeasurementForm.getChosenMeasurement();
             float targetValue=tmpMeasurementForm.getCustomTargetValue();
@@ -1785,6 +1845,119 @@ private boolean savePropertiesEnabled=false;
         this.jProgressBarMemoryUsage.setValue(s);
         }
         
+    }
+    
+    /**
+     * Checks alle inforamtion about System state and sets the boolean operators for UI Element activation
+     * UI Components are not modified by this method, just updates the UIState-ArrayList
+     */
+    public void updateAllUIStates(){
+    //jTextFieldSCPNFile    
+    }
+    /**
+     *updates all UI Components by information from UIState-ArrayList 
+     */
+    public void updateAllUIComponents(){
+        try{
+            if(this.listOfUIStates.size()==this.listOfUIComponents.size()){
+                for(int i=0;i<listOfUIStates.size();i++){
+                listOfUIComponents.get(i).setEnabled(listOfUIStates.get(i));
+                }
+            }
+        }catch(Exception e){
+        //Exception could be trown, if listOfUIStates is not initialized correctly
+        }
+    }
+    /**
+     * Switches to a specific UI-State (Default/Client Mode etc)
+     * @param newState new UI-State to be activated
+     */
+    public void switchUIState(uiState newState){
+    this.pushUIState();//Save active UI-State
+        /*
+        0-jTextFieldSCPNFile
+        1-jButtonReload
+        2-jButtonExport
+        3-jButtonCancel
+        4-jButtonGenerateListOfExperiments
+        5-jButtonStartBatchSimulation
+        6-jButtonStartOptimization
+        7-jButtonLoadCacheFile
+        8-jButtonOptiOptions
+        9-jButtonPathToTimeNet
+        10-jButtonPathToR
+        11-jButtonEnterURLToSimServer
+        12-this.jButtonPlotR
+        13-jTableParameterList
+        14-jTabbedPaneOptiTargets
+        15-jCheckBoxSlaveSimulator
+        16-jComboBoxBenchmarkFunction
+        17-jComboBoxSimulationType
+        18-jComboBoxOptimizationType
+        19-jButtonOpenSCPN
+        */
+    this.listOfUIStates=new ArrayList<Boolean>();
+        //Activate all
+        for(int i=0;i<listOfUIComponents.size();i++){
+        listOfUIStates.add(true);
+        }
+        
+        switch(newState){
+            
+            case defaultState:
+                listOfUIStates.set(2, false);
+                listOfUIStates.set(3, false);
+                listOfUIStates.set(5, false);
+                listOfUIStates.set(6, false);
+                break;
+            case clientState:
+                for(int i=0;i<listOfUIStates.size();i++){
+                listOfUIStates.set(i, false);
+                }
+                listOfUIStates.set(15, true);
+                break;
+            case processRunning:
+                //Something is running, only cancel is possible
+                for(int i=0;i<listOfUIStates.size();i++){
+                listOfUIStates.set(i, false);
+                }
+                listOfUIStates.set(3, true);
+                break;
+            default:break;
+        }
+    updateAllUIComponents();    
+    }
+    /**
+     * pushes active UI-State to switch temporary to another state and possibly back
+     */
+    public void pushUIState(){
+    this.listOfUIStatesPushed=new ArrayList();
+        //Create deep copy of UI-States
+        for(int i=0;i<listOfUIStates.size();i++){
+        listOfUIStatesPushed.add(new Boolean(listOfUIComponents.get(i).isEnabled()));
+        }
+    }
+    /**
+     * restores last saved UI-State
+     */
+    public void popUIState(){
+        for(int i=0;i<listOfUIStates.size();i++){
+        listOfUIStates.set(i, listOfUIStatesPushed.get(i));
+        }
+    updateAllUIComponents();
+    }
+    
+    public void deactivateEveryComponentExcept(Component[] oList){
+    this.jButtonGenerateListOfExperiments.setEnabled(false);
+    
+        for(int i=0;i<oList.length;i++){
+            try{
+            oList[i].setEnabled(true);
+            }catch(Exception e){
+            //
+            }
+        }
+    
     }
     
 }

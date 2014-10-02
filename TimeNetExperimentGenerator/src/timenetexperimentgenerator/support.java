@@ -1300,7 +1300,7 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
     public static void setStatusText(String s){
     statusLabel.setText(s);
     }
-    
+        
 }
 
 
