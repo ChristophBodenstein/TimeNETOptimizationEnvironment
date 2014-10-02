@@ -110,7 +110,7 @@ public class SimulatorWeb implements Runnable, Simulator{
             }
             //do not start the timer unless we get the first log file
             int i=0,j=Integer.MIN_VALUE;
-            while(i < listOfParameterSets.size()){
+            while((i < listOfParameterSets.size())&&(!support.isCancelEverything())) {
                 support.setStatusText("Waiting for results.("+i+"/"+listOfParameterSets.size()+")");
                 HttpClient client = new DefaultHttpClient();
                 HttpGet httpGet = new HttpGet(support.getReMoteAddress() + "/rest/api/downloads/log/"+simid);
@@ -193,8 +193,6 @@ public class SimulatorWeb implements Runnable, Simulator{
         }else{
             support.log("Timenet-Path NOT ok!");
         }
-    //Simple ending Callback to reactivate uer-interface
-    support.simOptiOperationSuccessfull("The End");
     }
 
     public void initSimulator(ArrayList< ArrayList<parameter> > listOfParameterSetsTMP, int simulationCounterTMP, boolean log) {
