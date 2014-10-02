@@ -166,7 +166,9 @@ long timeStamp=0;//TimeStamp for measuring the runtime of one simulation
         }else{
         support.log("Timenet-Path NOT ok!");
         }
-    support.setStatusText("Local simulation finished.");    
+    support.setStatusText("Local simulation finished.");
+    //Simple ending Callback to reactivate uer-interface
+    support.simOptiOperationSuccessfull("The End");
     }
 
 

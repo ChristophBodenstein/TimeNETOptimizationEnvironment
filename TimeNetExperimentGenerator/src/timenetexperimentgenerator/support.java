@@ -16,11 +16,15 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Properties;
+import java.util.Timer;
+import java.util.TimerTask;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 import timenetexperimentgenerator.datamodel.*;
+import timenetexperimentgenerator.helper.SimOptiCallback;
 import timenetexperimentgenerator.helper.StatisticAggregator;
+import timenetexperimentgenerator.optimization.Optimizer;
 import timenetexperimentgenerator.optimization.OptimizerPreferences;
 import timenetexperimentgenerator.simulation.SimulationCache;
 import timenetexperimentgenerator.simulation.Simulator;
@@ -923,7 +927,7 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
                         support.log("InterruptedException in main loop of optimization. Optimization aborted.");
                         statusLabel.setText("Aborted / Error");
                     }
-                setStatusText("Done "+ mySimulator.getStatus() +"% ");
+                //setStatusText("Done "+ mySimulator.getStatus() +"% ");
                 
                 
                 timeoutCounter--;
@@ -1300,7 +1304,43 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
     public static void setStatusText(String s){
     statusLabel.setText(s);
     }
-        
+    
+    public static void simOptiOperationSuccessfull(String message){
+    mainFrame.operationSucessfull(message);
+    }
+    
+    public static void simOptiOperationCanceled(String message){
+    mainFrame.operationCanceld(message);
+    }
+    
+    public static void waitForSimulatorAsynchronous(final Simulator mySimulator, final SimOptiCallback listener){
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                if (mySimulator.getStatus()>=100){
+                listener.operationSucessfull("The end.");
+                this.cancel();
+                }
+            }
+        }, 1000*support.DEFAULT_MEMORYPRINT_INTERVALL, 1000*support.DEFAULT_MEMORYPRINT_INTERVALL);
+
+    }
+    
+    public static void waitForOptimizerAsynchronous(final Optimizer myOptimizer, final SimOptiCallback listener){
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                if (myOptimizer.getOptimum()!=null){
+                listener.operationSucessfull("The end.");
+                this.cancel();
+                }
+            }
+        }, 1000*support.DEFAULT_MEMORYPRINT_INTERVALL, 1000*support.DEFAULT_MEMORYPRINT_INTERVALL);
+
+    
+    }
 }
 
 

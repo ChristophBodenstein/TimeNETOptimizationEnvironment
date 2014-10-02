@@ -78,15 +78,16 @@ public class SimulatorWeb implements Runnable, Simulator{
         String line="";
         simid = Long.toString(Calendar.getInstance().getTimeInMillis());
         //int numberOfSimulations=0;
-        if(support.checkTimeNetPath()){
+        if(support.isDistributedSimulationAvailable()){
             try{
-                support.log("Timenet-Path ok, starting local simulations.");
+                support.log("Distributed Simulation available, starting distributed simulations.");
 
                 support.log("Logfilename is:"+logFileName);
                 //Open Logfile and write first line
                 //FileWriter fw;
                 if(listOfParameterSets.size()>0){
                     for(int i=0;i<listOfParameterSets.size();i++){
+                        support.setStatusText("Uploading "+i+"/"+listOfParameterSets.size());
                         //fw = new FileWriter(logFileName, true);
                         if(cancelSimulations) return;
                         ArrayList<parameter> actualParameterSet=listOfParameterSets.get(i);//get actual parameterset
@@ -110,6 +111,7 @@ public class SimulatorWeb implements Runnable, Simulator{
             //do not start the timer unless we get the first log file
             int i=0,j=Integer.MIN_VALUE;
             while(i < listOfParameterSets.size()){
+                support.setStatusText("Waiting for results.("+i+"/"+listOfParameterSets.size()+")");
                 HttpClient client = new DefaultHttpClient();
                 HttpGet httpGet = new HttpGet(support.getReMoteAddress() + "/rest/api/downloads/log/"+simid);
                 HttpResponse response = null;
@@ -129,7 +131,7 @@ public class SimulatorWeb implements Runnable, Simulator{
                             List<String> lines = null;
                             FileWriter fileWriter = null;
 
-                            System.out.println("filename======="+filename);
+                            support.log("Downloading filename======="+filename);
                             String exportFileName=tmpFilePath+File.separator+filename;
                             File newTextFile = new File(exportFileName);
                             fileWriter = new FileWriter(newTextFile);
@@ -157,6 +159,8 @@ public class SimulatorWeb implements Runnable, Simulator{
                                     support.del(new File(actualParameterFileName));
                                     support.del(new File(actualSimulationLogFile));
                                 }
+                            //Update status
+                            this.status=100*i/listOfParameterSets.size();
                             }else{
                                 support.log("The recieved file has been ignored because it has been proccessed earlier: " + filenameWithoutExtension);
                             }
@@ -188,7 +192,9 @@ public class SimulatorWeb implements Runnable, Simulator{
             }
         }else{
             support.log("Timenet-Path NOT ok!");
-        }    
+        }
+    //Simple ending Callback to reactivate uer-interface
+    support.simOptiOperationSuccessfull("The End");
     }
 
     public void initSimulator(ArrayList< ArrayList<parameter> > listOfParameterSetsTMP, int simulationCounterTMP, boolean log) {
@@ -264,11 +270,13 @@ public class SimulatorWeb implements Runnable, Simulator{
     }
 
     public int getStatus() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return this.status;
+        
     }
 
     public int getSimulationCounter() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return this.simulationCounter;
+        
     }
 
     public ArrayList<SimulationType> getListOfCompletedSimulationParsers() {

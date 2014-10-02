@@ -44,7 +44,7 @@ import timenetexperimentgenerator.typedef.*;
  *
  * @author Christoph Bodenstein
  */
-public class MainFrame extends javax.swing.JFrame implements TableModelListener{
+public class MainFrame extends javax.swing.JFrame implements TableModelListener,SimOptiCallback{
 Properties auto = new Properties();
 private String fileName="";
 public boolean cancelOperation=false;
@@ -853,8 +853,8 @@ private ArrayList<Boolean> listOfUIStatesPushed;
             
         Simulator mySimulator=SimOptiFactory.getSimulator();
         mySimulator.initSimulator(ListOfParameterSetsToBeWritten, 0, true);
+        support.waitForSimulatorAsynchronous(mySimulator, this);
         }
-    this.popUIState();
     }//GEN-LAST:event_jButtonStartBatchSimulationActionPerformed
 
     private void jButtonGenerateListOfExperimentsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGenerateListOfExperimentsActionPerformed
@@ -907,15 +907,15 @@ private ArrayList<Boolean> listOfUIStatesPushed;
                     Optimizer myOptimizer=SimOptiFactory.getOptimizer();
                     myOptimizer.initOptimizer();
                     //Wait for end of Optimizer
-                    
-                        while(myOptimizer.getOptimum()==null){
+                    support.waitForOptimizerAsynchronous(myOptimizer, this);
+                    /*    while(myOptimizer.getOptimum()==null){
                             try {
                                 Thread.sleep(500);
                             } catch (InterruptedException ex) {
                                 support.log("Problem while waiting for Optimizer.");
                             }
                         }
-                    
+                    */
                     support.log("Optimum found, activating the UIComponents");
                     
                     }else{
@@ -928,7 +928,6 @@ private ArrayList<Boolean> listOfUIStatesPushed;
                 support.setStatusText("No Measurements chosen. No Opti possible.");
                 }
              }
-    this.popUIState();
     }//GEN-LAST:event_jButtonStartOptimizationActionPerformed
 
     private void jButtonPathToTimeNetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPathToTimeNetActionPerformed
@@ -1945,10 +1944,13 @@ private ArrayList<Boolean> listOfUIStatesPushed;
      * restores last saved UI-State
      */
     public void popUIState(){
-        for(int i=0;i<listOfUIStates.size();i++){
-        listOfUIStates.set(i, listOfUIStatesPushed.get(i));
+        if(listOfUIStatesPushed!=null){
+            for(int i=0;i<listOfUIStates.size();i++){
+            listOfUIStates.set(i, listOfUIStatesPushed.get(i));
+            }
+        listOfUIStatesPushed=null;
+        updateAllUIComponents();
         }
-    updateAllUIComponents();
     }
     
     public void deactivateEveryComponentExcept(Component[] oList){
@@ -1962,6 +1964,16 @@ private ArrayList<Boolean> listOfUIStatesPushed;
             }
         }
     
+    }
+
+    public void operationSucessfull(String message) {
+        this.popUIState();
+        support.setStatusText(message);
+    }
+
+    public void operationCanceld(String message) {
+        this.popUIState();
+        support.setStatusText(message);
     }
     
 }
