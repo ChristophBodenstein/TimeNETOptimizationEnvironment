@@ -39,7 +39,7 @@ import timenetexperimentgenerator.typedef.*;
 public class support {
 
 //This Version of TimeNetExperimentGenerator
-public static final String VERSION ="0.9.196";
+public static final String VERSION ="0.9.250";
 
 
 //Define some program-wide default values
