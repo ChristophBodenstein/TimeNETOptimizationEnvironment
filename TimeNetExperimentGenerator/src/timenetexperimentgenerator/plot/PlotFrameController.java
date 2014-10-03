@@ -1,3 +1,7 @@
+/**
+* This frame is used to setup the R Plots, create the R script and run it.
+**/
+
 package timenetexperimentgenerator.plot;
 
 import java.awt.Color;
@@ -65,6 +69,9 @@ Color plotColor = Color.black;
         jScrollPane1.getHorizontalScrollBar().setValue(maximum);
     }
     
+    /**
+     * Loads the header and MeasureNames from a .csv file.
+     **/
     public void loadCSV(String fileName)
     {
         jCheckBox1.setSelected(false);
@@ -99,6 +106,7 @@ Color plotColor = Color.black;
             
             if((first = in.readLine()) != null)
             {
+                first = first.split(";")[0];
                 cmodel.addElement( first.split(";")[0] );
                 while( ( current = in.readLine() ) != null && !current.split( ";" )[0].equals( first ) )
                     {
@@ -117,6 +125,9 @@ Color plotColor = Color.black;
         ZValueLabel.setText("None");
     }
     
+    /**
+     * Get all cached simulation files and add them to the CachedFilesList.
+     **/
     public void readCachedListOfStatistics()
     {
         DefaultListModel cachedFilesListModel = new DefaultListModel();
@@ -155,9 +166,6 @@ Color plotColor = Color.black;
         SetZButton = new javax.swing.JButton();
         LoadFileLabel = new javax.swing.JLabel();
         CachedFilesLabel = new javax.swing.JLabel();
-        XLabel = new javax.swing.JLabel();
-        YLabel = new javax.swing.JLabel();
-        ZLabel = new javax.swing.JLabel();
         MeasureLabel = new javax.swing.JLabel();
         MeasureComboBox = new javax.swing.JComboBox();
         JButtonPlot = new javax.swing.JButton();
@@ -230,12 +238,6 @@ Color plotColor = Color.black;
 
         CachedFilesLabel.setText("Cached Files");
 
-        XLabel.setText("X:");
-
-        YLabel.setText("Y:");
-
-        ZLabel.setText("Z:");
-
         MeasureLabel.setText("Measure:");
 
         MeasureComboBox.addActionListener(new java.awt.event.ActionListener() {
@@ -257,9 +259,15 @@ Color plotColor = Color.black;
 
         ZValueLabel.setText("None");
 
-        jLabel1.setText("Plot-Char");
+        jLabel1.setText("Plot-Char:");
 
         jComboBoxPlotChar.setModel(new javax.swing.DefaultComboBoxModel(new String[] { ".", "*", "+", "x", "X", "o", "O" }));
+        jComboBoxPlotChar.setSelectedIndex(3);
+        jComboBoxPlotChar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBoxPlotCharActionPerformed(evt);
+            }
+        });
 
         jButton1.setText("Plot-Color");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -282,63 +290,61 @@ Color plotColor = Color.black;
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(LoadFileLabel)
-                    .addComponent(CachedFilesLabel)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(OpenFileTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(OpenButton, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(LoadButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 2, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jComboBoxPlotChar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jCheckBox1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(JButtonPlot, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(OpenButton, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(14, 14, 14))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(LoadFileLabel)
+                            .addComponent(CachedFilesLabel)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(LoadButton, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 2, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(12, 12, 12)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                    .addComponent(SetZButton, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(ZValueLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                    .addComponent(SetYButton, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(YValueLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                    .addComponent(SetXButton, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(XValueLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(8, 8, 8)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                            .addComponent(SetXButton, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                            .addComponent(SetYButton, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                            .addComponent(SetZButton, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                            .addComponent(AxisSetupLabel)
-                                            .addGap(124, 124, 124)))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addComponent(jLabel1)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
                                     .addGroup(layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(XLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(YLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 20, Short.MAX_VALUE)
-                                            .addComponent(ZLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addComponent(MeasureLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(1, 1, 1)))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jComboBoxPlotChar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(ZValueLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 333, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(YValueLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 333, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(XValueLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 333, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(2, 2, 2)
-                                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                            .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(MeasureLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(MeasureComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                                        .addComponent(jButton1))
+                                    .addComponent(MeasureComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jCheckBox1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(JButtonPlot, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(2, 2, 2))
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(AxisSetupLabel))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -355,41 +361,37 @@ Color plotColor = Color.black;
                         .addComponent(CachedFilesLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 291, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(LoadButton))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(AxisSetupLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(SetYButton)
-                                .addComponent(SetZButton))
+                        .addGap(10, 10, 10)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(XValueLabel)
                             .addComponent(SetXButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(XLabel)
-                            .addComponent(XValueLabel))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(YLabel)
-                            .addComponent(YValueLabel))
+                            .addComponent(YValueLabel)
+                            .addComponent(SetYButton))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(ZLabel)
-                            .addComponent(ZValueLabel))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
+                            .addComponent(ZValueLabel)
+                            .addComponent(SetZButton))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(MeasureComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(MeasureLabel))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(JButtonPlot)
                             .addComponent(jLabel1)
                             .addComponent(jComboBoxPlotChar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton1)
-                            .addComponent(jCheckBox1))))
+                            .addComponent(jButton1))))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(LoadButton)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(JButtonPlot)
+                        .addComponent(jCheckBox1)))
                 .addContainerGap())
             .addComponent(jSeparator1)
         );
@@ -397,6 +399,9 @@ Color plotColor = Color.black;
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * File Open Dialog for .csv files.
+     **/
     private void OpenButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OpenButtonActionPerformed
         
         FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV File", "csv");
@@ -426,6 +431,9 @@ Color plotColor = Color.black;
         } 
     }//GEN-LAST:event_OpenButtonActionPerformed
 
+    /**
+     * Load cached .csv file.
+     **/
     private void LoadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoadButtonActionPerformed
         if(!CachedFilesList.isSelectionEmpty())
         {
@@ -438,6 +446,9 @@ Color plotColor = Color.black;
         // TODO add your handling code here:
     }//GEN-LAST:event_OpenFileTextFieldActionPerformed
 
+    /**
+     * Set y axis column name.
+     **/
     private void SetYButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SetYButtonActionPerformed
         if(!ColumnList.isSelectionEmpty())
         {
@@ -450,6 +461,9 @@ Color plotColor = Color.black;
         // TODO add your handling code here:
     }//GEN-LAST:event_MeasureComboBoxActionPerformed
 
+    /**
+     * Create the R script and run it.
+     **/
     private void JButtonPlotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JButtonPlotActionPerformed
     char plotChar=support.DEFAULT_PLOT_CHAR;
         
@@ -461,7 +475,7 @@ Color plotColor = Color.black;
         
         try
         {
-            if(!jCheckBox1.isSelected())
+            if(!jCheckBox1.isSelected()) //create new script
             {
                 //Delete old script file and old image file
                 support.del(new File(imageFilePath));
@@ -485,9 +499,6 @@ Color plotColor = Color.black;
 
                 writer.println("setwd(\"" + userdir + "\")");
                 writer.println("png(filename=\"rplot.png\")");
-                //writer.println("svg(filename=\"rplot.svg\")");
-                //writer.println("values <- c(1, 3, 6, 4, 9)");
-                //writer.println("plot(values, type=\"o\", col=\"blue\")");
 
                 if(XValueLabel.getText() != "None" && YValueLabel.getText() != "None" && ZValueLabel.getText() == "None")
                 {
@@ -526,7 +537,17 @@ Color plotColor = Color.black;
             }
             else
             {
+                //append to existing script (hold is checked)
                 PrintWriter writer = new PrintWriter(new FileOutputStream(new File( "rscript.r"),true));
+                
+                if(MeasureComboBox.getSelectedItem() != null)
+                {
+                    writer.println("sub<-subset(base,  base$MeasureName ==  \"" + MeasureComboBox.getSelectedItem().toString() + "\")");
+                }
+                else
+                {
+                    writer.println("sub<-base");
+                }
                 
                 if(XValueLabel.getText() != "None" && YValueLabel.getText() != "None" && ZValueLabel.getText() == "None")
                 {
@@ -608,6 +629,10 @@ Color plotColor = Color.black;
     this.JButtonPlot.setEnabled(true);
     }
 
+    
+    /**
+     * Set x axis column name.
+     **/
     private void SetXButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SetXButtonActionPerformed
         if(!ColumnList.isSelectionEmpty())
         {
@@ -615,6 +640,9 @@ Color plotColor = Color.black;
         }
     }//GEN-LAST:event_SetXButtonActionPerformed
 
+    /**
+     * Set z axis column name.
+     **/
     private void SetZButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SetZButtonActionPerformed
         if(!ColumnList.isSelectionEmpty())
         {
@@ -622,7 +650,7 @@ Color plotColor = Color.black;
         }
     }//GEN-LAST:event_SetZButtonActionPerformed
 
-    /*Chose the plot color*/
+    /*Choose the plot color*/
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         Color chosen = JColorChooser.showDialog(null, "Plot Color Chooser", Color.yellow);
         if(chosen != null)
@@ -638,6 +666,10 @@ Color plotColor = Color.black;
     private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jCheckBox1ActionPerformed
+
+    private void jComboBoxPlotCharActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxPlotCharActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBoxPlotCharActionPerformed
 
     /**
      * @param args the command line arguments
@@ -689,11 +721,8 @@ Color plotColor = Color.black;
     private javax.swing.JButton SetXButton;
     private javax.swing.JButton SetYButton;
     private javax.swing.JButton SetZButton;
-    private javax.swing.JLabel XLabel;
     private javax.swing.JLabel XValueLabel;
-    private javax.swing.JLabel YLabel;
     private javax.swing.JLabel YValueLabel;
-    private javax.swing.JLabel ZLabel;
     private javax.swing.JLabel ZValueLabel;
     private javax.swing.JButton jButton1;
     private javax.swing.JCheckBox jCheckBox1;

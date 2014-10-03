@@ -1,3 +1,7 @@
+/*
+ * Implements the frame which displays the R plots.
+ */
+
 package timenetexperimentgenerator.plot;
 
 import java.awt.*;
@@ -83,6 +87,9 @@ public class PlotFrame extends javax.swing.JFrame
         // TODO add your handling code here:
     }//GEN-LAST:event_formWindowStateChanged
 
+    /**
+     * Save plot image as jpg
+     **/
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         FileNameExtensionFilter filter = new FileNameExtensionFilter("JPG File", "jpg");
         
@@ -148,6 +155,9 @@ public class PlotFrame extends javax.swing.JFrame
         
     }
     
+    /**
+     * Sets a given image to the background of the frame.
+     **/
     public void showImage(String path)
     {   
         this.setVisible(true);  

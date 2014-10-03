@@ -1,3 +1,7 @@
+/**
+* Interface: MainFrame <--> R Plot Plugin
+**/
+
 package timenetexperimentgenerator.plot;
 
 /**
@@ -13,12 +17,18 @@ public class RPlugin
         controller = new PlotFrameController();
     }
     
+    /**
+     * Shows the frame for setting up the plot.
+     **/
     public void openPlotGui()
     {
         controller.setVisible(true);
         controller.readCachedListOfStatistics();
     }
     
+    /**
+     * Get cached simulation files.
+     **/
     public static void updateCachedListOfStatistics()
     {
         controller.readCachedListOfStatistics();
