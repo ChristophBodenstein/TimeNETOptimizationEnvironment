@@ -514,8 +514,7 @@ Color plotColor = Color.black;
                             "\"))),as.numeric(as.character( sub(\""+","+"\" , \""+"."+"\" , sub$\"" + YValueLabel.getText() + 
                             "\"))),as.numeric(as.character( sub(\""+","+"\" , \""+"."+"\" , sub$\"" + ZValueLabel.getText() + 
                             "\"))), xlab=\"" + XValueLabel.getText() + "\",ylab=\"" + YValueLabel.getText() + "\",zlab=\"" + 
-                            ZValueLabel.getText() + "\", phi=15, theta=120, col=\"" + String.format("#%02X%02X%02X", plotColor.getRed(), plotColor.getGreen(), plotColor.getBlue()) +
-                            "\", NAcol=\"white\", colkey=NULL, panel.first=NULL, clim=NULL, clab=NULL, bty=\"b2\", pch=\""+plotChar+"\", add=FALSE)");
+                            ZValueLabel.getText() + "\", phi=15, theta=120, col=NULL, NAcol=\"white\", colkey=NULL, panel.first=NULL, clim=NULL, clab=NULL, bty=\"b2\", pch=\""+plotChar+"\", add=FALSE)");
                 }
                 else
                 {
@@ -563,8 +562,7 @@ Color plotColor = Color.black;
                             "\"))),as.numeric(as.character( sub(\""+","+"\" , \""+"."+"\" , sub$\"" + YValueLabel.getText() + 
                             "\"))),as.numeric(as.character( sub(\""+","+"\" , \""+"."+"\" , sub$\"" + ZValueLabel.getText() + 
                             "\"))), xlab=\"" + XValueLabel.getText() + "\",ylab=\"" + YValueLabel.getText() + "\",zlab=\"" + 
-                            ZValueLabel.getText() + "\", col=\"" + String.format("#%02X%02X%02X", plotColor.getRed(), plotColor.getGreen(), plotColor.getBlue()) +
-                            "\", NAcol=\"white\", colkey=NULL, panel.first=NULL, clim=NULL, clab=NULL, bty=\"b2\", pch=\""+plotChar+"\", add=TRUE)");
+                            ZValueLabel.getText() + "\", col=NULL, NAcol=\"white\", colkey=NULL, panel.first=NULL, clim=NULL, clab=NULL, bty=\"b2\", pch=\""+plotChar+"\", add=TRUE)");
                 }
                 else
                 {
