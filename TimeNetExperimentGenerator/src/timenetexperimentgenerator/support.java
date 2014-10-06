@@ -58,6 +58,7 @@ public static final typeOfBenchmarkFunction DEFAULT_TYPE_OF_BENCHMARKFUNCTION = 
 //default values for distributed simulation
 public static final int DEFAULT_SLEEPING_TIME=2000;
 public static final int DEFAULT_NUMBER_OF_SLEEPING_TIMES_AS_TIMEOUT = 20;
+public static final int DEFAULT_CONNECTION_TIMEOUT=2000;
 
 
 public static final double DEFAULT_T_RATIO_SCALE=0.00001;
@@ -731,8 +732,8 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
             URL url = new URL(urlString);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
-            conn.setReadTimeout(1000);
-            conn.setConnectTimeout(1000);
+            conn.setReadTimeout(DEFAULT_CONNECTION_TIMEOUT);
+            conn.setConnectTimeout(DEFAULT_CONNECTION_TIMEOUT);
             //System.out.println(String.format("Fetching %s ...", url));
 
             int responseCode = conn.getResponseCode();
