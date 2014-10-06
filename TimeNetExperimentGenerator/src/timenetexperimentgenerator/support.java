@@ -1323,6 +1323,10 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
                 listener.operationSucessfull("The end.");
                 this.cancel();
                 }
+                if(support.isCancelEverything()){
+                listener.operationCanceld("Operation canceled by user.");
+                this.cancel();
+                }
             }
         }, 1000*support.DEFAULT_MEMORYPRINT_INTERVALL, 1000*support.DEFAULT_MEMORYPRINT_INTERVALL);
 
