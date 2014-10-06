@@ -1045,7 +1045,7 @@ private ArrayList<Boolean> listOfUIStatesPushed;
     private void checkIfURLIsCorrect(){
     String tmpURL=support.getReMoteAddress();
     boolean checksuccessful=false;
-    
+    support.log("Will try to check URL.");
     try {
         checksuccessful=support.checkRemoteAddress(tmpURL);
     } catch (IOException ex) {
@@ -1066,9 +1066,9 @@ private ArrayList<Boolean> listOfUIStatesPushed;
         {
             jButtonEnterURLToSimServer.setBackground(Color.RED);
             jButtonEnterURLToSimServer.setOpaque(true);
-            jButtonEnterURLToSimServer.setBorderPainted(true);
+            jButtonEnterURLToSimServer.setBorderPainted(false);
             jButtonEnterURLToSimServer.setText("Enter URL of Sim.-Server");
-            jButtonEnterURLToSimServer.setEnabled(false);
+            jButtonEnterURLToSimServer.setEnabled(true);
         }
     }
     
@@ -1726,7 +1726,6 @@ private ArrayList<Boolean> listOfUIStatesPushed;
     
     auto.setProperty("timenetpath", this.getPathToTimeNet());
     auto.setProperty("file", this.jTextFieldSCPNFile.getText().toString());
-    auto.setProperty("tmppath", support.getTmpPath());
     
     auto.setProperty("rpath", this.getPathToR());
     
@@ -1759,6 +1758,12 @@ private ArrayList<Boolean> listOfUIStatesPushed;
     auto.setProperty("isRunningAsSlave", Boolean.toString(support.isIsRunningAsSlave()));
 
     auto.setProperty("RemoteAddress", support.getReMoteAddress());
+    
+    if(support.getTmpPath()!=null){
+    auto.setProperty("tmppath", support.getTmpPath());
+    }else{
+    support.log("No tmp-path yet given. Please do so.");
+    }
     
     File parserprops =  new File(support.NAME_OF_PREFERENCES_FILE);
     auto.store(new FileOutputStream(parserprops), "ExperimentGenerator-Properties");
