@@ -114,6 +114,8 @@ private ArrayList<Boolean> listOfUIStatesPushed;
         this.setPathToTimeNet(auto.getProperty("timenetpath"));
         //support.log("Read Path to TimeNet:"+auto.getProperty("timenetpath"));
         this.setPathToR(auto.getProperty("rpath"));
+        //Read tmp path from properties, needed for client-mode-start
+        support.setTmpPath(auto.getProperty("tmppath"));
         
         //set null strings to empty strings, avoids a crash when saving the configuration
         if(this.getPathToR() == null)
@@ -153,6 +155,7 @@ private ArrayList<Boolean> listOfUIStatesPushed;
         
         this.checkIfTimeNetPathIsCorrect();
         this.checkIfRPathIsCorrect();
+        this.checkIfURLIsCorrect();
         this.deactivateExportButtons();
 
         jTableParameterList.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
@@ -871,7 +874,7 @@ private ArrayList<Boolean> listOfUIStatesPushed;
 
     private void jButtonStartOptimizationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonStartOptimizationActionPerformed
     support.setCancelEverything(false);
-    this.switchUIState(uiState.processRunning);
+    
     
     //Set base parameterset and orignal base parameterset in support
     support.setOriginalParameterBase(((parameterTableModel)jTableParameterList.getModel()).getListOfParameter());
@@ -884,6 +887,7 @@ private ArrayList<Boolean> listOfUIStatesPushed;
         support.setStatusText("Designspace to small for Opti.");
         }else{
                 if(this.getListOfActiveMeasureMentsToOptimize().size()>=1){
+                this.switchUIState(uiState.processRunning);
                 //Ask for Tmp-Path
                 support.setTmpPath(support.getPathToDirByDialog("Dir for export TMP-Files and log.\n ",  new File(support.getOriginalFilename()).getPath()) );
                 //if tmpPath is empty or null --> return
@@ -1025,15 +1029,49 @@ private ArrayList<Boolean> listOfUIStatesPushed;
             try {
                 support.log("URL of Simulation-Server as given from user is " + s + "!");
                 support.setRemoteAddress(s);
-                this.saveProperties();
+                this.checkIfURLIsCorrect();
             } catch (IOException ex) {
-                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                support.log("Problem setting the url to distributed simulation server.");
             }
         }else{
         support.log("URL of Simulation-Server was not entered!");    
         }
     }//GEN-LAST:event_jButtonEnterURLToSimServerActionPerformed
 
+    /**
+     * Checks if URL to simulation server is correct.
+     * If it` correct, button will be green, else red
+     */
+    private void checkIfURLIsCorrect(){
+    String tmpURL=support.getReMoteAddress();
+    boolean checksuccessful=false;
+    
+    try {
+        checksuccessful=support.checkRemoteAddress(tmpURL);
+    } catch (IOException ex) {
+        support.log("Problem checking the URL to disctributed simulation.");
+    }
+    
+    support.log("Checking URL of distributed simulation server.");
+        if(checksuccessful)
+        {
+            jButtonEnterURLToSimServer.setBackground(Color.GREEN);
+            jButtonEnterURLToSimServer.setOpaque(true);
+            jButtonEnterURLToSimServer.setBorderPainted(false);
+            jButtonEnterURLToSimServer.setText("RESET URL of Sim.-Server"); 
+            this.saveProperties();
+            jButtonEnterURLToSimServer.setEnabled(true);
+        }
+        else
+        {
+            jButtonEnterURLToSimServer.setBackground(Color.RED);
+            jButtonEnterURLToSimServer.setOpaque(true);
+            jButtonEnterURLToSimServer.setBorderPainted(true);
+            jButtonEnterURLToSimServer.setText("Enter URL of Sim.-Server");
+            jButtonEnterURLToSimServer.setEnabled(false);
+        }
+    }
+    
     private void jCheckBoxSlaveSimulatorItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBoxSlaveSimulatorItemStateChanged
         //Removed functionality
         
@@ -1083,25 +1121,45 @@ private ArrayList<Boolean> listOfUIStatesPushed;
         support.log("No Path to R chosen.");
         }  
     }//GEN-LAST:event_jButtonPathToRActionPerformed
-
+    /**
+     * Open R-Plot-Frame (R-Plot-Plugin)
+     * @param evt ActionEvent
+     */
     private void jButtonPlotRActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPlotRActionPerformed
         rplugin.openPlotGui();
     }//GEN-LAST:event_jButtonPlotRActionPerformed
 
+    /**
+     * Show about-dialog of application
+     * @param evt ActionEvent
+     */
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
-
-    
     aboutDialog.setVisible(true);
     }//GEN-LAST:event_jMenuItem5ActionPerformed
 
+    /**
+     * If user turns on/off logging to window, this will be set in support-class
+     * It will not be saved in properties because standard is to log to a window
+     * To increase application speed or decrease system resource usage it can be deactivated
+     * @param evt ItemEvent
+     */
     private void jCheckBoxMenuItemLogToWindowItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItemLogToWindowItemStateChanged
     support.setLogToWindow(this.jCheckBoxMenuItemLogToWindow.isSelected());
     }//GEN-LAST:event_jCheckBoxMenuItemLogToWindowItemStateChanged
 
+    /**
+     * If user turns on/off logging to file, this will be set in support-class
+     * It will not be saved in properties because standard is not to log to a file
+     */
     private void jCheckBoxMenuItemLogToFileItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItemLogToFileItemStateChanged
     support.setLogToFile(this.jCheckBoxMenuItemLogToFile.isSelected());
     }//GEN-LAST:event_jCheckBoxMenuItemLogToFileItemStateChanged
 
+    /**
+     * Clear logfile/delete log file
+     * User will be asked in a dialog if he really wants to delete log file
+     * @param evt ActionEvent
+     */
     private void jMenuItemClearLogFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemClearLogFileActionPerformed
     //Show dialog, if yes, delete file
     JOptionPane pane = new JOptionPane(
@@ -1124,15 +1182,28 @@ private ArrayList<Boolean> listOfUIStatesPushed;
 
     }//GEN-LAST:event_jMenuItemClearLogFileActionPerformed
 
+    /**
+     * Everytime the Benchmark-function is changed by user, this will be saved to properties
+     * @param evt ItemChangedEvent
+     */
     private void jComboBoxBenchmarkFunctionItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxBenchmarkFunctionItemStateChanged
     support.setChosenBenchmarkFunction((typeOfBenchmarkFunction)this.jComboBoxBenchmarkFunction.getSelectedItem());
     this.saveProperties();
     }//GEN-LAST:event_jComboBoxBenchmarkFunctionItemStateChanged
 
+    /**
+     * A click on the memorybar will cause a print of Memory statistics to log
+     */
     private void jProgressBarMemoryUsageMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jProgressBarMemoryUsageMouseClicked
     support.printMemoryStats();
     }//GEN-LAST:event_jProgressBarMemoryUsageMouseClicked
-
+    /**
+     * This method is called when checkbox for slave-simulation is clicked
+     * If slave-mode was activated, it will be deactivated and slave thread will try to end
+     * If slave mode was deactivated, program will ask for tmp-path and if successful, start the client thread
+     * while program is in cleint mode, all buttons will be deactivated
+     * @param evt Event from mouseclick
+     */
     private void jCheckBoxSlaveSimulatorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jCheckBoxSlaveSimulatorMouseClicked
          //set Property for startup
         //start the Slave-Thread
@@ -1562,7 +1633,7 @@ private ArrayList<Boolean> listOfUIStatesPushed;
         jButtonPathToTimeNet.setBackground(Color.GREEN);
         jButtonPathToTimeNet.setOpaque(true);
         jButtonPathToTimeNet.setBorderPainted(false);
-        jButtonPathToTimeNet.setText("Reset Path To TimeNet");
+        jButtonPathToTimeNet.setText("RESET Path To TimeNet");
         //jButtonStartOptimization.setEnabled(true);
         support.setPathToTimeNet(path);
         this.pathToTimeNet=path;
@@ -1606,15 +1677,25 @@ private ArrayList<Boolean> listOfUIStatesPushed;
     */
     private void checkIfRPathIsCorrect(){
     String path=this.getPathToR();
-    File tmpFile=new File(path+File.separator+"bin");
-   
+    String rApplicationName="";
+    
+    String OS = System.getProperty("os.name").toLowerCase();
+    if((OS.contains("win"))){
+    //We are on a windows-system
+    rApplicationName="R.exe";
+    }else{
+    //We are on a non-windows-system
+    rApplicationName="R";
+    }
+    File tmpFile=new File(path+File.separator+"bin"+File.separator+rApplicationName);
+    
     support.log("R should be here: "+tmpFile.getAbsolutePath());
         if(tmpFile.exists())
         {
             jButtonPathToR.setBackground(Color.GREEN);
             jButtonPathToR.setOpaque(true);
             jButtonPathToR.setBorderPainted(false);
-            jButtonPathToR.setText("Reset Path To R");
+            jButtonPathToR.setText("RESET Path To R");
 
             support.setPathToR(path);
             this.pathToR=path;
@@ -1645,6 +1726,7 @@ private ArrayList<Boolean> listOfUIStatesPushed;
     
     auto.setProperty("timenetpath", this.getPathToTimeNet());
     auto.setProperty("file", this.jTextFieldSCPNFile.getText().toString());
+    auto.setProperty("tmppath", support.getTmpPath());
     
     auto.setProperty("rpath", this.getPathToR());
     
