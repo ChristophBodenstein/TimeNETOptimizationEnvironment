@@ -32,6 +32,8 @@ public enum typeOfBenchmarkFunction{Sphere, Ackley, Rosenbrock, Matya, Easom, Sc
 
 public enum typeOfMVMOMutationSelection{Random, RandomWithMovingSingle, MovingGroupSingleStep, MovingGroupMultiStep};
 
+public enum typeOfMVMOParentSelection{Best, Random, Weighted}
+
 public static final String[] listOfParametersToIgnore={"TempPara","TempCost","UsedCPUTIME"};
 
 public enum uiState{defaultState, clientState, processRunning};
