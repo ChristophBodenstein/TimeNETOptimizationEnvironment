@@ -705,10 +705,9 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
     
     public static void setRemoteAddress(String address) throws IOException{
     remoteAddress=address;
-    //TODO DISTRIBUTEDSERVER
     //Check if address is correct.
-    distributedSimulationAvailable = checkRemoteAddress(address);
-    mainFrame.updateComboBoxSimulationType();        
+    //distributedSimulationAvailable = checkRemoteAddress(address);
+    //mainFrame.updateComboBoxSimulationType();        
     //If Address is correct, set distributedSimulationAvailable to TRUE!
     //e.i. call the method checkRemoteAddress(String ere)
     //After that, please call updateComboBoxSimulationType() in MainFrame.java
@@ -727,7 +726,6 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
             remoteAddress=urlString;
         }
         
-        //TODO remove tail \ !!!
     try {
         try{
             URL url = new URL(urlString);
