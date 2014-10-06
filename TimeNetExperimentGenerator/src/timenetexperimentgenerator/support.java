@@ -731,6 +731,8 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
             URL url = new URL(urlString);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
+            conn.setReadTimeout(1000);
+            conn.setConnectTimeout(1000);
             //System.out.println(String.format("Fetching %s ...", url));
 
             int responseCode = conn.getResponseCode();
