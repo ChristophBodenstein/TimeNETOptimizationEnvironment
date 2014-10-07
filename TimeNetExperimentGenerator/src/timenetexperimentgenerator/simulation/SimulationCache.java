@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import javax.swing.JOptionPane;
 import timenetexperimentgenerator.*;
 
 /**
@@ -219,8 +220,9 @@ private int localSimulationCounter = 0;
         //Refresh Design Space label of MainFrame
         myParentFrame.calculateDesignSpace();
 
-     } catch (IOException ex) {
+     } catch (Exception ex) {
         support.log("Error while reading the Simulation Cache File.");
+        JOptionPane.showMessageDialog(null, "Could not read simulation cache file!");
     }
         //Get all parameters
         //Get all Results
