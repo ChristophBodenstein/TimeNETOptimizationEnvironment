@@ -824,7 +824,7 @@ private ArrayList<Boolean> listOfUIStatesPushed;
         this.switchUIState(uiState.processRunning);
         
         //Ask for Tmp-Path
-        String tmpPath=support.getPathToDirByDialog("Dir for export TMP-Files and log.\n ", new File(support.getOriginalFilename()).getPath() );
+        String tmpPath=support.getPathToDirByDialog("Dir for export TMP-Files and log.\n ", support.getTmpPath() );
         
         if(tmpPath!=null){
         support.setTmpPath(tmpPath);
@@ -889,9 +889,10 @@ private ArrayList<Boolean> listOfUIStatesPushed;
                 if(this.getListOfActiveMeasureMentsToOptimize().size()>=1){
                 this.switchUIState(uiState.processRunning);
                 //Ask for Tmp-Path
-                support.setTmpPath(support.getPathToDirByDialog("Dir for export TMP-Files and log.\n ",  new File(support.getOriginalFilename()).getPath()) );
+                support.setTmpPath(support.getPathToDirByDialog("Dir for export TMP-Files and log.\n ",  support.getTmpPath() ));
                 //if tmpPath is empty or null --> return
                     if(support.getTmpPath()!=null){
+                    this.saveProperties();
                     support.setPathToTimeNet(pathToTimeNet);
                     support.setMainFrame(this);
                     support.setOriginalFilename(fileName);
