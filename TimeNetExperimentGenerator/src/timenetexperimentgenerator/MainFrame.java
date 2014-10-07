@@ -845,25 +845,28 @@ private ArrayList<Boolean> listOfUIStatesPushed;
             if(ListOfParameterSetsToBeWritten==null){
             support.setStatusText("No Parametersets to simulate.");
             support.log("No Parametersets to simulate.");
+            this.popUIState();
             return;
             }
             //If Parameterbase is null -->eject (This is needed for benchmark-simulations)
             if(support.getParameterBase()==null){
             support.setStatusText("No Paramaterbase set.");
             support.log("No Paramaterbase set. No Simulation possible.");
+            this.popUIState();
             return;
             }
             
         Simulator mySimulator=SimOptiFactory.getSimulator();
         mySimulator.initSimulator(ListOfParameterSetsToBeWritten, 0, true);
         support.waitForSimulatorAsynchronous(mySimulator, this);
+        }else{
+        this.popUIState();
         }
     }//GEN-LAST:event_jButtonStartBatchSimulationActionPerformed
 
     private void jButtonGenerateListOfExperimentsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGenerateListOfExperimentsActionPerformed
     this.switchUIState(uiState.processRunning);
     int i=JOptionPane.showConfirmDialog(this,"Really generate Designspace? This could take some time.","Generate Design space?",JOptionPane.YES_NO_OPTION);
-    System.out.println("Chosen option:"+i);
         if(i==0){
         support.setCancelEverything(false);
         this.restartGenerator();
@@ -889,9 +892,10 @@ private ArrayList<Boolean> listOfUIStatesPushed;
                 if(this.getListOfActiveMeasureMentsToOptimize().size()>=1){
                 this.switchUIState(uiState.processRunning);
                 //Ask for Tmp-Path
-                support.setTmpPath(support.getPathToDirByDialog("Dir for export TMP-Files and log.\n ",  support.getTmpPath() ));
+                String tPath=(support.getPathToDirByDialog("Dir for export TMP-Files and log.\n ",  support.getTmpPath() ));
                 //if tmpPath is empty or null --> return
-                    if(support.getTmpPath()!=null){
+                    if(tPath!=null){
+                    support.setTmpPath(tPath);
                     this.saveProperties();
                     support.setPathToTimeNet(pathToTimeNet);
                     support.setMainFrame(this);
@@ -926,6 +930,8 @@ private ArrayList<Boolean> listOfUIStatesPushed;
                     
                     }else{
                     support.log("No Tmp-Path given, Optimization not possible.");
+                    this.popUIState();
+                    return;
                     }
                     
                     
