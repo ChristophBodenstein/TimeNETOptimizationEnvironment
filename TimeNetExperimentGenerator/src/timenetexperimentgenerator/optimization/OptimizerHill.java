@@ -376,6 +376,8 @@ int stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;
                     }
                     
                 }
+            //It numberOfLastParameter is -1 we set it to 0, this is in multiphase-opti needed
+            numberOfLastParameter=Math.max(numberOfLastParameter, 0);
             // At this point, numberOfLastParameter contains the number of last changed parameter in an array of all changeable parameters
             support.log("Number of Last changed Parameter is "+numberOfLastParameter);
             

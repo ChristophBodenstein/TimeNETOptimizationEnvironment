@@ -167,7 +167,7 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
         if(s.equals("Configured-ConfidenceIntervall")){
         return "ConfidenceIntervall";
         }
-        if(s.equals("Used CPUTime")){
+        if(s.equals("UsedCPUTIME")){
         return "UsedCPUTIME";
         }
         
@@ -540,7 +540,7 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
     String line;
     
         parameter dummyParameterForCPUTime=new parameter();
-        dummyParameterForCPUTime.setName("Used CPUTime");
+        dummyParameterForCPUTime.setName("UsedCPUTIME");
         dummyParameterForCPUTime.setValue(0.0);
         dummyParameterForCPUTime.setStartValue(0.0);
         dummyParameterForCPUTime.setEndValue(0.0);
@@ -565,7 +565,7 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
                 //Write header of logfile
                 
                 //Add empty CPU-Time-Parameter for compatibility
-                if (support.getParameterByName(pList.get(0).getListOfParameters(), "Used CPUTime")==null){
+                if (support.getParameterByName(pList.get(0).getListOfParameters(), "UsedCPUTIME")==null){
                     pList.get(0).getListOfParameters().add(dummyParameterForCPUTime);
                 }
                 
@@ -590,7 +590,7 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
             SimulationType myParser=pList.get(i);
             
             //Add empty CPU-Time-Parameter for compatibility
-            if (support.getParameterByName(myParser.getListOfParameters(), "Used CPUTime")==null){
+            if (support.getParameterByName(myParser.getListOfParameters(), "UsedCPUTIME")==null){
                         myParser.getListOfParameters().add(dummyParameterForCPUTime);
             }
             
@@ -616,8 +616,8 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
 
 
         fw.close();
-        }catch(IOException e){
-            support.log("IOException while writing things to summary log-file.");
+        }catch(Exception e){
+            support.log("Exception while writing things to summary log-file.");
         }
     }
     

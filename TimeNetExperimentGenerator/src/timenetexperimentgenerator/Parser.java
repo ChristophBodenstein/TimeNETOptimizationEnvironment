@@ -189,7 +189,7 @@ private boolean parsingSuccessfullFinished = false;
             if(segs[i].equals("simTime")){
             //CPU-Time is called simTime in logfile-Name!
             parameter tmpP=new parameter();
-            tmpP.setName("Used CPUTime");
+            tmpP.setName("UsedCPUTIME");
             //String[] tmpSegs=segs[i+1].split(".");
             tmpP.setValue(support.getDouble(segs[i+1].substring(0,segs[i+1].indexOf("."))));
             tmpParameterList.add(tmpP);
