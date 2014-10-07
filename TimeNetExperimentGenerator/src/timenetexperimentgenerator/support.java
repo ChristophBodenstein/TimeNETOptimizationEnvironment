@@ -295,7 +295,35 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
      * @return the tmpPath
      */
     public static String getTmpPath() {
-        return tmpPath;
+        //If a tmp-path is given, return it
+        if(tmpPath!=null){return tmpPath;}
+        //If no tmp path is given, but a SCPN-path is available
+        if(new File(getOriginalFilename()).getPath() !=null){
+        return (new File(getOriginalFilename()).getPath());
+        }
+        //If no path is available take the dir of jar-file
+        String t=support.class.getProtectionDomain().getCodeSource().getLocation().getPath()+File.separator+"tmp";
+        //Try to create a tmp-dir and return this
+        File tfile=new File(t);
+        if( tfile.exists() ){
+            if(tfile.isDirectory()){
+            return t;
+            }else{
+            support.log(t+" is a file, will return "+support.class.getProtectionDomain().getCodeSource().getLocation().getPath()+" as tmp path.");
+            return support.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+            }
+        }else{
+        support.log("Try to create tmp dir:"+t);
+            try{
+            tfile.mkdir();
+            }catch(Exception e){
+            //If dir-creation fails, show warning
+            support.log("Problem creting a tmp dir!");return null;
+            }
+        return t;
+        }
+        
+        
     }
 
     /**
@@ -321,7 +349,8 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
     fileChooser.setControlButtonsAreShown(true);
     if(startPath!=null){
         File f = new File(startPath);
-        fileChooser.setCurrentDirectory(f);
+        fileChooser.setCurrentDirectory(f.getParentFile());
+        fileChooser.setSelectedFile(f);
     }
     fileChooser.setDialogTitle(title);
         if (fileChooser.showSaveDialog(getMainFrame()) == JFileChooser.APPROVE_OPTION) {
