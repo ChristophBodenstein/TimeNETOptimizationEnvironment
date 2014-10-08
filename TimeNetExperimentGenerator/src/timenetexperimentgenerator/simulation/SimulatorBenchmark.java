@@ -58,6 +58,7 @@ ArrayList<ArrayList <parameter> > listOfParameterSetsTMP;
     this.log=log;
     this.simulationCounter=simulationCounterTMP;
     this.listOfParameterSetsTMP=listOfParameterSetsTMP;
+    this.status=0;
     new Thread(this).start();
     }
 

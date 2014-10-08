@@ -928,7 +928,7 @@ private ArrayList<Boolean> listOfUIStatesPushed;
                             }
                         }
                     */
-                    support.log("Optimum found, activating the UIComponents");
+                    //support.log("Optimum found, activating the UIComponents");
                     
                     }else{
                     support.log("No Tmp-Path given, Optimization not possible.");

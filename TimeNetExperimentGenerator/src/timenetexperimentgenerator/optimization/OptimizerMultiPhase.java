@@ -57,6 +57,8 @@ String logFileName;
     support.setParameterBase(parameterBase);
     logFileName=support.getTmpPath()+File.separator+this.getClass().getSimpleName()+"_"+Calendar.getInstance().getTimeInMillis()+support.getOptimizerPreferences().getPref_LogFileAddon()+".csv";
     support.log("LogfileName:"+logFileName);
+    //this.keepSizeAndResolutionOfDesignspace=support.getOptimizerPreferences().getPref_KeepDesignSpaceAndResolution();
+    this.numberOfPhases=support.getOptimizerPreferences().getPref_NumberOfPhases();
     }
 
     public void run() {
@@ -65,22 +67,35 @@ String logFileName;
     //Optimizer init with initial parameterset
     Optimizer myOptimizer;//=SimOptiFactory.getOptimizer(support.getOptimizerPreferences().getPref_typeOfUsedMultiPhaseOptimization() );
     Optimizer lastOptimizer=null;
-
+    //Push the chosen StartStrategy
+    typeOfStartValueEnum myTmpStartValue=support.getOptimizerPreferences().getPref_StartValue();
     
     //Prepare parameterset for first Optimization run
             for(int i=0;i<this.parameterBase.size();i++){
                 parameter p=this.parameterBase.get(i);
-                if(p.isIteratableAndIntern() && !this.keepSizeAndResolutionOfDesignspace){
-                //embiggen the stepping :-)
-                double tmpStepping=p.getStepping()*Math.pow(2, this.numberOfPhases);
-                if((p.getEndValue()-p.getStartValue())<=((double)support.DEFAULT_MINIMUM_DESIGNSPACE_SIZE_PER_PARAMETER*tmpStepping)){
-                p.setStepping(tmpStepping);
-
-                }else{
-                support.log("Will not change stepping for parameter "+ p.getName() +"Designspace would be to small.");
-                }
-                support.log("New Stepping for Parameter "+p.getName()+" is "+ p.getStepping());
+                p.printInfo();
+                System.out.println(p.isIteratableAndIntern());
+                keepSizeAndResolutionOfDesignspace=false;
+                if(p.isIteratableAndIntern()){
+                    //&& !this.keepSizeAndResolutionOfDesignspace
+                    //    }){
+                    //embiggen the stepping :-)
+                    if(this.keepSizeAndResolutionOfDesignspace==false){
+                    double tmpStepping=p.getStepping()*Math.pow(2, this.numberOfPhases);
+                        //TODO This check is wrong!Use ABS and count up DS!
+                        if((p.getEndValue()-p.getStartValue())<=((double)support.DEFAULT_MINIMUM_DESIGNSPACE_SIZE_PER_PARAMETER*tmpStepping)){
+                        p.setStepping(tmpStepping);
+                        p.printInfo();
+                        support.log("New Stepping for Parameter "+p.getName()+" is "+ p.getStepping());
+                        }else{
+                        support.log("Will not change stepping for parameter "+ p.getName() +"Designspace would be to small.");
+                        }
+                    }else{
+                    support.log("Will not change stepping for parameter "+ p.getName() +"KeeSizeAndStepping is activated.");
+                    }
                 
+                }else{
+                support.log("Parameter is not Intern & Changable.");
                 }
             }
 
@@ -89,7 +104,7 @@ String logFileName;
             support.setParameterBase(parameterBase);
             
             //Start in the middle
-            support.getOptimizerPreferences().setPref_StartValue(typeOfStartValueEnum.middle);
+            //support.getOptimizerPreferences().setPref_StartValue(typeOfStartValueEnum.middle);
 
             for(int phaseCounter=0;phaseCounter<this.numberOfPhases;phaseCounter++){
             support.log("Starting phase #"+ phaseCounter +" of "+this.numberOfPhases);
@@ -129,17 +144,19 @@ String logFileName;
                 myOptimizer=SimOptiFactory.getOptimizer(support.getOptimizerPreferences().getPref_typeOfUsedMultiPhaseOptimization() );
                 myOptimizer.initOptimizer();
 
+                //Wait for Optimizer to end
                 while(myOptimizer.getOptimum()==null){
                     try {
-                        Thread.sleep(1000);
+                        Thread.sleep(100);
                     } catch (InterruptedException ex) {
-                        Logger.getLogger(OptimizerMultiPhase.class.getName()).log(Level.SEVERE, null, ex);
+                        support.log("Problem waiting for Optimizer. (Multiphase)");
                     }
                 }
                 lastOptimizer=myOptimizer;
             }
 
-
+            //Pop Startvalue-strategy
+            support.getOptimizerPreferences().setPref_StartValue(myTmpStartValue);
 
             this.bestSolution=lastOptimizer.getOptimum();
             this.optimized=true;
@@ -162,7 +179,7 @@ String logFileName;
 
     this.tmpPath=support.getTmpPath();
 
-    support.getOptimizerPreferences().setPref_StartValue(typeOfStartValueEnum.middle);
+    //support.getOptimizerPreferences().setPref_StartValue(typeOfStartValueEnum.middle);
     
     this.numberOfPhases=support.getOptimizerPreferences().getPref_NumberOfPhases();
     this.keepSizeAndResolutionOfDesignspace=support.getOptimizerPreferences().getPref_KeepDesignSpaceAndResolution();
