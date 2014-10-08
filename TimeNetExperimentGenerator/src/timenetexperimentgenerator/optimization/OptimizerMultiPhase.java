@@ -73,19 +73,17 @@ String logFileName;
     //Prepare parameterset for first Optimization run
             for(int i=0;i<this.parameterBase.size();i++){
                 parameter p=this.parameterBase.get(i);
-                p.printInfo();
-                System.out.println(p.isIteratableAndIntern());
                 keepSizeAndResolutionOfDesignspace=false;
                 if(p.isIteratableAndIntern()){
                     //&& !this.keepSizeAndResolutionOfDesignspace
                     //    }){
                     //embiggen the stepping :-)
-                    if(this.keepSizeAndResolutionOfDesignspace==false){
+                    if(!this.keepSizeAndResolutionOfDesignspace){
                     double tmpStepping=p.getStepping()*Math.pow(2, this.numberOfPhases);
                         //TODO This check is wrong!Use ABS and count up DS!
-                        if((p.getEndValue()-p.getStartValue())<=((double)support.DEFAULT_MINIMUM_DESIGNSPACE_SIZE_PER_PARAMETER*tmpStepping)){
+                        if( (Math.abs(p.getEndValue()-p.getStartValue())/tmpStepping) >=((double)support.DEFAULT_MINIMUM_DESIGNSPACE_SIZE_PER_PARAMETER)){
                         p.setStepping(tmpStepping);
-                        p.printInfo();
+                        //p.printInfo();
                         support.log("New Stepping for Parameter "+p.getName()+" is "+ p.getStepping());
                         }else{
                         support.log("Will not change stepping for parameter "+ p.getName() +"Designspace would be to small.");
@@ -147,7 +145,7 @@ String logFileName;
                 //Wait for Optimizer to end
                 while(myOptimizer.getOptimum()==null){
                     try {
-                        Thread.sleep(100);
+                        Thread.sleep(10);
                     } catch (InterruptedException ex) {
                         support.log("Problem waiting for Optimizer. (Multiphase)");
                     }
