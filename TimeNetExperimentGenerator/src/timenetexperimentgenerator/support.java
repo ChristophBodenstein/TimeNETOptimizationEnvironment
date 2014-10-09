@@ -949,6 +949,14 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
     public static boolean waitForEndOfSimulator(Simulator mySimulator, int simulationCounter, long timeout){
     long timeoutCounter=timeout;
     support.log("wait for Simulator has 100% completed.");
+    //Shortcut for benchmark-Simulators
+        try {
+            Thread.sleep(10);
+        } catch (InterruptedException ex) {
+            support.log("InterruptedException in main loop of optimization. Optimization aborted.");
+        }
+    if(mySimulator.getStatus()>=100)return true;
+    //End of shortcut
             setStatusText("Simulations started.");
                 while(mySimulator.getStatus()<100){
                     try {
