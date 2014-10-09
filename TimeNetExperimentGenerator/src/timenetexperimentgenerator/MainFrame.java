@@ -885,7 +885,8 @@ private ArrayList<Boolean> listOfUIStatesPushed;
     support.setOriginalParameterBase(((parameterTableModel)jTableParameterList.getModel()).getListOfParameter());
     support.setParameterBase(((parameterTableModel)jTableParameterList.getModel()).getListOfParameter());
         
-    
+    //Send chosen Optimizertype to support-class
+    support.setChosenOptimizerType((typeOfOptimization)this.jComboBoxOptimizationType.getSelectedItem());
         if(this.sizeOfDesignSpace<=support.DEFAULT_MINIMUM_DESIGNSPACE_FOR_OPTIMIZATION){
         //TODO check , if opti is possible (target chosen etc.)
         support.log("Design space to small, no Optimization posible.");
