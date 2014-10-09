@@ -399,10 +399,16 @@ int stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;
                     support.log("Changing direction of Optimization to false(backwards).");
                     this.directionOfOptimization=false;
                     numberOfParameterToBeChanged=numberOfLastParameter;
+                    //Exchange whole parameterset by the last best knwon solution
+                    newParameterset=support.getCopyOfParameterSet(this.bestSolution.getListOfParameters());
                     }   else{
                         support.log("Changing direction of Optimization back to true(forward). Taking next parameter to change.");
                         this.directionOfOptimization=true;
-                        newParameterset=currentSolution.getListOfParameters();
+                        //newParameterset=currentSolution.getListOfParameters();
+                        //Exchange whole parameterset by the last best knwon solution
+                        newParameterset=support.getCopyOfParameterSet(this.bestSolution.getListOfParameters());
+                    
+                        
                         //Select next Parameter to be changed with round-robin
                         numberOfParameterToBeChanged=numberOfLastParameter+1;
                         if(numberOfParameterToBeChanged>=listOfChangableParameters.size()){
