@@ -242,7 +242,7 @@ private long idHash=0;
     
     /**
      * Increments or decrements Value based on given boolean
-     * @param direction if true-> increment, false->decrement
+     * @param direction if true -> increment, false -> decrement
      */
     public boolean incDecValue(boolean direction){
         if(direction){
@@ -252,6 +252,20 @@ private long idHash=0;
         }
     }
 
+    /**
+     * Increments or decrements Value n times based on given boolean
+     * @param direction if true -> increment, false -> decrement
+     * @param multiplier as many time as Value has to be incremented/decremented
+     */
+    public boolean incDecValue(boolean direction, int multiplier){
+    boolean success=true;    
+        if(multiplier>=1){
+            for(int i=0;i<multiplier;i++){
+            success=this.incDecValue(direction);
+            }
+        }
+    return success;
+    }
 
     /**
      * Some Parameters needs to be ignored while searching in the Parameter-DB
