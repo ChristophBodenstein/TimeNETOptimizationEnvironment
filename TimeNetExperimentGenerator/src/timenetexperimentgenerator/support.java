@@ -458,7 +458,7 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
     }
     
     /**
-     * @return the mySimulationCache
+     * @return the global simulation cache
      */
     public static SimulationCache getMySimulationCache() {
         //Empty Cache/Create new object, if not already done
@@ -467,7 +467,7 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
     }
 
     /**
-     * @param aMySimulationCache the mySimulationCache to set
+     * @param aMySimulationCache the global simulation cache to set
      */
     public static void setMySimulationCache(SimulationCache aMySimulationCache) {
         mySimulationCache = aMySimulationCache;
