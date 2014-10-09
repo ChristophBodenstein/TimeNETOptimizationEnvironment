@@ -118,17 +118,17 @@ String logFileName;
                         //set start value based on "value", half size but not smaller then original start-Value.
                         //set end Value based on "value", halt size but not bigger then original end-Value.
                         double tmpDistance=p.getEndValue()-p.getStartValue();
-                        p.setStartValue(Math.max(p.getValue()-tmpDistance/2, p.getStartValue())) ;
+                        p.setStartValue(Math.max(p.getValue()-tmpDistance/4, p.getStartValue())) ;
 
-                        p.setEndValue(Math.min(p.getValue()+tmpDistance/2, p.getEndValue()));
+                        p.setEndValue(Math.min(p.getValue()+tmpDistance/4, p.getEndValue()));
 
                         //If design space resolution is to small, ensmall the stepping
-                        if((p.getEndValue()-p.getStartValue())/p.getStepping()<=((double)support.DEFAULT_MINIMUM_DESIGNSPACE_SIZE_PER_PARAMETER)){
+                        if((p.getEndValue()-p.getStartValue())/p.getStepping()<((double)support.DEFAULT_MINIMUM_DESIGNSPACE_SIZE_PER_PARAMETER)){
                         support.log("Resulting designspace for parameter "+p.getName()+" to small. Ensmalling the Stepping.");
                         p.setStepping( (p.getEndValue()-p.getStartValue())/support.DEFAULT_MINIMUM_DESIGNSPACE_SIZE_PER_PARAMETER );
                         }
 
-                        support.log("Parameter "+p.getName()+" set to Start: "+p.getStartValue()+", End: "+p.getEndValue()+", Stepping: "+p.getStepping());
+                        support.log("Parameter "+p.getName()+" set to Start: "+p.getStartValue()+", End: "+p.getEndValue()+", Stepping: "+p.getStepping()+", Value: "+p.getValue());
 
                         }
                     }
