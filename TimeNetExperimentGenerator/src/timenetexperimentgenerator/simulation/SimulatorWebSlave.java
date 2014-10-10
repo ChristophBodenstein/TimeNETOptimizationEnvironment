@@ -59,17 +59,18 @@ public void run() {
                 FileWriter fileWriter = null;
                 String filename = response.getFirstHeader("filename").getValue();
                 simid = response.getFirstHeader("simid").getValue();
-                System.out.println("filename======="+filename);
+                support.log("Downloaded simulation filename======="+filename);
                 String exportFileName=support.getTmpPath()+File.separator+filename;
                 File newTextFile = new File(exportFileName);
                 fileWriter = new FileWriter(newTextFile);
                 fileWriter.write(responseString);
                 fileWriter.close();
+                support.log("File written. Try to start simulation.");
                 startLocalSimulation(exportFileName);
 
             }
         } catch (IOException ex) {
-            Logger.getLogger(SimulatorWebSlave.class.getName()).log(Level.SEVERE, null, ex);
+            support.log("IOException during HTTP-Request for simulations.");
         }
         try {
             Thread.sleep(support.DEFAULT_SLEEPING_TIME);
