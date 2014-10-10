@@ -307,25 +307,29 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
             }
         }
         //If no path is available take the dir of jar-file
-        String t=support.class.getProtectionDomain().getCodeSource().getLocation().getPath()+File.separator+"tmp";
+        String absolutePath = mainFrame.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
+        absolutePath = absolutePath.substring(0, absolutePath.lastIndexOf("/"));
+        absolutePath = absolutePath.replaceAll("%20"," "); // Surely need to do this here
+    
+        absolutePath=absolutePath+File.separator+"tmp";
         //Try to create a tmp-dir and return this
-        File tfile=new File(t);
+        File tfile=new File(absolutePath);
         if( tfile.exists() ){
             if(tfile.isDirectory()){
-            return t;
+            return absolutePath;
             }else{
-            support.log(t+" is a file, will return "+support.class.getProtectionDomain().getCodeSource().getLocation().getPath()+" as tmp path.");
-            return support.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+            support.log(absolutePath+" is a file, will return "+support.class.getProtectionDomain().getCodeSource().getLocation().getPath()+" as tmp path.");
+            return absolutePath;
             }
         }else{
-        support.log("Try to create tmp dir:"+t);
+        support.log("Try to create tmp dir:"+absolutePath);
             try{
             tfile.mkdir();
             }catch(Exception e){
             //If dir-creation fails, show warning
             support.log("Problem creting a tmp dir!");return null;
             }
-        return t;
+        return absolutePath;
         }
         
         
