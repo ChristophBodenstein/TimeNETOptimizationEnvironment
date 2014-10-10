@@ -301,8 +301,10 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
         //If a tmp-path is given, return it
         if(tmpPath!=null){return tmpPath;}
         //If no tmp path is given, but a SCPN-path is available
-        if(new File(getOriginalFilename()).getPath() !=null){
-        return (new File(getOriginalFilename()).getPath());
+        if(getOriginalFilename()!=null){
+            if(new File(getOriginalFilename()).getPath() !=null){
+            return (new File(getOriginalFilename()).getPath());
+            }
         }
         //If no path is available take the dir of jar-file
         String t=support.class.getProtectionDomain().getCodeSource().getLocation().getPath()+File.separator+"tmp";
