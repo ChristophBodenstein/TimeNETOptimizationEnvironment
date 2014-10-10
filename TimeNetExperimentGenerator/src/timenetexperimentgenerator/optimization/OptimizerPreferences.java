@@ -7,14 +7,11 @@
 
 package timenetexperimentgenerator.optimization;
 
-import com.sun.jmx.snmp.BerDecoder;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Properties;
-import java.util.Vector;
+import java.util.*;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JSpinner.DefaultEditor;
 import javax.swing.SpinnerNumberModel;
