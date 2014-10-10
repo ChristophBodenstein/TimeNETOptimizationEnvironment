@@ -477,4 +477,12 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
         }
         return simulation;
     }
+    /**
+     * Set the logfilename
+     * this is useful for multi-optimization or if you like specific names for your logfiles
+     * @param name Name (path) of logfile
+     */
+    public void setLogFileName(String name){
+    this.logFileName=name;
+    }
 }

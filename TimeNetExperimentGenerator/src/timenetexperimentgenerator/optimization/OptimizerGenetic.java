@@ -274,5 +274,13 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
         }
                
         return newPopulation; 
-    }   
+    } 
+    /**
+     * Set the logfilename
+     * this is useful for multi-optimization or if you like specific names for your logfiles
+     * @param name Name (path) of logfile
+     */
+    public void setLogFileName(String name){
+    this.logFileName=name;
+    }
 }

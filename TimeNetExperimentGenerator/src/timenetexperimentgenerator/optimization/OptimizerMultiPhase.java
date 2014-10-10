@@ -140,6 +140,7 @@ String logFileName;
                 }
 
                 myOptimizer=SimOptiFactory.getOptimizer(support.getOptimizerPreferences().getPref_typeOfUsedMultiPhaseOptimization() );
+                myOptimizer.setLogFileName(this.logFileName);
                 myOptimizer.initOptimizer();
 
                 //Wait for Optimizer to end
@@ -199,5 +200,12 @@ String logFileName;
         return null;
         }
     }
-
+    /**
+     * Set the logfilename
+     * this is useful for multi-optimization or if you like specific names for your logfiles
+     * @param name Name (path) of logfile
+     */
+    public void setLogFileName(String name){
+    this.logFileName=name;
+    }
 }

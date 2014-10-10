@@ -15,4 +15,5 @@ import timenetexperimentgenerator.datamodel.SimulationType;
 public interface Optimizer {
 public void initOptimizer();
 public SimulationType getOptimum();//Returns null until Simulation has ended
+public void setLogFileName(String name);
 }

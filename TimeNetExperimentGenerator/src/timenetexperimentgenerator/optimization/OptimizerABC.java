@@ -239,4 +239,12 @@ public class OptimizerABC extends OptimizerPopulationBased implements Runnable, 
         }               
         return distanceSum;
     }
+    /**
+     * Set the logfilename
+     * this is useful for multi-optimization or if you like specific names for your logfiles
+     * @param name Name (path) of logfile
+     */
+    public void setLogFileName(String name){
+    this.logFileName=name;
+    }
 }
