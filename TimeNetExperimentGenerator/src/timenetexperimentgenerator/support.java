@@ -18,8 +18,11 @@ import java.util.Calendar;
 import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import timenetexperimentgenerator.datamodel.*;
 import timenetexperimentgenerator.helper.SimOptiCallback;
@@ -39,7 +42,7 @@ import timenetexperimentgenerator.typedef.*;
 public class support {
 
 //This Version of TimeNetExperimentGenerator
-public static final String VERSION ="0.9.250";
+public static final String VERSION ="0.9.260";
 
 
 //Define some program-wide default values
@@ -935,7 +938,11 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
      * @param aIsRunningAsSlave the isRunningAsSlave to set
      */
     public static void setIsRunningAsSlave(boolean aIsRunningAsSlave) {
+        if(aIsRunningAsSlave){
+            isRunningAsSlave=checkIfDirIsWritable(getTmpPath());
+        }else{
         isRunningAsSlave = aIsRunningAsSlave;
+        }
     }
     
     /**
@@ -1385,6 +1392,33 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
             }
         }, 1000*support.DEFAULT_MEMORYPRINT_INTERVALL, 1000*support.DEFAULT_MEMORYPRINT_INTERVALL);
 
+    
+    }
+    
+    
+    /**
+     * checks if given dir(as String) is writable
+     * If yes-->return true, if false-->show Dialog, block an return false
+     * @return true, if dir is writable, else false
+     * @param dir String with path to dir to test for writing
+     */
+    public static boolean checkIfDirIsWritable(String dir){
+    String testPath=dir + File.separator + "empty.txt";
+    File testFile=new File(testPath);
+        
+        try {
+        testFile.createNewFile();   
+         } catch (IOException ex) {
+        }
+        
+    if(  testFile.canWrite()){
+        return true;
+    }else{
+        JOptionPane.showConfirmDialog(mainFrame, "Directory "+dir+" is not writable!", dir, 1);
+        return false;
+    }
+
+    
     
     }
 }

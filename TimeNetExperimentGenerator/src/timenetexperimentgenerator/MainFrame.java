@@ -1227,19 +1227,21 @@ private ArrayList<Boolean> listOfUIStatesPushed;
         support.setIsRunningAsSlave(false);               
         this.saveProperties();
         }else{
-        String tmpPath=support.getPathToDirByDialog("Dir for export TMP-Files and log.\n ", new File(support.getOriginalFilename()).getPath() );
+        String tmpPath=support.getPathToDirByDialog("Dir for export TMP-Files and log.\n ", support.getTmpPath() );
         
             if(tmpPath!=null){
             support.setTmpPath(tmpPath);
                 if(support.checkTimeNetPath()){
                 //TimeNet-Path ok, we can start
                 support.setIsRunningAsSlave(true);
-                support.log("Tmp Path ok and timenetpath ok, try to start slave-thread.");
-                this.mySlave.setShouldEnd(false);
-                this.saveProperties();
-                new Thread(this.mySlave).start();
-                this.jCheckBoxSlaveSimulator.setSelected(true);
-                this.switchUIState(uiState.clientState);
+                    if(support.isIsRunningAsSlave()){
+                    support.log("Tmp Path ok and timenetpath ok, try to start slave-thread.");
+                    this.mySlave.setShouldEnd(false);
+                    this.saveProperties();
+                    new Thread(this.mySlave).start();
+                    this.jCheckBoxSlaveSimulator.setSelected(true);
+                    this.switchUIState(uiState.clientState);
+                    }
                 }
             }else{
             //No tmp path selected -->eject
