@@ -309,7 +309,7 @@ public class SimulatorWeb implements Runnable, Simulator{
             //Verify response if any
             if (response != null)
             {
-                System.out.println(response.getStatusLine().getStatusCode());
+                //System.out.println(response.getStatusLine().getStatusCode());
                 //TODO show Error in log and statuslabel
             }
         }
