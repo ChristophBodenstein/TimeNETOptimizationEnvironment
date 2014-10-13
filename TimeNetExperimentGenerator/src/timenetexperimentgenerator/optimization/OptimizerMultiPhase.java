@@ -11,8 +11,6 @@ package timenetexperimentgenerator.optimization;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.*;
 import timenetexperimentgenerator.MainFrame;
 import timenetexperimentgenerator.SimOptiFactory;
@@ -21,9 +19,6 @@ import timenetexperimentgenerator.datamodel.SimulationType;
 import timenetexperimentgenerator.datamodel.parameter;
 import timenetexperimentgenerator.helper.StatisticAggregator;
 import timenetexperimentgenerator.support;
-import static timenetexperimentgenerator.support.getCopyOfParameterSet;
-import static timenetexperimentgenerator.support.setOriginalParameterBase;
-import timenetexperimentgenerator.typedef;
 import timenetexperimentgenerator.typedef.*;
 
 /**
@@ -79,7 +74,7 @@ String logFileName;
                     //    }){
                     //embiggen the stepping :-)
                     if(!this.keepSizeAndResolutionOfDesignspace){
-                    double tmpStepping=p.getStepping()*Math.pow(2, this.numberOfPhases);
+                    double tmpStepping=p.getStepping()*Math.pow(2, (this.numberOfPhases-1));
                         //TODO This check is wrong!Use ABS and count up DS!
                         if( (Math.abs(p.getEndValue()-p.getStartValue())/tmpStepping) >=((double)support.DEFAULT_MINIMUM_DESIGNSPACE_SIZE_PER_PARAMETER)){
                         p.setStepping(tmpStepping);
@@ -105,7 +100,7 @@ String logFileName;
             //support.getOptimizerPreferences().setPref_StartValue(typeOfStartValueEnum.middle);
 
             for(int phaseCounter=0;phaseCounter<this.numberOfPhases;phaseCounter++){
-            support.log("Starting phase #"+ phaseCounter +" of "+this.numberOfPhases);
+            support.log("Starting phase "+ (phaseCounter+1) +" of "+this.numberOfPhases);
                 if(lastOptimizer!=null){
                 //get Optimum from last Optimizer as start for next one
                 ArrayList<parameter> lastParamaterset=lastOptimizer.getOptimum().getListOfParameters();
