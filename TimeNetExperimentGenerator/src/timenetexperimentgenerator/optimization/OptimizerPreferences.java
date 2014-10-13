@@ -98,7 +98,8 @@ private int pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement;
         */
 
         Vector tmpVector=new Vector(Arrays.asList(typedef.typeOfOptimization.values()));
-        tmpVector.remove(tmpVector.size()-1);
+        tmpVector.remove((typeOfOptimization)typeOfOptimization.MultiPhase);
+        tmpVector.remove((typeOfOptimization)typeOfOptimization.TwoPhase);
         this.jComboBoxOptimizationType.setModel(new DefaultComboBoxModel(tmpVector));
 
         this.loadPreferences();
