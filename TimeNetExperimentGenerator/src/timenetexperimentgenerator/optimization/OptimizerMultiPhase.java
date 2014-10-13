@@ -127,13 +127,69 @@ String logFileName;
 
                         }
                     }
-
+                
                 //Push parameterset to support
                 support.setParameterBase(lastParamaterset);
                 //Set first-Parameter-choosing-strategy to preset
                 support.getOptimizerPreferences().setPref_StartValue(typeOfStartValueEnum.preset);
                 }
 
+                //Calculate the values for Conf-Intervall, MaxRelError and internal precision parameter
+                OptimizerPreferences prefs=support.getOptimizerPreferences();
+                ArrayList<parameter> lastParamaterset=support.getParameterBase();
+                //Check if all parameters can iterate
+                boolean iterateConfidenceInterval=prefs.getPref_ConfidenceIntervallStart()<prefs.getPref_ConfidenceIntervallEnd();
+                boolean iterateMaxRelError=prefs.getPref_MaxRelErrorStart()>prefs.getPref_MaxRelErrorEnd();
+                boolean iterateInternal=true;//It can be iterated up and down
+                double confInterval,maxRelError,internal=0.0;
+                if(phaseCounter==0){
+                //First Phase, so we use the start-values for all parameters
+                confInterval=prefs.getPref_ConfidenceIntervallStart();
+                maxRelError=prefs.getPref_MaxRelErrorStart();
+                internal=prefs.getPref_InternalParameterStart();    
+                }else{
+                    if(phaseCounter<this.numberOfPhases-1){
+                    //ConfidenceIntervall goes from 85 up to 99 (min to max)
+                    double tmpDifference=prefs.getPref_ConfidenceIntervallEnd()-prefs.getPref_ConfidenceIntervallStart();
+                    confInterval=prefs.getPref_ConfidenceIntervallStart()+(tmpDifference/(double)this.numberOfPhases)*(double)phaseCounter;
+                    confInterval=Math.min(Math.round(confInterval),prefs.getPref_ConfidenceIntervallEnd());
+                    confInterval=Math.max(Math.round(confInterval),prefs.getPref_ConfidenceIntervallStart());
+                    
+                    //MaxRelError goes from 15 to 1 (max to min)
+                    tmpDifference=prefs.getPref_MaxRelErrorEnd()-prefs.getPref_MaxRelErrorStart();//will be negative
+                    maxRelError=prefs.getPref_MaxRelErrorStart()+(tmpDifference/(double)this.numberOfPhases)*(double)phaseCounter;
+                    maxRelError=Math.min(Math.round(maxRelError),prefs.getPref_MaxRelErrorStart());
+                    maxRelError=Math.max(Math.round(maxRelError),prefs.getPref_MaxRelErrorEnd());
+                    
+                    //Internal parameter can go up or down
+                    tmpDifference=prefs.getPref_InternalParameterEnd()-prefs.getPref_InternalParameterStart();//will be negative
+                    internal=prefs.getPref_InternalParameterStart()+(tmpDifference/(double)this.numberOfPhases)*(double)phaseCounter;
+                    internal=Math.min(Math.round(internal), Math.max(prefs.getPref_InternalParameterStart(), prefs.getPref_InternalParameterEnd())   );
+                    internal=Math.max(Math.round(internal), Math.min(prefs.getPref_InternalParameterStart(), prefs.getPref_InternalParameterEnd())   );
+                    
+                    }else{
+                    //phaseCounter=this.numberOfPhases!
+                    //Last phase, so we use the end-values for all parameters
+                    confInterval=prefs.getPref_ConfidenceIntervallEnd();
+                    maxRelError=prefs.getPref_MaxRelErrorEnd();
+                    internal=prefs.getPref_InternalParameterEnd();
+                    }
+                
+                }
+                support.log("In phase "+(phaseCounter+1) +" will set Confinterval:"+confInterval+", maxRelError:"+maxRelError+", internalParamter:"+internal);
+                if(iterateConfidenceInterval){
+                    support.getParameterByName(lastParamaterset, "ConfidenceIntervall").setValue(confInterval);
+                }
+                if(iterateMaxRelError){
+                    support.getParameterByName(lastParamaterset, "MaxRelError").setValue(maxRelError);
+                }
+                //TODO: Get Internal Parametername by Combobox
+                /*if(iterateInternal){
+                    support.getParameterByName(parameterBase, filename)
+                }
+                */
+                
+                
                 myOptimizer=SimOptiFactory.getOptimizer(support.getOptimizerPreferences().getPref_typeOfUsedMultiPhaseOptimization() );
                 myOptimizer.setLogFileName(this.logFileName);
                 myOptimizer.initOptimizer();
