@@ -1418,6 +1418,7 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
         }
         
     if(  testFile.canWrite()){
+        testFile.delete();
         return true;
     }else{
         JOptionPane.showConfirmDialog(mainFrame, "Directory "+dir+" is not writable!", dir, JOptionPane.OK_OPTION);
