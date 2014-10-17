@@ -29,7 +29,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="77" max="-2" attributes="0"/>
-                      <Component id="jLabelStartvalueForParameters" pref="243" max="32767" attributes="0"/>
+                      <Component id="jLabelStartvalueForParameters" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jComboBoxTypeOfStartValue" min="-2" pref="217" max="-2" attributes="1"/>
                       <EmptySpace min="-2" pref="71" max="-2" attributes="0"/>
@@ -1171,6 +1171,159 @@
             <Component class="javax.swing.JLabel" name="jLabelABCMaxNumberOfFoodUpdateCyclesWithoutImprovement">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Max Missed Update Cycles"/>
+              </Properties>
+            </Component>
+          </SubComponents>
+        </Container>
+        <Container class="javax.swing.JPanel" name="jPanel6">
+          <Constraints>
+            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
+              <JTabbedPaneConstraints tabName="MVMO">
+                <Property name="tabTitle" type="java.lang.String" value="MVMO"/>
+              </JTabbedPaneConstraints>
+            </Constraint>
+          </Constraints>
+
+          <Layout>
+            <DimensionLayout dim="0">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" attributes="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="103" alignment="0" groupAlignment="0" max="-2" attributes="0">
+                                      <Component id="jLabelMVMOAsymmetryFactor" alignment="0" max="32767" attributes="0"/>
+                                      <Component id="jLabelMVMOScalingFactor" alignment="1" max="32767" attributes="0"/>
+                                      <Component id="jLabelMVMOMaximumPopulation" alignment="1" min="-2" pref="127" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Component id="jLabelMVMOStartingPopulation" alignment="0" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                  <Component id="jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement1" alignment="0" pref="71" max="32767" attributes="0"/>
+                                  <Component id="jSpinnerABCNumScoutBees1" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="jSpinnerABCNumOnlookerBees1" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="jSpinnerABCNumEmployedBees1" alignment="0" max="32767" attributes="0"/>
+                              </Group>
+                          </Group>
+                          <Group type="102" attributes="0">
+                              <Component id="jLabelMVMOsd" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Component id="jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement2" min="-2" pref="71" max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
+                      <EmptySpace min="0" pref="635" max="32767" attributes="0"/>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+            <DimensionLayout dim="1">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="jLabelMVMOStartingPopulation" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jSpinnerABCNumEmployedBees1" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="jLabelMVMOMaximumPopulation" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jSpinnerABCNumOnlookerBees1" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="jLabelMVMOScalingFactor" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jSpinnerABCNumScoutBees1" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="jLabelMVMOAsymmetryFactor" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement1" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="jLabelMVMOsd" alignment="3" min="-2" pref="20" max="-2" attributes="0"/>
+                          <Component id="jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement2" alignment="3" max="32767" attributes="0"/>
+                      </Group>
+                      <EmptySpace pref="155" max="32767" attributes="0"/>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+          </Layout>
+          <SubComponents>
+            <Component class="javax.swing.JSpinner" name="jSpinnerABCNumEmployedBees1">
+              <Properties>
+                <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+                  <SpinnerModel initial="1" minimum="1" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                </Property>
+              </Properties>
+              <Events>
+                <EventHandler event="propertyChange" listener="java.beans.PropertyChangeListener" parameters="java.beans.PropertyChangeEvent" handler="jSpinnerABCNumEmployedBees1PropertyChange"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JLabel" name="jLabelMVMOStartingPopulation">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Starting Population:"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="jLabelMVMOMaximumPopulation">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Maximum Population:"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JSpinner" name="jSpinnerABCNumOnlookerBees1">
+              <Properties>
+                <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+                  <SpinnerModel initial="1" minimum="1" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                </Property>
+              </Properties>
+              <Events>
+                <EventHandler event="propertyChange" listener="java.beans.PropertyChangeListener" parameters="java.beans.PropertyChangeEvent" handler="jSpinnerABCNumOnlookerBees1PropertyChange"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JLabel" name="jLabelMVMOScalingFactor">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Scaling-Factor:"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JSpinner" name="jSpinnerABCNumScoutBees1">
+              <Properties>
+                <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+                  <SpinnerModel initial="1.0" minimum="0.0" numberType="java.lang.Double" stepSize="1.0" type="number"/>
+                </Property>
+              </Properties>
+              <Events>
+                <EventHandler event="propertyChange" listener="java.beans.PropertyChangeListener" parameters="java.beans.PropertyChangeEvent" handler="jSpinnerABCNumScoutBees1PropertyChange"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JSpinner" name="jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement1">
+              <Properties>
+                <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+                  <SpinnerModel initial="1.0" minimum="0.0" numberType="java.lang.Double" stepSize="1.0" type="number"/>
+                </Property>
+              </Properties>
+              <Events>
+                <EventHandler event="propertyChange" listener="java.beans.PropertyChangeListener" parameters="java.beans.PropertyChangeEvent" handler="jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement1PropertyChange"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JLabel" name="jLabelMVMOAsymmetryFactor">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Asymmetry-Factor:"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JSpinner" name="jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement2">
+              <Properties>
+                <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+                  <SpinnerModel initial="75.0" minimum="0.0" numberType="java.lang.Double" stepSize="1.0" type="number"/>
+                </Property>
+              </Properties>
+              <Events>
+                <EventHandler event="propertyChange" listener="java.beans.PropertyChangeListener" parameters="java.beans.PropertyChangeEvent" handler="jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement2PropertyChange"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JLabel" name="jLabelMVMOsd">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="sd (standard si for zero-variance):"/>
               </Properties>
             </Component>
           </SubComponents>

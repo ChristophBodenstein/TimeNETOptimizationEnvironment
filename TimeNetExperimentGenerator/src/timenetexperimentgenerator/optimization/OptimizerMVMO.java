@@ -27,8 +27,8 @@ import timenetexperimentgenerator.typedef.typeOfMVMOParentSelection;
 
 public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable, Optimizer
 {
-    private int populationSize = support.getOptimizerPreferences().getPref_GeneticPopulationSize(); //size of population after selection-phase
-    private boolean mutateTopMeasure = support.getOptimizerPreferences().getPref_GeneticMutateTopSolution();
+    private int startPopulationSize = 2;//support.getOptimizerPreferences().getPref_GeneticPopulationSize(); //size of population after initialization
+    private int maxPopulationSize = 10;
     
     private ArrayList<Double> parameterMeanValues;
     private ArrayList<Double> parameterVarianceValues;
@@ -44,7 +44,7 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
      */
     public int getPopulationSize()
     {
-        return this.populationSize;
+        return this.startPopulationSize;
     }
     
     /**
@@ -55,7 +55,7 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
     {
         if (newPopulationSize > 0)
         {
-            this.populationSize = newPopulationSize;
+            this.startPopulationSize = newPopulationSize;
         }
     }
     
@@ -111,7 +111,7 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
     public void run() 
     {
         int optiCycleCounter = 0;
-        population = createRandomPopulation(populationSize, false);
+        population = createRandomPopulation(startPopulationSize, false);
         
         Simulator mySimulator = SimOptiFactory.getSimulator();       
         mySimulator.initSimulator(getNextParameterSetAsArrayList(), optiCycleCounter, false);
@@ -119,10 +119,11 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
         
         ArrayList<SimulationType> simulationResults = mySimulator.getListOfCompletedSimulationParsers(); 
         population = getPopulationFromSimulationResults(simulationResults);
+        population = normalize(population);
         
         int simulationCounter = 0;
         int lastGenSelected = 0;
-        int numGenesToSelect = 0;
+        int numGenesToSelect = 1;
         while(optiCycleCounter < this.maxNumberOfOptiCycles)
         {
             if (currentNumberOfOptiCyclesWithoutImprovement >= maxNumberOfOptiCyclesWithoutImprovement)
@@ -133,7 +134,6 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
             
             //modification phase -----------------------------------------------------------------------
             population = sortPopulation(population); //sort them, so the best one is number one
-            population = normalize(population);
             parameterMeanValues = getMeanValues(population);
             parameterVarianceValues = getVarianceValues(population);
             SimulationType candidate = createCandidate(
@@ -146,8 +146,8 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
             
             
             //simulation phase -----------------------------------------------------------------------
-            population = denormalize(population);
-            ArrayList< ArrayList<parameter> > parameterList = getNextParameterSetAsArrayList();
+            candidate = denormalize(candidate);
+            ArrayList< ArrayList<parameter> > parameterList = getNextParameterSetAsArrayList(candidate);
             for (ArrayList<parameter> pArray : parameterList)
             {
                 pArray =  roundToStepping(pArray);
@@ -159,12 +159,10 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
             simulationCounter = mySimulator.getSimulationCounter();
             
             simulationResults = mySimulator.getListOfCompletedSimulationParsers();
-            population = getPopulationFromSimulationResults(simulationResults);
+            population = tryAddCandidate(population, simulationResults);
             support.addLinesToLogFileFromListOfParser(simulationResults, logFileName);
             
-            //evaluation phase --------------------------------------------------------------------------
-            population = cutPopulation(population);
-            updateTopMeasure();
+            updateTopMeasure(); //TODO: not optimal for mvmo, because the first one is alway the best
             printPopulationDistances();
             
             ++optiCycleCounter;
@@ -172,18 +170,42 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
 
     }
     
+    private ArrayList< ArrayList<SimulationType> > tryAddCandidate(ArrayList< ArrayList<SimulationType> > population, ArrayList<SimulationType> candidate)
+    {
+        candidate.set(0, normalize(candidate.get(0)));
+        if (population.size() < maxPopulationSize)
+        {           
+            population.add(candidate);
+            return population;
+        }
+        if (population.get(population.size()-1).get(0).getDistance() >= candidate.get(0).getDistance())
+        {
+            population.set(population.size()-1, candidate);
+            population = sortPopulation(population);
+        }        
+        return population;
+    }
     
     
     private ArrayList<Double> getMeanValues(ArrayList<ArrayList<SimulationType>> population)
     {
         ArrayList<Double> meanValues = new ArrayList<Double>();
         int numParameters = population.get(0).get(0).getListOfParameters().size();
+        int sizePar = population.get(0).get(0).getListOfParameters().size();
+
         for (int parameterIndex = 0; parameterIndex<numParameters; ++parameterIndex)
         {
             double sum = 0;
             for (int populationIndex = 0; populationIndex<population.size(); ++populationIndex)
             {
-                sum += population.get(populationIndex).get(0).getListOfParameters().get(parameterIndex).getValue();
+                try //TODO: BUG after simulation sometimes there are more parameters than before
+                {
+                    sum += population.get(populationIndex).get(0).getListOfParameters().get(parameterIndex).getValue();
+                }
+                catch (IndexOutOfBoundsException e)
+                {
+                    support.log(e.getMessage());
+                }
             }
             meanValues.add(sum / population.size());            
         }        
@@ -199,135 +221,23 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
             double sum = 0;
             for (int populationIndex = 0; populationIndex<population.size(); ++populationIndex)
             {
-                double value = population.get(populationIndex).get(0).getListOfParameters().get(parameterIndex).getValue();
-                sum += (value - parameterMeanValues.get(parameterIndex))*(value - parameterMeanValues.get(parameterIndex));
+                try //TODO: BUG after simulation sometimes there are more parameters than before
+                {
+                    double value = population.get(populationIndex).get(0).getListOfParameters().get(parameterIndex).getValue();
+                    sum += (value - parameterMeanValues.get(parameterIndex))*(value - parameterMeanValues.get(parameterIndex));    
+                }
+                catch (IndexOutOfBoundsException e)
+                {
+                    support.log(e.getMessage());
+                }
+                
             }
             varianceValues.add(sum / population.size());            
         }  
         return varianceValues;
     }
     
-    /**
-     * creates genetic crossover of mothers and fathers paramter[] to create new child
-     * @param father the father for the genetic parameter mix process
-     * @param mother the mother for the genetic parameter mix process
-     * @return the resulting child
-     */
-    private SimulationType crossOver(SimulationType father, SimulationType mother)
-    {
-        if (father == null || mother == null)
-        {
-            return null;
-        }            
-        if (father.getListOfParameters().size() != mother.getListOfParameters().size())
-        {
-            support.log("Parameter length of mother and father different. No Crossover Possible");
-            return null;
-        }
-        SimulationType child = new SimulationType(father);
-        ArrayList<parameter> fatherDNA = father.getListOfParameters();
-        ArrayList<parameter> motherDNA = mother.getListOfParameters();
-        ArrayList<parameter> childDNA = child.getListOfParameters();
-             
-        //find random crossover-point
-        int crossingPoint = randomGenerator.nextInt(father.getListOfParameters().size());
-        
-        //copy paramters from mother after crossing Point, father-DNA is already included through copy-constructor
-        for (int i = crossingPoint; i<fatherDNA.size(); ++i)
-        {
-            parameter parameterFromMother = null;
-            try
-            {
-                parameterFromMother = (parameter)motherDNA.get(i).clone();
-            }
-            catch (CloneNotSupportedException e)
-            {
-                support.log(e.getMessage());
-            }
-            if (parameterFromMother!=null) //clone was successful
-            {
-                childDNA.set(i, parameterFromMother);
-            }
-        }
-        child.setListOfParameters(childDNA);
-               
-        return child;
-    }
-    
-    private ArrayList< ArrayList<SimulationType> > crossPopulation(ArrayList< ArrayList<SimulationType> > population, int numNewChildren)
-    {
-        for (int i = 0; i<numNewChildren; ++i)
-        {
-            int indexOfFather = randomGenerator.nextInt(populationSize);
-            int indexOfMother = randomGenerator.nextInt(populationSize);
-        
-            SimulationType child = crossOver(population.get(indexOfFather).get(0), population.get(indexOfMother).get(0));
-            ArrayList<SimulationType> childList = new ArrayList<SimulationType>();
-            childList.add(child);
-            population.add(childList);   
-        }        
-        return population;
-    }
-    
-    private ArrayList< ArrayList<SimulationType> > mutatePopulation(
-            ArrayList< ArrayList<SimulationType> > population,
-            typedef.typeOfMVMOMutationSelection mutationStratety)
-    {
-        int mutationStart = 1;
-        if (mutateTopMeasure)
-            mutationStart = 0;
-        
-        for (int popCounter = mutationStart; popCounter< population.size(); ++popCounter)
-        {
-            SimulationType topMeasure = population.get(popCounter).get(0);
-            ArrayList<parameter> pArray = topMeasure.getListOfParameters();
-            for (int i = 0; i<pArray.size(); ++i)
-            {
-                if (pArray.get(i).isIteratableAndIntern())
-                {
-//                    if (randomGenerator.nextDouble() <= mutationProbability)
-//                    {
-//                        pArray.set(i, mutate(pArray.get(i)));
-//                    }   
-                }
-            }
-            pArray = roundToStepping(pArray);
-            topMeasure.setListOfParameters(pArray);
-        }      
-        return population;
-    }
-    
-    private parameter mutate(parameter genToMutate)
-    {
-        double newValue = randomGenerator.nextDouble() * (genToMutate.getEndValue() - genToMutate.getStartValue()) + genToMutate.getStartValue();
-        genToMutate.setValue(newValue);
-                
-        return genToMutate;
-    }
-       
-    /**
-     * cuts back population to population-size. It will dismiss all parsers with higher distance than the one in position of population size
-     * @param oldPopulation the old population to cut
-     * @return the new population, which is cutted to max population size 
-     */
-    private ArrayList< ArrayList<SimulationType>> cutPopulation(ArrayList< ArrayList<SimulationType>> oldPopulation)
-    {
-        if (oldPopulation == null)
-            return null;
-        
-        ArrayList< ArrayList<SimulationType>> newPopulation = oldPopulation; //makes ref on both, only for better understanding of the code
-        
-        newPopulation = sortPopulation(newPopulation);
-        
-        int oldPopulationSize = oldPopulation.size();
-        
-        for (int i = 0; i < (oldPopulationSize - populationSize); ++i)
-        {
-            newPopulation.remove(populationSize); //keep removing first entry over population maximum
-        }
-               
-        return newPopulation; 
-    }   
+
 
     private SimulationType createCandidate(
             ArrayList<ArrayList<SimulationType>> population,
@@ -349,12 +259,12 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
         ArrayList<Integer> genesToMutate = new ArrayList<Integer>();
         if (mutationSelection == typeOfMVMOMutationSelection.Random)
         {
-            genesToMutate = fillWithRandomIndices(genesToMutate, numGenesToMutate);
+            genesToMutate = fillWithRandomIndices(genesToMutate, numGenesToMutate, candidate.getListOfParameters());
         }
         else if (mutationSelection == typeOfMVMOMutationSelection.RandomWithMovingSingle)
         {
             genesToMutate.add(startingIndex);
-            genesToMutate = fillWithRandomIndices(genesToMutate, numGenesToMutate);
+            genesToMutate = fillWithRandomIndices(genesToMutate, numGenesToMutate, candidate.getListOfParameters());
         }
         else if (mutationSelection == typeOfMVMOMutationSelection.MovingGroupSingleStep
               || mutationSelection == typeOfMVMOMutationSelection.MovingGroupMultiStep )
@@ -374,67 +284,96 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
         double kd = 0.0505 / candidate.getListOfParameters().size() + 1;
         for (int i=0; i<genesToMutate.size(); ++i)
         {
+            support.log("Try to mutate gen nr: " + genesToMutate.get(i));
             parameter p = candidate.getListOfParameters().get(genesToMutate.get(i));
-            mean = parameterMeanValues.get(genesToMutate.get(i));
-            variance = parameterVarianceValues.get(genesToMutate.get(i));
-            si = -1.0 * Math.log(variance) * scalingFactor;
-            if (variance == 0)
+            if (p.isIteratableAndIntern())
             {
-                if (si < sd)
+                mean = parameterMeanValues.get(genesToMutate.get(i));
+                variance = parameterVarianceValues.get(genesToMutate.get(i));
+                si = -1.0 * Math.log(variance) * scalingFactor;
+                if (variance == 0)
                 {
-                    sd = sd * kd;
+                    if (si < sd)
+                    {
+                        sd = sd * kd;
+                    }
+                    else if (si > sd)
+                    {
+                        sd = sd / kd;
+                    }
+                    si = sd;
                 }
-                else if (si > sd)
-                {
-                    sd = sd / kd;
-                }
-                si = sd;
-            }
             
-            if (p.getValue() < mean)
-            {
-                si1 = si;
-                si2 = si * asymmetryFactor;
-            }
-            else if (p.getValue() > mean)
-            {
-                si1 = si * asymmetryFactor;
-                si2 = si;
-            }
-            else
-            {
-                si1 = si;
-                si2 = si;
-            }
+                if (p.getValue() < mean)
+                {
+                    si1 = si;
+                    si2 = si * asymmetryFactor;
+                }
+                else if (p.getValue() > mean)
+                {
+                    si1 = si * asymmetryFactor;
+                    si2 = si;
+                }
+                else
+                {
+                    si1 = si;
+                    si2 = si;
+                }
             
 
-            double xTemp = randomGenerator.nextDouble();
-            double x = transform(mean, si1, si2, xTemp) +
-                (1 - transform(mean, si1, si2, 1) - transform(mean, si1, si2, 0)) * xTemp -
-                transform(mean, si1, si2, 0);
-            p.setValue(x);
+                double xTemp = randomGenerator.nextDouble();
+                support.log("Temp x: " + xTemp);
+                support.log("Mean: " + mean);
+                support.log("Variance " + variance);
+                support.log("Si: " + si);
+                double x = transform(mean, si1, si2, xTemp) +
+                    (1 - transform(mean, si1, si2, 1) + transform(mean, si1, si2, 0)) * xTemp -
+                    transform(mean, si1, si2, 0);
+                if (x < 0)
+                {
+                    x = 0;
+                    support.log("Transformation value too low, forced to 0");
+                }                    
+                else if (x > 1)
+                {
+                    x = 1;
+                    support.log("Transformation value too high, forced to 1");
+                }                    
+                support.log("x: " + x);
+                p.setValue(x);  
+            }            
         }
-              
         return candidate;
     }
     
     private double transform(double x_mean, double si1, double si2, double ui)
     {
         double r = 0;
-        r = x_mean * (1 - Math.exp(-1.0 * si1 * ui)) + (1 - x_mean) * Math.exp((1 - ui) * si2);
+        r = x_mean * (1 - Math.exp(-1.0 * si1 * ui)) + (1 - x_mean) * Math.exp((1 - ui) * si2 * (-1));
         return r;
     }
     
     private ArrayList<Integer> fillWithRandomIndices(
-        ArrayList<Integer> list, int targetSize)
+        ArrayList<Integer> list, int targetSize, ArrayList<parameter> parameters)
     {
+        ArrayList<Integer> possibleGens = new ArrayList<Integer>();
+        for (int i = 0; i<parameters.size(); ++i)
+        {
+            if (parameters.get(i).isIteratableAndIntern() && !list.contains(i))
+            {
+                possibleGens.add(i);
+            }
+        }
         while (list.size() < targetSize)
         {
-            int selectedGen = randomGenerator.nextInt(population.size());
-            if (!list.contains(selectedGen))
+            if (possibleGens.isEmpty())
             {
-                list.add(selectedGen);
+                break;
             }
+            int randomSelection = randomGenerator.nextInt(possibleGens.size());
+            list.add(possibleGens.get(randomSelection));
+            possibleGens.remove(randomSelection);
+            
         }
         return list;
     }
@@ -443,16 +382,23 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
     {
         for (int i = 0; i<list.size(); ++i)
         {
-            SimulationType simulation = list.get(i).get(0);
-            ArrayList<parameter> paraList = simulation.getListOfParameters();
-            for (int paraNum = 0; paraNum < paraList.size(); ++paraNum)
-            {
-                parameter p = paraList.get(paraNum);
-                double newValue = (p.getValue() - p.getStartValue()) / (p.getEndValue() - p.getStartValue());
-                p.setValue(newValue);
-            }
+            normalize(list.get(i).get(0));
         }
         return list;
+    }
+    
+    private SimulationType normalize(SimulationType simulation)
+    {
+        ArrayList<parameter> paraList = simulation.getListOfParameters();
+        for (int paraNum = 0; paraNum < paraList.size(); ++paraNum)
+        {
+            parameter p = paraList.get(paraNum);
+            support.log("Normalizing: " + p.getValue() + "\tStart: " + p.getStartValue() + "\tEnd: " + p.getEndValue());
+            double newValue = (p.getValue() - p.getStartValue()) / (p.getEndValue() - p.getStartValue());
+            support.log("Normalised to " +  newValue);
+            p.setValue(newValue);
+        }
+        return simulation;
     }
     
     private ArrayList< ArrayList<SimulationType>> denormalize(ArrayList< ArrayList<SimulationType>> list)
@@ -472,7 +418,9 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
         for (int paraNum = 0; paraNum < paraList.size(); ++paraNum)
         {
             parameter p = paraList.get(paraNum);
+            support.log("Denormalizing: " + p.getValue() + "\tStart: " + p.getStartValue() + "\tEnd: " + p.getEndValue());
             double newValue = p.getValue() * (p.getEndValue() - p.getStartValue()) + p.getStartValue();
+            support.log("Denormalised to " +  newValue);
             p.setValue(newValue);
         }
         return simulation;

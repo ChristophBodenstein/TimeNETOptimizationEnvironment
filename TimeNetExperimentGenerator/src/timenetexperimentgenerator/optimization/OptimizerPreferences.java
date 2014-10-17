@@ -205,6 +205,17 @@ private int pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement;
         jLabelABCNumOnlookerBees = new javax.swing.JLabel();
         jLabelABCNumScoutBees = new javax.swing.JLabel();
         jLabelABCMaxNumberOfFoodUpdateCyclesWithoutImprovement = new javax.swing.JLabel();
+        jPanel6 = new javax.swing.JPanel();
+        jSpinnerABCNumEmployedBees1 = new javax.swing.JSpinner();
+        jLabelMVMOStartingPopulation = new javax.swing.JLabel();
+        jLabelMVMOMaximumPopulation = new javax.swing.JLabel();
+        jSpinnerABCNumOnlookerBees1 = new javax.swing.JSpinner();
+        jLabelMVMOScalingFactor = new javax.swing.JLabel();
+        jSpinnerABCNumScoutBees1 = new javax.swing.JSpinner();
+        jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement1 = new javax.swing.JSpinner();
+        jLabelMVMOAsymmetryFactor = new javax.swing.JLabel();
+        jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement2 = new javax.swing.JSpinner();
+        jLabelMVMOsd = new javax.swing.JLabel();
 
         jLabelStartvalueForParameters.setText("Startvalue for parameters");
 
@@ -227,10 +238,10 @@ private int pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement;
             }
         });
         jTextFieldLogFileAddon.addInputMethodListener(new java.awt.event.InputMethodListener() {
+            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
+            }
             public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
                 jTextFieldLogFileAddonInputMethodTextChanged(evt);
-            }
-            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
             }
         });
         jTextFieldLogFileAddon.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -352,65 +363,65 @@ private int pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement;
 
         jLabel2.setText("Calculation of next Parameterset");
         jPanelSimAnnealing.add(jLabel2);
-        jLabel2.setBounds(20, 60, 220, 16);
+        jLabel2.setBounds(20, 60, 220, 14);
 
         jComboBoxCalculationOfNextParameterset.setModel(new DefaultComboBoxModel(typeOfAnnealingParameterCalculation.values()));
         jPanelSimAnnealing.add(jComboBoxCalculationOfNextParameterset);
-        jComboBoxCalculationOfNextParameterset.setBounds(240, 60, 190, 27);
+        jComboBoxCalculationOfNextParameterset.setBounds(240, 60, 190, 20);
 
         jLabel3.setText("Max. Temp. for Parameters(T-0-par)");
         jPanelSimAnnealing.add(jLabel3);
-        jLabel3.setBounds(20, 110, 230, 16);
+        jLabel3.setBounds(20, 110, 230, 14);
 
         jSpinnerMaxTemperatureParameters.setModel(new javax.swing.SpinnerNumberModel(1.0d, 0.0d, 1.0d, 0.01d));
         jSpinnerMaxTemperatureParameters.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerMaxTemperatureParameters, "#.##"));
         jPanelSimAnnealing.add(jSpinnerMaxTemperatureParameters);
-        jSpinnerMaxTemperatureParameters.setBounds(260, 110, 90, 28);
+        jSpinnerMaxTemperatureParameters.setBounds(260, 110, 90, 20);
 
         jSpinnerMaxTemperatureCost.setModel(new javax.swing.SpinnerNumberModel(1.0d, 0.0d, 1.0d, 0.01d));
         jSpinnerMaxTemperatureCost.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerMaxTemperatureCost, "#.##"));
         jPanelSimAnnealing.add(jSpinnerMaxTemperatureCost);
-        jSpinnerMaxTemperatureCost.setBounds(260, 140, 90, 28);
+        jSpinnerMaxTemperatureCost.setBounds(260, 140, 90, 20);
 
         jLabel6.setText("Max. Temp. for Cost(T-0-cost)");
         jPanelSimAnnealing.add(jLabel6);
-        jLabel6.setBounds(20, 140, 200, 16);
+        jLabel6.setBounds(20, 140, 200, 14);
 
         jLabel7.setText("TRatioScale");
         jPanelSimAnnealing.add(jLabel7);
-        jLabel7.setBounds(480, 30, 80, 16);
+        jLabel7.setBounds(480, 30, 80, 14);
 
         jLabel8.setText("TAnnealScale");
         jPanelSimAnnealing.add(jLabel8);
-        jLabel8.setBounds(480, 60, 100, 16);
+        jLabel8.setBounds(480, 60, 100, 14);
 
         jSpinnerTRatioScale.setModel(TRatioScaleSpinnerModel);
         jSpinnerTRatioScale.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerTRatioScale, "#.#####"));
         jSpinnerTRatioScale.setValue(0.00001);
         jPanelSimAnnealing.add(jSpinnerTRatioScale);
-        jSpinnerTRatioScale.setBounds(580, 20, 100, 28);
+        jSpinnerTRatioScale.setBounds(580, 20, 100, 20);
 
         jSpinnerTAnnealScale.setModel(new javax.swing.SpinnerNumberModel(100.0d, 0.0d, 10000.0d, 1.0d));
         jPanelSimAnnealing.add(jSpinnerTAnnealScale);
-        jSpinnerTAnnealScale.setBounds(580, 60, 100, 28);
+        jSpinnerTAnnealScale.setBounds(580, 60, 100, 20);
 
         jLabel5.setText("Epsilon (Abort-Temperature)");
         jPanelSimAnnealing.add(jLabel5);
-        jLabel5.setBounds(20, 180, 210, 16);
+        jLabel5.setBounds(20, 180, 210, 14);
 
         jSpinnerEpsilon.setModel(new javax.swing.SpinnerNumberModel(0.01d, 0.0d, 1.0d, 0.01d));
         jSpinnerEpsilon.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerEpsilon, "#.##"));
         jSpinnerEpsilon.setValue(0.01);
         jPanelSimAnnealing.add(jSpinnerEpsilon);
-        jSpinnerEpsilon.setBounds(260, 180, 90, 28);
+        jSpinnerEpsilon.setBounds(260, 180, 90, 20);
 
         jLabel9.setText("Cooling Method");
         jPanelSimAnnealing.add(jLabel9);
-        jLabel9.setBounds(20, 20, 100, 16);
+        jLabel9.setBounds(20, 20, 74, 14);
 
         jComboBoxCoolingMethod.setModel(new DefaultComboBoxModel(typeOfAnnealing.values()));
         jPanelSimAnnealing.add(jComboBoxCoolingMethod);
-        jComboBoxCoolingMethod.setBounds(200, 20, 230, 27);
+        jComboBoxCoolingMethod.setBounds(200, 20, 230, 20);
 
         jTabbedPane1.addTab("Simulated Annealing", jPanelSimAnnealing);
 
@@ -418,70 +429,70 @@ private int pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement;
 
         jLabel10.setText("Cooling Method");
         jPanel1.add(jLabel10);
-        jLabel10.setBounds(20, 60, 100, 16);
+        jLabel10.setBounds(20, 60, 74, 14);
 
         jComboBoxCoolingMethod1.setModel(new DefaultComboBoxModel(typeOfAnnealing.values()));
         jPanel1.add(jComboBoxCoolingMethod1);
-        jComboBoxCoolingMethod1.setBounds(230, 60, 200, 27);
+        jComboBoxCoolingMethod1.setBounds(230, 60, 200, 20);
 
         jSpinnerTRatioScale1.setModel(TRatioScaleSpinnerModel);
         jSpinnerTRatioScale1.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerTRatioScale1, "#.#####"));
         jSpinnerTRatioScale1.setValue(0.00001);
         jPanel1.add(jSpinnerTRatioScale1);
-        jSpinnerTRatioScale1.setBounds(580, 60, 100, 28);
+        jSpinnerTRatioScale1.setBounds(580, 60, 100, 20);
 
         jLabel11.setText("TRatioScale");
         jPanel1.add(jLabel11);
-        jLabel11.setBounds(480, 70, 80, 16);
+        jLabel11.setBounds(480, 70, 80, 14);
 
         jSpinnerTAnnealScale1.setModel(new javax.swing.SpinnerNumberModel(100.0d, 0.0d, 10000.0d, 1.0d));
         jPanel1.add(jSpinnerTAnnealScale1);
-        jSpinnerTAnnealScale1.setBounds(580, 100, 100, 28);
+        jSpinnerTAnnealScale1.setBounds(580, 100, 100, 20);
 
         jLabel12.setText("TAnnealScale");
         jPanel1.add(jLabel12);
-        jLabel12.setBounds(480, 100, 100, 16);
+        jLabel12.setBounds(480, 100, 100, 14);
 
         jComboBoxCalculationOfNextParameterset1.setModel(new DefaultComboBoxModel(typeOfAnnealingParameterCalculation.values()));
         jPanel1.add(jComboBoxCalculationOfNextParameterset1);
-        jComboBoxCalculationOfNextParameterset1.setBounds(230, 100, 200, 27);
+        jComboBoxCalculationOfNextParameterset1.setBounds(230, 100, 200, 20);
 
         jLabel13.setText("Calculation of next Parameterset");
         jPanel1.add(jLabel13);
-        jLabel13.setBounds(20, 100, 220, 16);
+        jLabel13.setBounds(20, 100, 220, 14);
 
         jLabel14.setText("Max. Temp. for Parameters(T-0-par)");
         jPanel1.add(jLabel14);
-        jLabel14.setBounds(20, 150, 230, 16);
+        jLabel14.setBounds(20, 150, 230, 14);
 
         jSpinnerMaxTemperatureParameters1.setModel(new javax.swing.SpinnerNumberModel(1.0d, 0.0d, 1.0d, 0.01d));
         jSpinnerMaxTemperatureParameters1.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerMaxTemperatureParameters1, "#.##"));
         jPanel1.add(jSpinnerMaxTemperatureParameters1);
-        jSpinnerMaxTemperatureParameters1.setBounds(260, 150, 90, 28);
+        jSpinnerMaxTemperatureParameters1.setBounds(260, 150, 90, 20);
 
         jLabel15.setText("Max. Temp. for Cost(T-0-cost)");
         jPanel1.add(jLabel15);
-        jLabel15.setBounds(20, 180, 200, 16);
+        jLabel15.setBounds(20, 180, 200, 14);
 
         jSpinnerMaxTemperatureCost1.setModel(new javax.swing.SpinnerNumberModel(1.0d, 0.0d, 1.0d, 0.01d));
         jSpinnerMaxTemperatureCost1.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerMaxTemperatureCost1, "#.##"));
         jPanel1.add(jSpinnerMaxTemperatureCost1);
-        jSpinnerMaxTemperatureCost1.setBounds(260, 180, 90, 28);
+        jSpinnerMaxTemperatureCost1.setBounds(260, 180, 90, 20);
 
         jLabel16.setText("Epsilon (Abort-Temperature)");
         jPanel1.add(jLabel16);
-        jLabel16.setBounds(20, 220, 210, 16);
+        jLabel16.setBounds(20, 220, 210, 14);
 
         jSpinnerEpsilon1.setModel(new javax.swing.SpinnerNumberModel(0.01d, 0.0d, 1.0d, 0.01d));
         jSpinnerEpsilon1.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerEpsilon1, "#.##"));
         jSpinnerEpsilon1.setValue(0.01);
         jPanel1.add(jSpinnerEpsilon1);
-        jSpinnerEpsilon1.setBounds(260, 220, 90, 28);
+        jSpinnerEpsilon1.setBounds(260, 220, 90, 20);
 
         jLabel17.setFont(new java.awt.Font("Lucida Grande", 1, 16)); // NOI18N
         jLabel17.setText("Parameters for second Phase are taken from Standard-Panel (Simulated Annealing)!!!");
         jPanel1.add(jLabel17);
-        jLabel17.setBounds(20, 28, 787, 20);
+        jLabel17.setBounds(20, 28, 787, 21);
 
         jTabbedPane1.addTab("Two-Phase", jPanel1);
 
@@ -489,15 +500,15 @@ private int pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement;
 
         jLabel18.setText("Used Optimization Algorithm");
         jPanel2.add(jLabel18);
-        jLabel18.setBounds(30, 70, 220, 16);
+        jLabel18.setBounds(30, 70, 220, 14);
 
         jComboBoxNumberOfPhases.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "2", "3", "4", "5", "6", "7", "8", "9", "10" }));
         jPanel2.add(jComboBoxNumberOfPhases);
-        jComboBoxNumberOfPhases.setBounds(260, 30, 90, 27);
+        jComboBoxNumberOfPhases.setBounds(260, 30, 90, 20);
 
         jLabel19.setText("Number of Optimization-Phases");
         jPanel2.add(jLabel19);
-        jLabel19.setBounds(28, 37, 220, 16);
+        jLabel19.setBounds(28, 37, 220, 14);
 
         jComboBoxOptimizationType.setModel(new DefaultComboBoxModel(typeOfOptimization.values()));
         jComboBoxOptimizationType.addItemListener(new java.awt.event.ItemListener() {
@@ -511,31 +522,31 @@ private int pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement;
             }
         });
         jPanel2.add(jComboBoxOptimizationType);
-        jComboBoxOptimizationType.setBounds(260, 70, 170, 27);
+        jComboBoxOptimizationType.setBounds(260, 70, 170, 20);
 
         jLabel20.setText("Confidence-Intervall Start");
         jPanel2.add(jLabel20);
-        jLabel20.setBounds(30, 110, 210, 16);
+        jLabel20.setBounds(30, 110, 210, 14);
 
         jLabel21.setText("Internal Parameter End");
         jPanel2.add(jLabel21);
-        jLabel21.setBounds(510, 60, 170, 16);
+        jLabel21.setBounds(510, 60, 170, 14);
 
         jLabel22.setText("Confidence-Intervall End");
         jPanel2.add(jLabel22);
-        jLabel22.setBounds(30, 140, 170, 16);
+        jLabel22.setBounds(30, 140, 170, 14);
 
         jLabel23.setText("Maximum Rel. Error Start");
         jPanel2.add(jLabel23);
-        jLabel23.setBounds(30, 170, 170, 16);
+        jLabel23.setBounds(30, 170, 170, 14);
 
         jLabel24.setText("Maximum Rel. Error End");
         jPanel2.add(jLabel24);
-        jLabel24.setBounds(30, 200, 170, 16);
+        jLabel24.setBounds(30, 200, 170, 14);
 
         jLabel25.setText("Internal Parameter Start");
         jPanel2.add(jLabel25);
-        jLabel25.setBounds(510, 30, 170, 16);
+        jLabel25.setBounds(510, 30, 170, 14);
         jPanel2.add(jSeparator1);
         jSeparator1.setBounds(30, 100, 400, 10);
         jPanel2.add(jSeparator2);
@@ -545,27 +556,27 @@ private int pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement;
 
         jSpinnerConfidenceIntervallStart.setModel(new javax.swing.SpinnerNumberModel(85, 85, 99, 1));
         jPanel2.add(jSpinnerConfidenceIntervallStart);
-        jSpinnerConfidenceIntervallStart.setBounds(260, 110, 70, 28);
+        jSpinnerConfidenceIntervallStart.setBounds(260, 110, 70, 20);
 
         jSpinnerConfidenceIntervallEnd.setModel(new javax.swing.SpinnerNumberModel(99, 85, 99, 1));
         jPanel2.add(jSpinnerConfidenceIntervallEnd);
-        jSpinnerConfidenceIntervallEnd.setBounds(260, 140, 70, 28);
+        jSpinnerConfidenceIntervallEnd.setBounds(260, 140, 70, 20);
 
         jSpinnerMaxRelErrorEnd.setModel(new javax.swing.SpinnerNumberModel(1, 1, 15, 1));
         jPanel2.add(jSpinnerMaxRelErrorEnd);
-        jSpinnerMaxRelErrorEnd.setBounds(260, 200, 70, 28);
+        jSpinnerMaxRelErrorEnd.setBounds(260, 200, 70, 20);
 
         jSpinnerMaxRelErrorStart.setModel(new javax.swing.SpinnerNumberModel(5, 1, 15, 1));
         jPanel2.add(jSpinnerMaxRelErrorStart);
-        jSpinnerMaxRelErrorStart.setBounds(260, 170, 70, 28);
+        jSpinnerMaxRelErrorStart.setBounds(260, 170, 70, 20);
 
         jSpinnerInternalParameterEnd.setModel(new javax.swing.SpinnerNumberModel(0, 0, 3, 1));
         jPanel2.add(jSpinnerInternalParameterEnd);
-        jSpinnerInternalParameterEnd.setBounds(700, 50, 70, 28);
+        jSpinnerInternalParameterEnd.setBounds(700, 50, 70, 20);
 
         jSpinnerInternalParameterStart.setModel(new javax.swing.SpinnerNumberModel(0, 0, 3, 1));
         jPanel2.add(jSpinnerInternalParameterStart);
-        jSpinnerInternalParameterStart.setBounds(700, 20, 70, 28);
+        jSpinnerInternalParameterStart.setBounds(700, 20, 70, 20);
 
         jCheckBoxKeepDesignspaceAndResolution.setText("Keep Designspace and Resolution");
         jPanel2.add(jCheckBoxKeepDesignspaceAndResolution);
@@ -769,6 +780,105 @@ private int pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement;
 
         jTabbedPane1.addTab("Artifical Bee Colony", jPanel5);
 
+        jSpinnerABCNumEmployedBees1.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
+        jSpinnerABCNumEmployedBees1.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                jSpinnerABCNumEmployedBees1PropertyChange(evt);
+            }
+        });
+
+        jLabelMVMOStartingPopulation.setText("Starting Population:");
+
+        jLabelMVMOMaximumPopulation.setText("Maximum Population:");
+
+        jSpinnerABCNumOnlookerBees1.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
+        jSpinnerABCNumOnlookerBees1.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                jSpinnerABCNumOnlookerBees1PropertyChange(evt);
+            }
+        });
+
+        jLabelMVMOScalingFactor.setText("Scaling-Factor:");
+
+        jSpinnerABCNumScoutBees1.setModel(new javax.swing.SpinnerNumberModel(Double.valueOf(1.0d), Double.valueOf(0.0d), null, Double.valueOf(1.0d)));
+        jSpinnerABCNumScoutBees1.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                jSpinnerABCNumScoutBees1PropertyChange(evt);
+            }
+        });
+
+        jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement1.setModel(new javax.swing.SpinnerNumberModel(Double.valueOf(1.0d), Double.valueOf(0.0d), null, Double.valueOf(1.0d)));
+        jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement1.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement1PropertyChange(evt);
+            }
+        });
+
+        jLabelMVMOAsymmetryFactor.setText("Asymmetry-Factor:");
+
+        jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement2.setModel(new javax.swing.SpinnerNumberModel(Double.valueOf(75.0d), Double.valueOf(0.0d), null, Double.valueOf(1.0d)));
+        jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement2.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement2PropertyChange(evt);
+            }
+        });
+
+        jLabelMVMOsd.setText("sd (standard si for zero-variance):");
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(jLabelMVMOAsymmetryFactor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabelMVMOScalingFactor, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabelMVMOMaximumPopulation, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabelMVMOStartingPopulation))
+                        .addGap(26, 26, 26)
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement1, javax.swing.GroupLayout.DEFAULT_SIZE, 71, Short.MAX_VALUE)
+                            .addComponent(jSpinnerABCNumScoutBees1)
+                            .addComponent(jSpinnerABCNumOnlookerBees1)
+                            .addComponent(jSpinnerABCNumEmployedBees1)))
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addComponent(jLabelMVMOsd)
+                        .addGap(18, 18, 18)
+                        .addComponent(jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement2, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(0, 635, Short.MAX_VALUE))
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabelMVMOStartingPopulation)
+                    .addComponent(jSpinnerABCNumEmployedBees1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabelMVMOMaximumPopulation)
+                    .addComponent(jSpinnerABCNumOnlookerBees1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabelMVMOScalingFactor)
+                    .addComponent(jSpinnerABCNumScoutBees1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabelMVMOAsymmetryFactor)
+                    .addComponent(jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabelMVMOsd, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement2))
+                .addContainerGap(155, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab("MVMO", jPanel6);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -778,7 +888,7 @@ private int pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement;
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(77, 77, 77)
-                        .addComponent(jLabelStartvalueForParameters, javax.swing.GroupLayout.DEFAULT_SIZE, 243, Short.MAX_VALUE)
+                        .addComponent(jLabelStartvalueForParameters, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jComboBoxTypeOfStartValue, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(71, 71, 71))
@@ -843,6 +953,42 @@ private int pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement;
     this.savePreferences();
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void jSpinnerABCNumOnlookerBeesPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jSpinnerABCNumOnlookerBeesPropertyChange
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jSpinnerABCNumOnlookerBeesPropertyChange
+
+    private void jSpinnerABCNumScoutBeesPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jSpinnerABCNumScoutBeesPropertyChange
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jSpinnerABCNumScoutBeesPropertyChange
+
+    private void jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovementPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovementPropertyChange
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovementPropertyChange
+
+    private void jSpinnerABCNumEmployedBeesPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jSpinnerABCNumEmployedBeesPropertyChange
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jSpinnerABCNumEmployedBeesPropertyChange
+
+    private void jSpinnerCSSMaxAttractionPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jSpinnerCSSMaxAttractionPropertyChange
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jSpinnerCSSMaxAttractionPropertyChange
+
+    private void jSpinnerCSSPopulationSizePropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jSpinnerCSSPopulationSizePropertyChange
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jSpinnerCSSPopulationSizePropertyChange
+
+    private void jCheckBoxGeneticMutateTopSolutionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxGeneticMutateTopSolutionActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jCheckBoxGeneticMutateTopSolutionActionPerformed
+
+    private void jSpinnerGeneticMutationChancePropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jSpinnerGeneticMutationChancePropertyChange
+
+    }//GEN-LAST:event_jSpinnerGeneticMutationChancePropertyChange
+
+    private void jSpinnerGeneticPopulationSizePropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jSpinnerGeneticPopulationSizePropertyChange
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jSpinnerGeneticPopulationSizePropertyChange
+
     private void jComboBoxOptimizationTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxOptimizationTypeActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBoxOptimizationTypeActionPerformed
@@ -875,41 +1021,25 @@ private int pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement;
 
     }//GEN-LAST:event_jSpinnerWrongSolutionsPerDirectionUntilBreakStateChanged
 
-    private void jSpinnerGeneticMutationChancePropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jSpinnerGeneticMutationChancePropertyChange
-        
-    }//GEN-LAST:event_jSpinnerGeneticMutationChancePropertyChange
-
-    private void jCheckBoxGeneticMutateTopSolutionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxGeneticMutateTopSolutionActionPerformed
+    private void jSpinnerABCNumEmployedBees1PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jSpinnerABCNumEmployedBees1PropertyChange
         // TODO add your handling code here:
-    }//GEN-LAST:event_jCheckBoxGeneticMutateTopSolutionActionPerformed
+    }//GEN-LAST:event_jSpinnerABCNumEmployedBees1PropertyChange
 
-    private void jSpinnerGeneticPopulationSizePropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jSpinnerGeneticPopulationSizePropertyChange
+    private void jSpinnerABCNumOnlookerBees1PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jSpinnerABCNumOnlookerBees1PropertyChange
         // TODO add your handling code here:
-    }//GEN-LAST:event_jSpinnerGeneticPopulationSizePropertyChange
+    }//GEN-LAST:event_jSpinnerABCNumOnlookerBees1PropertyChange
 
-    private void jSpinnerCSSPopulationSizePropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jSpinnerCSSPopulationSizePropertyChange
+    private void jSpinnerABCNumScoutBees1PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jSpinnerABCNumScoutBees1PropertyChange
         // TODO add your handling code here:
-    }//GEN-LAST:event_jSpinnerCSSPopulationSizePropertyChange
+    }//GEN-LAST:event_jSpinnerABCNumScoutBees1PropertyChange
 
-    private void jSpinnerCSSMaxAttractionPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jSpinnerCSSMaxAttractionPropertyChange
+    private void jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement1PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement1PropertyChange
         // TODO add your handling code here:
-    }//GEN-LAST:event_jSpinnerCSSMaxAttractionPropertyChange
+    }//GEN-LAST:event_jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement1PropertyChange
 
-    private void jSpinnerABCNumEmployedBeesPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jSpinnerABCNumEmployedBeesPropertyChange
+    private void jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement2PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement2PropertyChange
         // TODO add your handling code here:
-    }//GEN-LAST:event_jSpinnerABCNumEmployedBeesPropertyChange
-
-    private void jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovementPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovementPropertyChange
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovementPropertyChange
-
-    private void jSpinnerABCNumScoutBeesPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jSpinnerABCNumScoutBeesPropertyChange
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jSpinnerABCNumScoutBeesPropertyChange
-
-    private void jSpinnerABCNumOnlookerBeesPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jSpinnerABCNumOnlookerBeesPropertyChange
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jSpinnerABCNumOnlookerBeesPropertyChange
+    }//GEN-LAST:event_jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement2PropertyChange
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -923,7 +1053,7 @@ private int pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement;
     private javax.swing.JComboBox jComboBoxCoolingMethod1;
     private javax.swing.JComboBox jComboBoxNumberOfPhases;
     private javax.swing.JComboBox jComboBoxOptimizationType;
-    public javax.swing.JComboBox jComboBoxTypeOfNeighborhood;
+    private javax.swing.JComboBox jComboBoxTypeOfNeighborhood;
     public javax.swing.JComboBox jComboBoxTypeOfStartValue;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -958,6 +1088,11 @@ private int pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement;
     private javax.swing.JLabel jLabelCSSPopulationSize;
     private javax.swing.JLabel jLabelGeneticMutationChance;
     private javax.swing.JLabel jLabelGeneticPopulationSize;
+    private javax.swing.JLabel jLabelMVMOAsymmetryFactor;
+    private javax.swing.JLabel jLabelMVMOMaximumPopulation;
+    private javax.swing.JLabel jLabelMVMOScalingFactor;
+    private javax.swing.JLabel jLabelMVMOStartingPopulation;
+    private javax.swing.JLabel jLabelMVMOsd;
     private javax.swing.JLabel jLabelStartvalueForParameters;
     private javax.swing.JLabel jLabelTypeOfNeighborhood;
     private javax.swing.JLabel jLabelWrongSolutionsPerDirectionUntilBreak;
@@ -967,15 +1102,21 @@ private int pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanelHillClimbing;
     private javax.swing.JPanel jPanelSimAnnealing;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JSpinner jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement;
+    private javax.swing.JSpinner jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement1;
+    private javax.swing.JSpinner jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement2;
     private javax.swing.JSpinner jSpinnerABCNumEmployedBees;
+    private javax.swing.JSpinner jSpinnerABCNumEmployedBees1;
     private javax.swing.JSpinner jSpinnerABCNumOnlookerBees;
+    private javax.swing.JSpinner jSpinnerABCNumOnlookerBees1;
     private javax.swing.JSpinner jSpinnerABCNumScoutBees;
+    private javax.swing.JSpinner jSpinnerABCNumScoutBees1;
     private javax.swing.JSpinner jSpinnerCSSMaxAttraction;
     private javax.swing.JSpinner jSpinnerCSSPopulationSize;
     private javax.swing.JSpinner jSpinnerConfidenceIntervallEnd;

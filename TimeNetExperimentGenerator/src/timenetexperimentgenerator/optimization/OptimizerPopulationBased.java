@@ -155,6 +155,14 @@ public abstract class OptimizerPopulationBased implements Runnable, Optimizer
         return myParametersetList;
     }
     
+    protected ArrayList< ArrayList<parameter> > getNextParameterSetAsArrayList(SimulationType simulation)
+    {
+        ArrayList< ArrayList<parameter> > myParametersetList = new ArrayList< ArrayList<parameter> >();
+        ArrayList<parameter> pArray = simulation.getListOfParameters();
+        myParametersetList.add(pArray);
+        return myParametersetList;
+    }
+        
     protected ArrayList< ArrayList<SimulationType> > getPopulationFromSimulationResults(ArrayList<SimulationType> results)
     {
         ArrayList< ArrayList<SimulationType> > newPopulation = new ArrayList<ArrayList<SimulationType>>();

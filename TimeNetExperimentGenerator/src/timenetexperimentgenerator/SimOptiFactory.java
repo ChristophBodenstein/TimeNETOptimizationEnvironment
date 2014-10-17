@@ -82,6 +82,8 @@ public class SimOptiFactory {
                     return new OptimizerGenetic();
             case ABC:
                     return new OptimizerABC();
+            case MVMO:
+                    return new OptimizerMVMO();
 
             case MultiPhase:
                     return new OptimizerMultiPhase();

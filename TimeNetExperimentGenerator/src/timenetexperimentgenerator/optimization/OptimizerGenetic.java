@@ -224,7 +224,7 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
         if (mutateTopMeasure)
             mutationStart = 0;
         
-        for (int popCounter = mutationStart; popCounter< population.size(); ++popCounter)
+        for (int popCounter = mutationStart; popCounter < population.size(); ++popCounter)
         {
             SimulationType p = population.get(popCounter).get(0);
             ArrayList<parameter> pArray = p.getListOfParameters();
