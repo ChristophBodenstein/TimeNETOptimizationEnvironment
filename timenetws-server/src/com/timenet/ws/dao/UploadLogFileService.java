@@ -22,7 +22,7 @@ import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
-import com.timenet.ws.models.logList;
+import com.timenet.ws.models.simulationLogList;
 import com.timenet.ws.util.HibernateTemplate;
 
 @Path("/log")
@@ -100,7 +100,7 @@ public class UploadLogFileService {
 
 	private int saveFileInDb(byte[] content, String fileName, String simid) {
 		int fileId = -1;
-		logList fm = new logList();
+		simulationLogList fm = new simulationLogList();
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		   //get current date time with Date()
 		   Date date = new Date();
@@ -108,9 +108,9 @@ public class UploadLogFileService {
 		fm.setLog_file_name(fileName);
 		fm.setDistribute_flag("ND");
 		fm.setCurrent_time_stamp(dateFormat.format(date));
-		fm.setUpload_sim_manager(simid);
+		fm.setSimulation_id(simid);
 		fm.setLogData(content);
-		fm.setFile_size(content.length);
+		fm.setLog_size(content.length);
 
 		fileId = (Integer) HibernateTemplate.save(fm);
 		System.out.println("-------- Log file Stored in Server ---------"+fileName);

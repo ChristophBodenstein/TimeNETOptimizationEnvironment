@@ -20,12 +20,12 @@ import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
-import com.timenet.ws.models.simulationList;
+import com.timenet.ws.models.simulationXmlList;
 import com.timenet.ws.util.HibernateTemplate;
 import com.timenet.ws.util.LogFile;
 
 @Path("/file")
-public class UploadFileService {
+public class UploadXMLFileService {
 
 	@POST
 	@Path("/upload")
@@ -86,7 +86,7 @@ public class UploadFileService {
 		{
 			file.createNewFile();
 		}
-		simulationList fm = new simulationList();
+		simulationXmlList fm = new simulationXmlList();
 		FileOutputStream fop = new FileOutputStream(file);
 		fop.write(content);
 		fop.flush();
@@ -96,17 +96,17 @@ public class UploadFileService {
 
 	private int saveFileInDb(byte[] content, String fileName, String simid) {
 		int fileId = -1;
-		simulationList fm = new simulationList();
+		simulationXmlList fm = new simulationXmlList();
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		   //get current date time with Date()
 		   Date date = new Date();
 		   
-		fm.setSimulation_file_name(fileName);
+		fm.setXml_file_name(fileName);
 		fm.setDistribute_flag("ND");
 		fm.setCurrent_time_stamp(dateFormat.format(date));
-		fm.setUpload_sim_manager(simid);
-		fm.setFileData(content);
-		fm.setFile_size(content.length);
+		fm.setSimulation_id(simid);
+		fm.setXmlData(content);
+		fm.setXml_size(content.length);
 
 		fileId = (Integer) HibernateTemplate.save(fm);
 		LogFile.info("--------Simulation XML file Stored in Server ---------"+fileName);

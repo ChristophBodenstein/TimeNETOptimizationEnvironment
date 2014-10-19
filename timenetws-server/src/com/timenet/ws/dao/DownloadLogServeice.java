@@ -1,5 +1,6 @@
 package com.timenet.ws.dao;
 
+import java.util.List;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -7,51 +8,50 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
-import com.timenet.ws.models.logList;
+import com.timenet.ws.models.simulationLogList;
 import com.timenet.ws.util.HibernateTemplate;
 import com.timenet.ws.util.LogFile;
-
-
-
-
 
 @Path("/api")
 public class DownloadLogServeice {
 	private Response Response;
-
 
 	@GET
 	@Path("/downloads/log/{simid}")
 	public Response getPreview(@PathParam("simid") String simid) {
 		ResponseBuilder response=null;	
 		
-		logList std =null;
-		//logList eList =null;
-	    String SQLQuerry=" from "+ logList.class.getName()+" where distribute_flag=? and upload_sim_manager=?";
+		simulationLogList std =null;
+	    String SQLQuerry=" from "+ simulationLogList.class.getName()+" where distribute_flag=? and simulation_id=?";
 	    
 	    try{
-	    std=(logList) HibernateTemplate.findList(SQLQuerry, 0, 1, "ND", simid).get(0);
-	    response = Response.ok((Object) std.getLogData());
-		response.type(MediaType.APPLICATION_XML);
-		response.header("ref-id", std.getRef_id());
-		response.header("simid", std.getUpload_sim_manager());
-		response.header("filename", std.getLog_file_name() );
-		response.header("Content-Disposition","attachment; filename="+std.getLog_file_name());
+	    List stdLog= HibernateTemplate.findList(SQLQuerry, 0, 1, "ND", simid);
+	
+	   //  Download Log-File available List for get(0) exception handled
+	    if (stdLog.size()>0) {
+			std = (simulationLogList)stdLog.get(0);
+			
+			// Build the response with Log file as attachment.
+		    response = Response.ok((Object) std.getLogData());
+			response.type(MediaType.APPLICATION_XML);
+			response.header("ref-id", std.getRef_id());
+			response.header("simid", std.getSimulation_id());
+			response.header("filename", std.getLog_file_name() );
+			response.header("Content-Disposition","attachment; filename="+std.getLog_file_name());
+			
+			LogFile.info("----------Log files download to generate csv-------"+std.getLog_file_name());
+			// Write the code to fetch the record by Id and update the Flag ND to D
+			// Use Hibernate update function.
+			std.setDistribute_flag("D");
+			HibernateTemplate.update(std);
 		
-		LogFile.info("----------Log files download to generate csv-------"+std.getLog_file_name());
-		std.setDistribute_flag("D");
-		HibernateTemplate.update(std);
-		// Write the code to fetch the record by Id and update the Flag ND to D
-		// Use Hibernate update function.
+	    }
 	    }catch(Exception e){
-	    	LogFile.debug("No Logfile in List for Downloads (get(0) caused Exception).");
+	    	LogFile.debug("XMLFile download exception occured");
 	    	response=Response.noContent();
 	    }  
 	    
 		return response.build();
 	}
-	
-
-	
 	
 }

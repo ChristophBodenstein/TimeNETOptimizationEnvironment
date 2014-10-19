@@ -31,8 +31,8 @@
 	    <!-- c3po-->
 		<!-- Drop and re-create the database schema on startup <property name="hbm2ddl.auto">none</property> -->
 		
-		<mapping class="com.timenet.ws.models.simulationList" />
-		<mapping class="com.timenet.ws.models.logList" />
+		<mapping class="com.timenet.ws.models.simulationXmlList" />
+		<mapping class="com.timenet.ws.models.simulationLogList" />
 		
         
 	</session-factory>

@@ -6,8 +6,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
-import com.timenet.ws.models.logList;
-import com.timenet.ws.models.simulationList;
+import com.timenet.ws.models.simulationLogList;
+import com.timenet.ws.models.simulationXmlList;
 import com.timenet.ws.util.HibernateTemplate;
 
 
@@ -21,19 +21,19 @@ public class UpdateFlagXML {
 	public Response getPreview(@QueryParam("filename") String filename, @QueryParam("simid") String simid) {
 		
 		
-		simulationList stdXML =null;
+		simulationXmlList stdXML =null;
 		List stdLog =null;
 		System.out.println("Flag Update XML ============="+ filename+"----"+simid);
-		String SQLQuerryLog=" from "+ logList.class.getName()+" where log_file_name like ? and upload_sim_manager=?";
-	    stdLog= HibernateTemplate.findList(SQLQuerryLog, 0, 1, filename+"%", simid);
+		String HQLQuerryLog=" from "+ simulationLogList.class.getName()+" where log_file_name like ? and simulation_id=?";
+	    stdLog= HibernateTemplate.findList(HQLQuerryLog, 0, 1, filename+"%", simid);
 		    
 		if (stdLog.size()==0) {
-			String SQLQuerryXML=" from "+ simulationList.class.getName()+" where simulation_file_name= ? and upload_sim_manager= ?";
-		    stdXML=(simulationList) HibernateTemplate.findList(SQLQuerryXML, 0, 1, filename+".xml", simid).get(0);
+			String HQLQuerryXML=" from "+ simulationXmlList.class.getName()+" where simulation_file_name= ? and simulation_id= ?";
+		    stdXML=(simulationXmlList) HibernateTemplate.findList(HQLQuerryXML, 0, 1, filename+".xml", simid).get(0);
 			
 		stdXML.setDistribute_flag("ND");
 		HibernateTemplate.update(stdXML);
-		System.out.println("--------Simulation XML file Flag updated D to ND---------"+stdXML.getSimulation_file_name());
+		System.out.println("--------Simulation XML file Flag updated D to ND---------"+stdXML.getXml_file_name());
 		
 		Response.status(200);
 			 return Response;
