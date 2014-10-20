@@ -29,7 +29,7 @@
             }
 
             ResultSet resultset = 
-                statement.executeQuery("Select T.sid,T.All,D.delivered,P.finished from ( ( SELECT `simulation_id` as sid,count(*) as 'All' FROM `simulation_xml_list` group by `simulation_id`) as T, ( SELECT `simulation_id` as sod, count(*) as finished FROM `simulation_log_list` group by `simulation_id` ) as P ) , (SELECT `simulation_id` as sid,count(*) as delivered FROM `simulation_xml_list` group by `simulation_id`,`distribute_flag` having `distribute_flag` = 'D') as D where T.sid = P.sod and T.sid = D.sid order by sid desc") ; 
+            		statement.executeQuery("Select T.sid,T.All,IFNULL(D.delivered,0) as 'Delivered',IFNULL(P.finished,0) as 'Finished' from ( SELECT `simulation_id` as sid,count(*) as 'All' FROM `simulation_xml_list` group by `simulation_id`) as T LEFT OUTER JOIN (( SELECT `simulation_id` as sod, count(*) as finished FROM `simulation_log_list` group by `simulation_id` ) as P , (SELECT `simulation_id` as sid,count(*) as delivered FROM `simulation_xml_list` group by `simulation_id`,`distribute_flag` having `distribute_flag` = 'D') as D ) on (T.sid = P.sod and T.sid = D.sid) order by sid desc") ;
 %>
         <TABLE BORDER="1">
             <TR>
