@@ -9,7 +9,9 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
-
+/*******************************
+* @author Veeranna Sulikeri
+********************************/
 
 public class HibernateTemplate {
 
@@ -124,42 +126,6 @@ public class HibernateTemplate {
 
 	}
 
-/*
-	public static List findList(String hql,Object ...args){
-		Transaction tx=null;
-		List list=null;
-		Session session=null;
-		try
-		{
-			SessionFactory sf=HibernateUtil.getSessionFactory();
-			session=sf.openSession();
-			tx=session.beginTransaction();
-
-			Query q=session.createQuery(hql);
-		if(args!=null){
-			
-			for(int i=0;i<args.length;i++)
-				q=q.setParameter(i, args[i]);
-		}
-			list=q.list();
-
-			tx.commit();
-			//session.close();
-			LogFile.info("## Find the data successfully## ");
-
-		}catch(Exception e){
-			if(tx!=null)
-				tx.rollback();
-			LogFile.info("## HibernateException for Finding the data: ## "+e.getMessage());
-			e.printStackTrace();
-
-		}finally{
-			if(session!=null)
-				session.close();
-			}
-		return list;
-	}
-*/
 	public static List findList(String hql,int start,int total,Object ...args){
 		Transaction tx=null;
 		List list=null;
@@ -185,8 +151,8 @@ public class HibernateTemplate {
 		}catch(Exception e){
 			if(tx!=null)
 				tx.rollback();
-			LogFile.info("## HibernateException for finding the data: ## "+e.getMessage());
-			e.printStackTrace();
+			LogFile.debug("## HibernateException for finding the data: ## "+e.getMessage());
+	//		e.printStackTrace();
 
 		}finally{
 			if(session!=null)
@@ -350,9 +316,7 @@ public class HibernateTemplate {
 			 int offset = (pageNumber - 1) * 10;
 			 SQLQuery q = session.createSQLQuery(sql + offset);
 			 q.setParameter(0, category);
-			 
-			
-			 
+			 	 
 			// q + limit offset ,10;
 		     q.setFirstResult(pageSize * (pageNumber - 1));
 		     q.setMaxResults(pageSize);

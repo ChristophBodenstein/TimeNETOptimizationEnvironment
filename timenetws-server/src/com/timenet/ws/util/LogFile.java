@@ -9,7 +9,9 @@ import org.apache.log4j.WriterAppender;
 import org.apache.log4j.SimpleLayout;
 import org.apache.log4j.FileAppender;
 
- 
+/*******************************
+* @author Veeranna Sulikeri
+********************************/
 
 public class LogFile {
 
