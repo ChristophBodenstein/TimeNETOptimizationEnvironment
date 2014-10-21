@@ -86,6 +86,7 @@ public class SimulatorWeb implements Runnable, Simulator{
                 //Open Logfile and write first line
                 //FileWriter fw;
                 if(listOfParameterSets.size()>0){
+                    //Upload XML files
                     for(int i=0;i<listOfParameterSets.size();i++){
                         support.setStatusText("Uploading "+i+"/"+listOfParameterSets.size());
                         //fw = new FileWriter(logFileName, true);
@@ -108,8 +109,11 @@ public class SimulatorWeb implements Runnable, Simulator{
             }catch(Exception e){
                 support.log("Error while creating local simulation file or log-file.");
             }
+            //end of the first phase which is uploading the XML files
+            
             //do not start the timer unless we get the first log file
             int i=0,j=Integer.MIN_VALUE;
+            //Start sasking the server for log files
             while((i < listOfParameterSets.size())&&(!support.isCancelEverything())) {
                 support.setStatusText("Waiting for results.("+i+"/"+listOfParameterSets.size()+")");
                 HttpClient client = new DefaultHttpClient();
@@ -120,11 +124,13 @@ public class SimulatorWeb implements Runnable, Simulator{
                     response = client.execute(httpGet);
                     int statusCode = response.getStatusLine().getStatusCode();
                     if(statusCode == 200) {
+                        //reset the timer each time we recieve a new log file
                         j = 0;
                         responseString = new BasicResponseHandler().handleResponse(response);
                         String filename = response.getFirstHeader("filename").getValue(); 
                         String[] tmpFilenameArray=filename.split("simTime");                       
                         String filenameWithoutExtension=tmpFilenameArray[0];
+                        //Check wether we already got the same file before if yes discard it else process it 
                         if (listOfUnproccessedFilesNames.contains(filenameWithoutExtension)){
                             i++;
                             listOfUnproccessedFilesNames.remove(filenameWithoutExtension);
