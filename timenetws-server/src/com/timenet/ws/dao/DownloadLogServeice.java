@@ -1,5 +1,8 @@
 package com.timenet.ws.dao;
-
+/**
+ * auto GeneratedValue
+ * @author Veeranna
+ */
 import java.util.List;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -40,17 +43,22 @@ public class DownloadLogServeice {
 			response.header("Content-Disposition","attachment; filename="+std.getLog_file_name());
 			
 			LogFile.info("----------Log files download to generate csv-------"+std.getLog_file_name());
-			// Write the code to fetch the record by Id and update the Flag ND to D
-			// Use Hibernate update function.
+			// Fetch the record by simID and update the Flag ND to D
+			// Use of Hibernate update function.
 			std.setDistribute_flag("D");
 			HibernateTemplate.update(std);
+			LogFile.info("----------Hibernate Function to Update Sim ID to -------"+std.getLog_file_name());
 		
+		
+	    }else
+	    {
+	    	response=Response.noContent();
 	    }
-	    }catch(Exception e){
+	    	}
+	    catch(Exception e){
 	    	LogFile.debug("XMLFile download exception occured");
 	    	response=Response.noContent();
-	    }  
-	    
+	    	}  
 		return response.build();
 	}
 	
