@@ -24,6 +24,7 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 import com.timenet.ws.models.simulationLogList;
 import com.timenet.ws.util.HibernateTemplate;
+import com.timenet.ws.util.LogFile;
 
 @Path("/log")
 public class UploadLogFileService {
@@ -43,8 +44,10 @@ public class UploadLogFileService {
 		String simid = uploadForm.get("simid").get(0).getBodyAsString();
 		// Get file data to save
 		List<InputPart> inputParts = uploadForm.get("attachment");
-
-		System.out.println("input" + inputParts.toString());
+		
+		// Check for null pointer exception
+		if(fileName!= null && simid!=null && inputParts!=null)
+		{
 		for (InputPart inputPart : inputParts) {
 
 			try {
@@ -54,22 +57,22 @@ public class UploadLogFileService {
 				InputStream inputStream = inputPart.getBody(InputStream.class,null);
 				byte[] bytes = IOUtils.toByteArray(inputStream);
 				id = saveFileInDb(bytes, fileName, simid);
-				System.out.println("Done");
+				LogFile.info(fileName+"Saved in Database");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 
 		}
-
-		return Response.status(200).entity("uploadFile is called, Uploaded file id : " + id).build();
+		} else {
+			// http status 412 Precondition Failed
+			return Response.status(412).entity("Log File Unable to Store in Databse: Network Failure").build();
+		}
+		return Response.status(200).entity("Log File Is Stored In Database SimID : " + id).build();
 
 	}
 
-	/**
-	 * header sample { Content-Type=[image/png], Content-Disposition=[form-data;
-	 * name="file"; filename="filename.extension"] }
-	 **/
-	// get uploaded filename, is there a easy way in RESTEasy?
+
+	// Get Uploaded Filename From Header
 	private String getFileName(MultivaluedMap<String, String> header) {
 		String[] contentDisposition = header.getFirst("Content-Disposition").split(";");
 		for (String filename : contentDisposition) {
@@ -82,29 +85,14 @@ public class UploadLogFileService {
 		return "unknown";
 	}
 
-	// save to somewhere
-	/*private void writeFile(byte[] content, String filename) throws IOException {
-
-		File file = new File(filename);
-		if (!file.exists()) 
-		{
-			file.createNewFile();
-		}
-		//logList fm = new logList();
-		FileOutputStream fop = new FileOutputStream(file);
-		fop.write(content);
-		fop.flush();
-		fop.close();
-
-	}*/
-
+   // Save Log File in Database using Hibernate Function
 	private int saveFileInDb(byte[] content, String fileName, String simid) {
 		int fileId = -1;
 		simulationLogList fm = new simulationLogList();
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-		   //get current date time with Date()
-		   Date date = new Date();
-		   
+		//get current date time with Date()
+		Date date = new Date();
+		 try {
 		fm.setLog_file_name(fileName);
 		fm.setDistribute_flag("ND");
 		fm.setCurrent_time_stamp(dateFormat.format(date));
@@ -113,7 +101,11 @@ public class UploadLogFileService {
 		fm.setLog_size(content.length);
 
 		fileId = (Integer) HibernateTemplate.save(fm);
-		System.out.println("-------- Log file Stored in Server ---------"+fileName);
+		LogFile.info("-------- Log file Stored in Database simulation_xml_list table ---------"+fileName);
+		 }catch(Exception e){
+		    	LogFile.debug("Exception Occured While Storing Log File");
+		    	
+		    }  
 		return fileId;
 
 	}
