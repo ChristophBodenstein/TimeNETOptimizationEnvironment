@@ -51,7 +51,6 @@ public class SimulatorWeb implements Runnable, Simulator{
     ArrayList<SimulationType> listOfCompletedSimulationParsers;
     ArrayList<String> listOfUnproccessedFilesNames ;
     String originalFilename;
-    String pathToTimeNet;
     String tmpFilePath;
     String actualSimulationLogFile="";//actual log-file for one local simulation
     String simid;
@@ -206,7 +205,6 @@ public class SimulatorWeb implements Runnable, Simulator{
         this.listOfParameterSets=listOfParameterSetsTMP;
         this.log=log;
         this.originalFilename=support.getOriginalFilename();//  originalFilenameTMP;
-        this.pathToTimeNet=support.getPathToTimeNet();//  pathToTimeNetTMP;
         this.tmpFilePath=support.getTmpPath();// tmpFilePathTMP;
         if(simulationCounterTMP>=0){
             this.simulationCounter=simulationCounterTMP;}
