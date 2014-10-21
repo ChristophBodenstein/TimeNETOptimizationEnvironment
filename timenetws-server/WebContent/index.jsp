@@ -5,8 +5,14 @@
 <HTML>
     <HEAD>
         <title>TimeNet Simulation Portal</title>
+        <style>
+        td{
+        text-align:center;
+        vertical-align:middle;
+        }
+        </style>
     </HEAD>
-
+<body bgcolor="CCCCFF">
     <BODY>
         <h1>TimeNet Simulation Portal</h1>
 
@@ -17,7 +23,7 @@
             Class.forName("com.mysql.jdbc.Driver").newInstance(); 
             connection = DriverManager.getConnection(connectionURL, "root", "root");
             if(!connection.isClosed()) 
-                 out.println("Successfully connected to " + "MySQL server using TCP/IP...");
+            {
             
             Statement statement = connection.createStatement();
 
@@ -29,15 +35,15 @@
             }
 
             ResultSet resultset = 
-            		statement.executeQuery("Select T.sid,T.All,IFNULL(D.delivered,0) as 'Delivered',IFNULL(P.finished,0) as 'Finished' from ( SELECT `simulation_id` as sid,count(*) as 'All' FROM `simulation_xml_list` group by `simulation_id`) as T LEFT OUTER JOIN (( SELECT `simulation_id` as sod, count(*) as finished FROM `simulation_log_list` group by `simulation_id` ) as P , (SELECT `simulation_id` as sid,count(*) as delivered FROM `simulation_xml_list` group by `simulation_id`,`distribute_flag` having `distribute_flag` = 'D') as D ) on (T.sid = P.sod and T.sid = D.sid) order by sid desc") ;
+                statement.executeQuery("Select T.sid,T.All,IFNULL(D.delivered,0) as 'Delivered',IFNULL(P.finished,0) as 'Finished' from ( SELECT `simulation_id` as sid,count(*) as 'All' FROM `simulation_xml_list` group by `simulation_id`) as T LEFT OUTER JOIN (( SELECT `simulation_id` as sod, count(*) as finished FROM `simulation_log_list` group by `simulation_id` ) as P , (SELECT `simulation_id` as sid,count(*) as delivered FROM `simulation_xml_list` group by `simulation_id`,`distribute_flag` having `distribute_flag` = 'D') as D ) on (T.sid = P.sod and T.sid = D.sid) order by sid desc") ; 
 %>
         <TABLE BORDER="1">
             <TR>
-               <TH>time</TH>
-               <TH>All</TH>
-               <TH>Delivered</TH>
-               <TH>Processed</TH>
-               <TH></TH>
+               <TH>    BATCH TIME STAMP    </TH>
+               <TH>ALL BATCH FILES</TH>
+               <TH>DELIVERED TO CLIENTS</TH>
+               <TH>PROCESSED BY CLIENTS</TH>
+               <TH>DELETE ALL BATCH FILES</TH>
              
                
            </TR>
@@ -60,6 +66,8 @@
            </TR>
        <% 
            } 
+            
+            }
             connection.close();
        %>
        </TABLE>
