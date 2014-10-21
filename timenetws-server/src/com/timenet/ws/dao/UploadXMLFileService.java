@@ -1,5 +1,8 @@
 package com.timenet.ws.dao;
-
+/**
+ * auto GeneratedValue
+ * @author Veeranna
+ */
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -43,7 +46,10 @@ public class UploadXMLFileService {
 		// Get file data to save
 		List<InputPart> inputParts = uploadForm.get("attachment");
 
-		System.out.println("input" + inputParts.toString());
+		// Check for null pointer exception
+		if(fileName!= null && simid!=null && inputParts!=null)
+		{
+			
 		for (InputPart inputPart : inputParts) {
 
 			try {
@@ -53,19 +59,23 @@ public class UploadXMLFileService {
 				InputStream inputStream = inputPart.getBody(InputStream.class,null);
 				byte[] bytes = IOUtils.toByteArray(inputStream);
 				id = saveFileInDb(bytes, fileName, simid);
-				System.out.println("Done");
+				LogFile.info(fileName+"Saved in Database");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 
 		}
 
-		return Response.status(200).entity("uploadFile is called, Uploaded file id : " + id).build();
-
+	} else {
+		// http status 412 Precondition Failed
+		return Response.status(412).entity("XML File Unable to Store in Databse: Network Failure").build();
 	}
+	return Response.status(200).entity("XML File Is Stored In Database SimID : " + id).build();
+
+}
 
 
-	// get uploaded filename, is there a easy way in RESTEasy?
+	// Get Uploaded Filename From Header
 	private String getFileName(MultivaluedMap<String, String> header) {
 		String[] contentDisposition = header.getFirst("Content-Disposition").split(";");
 		for (String filename : contentDisposition) {
@@ -78,7 +88,7 @@ public class UploadXMLFileService {
 		return "unknown";
 	}
 
-	// save to somewhere
+	// Save To Database
 	private void writeFile(byte[] content, String filename) throws IOException {
 
 		File file = new File(filename);
@@ -100,7 +110,7 @@ public class UploadXMLFileService {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		   //get current date time with Date()
 		   Date date = new Date();
-		   
+		   try { 
 		fm.setXml_file_name(fileName);
 		fm.setDistribute_flag("ND");
 		fm.setCurrent_time_stamp(dateFormat.format(date));
@@ -109,7 +119,11 @@ public class UploadXMLFileService {
 		fm.setXml_size(content.length);
 
 		fileId = (Integer) HibernateTemplate.save(fm);
-		LogFile.info("--------Simulation XML file Stored in Server ---------"+fileName);
+		LogFile.info("-------- Log file Stored in Database simulation_log_list table ---------"+fileName);
+	 }catch(Exception e){
+	    	LogFile.debug("Exception Occured While Storing Log File");
+	    	
+	    }  
 		return fileId;
 
 	}
