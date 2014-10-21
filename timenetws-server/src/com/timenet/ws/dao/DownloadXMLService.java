@@ -1,6 +1,10 @@
 package com.timenet.ws.dao;
-
+/**
+ * auto GeneratedValue
+ * @author Veeranna
+ */
 import java.util.List;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -12,8 +16,6 @@ import com.timenet.ws.models.simulationLogList;
 import com.timenet.ws.models.simulationXmlList;
 import com.timenet.ws.util.HibernateTemplate;
 import com.timenet.ws.util.LogFile;
-
-
 
 
 
@@ -50,14 +52,18 @@ public class DownloadXMLService {
 			HibernateTemplate.update(std);
 			// Write the code to fetch the record by Id and update the Flag ND to D
 			// Use Hibernate update function.
+		    }else
+		    {
+		    	response=Response.noContent();
 		    }
-		}catch(Exception e){
-			LogFile.debug("LogFile download exception occured");
-			response=Response.noContent();
-		 }
-		return response.build();
+		    	}
+		    catch(Exception e){
+		    	LogFile.debug("XMLFile download exception occured");
+		    	response=Response.noContent();
+		    	}  
 		
-	}
+			return response.build();
+		}
 	
 
 	
