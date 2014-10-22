@@ -148,10 +148,10 @@ private ArrayList<Boolean> listOfUIStatesPushed;
 
         this.pathToLastSimulationCache=auto.getProperty("pathToLastSimulationCache", "");
 
-        support.setChosenBenchmarkFunction(typeOfBenchmarkFunction.valueOf(auto.getProperty("BenchmarkType")));
+        support.setChosenBenchmarkFunction(typeOfBenchmarkFunction.valueOf(auto.getProperty("BenchmarkType",typeOfBenchmarkFunction.Sphere.toString() )));
         this.jComboBoxBenchmarkFunction.setSelectedItem(support.getChosenBenchmarkFunction());
        
-        support.setIsRunningAsSlave(Boolean.parseBoolean(auto.getProperty("isRunningAsSlave")));
+        support.setIsRunningAsSlave(Boolean.parseBoolean(auto.getProperty("isRunningAsSlave","false")));
 
         support.setRemoteAddress(auto.getProperty("RemoteAddress", ""));
         
