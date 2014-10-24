@@ -317,11 +317,48 @@ ArrayList<ArrayList <parameter> > listOfParameterSetsTMP;
      * Returns the calulated optimimum
      * For Benchmark-Functions this can be caluclated.
      * For other simulators, this must be given by user.
+     * @return 
      */
-    public ArrayList<parameter> getCalculatedOptimum() {
+    public SimulationType getCalculatedOptimum() {
     ArrayList<parameter> optimumParameterlist=support.getCopyOfParameterSet(support.getOriginalParameterBase());
     ArrayList<parameter> optimumChangableParameterset=support.getListOfChangableParameters(optimumParameterlist);
-        
+       
+        switch(benchmarkFunction){
+                case Ackley:
+                    //Optimum is 0, its exacpt at 0,0
+                    
+                    break;
+                case Rosenbrock:
+                    
+                    break;
+                case Sphere:
+                    
+                    break;
+
+                case Matya:
+                    
+                    break;
+
+                case Schwefel:
+                    
+                    break;
+
+                case Rastrigin:
+                    
+                    break;
+
+                case Easom:
+                    
+                    break;
+
+
+                default:
+                    
+                    break;
+                }
+    
+    
+    
         return null;
     }
 }

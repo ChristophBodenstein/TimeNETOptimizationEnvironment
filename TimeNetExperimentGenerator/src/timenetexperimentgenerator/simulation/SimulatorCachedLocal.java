@@ -128,7 +128,7 @@ private String logFileName;
      * For Benchmark-Functions this can be caluclated.
      * For other simulators, this must be given by user.
      */
-    public ArrayList<parameter> getCalculatedOptimum() {
+    public SimulationType getCalculatedOptimum() {
         return null;
     }
 }
