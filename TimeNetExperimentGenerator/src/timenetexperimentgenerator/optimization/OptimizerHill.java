@@ -618,5 +618,11 @@ int stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;
     public void setLogFileName(String name){
     this.logFileName=name;
     }
-
+    /**
+     * Returns the used logfileName
+     * @return name of logfile
+     */
+    public String getLogFileName() {
+    return this.logFileName;
+    }
 }
