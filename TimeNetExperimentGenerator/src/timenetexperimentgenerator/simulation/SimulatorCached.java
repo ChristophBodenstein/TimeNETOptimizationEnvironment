@@ -131,4 +131,12 @@ private String logFileName;
         this.mySimulationCache = mySimulationCache;
     }
     
+    /**
+     * Returns the calulated optimimum
+     * For Benchmark-Functions this can be caluclated.
+     * For other simulators, this must be given by user.
+     */
+    public ArrayList<parameter> getCalculatedOptimum() {
+        return null;
+    }
 }

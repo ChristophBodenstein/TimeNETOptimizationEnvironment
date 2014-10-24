@@ -171,7 +171,6 @@ ArrayList<ArrayList <parameter> > listOfParameterSetsTMP;
         SimulationType tmpSimulation=new SimulationType();
         ArrayList<parameter> tmpParameterList=listOfParameterSetsTMP.get(i);
         ArrayList<parameter> tmpListOfChangableParameter=support.getListOfChangableParameters(tmpParameterList);
-            //TODO make deep copy of Parameterlist?
 
         //set indicator
         support.setStatusText("Simulating: "+(i+1) + "/"+ listOfParameterSetsTMP.size());
@@ -312,5 +311,17 @@ ArrayList<ArrayList <parameter> > listOfParameterSetsTMP;
         //Print out a log file
         support.addLinesToLogFileFromListOfParser(myListOfSimulations, logFileName);
         }
+    }
+
+    /**
+     * Returns the calulated optimimum
+     * For Benchmark-Functions this can be caluclated.
+     * For other simulators, this must be given by user.
+     */
+    public ArrayList<parameter> getCalculatedOptimum() {
+    ArrayList<parameter> optimumParameterlist=support.getCopyOfParameterSet(support.getOriginalParameterBase());
+    ArrayList<parameter> optimumChangableParameterset=support.getListOfChangableParameters(optimumParameterlist);
+        
+        return null;
     }
 }

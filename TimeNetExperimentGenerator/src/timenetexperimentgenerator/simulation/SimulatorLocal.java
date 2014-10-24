@@ -335,4 +335,12 @@ long timeStamp=0;//TimeStamp for measuring the runtime of one simulation
     }
     
 
+    /**
+     * Returns the calulated optimimum
+     * For Benchmark-Functions this can be caluclated.
+     * For other simulators, this must be given by user.
+     */
+    public ArrayList<parameter> getCalculatedOptimum() {
+        return null;
+    }
 }

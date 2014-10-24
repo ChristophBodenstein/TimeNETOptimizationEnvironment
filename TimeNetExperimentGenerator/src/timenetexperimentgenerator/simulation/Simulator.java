@@ -20,4 +20,5 @@ public void initSimulator(ArrayList< ArrayList<parameter> > listOfParameterSetsT
 public int getStatus();
 public int getSimulationCounter();
 public ArrayList<SimulationType> getListOfCompletedSimulationParsers();
+public ArrayList<parameter> getCalculatedOptimum();
 }
