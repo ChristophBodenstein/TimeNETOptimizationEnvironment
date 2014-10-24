@@ -23,10 +23,18 @@ import timenetexperimentgenerator.plot.RPlugin;
 public class StatisticAggregator {
 private static ArrayList<Statistic> listOfStatistics=new ArrayList<Statistic>();  
 
+    /**
+     * Constructor
+     */
     public StatisticAggregator() {
     listOfStatistics=new ArrayList<Statistic>();
     }
     
+    /**
+     * Adds one simulation to statistic which is identified by its logfilename
+     * @param filename name of the logfile of statistic
+     * @param p simulation to be added to statistic
+     */
     public static void addToStatistics(SimulationType p, String filename){
     Statistic myStatistic=getStatisticByName(filename);
         myStatistic.addSimulation(p);
@@ -35,8 +43,12 @@ private static ArrayList<Statistic> listOfStatistics=new ArrayList<Statistic>();
         RPlugin.updateCachedListOfStatistics();
     }
     
-    
-    static Statistic getStatisticByName(String filename){
+    /**
+     * returns the statistic with given logfilename
+     * @param filename logfilename of statistic to be returned
+     * @return requested Statistic
+     */
+    public static Statistic getStatisticByName(String filename){
     Statistic returnValue=null;
     
     

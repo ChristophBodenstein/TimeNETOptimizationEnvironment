@@ -20,6 +20,7 @@ import java.io.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -72,6 +73,8 @@ private AboutPanel aboutFrame=new AboutPanel();
 private JDialog aboutDialog;
 
 private boolean savePropertiesEnabled=false;
+
+private String logFileNameOfOptimizer=null;
 
 private ArrayList<Component> listOfUIComponents=new ArrayList<Component>();//List of all Components
 private ArrayList<Boolean> listOfUIStates=new ArrayList<Boolean>();
@@ -250,6 +253,7 @@ private ArrayList<Boolean> listOfUIStatesPushed;
         listOfUIComponents.add(this.jComboBoxSimulationType);
         listOfUIComponents.add(this.jComboBoxOptimizationType);
         listOfUIComponents.add(this.jButtonOpenSCPN);
+        listOfUIComponents.add(this.jSpinnerNumberOfOptimizationRuns);
         
         this.switchUIState(uiState.defaultState);
         if(support.isIsRunningAsSlave()){
@@ -342,6 +346,7 @@ private ArrayList<Boolean> listOfUIStatesPushed;
         jProgressBarMemoryUsage = new javax.swing.JProgressBar();
         jLabelMemoryUsage = new javax.swing.JLabel();
         jLabelSpinning = new javax.swing.JLabel();
+        jSpinnerNumberOfOptimizationRuns = new javax.swing.JSpinner();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jSeparator4 = new javax.swing.JPopupMenu.Separator();
@@ -546,6 +551,8 @@ private ArrayList<Boolean> listOfUIStatesPushed;
 
         jLabelSpinning.setText("..");
 
+        jSpinnerNumberOfOptimizationRuns.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
+
         jMenu1.setText("File");
         jMenu1.add(jSeparator4);
         jMenu1.add(jSeparator5);
@@ -663,24 +670,12 @@ private ArrayList<Boolean> listOfUIStatesPushed;
                                 .add(jButtonReload, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .add(jSeparator2)
                             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                                .add(jButtonExport, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 182, Short.MAX_VALUE)
+                                .add(jButtonExport, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                                 .add(jButtonCancel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 137, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                             .add(jButtonGenerateListOfExperiments, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .add(jSeparator3)
                             .add(org.jdesktop.layout.GroupLayout.TRAILING, jButtonLoadCacheFile, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                                    .add(layout.createSequentialGroup()
-                                        .add(jComboBoxSimulationType, 0, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .add(5, 5, 5))
-                                    .add(layout.createSequentialGroup()
-                                        .add(jComboBoxBenchmarkFunction, 0, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)))
-                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                                    .add(jButtonOptiOptions, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .add(jComboBoxOptimizationType, 0, 121, Short.MAX_VALUE))
-                                .add(5, 5, 5))
                             .add(jButtonStartBatchSimulation, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -692,7 +687,24 @@ private ArrayList<Boolean> listOfUIStatesPushed;
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .add(jLabelSpinning, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 18, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                                 .add(23, 23, 23))
-                            .add(jButtonStartOptimization, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                                    .add(layout.createSequentialGroup()
+                                        .add(jButtonStartOptimization, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 219, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                                        .add(jSpinnerNumberOfOptimizationRuns, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 95, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                                    .add(layout.createSequentialGroup()
+                                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                                            .add(layout.createSequentialGroup()
+                                                .add(jComboBoxSimulationType, 0, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .add(5, 5, 5))
+                                            .add(layout.createSequentialGroup()
+                                                .add(jComboBoxBenchmarkFunction, 0, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)))
+                                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                                            .add(jButtonOptiOptions, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .add(jComboBoxOptimizationType, 0, 121, Short.MAX_VALUE))))
+                                .add(5, 5, 5)))))
                 .add(20, 20, 20))
             .add(layout.createSequentialGroup()
                 .addContainerGap()
@@ -740,7 +752,9 @@ private ArrayList<Boolean> listOfUIStatesPushed;
                 .add(18, 18, 18)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                     .add(jButtonPathToTimeNet, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 20, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jButtonStartOptimization, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 32, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                        .add(jButtonStartOptimization, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 32, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .add(jSpinnerNumberOfOptimizationRuns, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(jLabelExportStatus, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 29, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
@@ -918,6 +932,8 @@ private ArrayList<Boolean> listOfUIStatesPushed;
                     //Save original Parameterset, for stepping and designspace borders
                     support.setOriginalParameterBase(support.getCopyOfParameterSet(support.getParameterBase()));
                     Optimizer myOptimizer=SimOptiFactory.getOptimizer();
+                    logFileNameOfOptimizer=support.getTmpPath()+File.separator+this.getClass().getSimpleName()+"_"+Calendar.getInstance().getTimeInMillis()+support.getOptimizerPreferences().getPref_LogFileAddon()+".csv";
+                    myOptimizer.setLogFileName(logFileNameOfOptimizer);
                     myOptimizer.initOptimizer();
                     //Wait for end of Optimizer
                     support.waitForOptimizerAsynchronous(myOptimizer, this);
@@ -1397,6 +1413,7 @@ private ArrayList<Boolean> listOfUIStatesPushed;
     private javax.swing.JPopupMenu.Separator jSeparator4;
     private javax.swing.JPopupMenu.Separator jSeparator5;
     private javax.swing.JPopupMenu.Separator jSeparator6;
+    private javax.swing.JSpinner jSpinnerNumberOfOptimizationRuns;
     private javax.swing.JTabbedPane jTabbedPaneOptiTargets;
     private javax.swing.JTable jTableParameterList;
     private javax.swing.JTextField jTextFieldSCPNFile;
@@ -2000,6 +2017,7 @@ private ArrayList<Boolean> listOfUIStatesPushed;
         17-jComboBoxSimulationType
         18-jComboBoxOptimizationType
         19-jButtonOpenSCPN
+        20-jSpinnerNumberOfOptimizationRuns
         */
     this.listOfUIStates=new ArrayList<Boolean>();
         //Activate all

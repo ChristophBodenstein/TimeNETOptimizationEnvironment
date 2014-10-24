@@ -9,8 +9,10 @@
 
 package timenetexperimentgenerator.helper;
 
+import java.util.ArrayList;
 import timenetexperimentgenerator.datamodel.MeasureType;
 import timenetexperimentgenerator.datamodel.SimulationType;
+import timenetexperimentgenerator.datamodel.parameter;
 import timenetexperimentgenerator.support;
 
 /**
@@ -30,6 +32,7 @@ double simulationTimeTotal=0;
 double simulationTimeFromCache=0;
 double simulationTimeFromWeb=0;
 double simulationTimeFromLocal=0;
+SimulationType foundOptimum,calulatedOptimum=null;
 
 
     public Statistic(String name){
@@ -65,6 +68,26 @@ double simulationTimeFromLocal=0;
     }
 
     /**
+     * Adds the found optimum and the calculated optimum to statistics.
+     * Useful for statistics of optimization runs
+     * @param foundOptimum The simulation incl. parameterset which was found by optimization algorithm
+     * @param optimumParameterset The calulated optimium parameterset to calulate the distance
+     */
+    public void addFoundOptimum(SimulationType foundOptimum, SimulationType calulatedOptimum){
+    this.foundOptimum=foundOptimum;
+    this.calulatedOptimum=calulatedOptimum;
+    }
+    
+    /**
+     * Prints out Statistics about optimization to Log
+     */
+    public void printOptimizerStatisticsToLog(){
+        if(this.foundOptimum!=null && this.calulatedOptimum!=null){
+        support.log("****Optimization-Statistics****");
+        }
+    }
+    
+    /**
      * Prints all relevant statistic data to support.log
      */
     public void printStatisticToLog(){
@@ -82,10 +105,8 @@ double simulationTimeFromLocal=0;
         support.log("SimulationTime from Web: " + this.simulationTimeFromWeb);
         support.log("SimulationTime from Cache: " + this.simulationTimeFromCache);
         support.log("SimulationTime from Local: " + this.simulationTimeFromLocal);
-        
-        
-        
         support.log("-----Statistics of Simulation: "+this.getName()+" ----- End -----");
+        printOptimizerStatisticsToLog();
     }
     
     

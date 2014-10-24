@@ -322,33 +322,70 @@ ArrayList<ArrayList <parameter> > listOfParameterSetsTMP;
     public SimulationType getCalculatedOptimum() {
     ArrayList<parameter> optimumParameterlist=support.getCopyOfParameterSet(support.getOriginalParameterBase());
     ArrayList<parameter> optimumChangableParameterset=support.getListOfChangableParameters(optimumParameterlist);
-       
+    
+    //Create dummy-Simulation with optimum-Measure
+    SimulationType myOptimumSimulation=new SimulationType();
+    
+    ArrayList<MeasureType> tmpListOfMeasurements=((MeasurementForm)support.getMeasureFormPane().getComponentAt(0)).getMeasurements();
+           //All Measure will have the same result value
+
+        ArrayList<MeasureType> newListOfMeasurements=new ArrayList<MeasureType>();
+
+            for(int d=0;d<tmpListOfMeasurements.size();d++){
+            //make deep copy of old Measurement
+            MeasureType tmpMeasurement=new MeasureType(tmpListOfMeasurements.get(d));
+            tmpMeasurement.setAccuraryReached(true);
+            tmpMeasurement.setMeanValue(0.0);
+            newListOfMeasurements.add(tmpMeasurement);
+            tmpMeasurement.setCPUTime(2.22);
+            }//end of for-d-loop
+    
         switch(benchmarkFunction){
                 case Ackley:
-                    //Optimum is 0, its exacpt at 0,0
+                    //Optimum is in the middle of each parameter, its exact at 0,0
+                    for(int i=0;i<optimumChangableParameterset.size();i++){
+                    parameter p=optimumChangableParameterset.get(i);
+                    p.setValue(p.getEndValue()- ((p.getEndValue()-p.getStartValue())/2)  );
+                    }
                     
                     break;
                 case Rosenbrock:
-                    
+                    //TODO
                     break;
                 case Sphere:
-                    
+                    //Optimum is in the middle of each parameter, its exact at 0,0
+                    for(int i=0;i<optimumChangableParameterset.size();i++){
+                    parameter p=optimumChangableParameterset.get(i);
+                    p.setValue(p.getEndValue()- ((p.getEndValue()-p.getStartValue())/2)  );
+                    }
                     break;
 
                 case Matya:
-                    
+                    //Optimum is in the middle of each parameter, its exact at 0,0
+                    for(int i=0;i<optimumChangableParameterset.size();i++){
+                    parameter p=optimumChangableParameterset.get(i);
+                    p.setValue(p.getEndValue()- ((p.getEndValue()-p.getStartValue())/2)  );
+                    }
                     break;
 
                 case Schwefel:
-                    
+                    //Optimum is in the middle of each parameter, its exact at 0,0
+                    for(int i=0;i<optimumChangableParameterset.size();i++){
+                    parameter p=optimumChangableParameterset.get(i);
+                    p.setValue(p.getEndValue()- ((p.getEndValue()-p.getStartValue())/2)  );
+                    }
                     break;
 
                 case Rastrigin:
-                    
+                    //Optimum is in the middle of each parameter, its exact at 0,0
+                    for(int i=0;i<optimumChangableParameterset.size();i++){
+                    parameter p=optimumChangableParameterset.get(i);
+                    p.setValue(p.getEndValue()- ((p.getEndValue()-p.getStartValue())/2)  );
+                    }
                     break;
 
                 case Easom:
-                    
+                    //TODO
                     break;
 
 
@@ -357,7 +394,9 @@ ArrayList<ArrayList <parameter> > listOfParameterSetsTMP;
                     break;
                 }
     
-    
+
+        myOptimumSimulation.setListOfParameters(optimumParameterlist);
+        myOptimumSimulation.setMeasures(newListOfMeasurements);
     
         return null;
     }
