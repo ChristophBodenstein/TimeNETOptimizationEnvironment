@@ -147,7 +147,7 @@ public class SimulatorWeb implements Runnable, Simulator{
                             //here the SimType has to get Data From Parser;
                             Parser myParser = new Parser();
                             SimulationType myResults= myParser.parse(actualSimulationLogFile);//parse Log-file and xml-file
-
+                            myResults.setIsFromDistributedSimulation(true);
                             if(myParser.isParsingSuccessfullFinished()) {
                                 support.log("Parsing successful.");
                                 //listOfCompletedSimulationParsers.add(myResults);
