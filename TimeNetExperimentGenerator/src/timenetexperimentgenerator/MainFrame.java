@@ -1063,12 +1063,14 @@ private ArrayList<Boolean> listOfUIStatesPushed;
     }
     
     support.log("Checking URL of distributed simulation server.");
+    support.setDistributedSimulationAvailable(checksuccessful);
+    updateComboBoxSimulationType();
         if(checksuccessful)
         {
             jButtonEnterURLToSimServer.setBackground(Color.GREEN);
             jButtonEnterURLToSimServer.setOpaque(true);
             jButtonEnterURLToSimServer.setBorderPainted(false);
-            jButtonEnterURLToSimServer.setText("RESET URL of Sim.-Server"); 
+            jButtonEnterURLToSimServer.setText("RESET URL of Sim.-Server");
             this.saveProperties();
             jButtonEnterURLToSimServer.setEnabled(true);
         }
