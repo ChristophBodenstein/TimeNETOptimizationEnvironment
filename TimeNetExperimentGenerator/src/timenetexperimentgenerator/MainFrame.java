@@ -931,12 +931,19 @@ private ArrayList<Boolean> listOfUIStatesPushed;
                     
                     //Save original Parameterset, for stepping and designspace borders
                     support.setOriginalParameterBase(support.getCopyOfParameterSet(support.getParameterBase()));
+                    //An dieser Stelle einhaken, extra-Methode für Optimierung aufrufen, wenn Mehrfachopti verlangt wird.
+                    support.setNumberOfOptiRunsToGo((Integer)this.jSpinnerNumberOfOptimizationRuns.getValue());
+                    startOptimizationAgain();
+                    /*
                     Optimizer myOptimizer=SimOptiFactory.getOptimizer();
                     logFileNameOfOptimizer=support.getTmpPath()+File.separator+this.getClass().getSimpleName()+"_"+Calendar.getInstance().getTimeInMillis()+support.getOptimizerPreferences().getPref_LogFileAddon()+".csv";
                     myOptimizer.setLogFileName(logFileNameOfOptimizer);
                     myOptimizer.initOptimizer();
                     //Wait for end of Optimizer
                     support.waitForOptimizerAsynchronous(myOptimizer, this);
+                    */
+                    //Ende des einhakens für Merhfachopti
+                    
                     /*    while(myOptimizer.getOptimum()==null){
                             try {
                                 Thread.sleep(500);
@@ -2073,8 +2080,17 @@ private ArrayList<Boolean> listOfUIStatesPushed;
         }
     }
     
+    /**
+     * Deactivate every UI component, like buttons, spinners, etc.
+     * Except the ones, given in oList
+     * @param oList Array of User-Interface components that will not be deactivated
+     */
     public void deactivateEveryComponentExcept(Component[] oList){
     this.jButtonGenerateListOfExperiments.setEnabled(false);
+    
+        for(int i=0;i<this.listOfUIComponents.size();i++){
+        this.listOfUIComponents.get(i).setEnabled(false);
+        }
     
         for(int i=0;i<oList.length;i++){
             try{
@@ -2086,14 +2102,42 @@ private ArrayList<Boolean> listOfUIStatesPushed;
     
     }
 
+    /**
+     * Callback-Method of SimOptiCallback
+     * called when Simulation or optimization is ended succesfully
+     * @param message will be shown in staus-label
+     */
     public void operationSucessfull(String message) {
         this.popUIState();
+        int tmpNumerOfOptiRunsToGo=support.getNumberOfOptiRunsToGo();
+        if(tmpNumerOfOptiRunsToGo<=1){
         support.setStatusText(message);
+        }   else{
+            support.log("Starting next Optimization run, number:" +(tmpNumerOfOptiRunsToGo-1));
+            support.setNumberOfOptiRunsToGo(tmpNumerOfOptiRunsToGo-1);
+            this.startOptimizationAgain();
+            }
     }
 
-    public void operationCanceld(String message) {
+    /**
+     * Callback-Method of SimOptiCallback
+     * called when Simulation or optimization is canceled
+     * @param message will be shown in staus-label
+     */
+    public void operationCanceled(String message) {
         this.popUIState();
         support.setStatusText(message);
     }
     
+    /**
+     * Starts an OptimizationRun, useful for Multiple optimization runs
+     */
+    private void startOptimizationAgain(){
+    Optimizer myOptimizer=SimOptiFactory.getOptimizer();
+                    logFileNameOfOptimizer=support.getTmpPath()+File.separator+this.getClass().getSimpleName()+"_"+Calendar.getInstance().getTimeInMillis()+support.getOptimizerPreferences().getPref_LogFileAddon()+".csv";
+                    myOptimizer.setLogFileName(logFileNameOfOptimizer);
+                    myOptimizer.initOptimizer();
+                    //Wait for end of Optimizer
+                    support.waitForOptimizerAsynchronous(myOptimizer, this);
+    }
 }

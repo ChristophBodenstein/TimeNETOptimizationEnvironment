@@ -146,6 +146,8 @@ private static boolean cancelEverything=false;//If set to true, everything is ca
 private static typeOfBenchmarkFunction chosenBenchmarkFunction=DEFAULT_TYPE_OF_BENCHMARKFUNCTION;
 private static long lastTimeOfSpinning=0;
 
+private static int numberOfOptiRunsToGo=1;//multiple-Optimization-run-number
+
     /**
      * @return the myOptimizerPreferences a Reference to the Preferences-Frame
      */
@@ -1035,7 +1037,7 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
                             }
                         }
                     }
-                support.printMeasureType(activeMeasure, "**** Optimizd Value for Measure is ****", "---------------------------");
+                support.printMeasureType(activeMeasure, "**** Optimized Value for Measure is ****", "---------------------------");
             }
     support.log("Whole remaining distance of all Measures is:"+distance);
     }
@@ -1356,14 +1358,31 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
     statusLabel.setText(s);
     }
     
+    /**
+     * Calls the endedsuccessful-method in mainFram (from interface SimOptiCallback)
+     * to signal, that an operation has ended with success
+     * @param message Text to be displayed in info-label of mainFrame
+     */
     public static void simOptiOperationSuccessfull(String message){
     mainFrame.operationSucessfull(message);
     }
     
+    /**
+     * Calls the cancel-method in mainFram (from interface SimOptiCallback)
+     * to signal, that an operation was canceld
+     * @param message Text to be displayed in info-label of mainFrame
+     */
     public static void simOptiOperationCanceled(String message){
-    mainFrame.operationCanceld(message);
+    mainFrame.operationCanceled(message);
     }
     
+    /**
+     * Waits for an Simulator to End
+     * If Simulator ends, the simulation result is added to statistics and the 
+     * text "The end." is pushed to info-label
+     * @param mySimulator Optimizer to wait for
+     * @param listener SimOptiCallback Listener to be informed via method "operationSuccessfull" or "operationCanceled"
+     */
     public static void waitForSimulatorAsynchronous(final Simulator mySimulator, final SimOptiCallback listener){
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
@@ -1374,7 +1393,7 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
                 this.cancel();
                 }
                 if(support.isCancelEverything()){
-                listener.operationCanceld("Operation canceled by user.");
+                listener.operationCanceled("Operation canceled by user.");
                 this.cancel();
                 }
             }
@@ -1382,6 +1401,13 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
 
     }
     
+    /**
+     * Waits for an Optimizer to End
+     * If Optimizer ends, the calculated optimum is added to statistics and the 
+     * text "The end." is pushed to info-label
+     * @param myOptimizer Optimizer to wait for
+     * @param listener SimOptiCallback Listener to be informed via method "operationSuccessfull" or "operationCanceled"
+     */
     public static void waitForOptimizerAsynchronous(final Optimizer myOptimizer, final SimOptiCallback listener){
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
@@ -1393,7 +1419,7 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
                 this.cancel();
                 }
                 if(support.isCancelEverything()){
-                listener.operationCanceld("Operation canceled by user.");
+                listener.operationCanceled("Operation canceled by user.");
                 this.cancel();
                 }
             }
@@ -1428,6 +1454,20 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
 
     
     
+    }
+
+    /**
+     * @return the numberOfOptiRunsToGo
+     */
+    public static int getNumberOfOptiRunsToGo() {
+        return numberOfOptiRunsToGo;
+    }
+
+    /**
+     * @param aNumberOfOptiRunsToGo the numberOfOptiRunsToGo to set
+     */
+    public static void setNumberOfOptiRunsToGo(int aNumberOfOptiRunsToGo) {
+        numberOfOptiRunsToGo = aNumberOfOptiRunsToGo;
     }
 }
 

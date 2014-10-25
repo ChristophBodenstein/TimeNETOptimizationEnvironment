@@ -329,8 +329,8 @@ ArrayList<ArrayList <parameter> > listOfParameterSetsTMP;
     ArrayList<MeasureType> tmpListOfMeasurements=((MeasurementForm)support.getMeasureFormPane().getComponentAt(0)).getMeasurements();
            //All Measure will have the same result value
 
-        ArrayList<MeasureType> newListOfMeasurements=new ArrayList<MeasureType>();
-
+        
+            ArrayList<MeasureType> newListOfMeasurements=new ArrayList<MeasureType>();
             for(int d=0;d<tmpListOfMeasurements.size();d++){
             //make deep copy of old Measurement
             MeasureType tmpMeasurement=new MeasureType(tmpListOfMeasurements.get(d));
@@ -351,6 +351,7 @@ ArrayList<ArrayList <parameter> > listOfParameterSetsTMP;
                     break;
                 case Rosenbrock:
                     //TODO
+                    support.log("No Optimum is calculated for Rosenbrock!");
                     break;
                 case Sphere:
                     //Optimum is in the middle of each parameter, its exact at 0,0
@@ -386,6 +387,7 @@ ArrayList<ArrayList <parameter> > listOfParameterSetsTMP;
 
                 case Easom:
                     //TODO
+                    support.log("No Optimum is calculated for Easom!");
                     break;
 
 
@@ -398,6 +400,6 @@ ArrayList<ArrayList <parameter> > listOfParameterSetsTMP;
         myOptimumSimulation.setListOfParameters(optimumParameterlist);
         myOptimumSimulation.setMeasures(newListOfMeasurements);
     
-        return null;
+        return myOptimumSimulation;
     }
 }

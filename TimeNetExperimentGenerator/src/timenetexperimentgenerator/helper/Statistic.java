@@ -74,6 +74,7 @@ SimulationType foundOptimum,calulatedOptimum=null;
      * @param optimumParameterset The calulated optimium parameterset to calulate the distance
      */
     public void addFoundOptimum(SimulationType foundOptimum, SimulationType calulatedOptimum){
+    support.log("Adding calculated optimium to List of Statistics.");
     this.foundOptimum=foundOptimum;
     this.calulatedOptimum=calulatedOptimum;
     }

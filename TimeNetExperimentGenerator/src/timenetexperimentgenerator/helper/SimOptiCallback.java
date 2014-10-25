@@ -15,5 +15,5 @@ package timenetexperimentgenerator.helper;
 public interface SimOptiCallback {
 
     public void operationSucessfull(String message);
-    public void operationCanceld(String message);
+    public void operationCanceled(String message);
 }
