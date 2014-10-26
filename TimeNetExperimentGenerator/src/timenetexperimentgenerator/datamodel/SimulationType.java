@@ -91,7 +91,10 @@ private boolean isFromDistributedSimulation=false;//Is False, if local simulated
         this.isFromDistributedSimulation = originalParser.isFromDistributedSimulation;
     }
 
-
+    /**
+     * Returns Distance to target Value (min->distance to 0)
+     * @return Sum Distance of all Measures to their target Values
+     */
     public double getDistance()
     {
         double distance=0;
@@ -102,15 +105,15 @@ private boolean isFromDistributedSimulation=false;//Is False, if local simulated
             {
                 if(activeMeasure.getTargetKindOf().equals("value"))
                 {
-                    distance=activeMeasure.getDistanceFromTarget();
+                    distance+=activeMeasure.getDistanceFromTarget();
                 }
                 else if(activeMeasure.getTargetKindOf().equals("min"))
                 {
-                    distance=activeMeasure.getMeanValue();
+                    distance+=activeMeasure.getMeanValue();
                 }
                 else if(activeMeasure.getTargetKindOf().equals("max"))
                 {
-                    distance=0-activeMeasure.getMeanValue();
+                    distance+=0-activeMeasure.getMeanValue();
                 }
                 else
                 {
@@ -119,6 +122,84 @@ private boolean isFromDistributedSimulation=false;//Is False, if local simulated
             }
         }
         return distance;
+    }
+    
+    /**
+     * Returns distance to target value coordinates in design space
+     * the distance is realtive to the whole design space
+     * So Sum of all parameter-value-ranges equals 100% 
+     * It works only for few Benchmark functions and for normal petri nets if theroetical optimium is given!
+     * @return List of relative Distances to target Values
+     * @param givenOptimum SimulationType of optimum Solution to calculate the distance
+     */
+    public double getDistancesDesignSpace(SimulationType givenOptimum){
+    double rangeSum=0.0;
+    double distanceSum=0.0;
+        for(int i=0;i<givenOptimum.getListOfParameters().size();i++){
+         parameter pOptimumCalculated=givenOptimum.getListOfParameters().get(i);
+         if(pOptimumCalculated.isIteratableAndIntern()){
+         parameter pOptimumFound=support.getParameterByName(this.parameterList, pOptimumCalculated.getName());
+         rangeSum = rangeSum + Math.abs(pOptimumCalculated.getEndValue()-pOptimumCalculated.getStartValue());
+         distanceSum = distanceSum + Math.abs(pOptimumCalculated.getValue()-pOptimumFound.getValue());
+         }
+        }
+    return (distanceSum*100.0/rangeSum);
+    }
+    
+    /**
+     * Returns distance of found optimum to given optimum in relation to Maximum/Minimum of values of measures
+     * This is only possible for benchmark-functions or if absolute minimum/maximum is given by user
+     * @return distance to theoretical optimum in % of possible range
+     */
+    public double getDistanceRelative(){
+    //TODO implement this method!
+    double distance=this.getDistance();
+    double range=0.0;
+    int numberOfParameters=support.getListOfChangableParameters(parameterList).size();
+        /*
+        Get Simulator type from support or Prefs
+        get min-max-values based on Simulator
+        */
+        if(support.getChosenSimulatorType()==typedef.typeOfSimulator.Benchmark){
+        
+            switch(support.getChosenBenchmarkFunction()){
+                case Ackley:
+                    //Optimum is in the middle of each parameter, its exact at 0,0
+                    break;
+                case Rosenbrock:
+                    //TODO Remove this function
+                    support.log("No Optimum is calculated for Rosenbrock!");
+                    break;
+                case Sphere:
+                    //Optimum is in the middle of each parameter, its exact at 0,0
+                    range=Math.pow(5*5, numberOfParameters);
+                    break;
+                case Matya:
+                    //Optimum is in the middle of each parameter, its exact at 0,0
+                    break;
+                case Schwefel:
+                    //Optimum is in the middle of each parameter, its exact at 0,0
+                    break;
+                case Rastrigin:
+                    //Optimum is in the middle of each parameter, its exact at 0,0
+                    break;
+                case Easom:
+                    //TODO remove this function
+                    support.log("No Optimum is calculated for Easom!");
+                    break;
+
+
+                default:
+                    
+                    break;
+                }
+            
+            
+        }else{
+        //TODO Get Min-Max, Opti-Values from somewhere else!
+        }
+        
+    return (distance*100/range);
     }
     
     /**

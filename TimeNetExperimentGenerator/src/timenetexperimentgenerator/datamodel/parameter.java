@@ -209,6 +209,7 @@ private long idHash=0;
      * @return true, if parameter is internal and iteratable
      */
     public boolean isIteratableAndIntern(){
+        //TODO If Parameter is chosen in Opti-Prefs as Precision-Parameter it is not longer internal!!!!!
     return ((!this.isExternalParameter())&&(this.isIteratable()) ); 
     }
     

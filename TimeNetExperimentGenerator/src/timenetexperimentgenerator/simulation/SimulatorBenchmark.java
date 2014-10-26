@@ -131,6 +131,8 @@ ArrayList<ArrayList <parameter> > listOfParameterSetsTMP;
     double limitLower=-5.0, limitUpper=5.0;//The limits of the used benchmark function
 
         switch(benchmarkFunction){
+            //TODO put these Values in DEFAULTS (support-class)
+            //TODO Remove Benchmark-Functions whose optima are hard to calculate
             case Ackley:
                 limitLower=-5.0;
                 limitUpper=5.0;
@@ -326,7 +328,7 @@ ArrayList<ArrayList <parameter> > listOfParameterSetsTMP;
     //Create dummy-Simulation with optimum-Measure
     SimulationType myOptimumSimulation=new SimulationType();
     
-    ArrayList<MeasureType> tmpListOfMeasurements=((MeasurementForm)support.getMeasureFormPane().getComponentAt(0)).getMeasurements();
+    ArrayList<MeasureType> tmpListOfMeasurements=support.getMainFrame().getListOfActiveMeasureMentsToOptimize();
            //All Measure will have the same result value
 
         
@@ -335,9 +337,9 @@ ArrayList<ArrayList <parameter> > listOfParameterSetsTMP;
             //make deep copy of old Measurement
             MeasureType tmpMeasurement=new MeasureType(tmpListOfMeasurements.get(d));
             tmpMeasurement.setAccuraryReached(true);
-            tmpMeasurement.setMeanValue(0.0);
+            //Meanvalue is given by original Measure
+            tmpMeasurement.setCPUTime(0);
             newListOfMeasurements.add(tmpMeasurement);
-            tmpMeasurement.setCPUTime(2.22);
             }//end of for-d-loop
     
         switch(benchmarkFunction){
@@ -350,7 +352,7 @@ ArrayList<ArrayList <parameter> > listOfParameterSetsTMP;
                     
                     break;
                 case Rosenbrock:
-                    //TODO
+                    //TODO remove this function
                     support.log("No Optimum is calculated for Rosenbrock!");
                     break;
                 case Sphere:
@@ -386,7 +388,7 @@ ArrayList<ArrayList <parameter> > listOfParameterSetsTMP;
                     break;
 
                 case Easom:
-                    //TODO
+                    //TODO remove this function
                     support.log("No Optimum is calculated for Easom!");
                     break;
 
