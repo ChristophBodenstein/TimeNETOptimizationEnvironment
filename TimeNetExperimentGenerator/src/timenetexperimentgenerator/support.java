@@ -160,6 +160,9 @@ public static final double DEFAULT_Schwefel_limitupper=500;
 public static final double DEFAULT_Rastrigin_limitLower=-5;
 public static final double DEFAULT_Rastrigin_limitupper=5;
 
+//Defaults for Opti-Statistics
+public static final int DEFAULT_NUMBER_OF_OPTI_PROB_CLASSES=100;
+
 
     /**
      * @return the myOptimizerPreferences a Reference to the Preferences-Frame
@@ -1481,6 +1484,28 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
      */
     public static void setNumberOfOptiRunsToGo(int aNumberOfOptiRunsToGo) {
         numberOfOptiRunsToGo = aNumberOfOptiRunsToGo;
+    }
+    
+    /**
+     * Padding of String to Right
+     * @return padded String
+     * @param s String to be padded
+     * @param n number of chars, String should have
+     * Source: http://www.rgagnon.com/javadetails/java-0448.html
+     */
+    public static String padRight(String s, int n) {
+      return String.format("%1$-" + n + "s", s);
+    }
+
+    /**
+     * Padding of String to Right
+     * @return padded String
+     * @param s String to be padded
+     * @param n number of chars, String should have
+     * Source: http://www.rgagnon.com/javadetails/java-0448.html
+     */
+    public static String padLeft(String s, int n) {
+      return String.format("%1$" + n + "s", s);
     }
 }
 
