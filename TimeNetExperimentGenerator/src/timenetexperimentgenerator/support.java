@@ -148,6 +148,19 @@ private static long lastTimeOfSpinning=0;
 
 private static int numberOfOptiRunsToGo=1;//multiple-Optimization-run-number
 
+//Defaults for Benchmark-Funktions
+public static final double DEFAULT_ACKLEY_limitLower=-5;
+public static final double DEFAULT_ACKLEY_limitupper=5;
+public static final double DEFAULT_Sphere_limitLower=-5;
+public static final double DEFAULT_Sphere_limitupper=5;
+public static final double DEFAULT_Matya_limitLower=-10;
+public static final double DEFAULT_Matya_limitupper=10;
+public static final double DEFAULT_Schwefel_limitLower=-500;
+public static final double DEFAULT_Schwefel_limitupper=500;
+public static final double DEFAULT_Rastrigin_limitLower=-5;
+public static final double DEFAULT_Rastrigin_limitupper=5;
+
+
     /**
      * @return the myOptimizerPreferences a Reference to the Preferences-Frame
      */
