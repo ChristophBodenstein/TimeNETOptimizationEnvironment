@@ -927,10 +927,12 @@ private ArrayList<Boolean> listOfUIStatesPushed;
                     this.popUIState();
                     return;
                     }
+                    //Remove all old Optimizationstatistics
+                    StatisticAggregator.removeOldOptimizationsFromList();
                     
                     //Save original Parameterset, for stepping and designspace borders
                     support.setOriginalParameterBase(support.getCopyOfParameterSet(support.getParameterBase()));
-                    //An dieser Stelle einhaken, extra-Methode für Optimierung aufrufen, wenn Mehrfachopti verlangt wird.
+                    //start Optimization via extra method, set number of multiple optimizations before
                     support.setNumberOfOptiRunsToGo((Integer)this.jSpinnerNumberOfOptimizationRuns.getValue());
                     startOptimizationAgain();
                     /*
@@ -941,7 +943,6 @@ private ArrayList<Boolean> listOfUIStatesPushed;
                     //Wait for end of Optimizer
                     support.waitForOptimizerAsynchronous(myOptimizer, this);
                     */
-                    //Ende des einhakens für Merhfachopti
                     
                     /*    while(myOptimizer.getOptimum()==null){
                             try {
@@ -2107,9 +2108,9 @@ private ArrayList<Boolean> listOfUIStatesPushed;
      * @param message will be shown in staus-label
      */
     public void operationSucessfull(String message) {
-        this.popUIState();
         int tmpNumerOfOptiRunsToGo=support.getNumberOfOptiRunsToGo();
         if(tmpNumerOfOptiRunsToGo<=1){
+        this.popUIState();
         support.setStatusText(message);
         }   else{
             support.log("Starting next Optimization run, number:" +(tmpNumerOfOptiRunsToGo-1));
