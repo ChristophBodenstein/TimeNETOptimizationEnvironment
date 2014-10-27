@@ -21,17 +21,17 @@ import timenetexperimentgenerator.support;
  */
 public class Statistic {
 private String name="";
-long CPUTimeFromCache=0;
-long CPUTimeFromLocal=0;
-long CPUTimeFromWeb=0;
+private long CPUTimeFromCache=0;
+private long CPUTimeFromLocal=0;
+private long CPUTimeFromWeb=0;
 private long numberOfSimulationsTotal=0;
-long numberOfSimulationsFromCache=0;
-long numberOfSimulationsFromWeb=0;
-long numberOfSimulationsFromLocal=0;
-double simulationTimeTotal=0;
-double simulationTimeFromCache=0;
-double simulationTimeFromWeb=0;
-double simulationTimeFromLocal=0;
+private long numberOfSimulationsFromCache=0;
+private long numberOfSimulationsFromWeb=0;
+private long numberOfSimulationsFromLocal=0;
+private double simulationTimeTotal=0;
+private double simulationTimeFromCache=0;
+private double simulationTimeFromWeb=0;
+private double simulationTimeFromLocal=0;
 SimulationType foundOptimum,calculatedOptimum=null;
 private boolean optimization=false;
 
@@ -129,18 +129,18 @@ private boolean optimization=false;
     public void printStatisticToLog(){
         support.log("-----Statistics of Simulation: "+this.getName()+" ----- Start -----");
         support.log("Total Number of Simulations: "+ this.getNumberOfSimulationsTotal());
-        support.log("Number of Cached Simulations: "+ this.numberOfSimulationsFromCache);
-        support.log("Number of Web-Based Simulations: "+ this.numberOfSimulationsFromWeb);
-        support.log("Number of local Simulations: "+ this.numberOfSimulationsFromLocal);
-        support.log("Ratio of Cached Simulations (Cache/Total): "+ ((double)this.numberOfSimulationsFromCache/(double)this.getNumberOfSimulationsTotal()));
-        support.log("Theoretical used CPU-Time: " +(this.CPUTimeFromCache+this.CPUTimeFromLocal+this.CPUTimeFromWeb));
-        support.log("Local used CPU-Time: " +this.CPUTimeFromLocal);
-        support.log("Web-Based CPU-Time: " +this.CPUTimeFromWeb);
-        support.log("Cache CPU-Time: " +this.CPUTimeFromCache);
-        support.log("Total needed SimulationTime: " +this.simulationTimeTotal);
-        support.log("SimulationTime from Web: " + this.simulationTimeFromWeb);
-        support.log("SimulationTime from Cache: " + this.simulationTimeFromCache);
-        support.log("SimulationTime from Local: " + this.simulationTimeFromLocal);
+        support.log("Number of Cached Simulations: "+ this.getNumberOfSimulationsFromCache());
+        support.log("Number of Web-Based Simulations: "+ this.getNumberOfSimulationsFromWeb());
+        support.log("Number of local Simulations: "+ this.getNumberOfSimulationsFromLocal());
+        support.log("Ratio of Cached Simulations (Cache/Total): "+ ((double)this.getNumberOfSimulationsFromCache()/(double)this.getNumberOfSimulationsTotal()));
+        support.log("Theoretical used CPU-Time: " +(this.getCPUTimeFromCache()+this.getCPUTimeFromLocal()+this.getCPUTimeFromWeb()));
+        support.log("Local used CPU-Time: " +this.getCPUTimeFromLocal());
+        support.log("Web-Based CPU-Time: " +this.getCPUTimeFromWeb());
+        support.log("Cache CPU-Time: " +this.getCPUTimeFromCache());
+        support.log("Total needed SimulationTime: " +this.getSimulationTimeTotal());
+        support.log("SimulationTime from Web: " + this.getSimulationTimeFromWeb());
+        support.log("SimulationTime from Cache: " + this.getSimulationTimeFromCache());
+        support.log("SimulationTime from Local: " + this.getSimulationTimeFromLocal());
         support.log("-----Statistics of Simulation: "+this.getName()+" ----- End -----");
         printOptimizerStatisticsToLog();
     }
@@ -186,6 +186,90 @@ private boolean optimization=false;
      */
     public void setOptimization(boolean optimization) {
         this.optimization = optimization;
+    }
+
+    /**
+     * @return the CPUTimeFromCache
+     */
+    public long getCPUTimeFromCache() {
+        return CPUTimeFromCache;
+    }
+
+    /**
+     * @return the CPUTimeFromLocal
+     */
+    public long getCPUTimeFromLocal() {
+        return CPUTimeFromLocal;
+    }
+
+    /**
+     * @return the CPUTimeFromWeb
+     */
+    public long getCPUTimeFromWeb() {
+        return CPUTimeFromWeb;
+    }
+    
+    /**
+     * @return the total CPUTime (Sum of all CPU-Times)
+     */
+    public long getCPUTimeTotal(){
+        return (CPUTimeFromCache+CPUTimeFromLocal+CPUTimeFromWeb);
+    }
+
+    /**
+     * @return the numberOfSimulationsFromCache
+     */
+    public long getNumberOfSimulationsFromCache() {
+        return numberOfSimulationsFromCache;
+    }
+
+    /**
+     * @return the numberOfSimulationsFromWeb
+     */
+    public long getNumberOfSimulationsFromWeb() {
+        return numberOfSimulationsFromWeb;
+    }
+
+    /**
+     * @return the numberOfSimulationsFromLocal
+     */
+    public long getNumberOfSimulationsFromLocal() {
+        return numberOfSimulationsFromLocal;
+    }
+
+    /**
+     * @return the simulationTimeTotal
+     */
+    public double getSimulationTimeTotal() {
+        return simulationTimeTotal;
+    }
+
+    /**
+     * @return the simulationTimeFromCache
+     */
+    public double getSimulationTimeFromCache() {
+        return simulationTimeFromCache;
+    }
+
+    /**
+     * @return the simulationTimeFromWeb
+     */
+    public double getSimulationTimeFromWeb() {
+        return simulationTimeFromWeb;
+    }
+
+    /**
+     * @return the simulationTimeFromLocal
+     */
+    public double getSimulationTimeFromLocal() {
+        return simulationTimeFromLocal;
+    }
+    
+    /**
+     * @return the Ratio of Cache/Total Simulations
+     */
+    public double getCacheRatio(){
+    return (((double)this.getNumberOfSimulationsFromCache()/(double)this.getNumberOfSimulationsTotal()));
     }
     
 }
