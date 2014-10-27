@@ -902,7 +902,6 @@ private ArrayList<Boolean> listOfUIStatesPushed;
     //Send chosen Optimizertype to support-class
     support.setChosenOptimizerType((typeOfOptimization)this.jComboBoxOptimizationType.getSelectedItem());
         if(this.sizeOfDesignSpace<=support.DEFAULT_MINIMUM_DESIGNSPACE_FOR_OPTIMIZATION){
-        //TODO check , if opti is possible (target chosen etc.)
         support.log("Design space to small, no Optimization posible.");
         support.setStatusText("Designspace to small for Opti.");
         }else{
@@ -1018,7 +1017,7 @@ private ArrayList<Boolean> listOfUIStatesPushed;
       return;
       }  
       //this.mySimulationCache=SimOptiFactory.getSimulationCache();
-    //TODO Should we empty the cache each time, or only at user-wish?
+    // Should we empty the cache each time, or only at user-wish?
     support.emptyCache();
       this.mySimulationCache=support.getMySimulationCache();
         if(!mySimulationCache.parseSimulationCacheFile(inputFile,((MeasurementForm)this.jTabbedPaneOptiTargets.getComponent(0)).getMeasurements(), (parameterTableModel)this.jTableParameterList.getModel(),this )){
@@ -1033,7 +1032,7 @@ private ArrayList<Boolean> listOfUIStatesPushed;
     }//GEN-LAST:event_jButtonLoadCacheFileActionPerformed
 
     private void jComboBoxOptimizationTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxOptimizationTypeActionPerformed
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_jComboBoxOptimizationTypeActionPerformed
 
     private void jComboBoxSimulationTypeItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxSimulationTypeItemStateChanged
@@ -1279,7 +1278,7 @@ private ArrayList<Boolean> listOfUIStatesPushed;
     }//GEN-LAST:event_jCheckBoxSlaveSimulatorMouseClicked
 
     private void jCheckBoxSlaveSimulatorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxSlaveSimulatorActionPerformed
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_jCheckBoxSlaveSimulatorActionPerformed
 
     /**
