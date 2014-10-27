@@ -195,7 +195,8 @@ private long idHash=0;
         //TODO This check is not correct!
         //support.log("Checking Iteratability of parameter:"+this.getName());
         //support.log("StartValue: "+this.getStartValue()+" EndValue: "+this.getEndValue()+" Stepping: "+this.getStepping());
-        if((this.endValue>this.startValue)&&(this.stepping<=(this.endValue-this.startValue))&&(this.value<=this.endValue)){
+        //if((this.endValue>this.startValue)&&(this.stepping<=(this.endValue-this.startValue))&&(this.value<=this.endValue)){
+        if((this.endValue>this.startValue)&&(this.stepping<=(this.endValue-this.startValue))){
         //support.log("Is Iteratable!");
         return true;
         }else{
