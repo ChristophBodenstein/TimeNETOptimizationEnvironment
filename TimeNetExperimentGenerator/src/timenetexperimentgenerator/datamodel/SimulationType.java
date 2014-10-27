@@ -166,26 +166,21 @@ private boolean isFromDistributedSimulation=false;//Is False, if local simulated
                 case Ackley:
                     //Optimum is in the middle of each parameter, its exact at 0,0
                     break;
-                case Rosenbrock:
-                    //TODO Remove this function
-                    support.log("No Optimum is calculated for Rosenbrock!");
-                    break;
                 case Sphere:
                     //Optimum is in the middle of each parameter, its exact at 0,0
                     range=Math.pow(5*5, numberOfParameters);
                     break;
                 case Matya:
                     //Optimum is in the middle of each parameter, its exact at 0,0
+                    double x0 = support.DEFAULT_Matya_limitLower;
+                    double x1 = support.DEFAULT_Matya_limitupper;
+                    range = 0.26 * (x0 * x0 + x1 * x1) - 0.48 * x0 * x1;
                     break;
                 case Schwefel:
                     //Optimum is in the middle of each parameter, its exact at 0,0
                     break;
                 case Rastrigin:
                     //Optimum is in the middle of each parameter, its exact at 0,0
-                    break;
-                case Easom:
-                    //TODO remove this function
-                    support.log("No Optimum is calculated for Easom!");
                     break;
 
 
