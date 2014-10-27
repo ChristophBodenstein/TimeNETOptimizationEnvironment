@@ -120,7 +120,7 @@ String logFileName;
                         //If design space resolution is to small, ensmall the stepping
                         if((p.getEndValue()-p.getStartValue())/p.getStepping()<((double)support.DEFAULT_MINIMUM_DESIGNSPACE_SIZE_PER_PARAMETER)){
                         support.log("Resulting designspace for parameter "+p.getName()+" to small. Ensmalling the Stepping.");
-                        p.setStepping( (p.getEndValue()-p.getStartValue())/support.DEFAULT_MINIMUM_DESIGNSPACE_SIZE_PER_PARAMETER );
+                        p.setStepping( Math.max((p.getEndValue()-p.getStartValue())/support.DEFAULT_MINIMUM_DESIGNSPACE_SIZE_PER_PARAMETER ,1));
                         }
 
                         support.log("Parameter "+p.getName()+" set to Start: "+p.getStartValue()+", End: "+p.getEndValue()+", Stepping: "+p.getStepping()+", Value: "+p.getValue());

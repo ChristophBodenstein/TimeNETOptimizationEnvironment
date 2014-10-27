@@ -349,6 +349,9 @@ int stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;
         //First parameterset exists, calculate the next
         newParameterset=support.getCopyOfParameterSet(actualParameterset);
 
+        //Eject, if no parameter can be changed (important in Multiphase-Opti)
+        if(listOfChangableParameters.size()<=0)return newParameterset;
+        
         int numberOfParameterToBeChanged=0;//Default, change the first changeable parameter
         int numberOfLastParameter=-1;//Number of last parameter that was changed(in an Array of changable parameters)
             //Check, which parameters can be changed
