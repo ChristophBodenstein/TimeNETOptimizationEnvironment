@@ -1259,7 +1259,7 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
                 listOfChangableParameters.add(p);
                 }
             }
-    //support.log("There are "+listOfChangableParameters.size()+" changable parameter.");
+    //support.log("There are "+listOfChangableParameters.size()+" changable parameter of "+sourceList.size()+" Parameters.");
     return listOfChangableParameters;
     }
 
