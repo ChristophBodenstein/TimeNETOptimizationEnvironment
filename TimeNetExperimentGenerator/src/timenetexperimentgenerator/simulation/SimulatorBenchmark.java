@@ -134,32 +134,32 @@ ArrayList<ArrayList <parameter> > listOfParameterSetsTMP;
             //TODO put these Values in DEFAULTS (support-class)
             //TODO Remove Benchmark-Functions whose optima are hard to calculate
             case Ackley:
+                limitLower=support.DEFAULT_ACKLEY_limitLower;
+                limitUpper=support.DEFAULT_ACKLEY_limitupper;
+                break;
+            /*case Rosenbrock:
                 limitLower=-5.0;
                 limitUpper=5.0;
-                break;
-            case Rosenbrock:
-                limitLower=-5.0;
-                limitUpper=5.0;
-                break;
+                break;*/
             case Sphere:
-                limitLower=-5.0;
-                limitUpper=5.0;
+                limitLower=support.DEFAULT_Sphere_limitLower;
+                limitUpper=support.DEFAULT_Sphere_limitupper;
                 break;
             case Matya:
-                limitUpper=10.0;
-                limitLower=-10.0;
+                limitUpper=support.DEFAULT_Matya_limitLower;
+                limitLower=support.DEFAULT_Matya_limitupper;
                 break;
-            case Easom:
+            /*case Easom:
                 limitUpper=100.0;
                 limitLower=-100.0;
-                break;
+                break;*/
             case Schwefel:
-                limitUpper=500.0;
-                limitLower=-500.0;
+                limitUpper=support.DEFAULT_Schwefel_limitLower;
+                limitLower=support.DEFAULT_Schwefel_limitupper;
                 break;
             case Rastrigin:
-                limitLower=-5.0;
-                limitUpper=5.0;
+                limitLower=support.DEFAULT_Rastrigin_limitLower;
+                limitUpper=support.DEFAULT_Rastrigin_limitupper;
                 break;
 
             default:
@@ -203,7 +203,7 @@ ArrayList<ArrayList <parameter> > listOfParameterSetsTMP;
                     }//end of for-d-loop
                     sum= (-20.0 * Math.exp(-0.2 * Math.sqrt(sum1 / ((double )x.length))) -Math.exp(sum2 / ((double )x.length)) + 20.0 + Math.E);
                     break;
-                case Rosenbrock:
+                /*case Rosenbrock:
                     //source of this part is from Le Minh Nghia, NTU-Singapore
                     double [] v = new double[x.length];
                     for (int i1 = 0; i1 < x.length; i1++) v[i1] = x[i1] + 1;
@@ -212,7 +212,7 @@ ArrayList<ArrayList <parameter> > listOfParameterSetsTMP;
                         double temp2 = v[i1] - 1.0;
                         sum += (100.0 * temp1 * temp1) + (temp2 * temp2);
                     }
-                    break;
+                    break;*/
                 case Sphere:
                     sum=0.0;
                     for(int c=0;c<dimension;c++){
@@ -262,7 +262,7 @@ ArrayList<ArrayList <parameter> > listOfParameterSetsTMP;
                         sum = res;
                     break;
 
-                case Easom:
+                /*case Easom:
                     if(dimension!=2){
                     support.log("Easom is only defined for 2 dimensions");
                     return;
@@ -272,7 +272,7 @@ ArrayList<ArrayList <parameter> > listOfParameterSetsTMP;
                     double power = powerTerm1 + powerTerm2;
                     sum = -Math.cos(x[0]) * Math.cos(x[1]) * Math.exp(power);
                     break;
-
+                    */
 
                 default:
                     sum=0.0;
@@ -351,10 +351,11 @@ ArrayList<ArrayList <parameter> > listOfParameterSetsTMP;
                     }
                     
                     break;
-                case Rosenbrock:
+                /*case Rosenbrock:
                     //TODO remove this function
                     support.log("No Optimum is calculated for Rosenbrock!");
                     break;
+                */
                 case Sphere:
                     //Optimum is in the middle of each parameter, its exact at 0,0
                     for(int i=0;i<optimumChangableParameterset.size();i++){
@@ -387,11 +388,11 @@ ArrayList<ArrayList <parameter> > listOfParameterSetsTMP;
                     }
                     break;
 
-                case Easom:
+                /*case Easom:
                     //TODO remove this function
                     support.log("No Optimum is calculated for Easom!");
                     break;
-
+                */
 
                 default:
                     
