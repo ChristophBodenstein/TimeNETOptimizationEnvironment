@@ -2134,7 +2134,7 @@ private ArrayList<Boolean> listOfUIStatesPushed;
      */
     private void startOptimizationAgain(){
     Optimizer myOptimizer=SimOptiFactory.getOptimizer();
-                    logFileNameOfOptimizer=support.getTmpPath()+File.separator+this.getClass().getSimpleName()+"_"+Calendar.getInstance().getTimeInMillis()+support.getOptimizerPreferences().getPref_LogFileAddon()+".csv";
+                    logFileNameOfOptimizer=support.getTmpPath()+File.separator+myOptimizer.getClass().getSimpleName()+"_"+Calendar.getInstance().getTimeInMillis()+support.getOptimizerPreferences().getPref_LogFileAddon()+".csv";
                     myOptimizer.setLogFileName(logFileNameOfOptimizer);
                     myOptimizer.initOptimizer();
                     //Wait for end of Optimizer
