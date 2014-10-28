@@ -94,7 +94,7 @@ String nameOfdummyLogfile;
         support.log("Actual Temp for Parameters: "+actualTempParameter);
         support.log("Actual Temp for Cost: "+actualTempCost);
         //Eject if Temperature is lower then Epsilon
-        if(actualTempCost< support.getOptimizerPreferences().getPref_Epsilon() || actualTempParameter< support.getOptimizerPreferences().getPref_Epsilon()){
+        if(actualTempCost<= support.getOptimizerPreferences().getPref_Epsilon() || actualTempParameter<= support.getOptimizerPreferences().getPref_Epsilon()){
             //Set currentsolution=bestsolution so it will be printed as optimum
             currentSolution=bestSolution;
             this.optimized=true;
@@ -151,7 +151,7 @@ String nameOfdummyLogfile;
             //Calculation of Standard nextValue
             //nextValue = p.getValue() + sign * actualTempParameter *(Math.pow(1+(1/actualTempParameter),Math.abs(2*r-1) )) * distanceMax;
             nextValue = p.getValue() + sign * actualTempParameter *(Math.pow(1+(1/actualTempParameter),Math.abs(2*r)-1 )) * distanceMax;
-            support.log("Min:"+p.getStartValue()+" Max:"+p.getEndValue()+" NextValue:"+nextValue +" Fit to Stepping: "+p.getStepping());
+            support.log("Min:"+p.getStartValue()+" Max:"+p.getEndValue()+" NextValue:"+nextValue);
             /*
             support.log("xCurrent:"+p.getValue());
             support.log("sign:"+sign);
@@ -182,7 +182,7 @@ String nameOfdummyLogfile;
                         //Do nothing
                         break;
                     case Simple:
-                        support.log("SimpleVaue to add is "+simpleValue);
+                        support.log("SimpleVaule to add is "+simpleValue);
                             if(Math.random()>=0.5){
                             nextValue=p.getValue()+simpleValue;
                             }else{
@@ -190,7 +190,7 @@ String nameOfdummyLogfile;
                             }
                         break;
                     case SimpleStepwise:
-                        support.log("SimpleVaue to add is "+simpleValue);
+                        support.log("SimpleVaule to add is "+simpleValue);
 
                             if(Math.random()>=0.5){
                             nextValue=p.getValue() + Math.round(simpleValue/p.getStepping())*p.getStepping();
