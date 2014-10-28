@@ -48,12 +48,13 @@ String logFileName;
     public OptimizerMultiPhase() {
     super();
     this.parent=support.getMainFrame();// parentTMP;
-    this.parameterBase=parent.getParameterBase();
+    this.parameterBase=support.getOriginalParameterBase();
     support.setParameterBase(parameterBase);
     logFileName=support.getTmpPath()+File.separator+this.getClass().getSimpleName()+"_"+Calendar.getInstance().getTimeInMillis()+support.getOptimizerPreferences().getPref_LogFileAddon()+".csv";
     support.log("LogfileName:"+logFileName);
     //this.keepSizeAndResolutionOfDesignspace=support.getOptimizerPreferences().getPref_KeepDesignSpaceAndResolution();
     this.numberOfPhases=support.getOptimizerPreferences().getPref_NumberOfPhases();
+    support.setListOfChangableParametersMultiphase(support.getOriginalParameterBase());
     }
 
     public void run() {
@@ -191,8 +192,8 @@ String logFileName;
                 
                 
                 myOptimizer=SimOptiFactory.getOptimizer(support.getOptimizerPreferences().getPref_typeOfUsedMultiPhaseOptimization() );
-                myOptimizer.setLogFileName(this.logFileName);
                 myOptimizer.initOptimizer();
+                myOptimizer.setLogFileName(this.logFileName);
 
                 //Wait for Optimizer to end
                 while(myOptimizer.getOptimum()==null){

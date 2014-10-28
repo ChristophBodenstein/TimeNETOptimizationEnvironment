@@ -163,7 +163,8 @@ public static final double DEFAULT_Rastrigin_limitupper=5;
 //Defaults for Opti-Statistics
 public static final int DEFAULT_NUMBER_OF_OPTI_PROB_CLASSES=100;
 
-
+//List of Changable parameters for Multiphase-opi
+public static ArrayList<parameter> listOfChangableParametersMultiphase=null;
     /**
      * @return the myOptimizerPreferences a Reference to the Preferences-Frame
      */
@@ -1187,7 +1188,13 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
      * @return the parameterBase
      */
     public static ArrayList<parameter> getParameterBase() {
+        if (parameterBase!=null){
         return parameterBase;
+        }else{
+            setParameterBase(mainFrame.getParameterBase());
+            return parameterBase;
+        }
+        
     }
 
     /**
@@ -1248,6 +1255,20 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
      * Returns a list of Parameters that are intern and changable
      */
     public static ArrayList<parameter> getListOfChangableParameters(ArrayList<parameter> sourceList){
+    
+    //If Multiphase is used, return modified List of old Changaleb Parameters
+    //take old list and modify Values by actual list
+    if(support.getChosenOptimizerType()==typeOfOptimization.MultiPhase){
+    //support.log("Multiphase is chosen. Return of Multiphase-list instead of new calculated list.");
+        for(int i=0;i<listOfChangableParametersMultiphase.size();i++){
+        parameter p=listOfChangableParametersMultiphase.get(i);
+        //Update Value of Parameters in Multiphase-List-of-Changable-Paramaters
+        p.setValue(support.getParameterByName(sourceList, p.getName()).getValue());
+        }
+    return listOfChangableParametersMultiphase;
+    }
+        
+    //TODO If Internal Precision-Parameter is chosen and Multiphase is active, then dont put precisionparameter in list!
     //ArrayList<parameter> parameterset = support.getCopyOfParameterSet(sourceList);
     ArrayList<parameter> listOfChangableParameters = new ArrayList<parameter>();
         //Count the number of changable parameters
@@ -1263,6 +1284,25 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
     return listOfChangableParameters;
     }
 
+    /**
+     * Sets the list of changeable Parameters for Multiphase-Opti
+     */
+    public static void setListOfChangableParametersMultiphase(ArrayList<parameter> sourceList){
+    //TODO dont use Precision-Parameters in list of changableParameters
+        listOfChangableParametersMultiphase = new ArrayList<parameter>();
+        //Count the number of changable parameters
+        //this.numberOfChangableParameters=0;
+        support.log("Setting Parameterlist for Multiphase-Opti.");
+        for(int i=0;i<sourceList.size();i++){
+                parameter p=sourceList.get(i);
+                if(p.isIteratableAndIntern()){
+                //this.numberOfChangableParameters++;
+                listOfChangableParametersMultiphase.add(p);
+                }
+            }
+        
+    }
+    
     /**
      * Prints stats abut memory usage to logfile and log-window
      */

@@ -252,8 +252,7 @@ String nameOfdummyLogfile;
         if(support.isCancelEverything())return null;
 
         return newParameterset;
-        
-
     }
+    
 
 }

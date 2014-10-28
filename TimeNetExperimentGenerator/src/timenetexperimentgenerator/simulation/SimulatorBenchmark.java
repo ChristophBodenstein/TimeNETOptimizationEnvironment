@@ -34,6 +34,7 @@ private String logFileName;
 private typeOfBenchmarkFunction benchmarkFunction=typeOfBenchmarkFunction.Schwefel;
 int status=0;
 boolean log=true;
+int tmpDimension=0;
 ArrayList<ArrayList <parameter> > listOfParameterSetsTMP;
     
 
@@ -131,8 +132,6 @@ ArrayList<ArrayList <parameter> > listOfParameterSetsTMP;
     double limitLower=-5.0, limitUpper=5.0;//The limits of the used benchmark function
 
         switch(benchmarkFunction){
-            //TODO put these Values in DEFAULTS (support-class)
-            //TODO Remove Benchmark-Functions whose optima are hard to calculate
             case Ackley:
                 limitLower=support.DEFAULT_ACKLEY_limitLower;
                 limitUpper=support.DEFAULT_ACKLEY_limitupper;
@@ -192,6 +191,17 @@ ArrayList<ArrayList <parameter> > listOfParameterSetsTMP;
         x[c]=xNew*(limitUpper-limitLower)+limitLower;
         }
 
+        support.log(dimension+" parameter out of "+tmpParameterList.size()+" are changable.");
+        if(dimension<2){
+        support.log("New Dimension is smaller, check details of Paramaters.");
+            for(int ci=0;ci<tmpParameterList.size();ci++){
+            parameter p=tmpParameterList.get(ci);
+            p.printInfo();
+            }
+        }
+        
+        
+        
         switch(benchmarkFunction){
                 case Ackley:
                     //source of this part is from Le Minh Nghia, NTU-Singapore

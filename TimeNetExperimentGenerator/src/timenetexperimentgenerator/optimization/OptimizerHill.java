@@ -85,7 +85,7 @@ int stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;
     this.pathToTimeNet=support.getPathToTimeNet();// pathToTimeNetTMP;
     this.MeasureFormPane=support.getMeasureFormPane();//MeasureFormPaneTMP;
     this.parent=support.getMainFrame();// parentTMP;
-    this.parameterBase=parent.getParameterBase();
+    this.parameterBase=support.getParameterBase();
     support.setParameterBase(parameterBase);
 
     this.listOfMeasures=parent.getListOfActiveMeasureMentsToOptimize(); //((MeasurementForm)MeasureFormPane.getComponent(0)).getListOfMeasurements();
@@ -350,7 +350,7 @@ int stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;
         newParameterset=support.getCopyOfParameterSet(actualParameterset);
 
         //Eject, if no parameter can be changed (important in Multiphase-Opti)
-        if(listOfChangableParameters.size()<=0)return newParameterset;
+        if(listOfChangableParameters.size()<=0)return actualParameterset;
         
         int numberOfParameterToBeChanged=0;//Default, change the first changeable parameter
         int numberOfLastParameter=-1;//Number of last parameter that was changed(in an Array of changable parameters)
