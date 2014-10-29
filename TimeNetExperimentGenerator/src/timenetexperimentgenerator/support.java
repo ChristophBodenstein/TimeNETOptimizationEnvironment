@@ -1258,7 +1258,7 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
     
     //If Multiphase is used, return modified List of old Changaleb Parameters
     //take old list and modify Values by actual list
-    if(support.getChosenOptimizerType()==typeOfOptimization.MultiPhase){
+    if(listOfChangableParametersMultiphase!=null){
     //support.log("Multiphase is chosen. Return of Multiphase-list instead of new calculated list.");
         for(int i=0;i<listOfChangableParametersMultiphase.size();i++){
         parameter p=listOfChangableParametersMultiphase.get(i);
@@ -1301,6 +1301,14 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
                 }
             }
         
+    }
+    
+    /**
+     * After end of Multiphase-Optimization, the listOfChangeableParameters is set to null
+     * -->avoid conlficts with further sim and opti-implementations
+     */
+    public static void unsetListOfChangableParametersMultiphase(){
+    listOfChangableParametersMultiphase=null;
     }
     
     /**

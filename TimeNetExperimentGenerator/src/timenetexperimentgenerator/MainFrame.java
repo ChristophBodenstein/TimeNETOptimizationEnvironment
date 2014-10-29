@@ -2111,6 +2111,7 @@ private ArrayList<Boolean> listOfUIStatesPushed;
         int tmpNumerOfOptiRunsToGo=support.getNumberOfOptiRunsToGo();
         if(tmpNumerOfOptiRunsToGo<=1){
         this.popUIState();
+        support.unsetListOfChangableParametersMultiphase();//Stop Multiphase if it was active
         support.setStatusText(message);
         }   else{
             support.log("Starting next Optimization run, number:" +(tmpNumerOfOptiRunsToGo-1));
