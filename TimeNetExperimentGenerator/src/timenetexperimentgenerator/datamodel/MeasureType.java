@@ -27,6 +27,7 @@ private double targetValue=0.0;
 private String targetKindOf="min";
 private double SimulationTime=0.0;
 private double CPUTime=0;
+private double minValue,maxValue=0.0;
 
     public MeasureType() {
         ConfidenceInterval[0]=0.0;
@@ -241,5 +242,33 @@ private double CPUTime=0;
 //        }
         
         return state;
+    }
+
+    /**
+     * @return the minValue
+     */
+    public double getMinValue() {
+        return minValue;
+    }
+
+    /**
+     * @param minValue the minValue to set
+     */
+    public void setMinValue(double minValue) {
+        this.minValue = minValue;
+    }
+
+    /**
+     * @return the maxValue
+     */
+    public double getMaxValue() {
+        return maxValue;
+    }
+
+    /**
+     * @param maxValue the maxValue to set
+     */
+    public void setMaxValue(double maxValue) {
+        this.maxValue = maxValue;
     }
 }
