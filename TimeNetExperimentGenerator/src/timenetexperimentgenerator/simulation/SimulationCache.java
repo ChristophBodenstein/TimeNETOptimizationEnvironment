@@ -246,13 +246,16 @@ private int localSimulationCounter = 0;
     }
     
     public boolean checkIfAllParameterMatchTable(parameterTableModel myTableModel){
-    if (listOfCachedParameterNames==null){return false;}
+        if (listOfCachedParameterNames==null){
+        support.log("ListOfCachedParameterNames=NULL.");
+        return false;
+        }
     ArrayList<parameter> parameterListFromTable=myTableModel.getListOfParameter();
     
         //Names are equal (this should be checked before)--> now check if End-Start-Step-Value match or are subset of cache
     
         for(int i=0;i<listOfCachedParameterNames.length;i++){
-            parameter p=parameterListFromTable.get(i);
+            parameter p=support.getParameterByName(parameterListFromTable, listOfCachedParameterNames[i]);
             boolean[] strike={false,false,false};//if all 3 are true, this parameter is cached correctly
             /*
             0->Stepping is ok
@@ -273,13 +276,20 @@ private int localSimulationCounter = 0;
             double tmpValue=listOfCachedParameterMin[i];
 
             while(tmpValue<=listOfCachedParameterMax[i]){
-            if(tmpValue==p.getStartValue())strike[1]=true;
-            if(tmpValue==p.getEndValue())strike[2]=true;    
+            if(tmpValue==p.getStartValue()){
+            strike[1]=true;
+            }
+            if(tmpValue==p.getEndValue()){
+            strike[2]=true;
+            }
             tmpValue=tmpValue+listOfCachedParameterStepping[i];
             }
             
             
-        if(!strike[0]||!strike[1]||!strike[2])return false;//If less then all 3 conditions are met, then exit with false    
+            if(!strike[0]||!strike[1]||!strike[2]){
+            support.log("Parameter "+p.getName()+" does not fit!");
+            return false;
+            }//If less then all 3 conditions are met, then exit with false    
         }
         //format the table so that Start-,End-,Stepping-Value match
     return true;
