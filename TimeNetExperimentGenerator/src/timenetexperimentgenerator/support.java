@@ -1479,7 +1479,8 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
             public void run() {
                 if (myOptimizer.getOptimum()!=null){
                 listener.operationSucessfull("The end.");
-                StatisticAggregator.getStatisticByName(myOptimizer.getLogFileName()).addFoundOptimum(myOptimizer.getOptimum(), SimOptiFactory.getSimulator().getCalculatedOptimum()); ;
+                MeasureType myOptiMeasure=mainFrame.getListOfActiveMeasureMentsToOptimize().get(0);//Take only the first Measure.
+                StatisticAggregator.getStatisticByName(myOptimizer.getLogFileName()).addFoundOptimum(myOptimizer.getOptimum(), SimOptiFactory.getSimulator().getCalculatedOptimum(myOptiMeasure)); ;
                 this.cancel();
                 }
                 if(support.isCancelEverything()){
