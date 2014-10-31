@@ -34,7 +34,6 @@ private String logFileName;
 private typeOfBenchmarkFunction benchmarkFunction=typeOfBenchmarkFunction.Schwefel;
 int status=0;
 boolean log=true;
-int tmpDimension=0;
 ArrayList<ArrayList <parameter> > listOfParameterSetsTMP;
     
 
@@ -191,14 +190,15 @@ ArrayList<ArrayList <parameter> > listOfParameterSetsTMP;
         x[c]=xNew*(limitUpper-limitLower)+limitLower;
         }
 
-        support.log(dimension+" parameter out of "+tmpParameterList.size()+" are changable.");
-        if(dimension<2){
+        //support.log(dimension+" parameter out of "+tmpParameterList.size()+" are changable.");
+        /*if(dimension<2){
         support.log("New Dimension is smaller, check details of Paramaters.");
             for(int ci=0;ci<tmpParameterList.size();ci++){
             parameter p=tmpParameterList.get(ci);
             p.printInfo();
             }
-        }
+        }*/
+        
         
         
         
