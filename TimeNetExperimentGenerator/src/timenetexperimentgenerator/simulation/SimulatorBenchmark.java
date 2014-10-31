@@ -331,7 +331,7 @@ ArrayList<ArrayList <parameter> > listOfParameterSetsTMP;
      * For other simulators, this must be given by user.
      * @return 
      */
-    public SimulationType getCalculatedOptimum() {
+    public SimulationType getCalculatedOptimum(MeasureType targetMeasure) {
     ArrayList<parameter> optimumParameterlist=support.getCopyOfParameterSet(support.getOriginalParameterBase());
     ArrayList<parameter> optimumChangableParameterset=support.getListOfChangableParameters(optimumParameterlist);
     

@@ -38,6 +38,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import timenetexperimentgenerator.Parser;
+import timenetexperimentgenerator.datamodel.MeasureType;
 import timenetexperimentgenerator.datamodel.SimulationType;
 import timenetexperimentgenerator.datamodel.parameter;
 import timenetexperimentgenerator.support;
@@ -328,7 +329,7 @@ public class SimulatorWeb implements Runnable, Simulator{
      * For Benchmark-Functions this can be caluclated.
      * For other simulators, this must be given by user.
      */
-    public SimulationType getCalculatedOptimum() {
+    public SimulationType getCalculatedOptimum(MeasureType targetMeasure) {
         return null;
     }
 }

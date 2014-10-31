@@ -20,6 +20,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.*;
 import timenetexperimentgenerator.Parser;
+import timenetexperimentgenerator.datamodel.MeasureType;
 import timenetexperimentgenerator.datamodel.SimulationType;
 import timenetexperimentgenerator.datamodel.parameter;
 import timenetexperimentgenerator.helper.nativeProcess;
@@ -340,7 +341,7 @@ long timeStamp=0;//TimeStamp for measuring the runtime of one simulation
      * For Benchmark-Functions this can be caluclated.
      * For other simulators, this must be given by user.
      */
-    public SimulationType getCalculatedOptimum() {
+    public SimulationType getCalculatedOptimum(MeasureType targetMeasure) {
         return null;
     }
 }

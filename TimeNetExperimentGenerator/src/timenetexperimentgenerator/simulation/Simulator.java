@@ -8,6 +8,7 @@
 package timenetexperimentgenerator.simulation;
 
 import java.util.ArrayList;
+import timenetexperimentgenerator.datamodel.MeasureType;
 import timenetexperimentgenerator.datamodel.parameter;
 import timenetexperimentgenerator.datamodel.SimulationType;
 
@@ -20,5 +21,5 @@ public void initSimulator(ArrayList< ArrayList<parameter> > listOfParameterSetsT
 public int getStatus();
 public int getSimulationCounter();
 public ArrayList<SimulationType> getListOfCompletedSimulationParsers();
-public SimulationType getCalculatedOptimum();
+public SimulationType getCalculatedOptimum(MeasureType targetMeasure);
 }

@@ -10,6 +10,7 @@ package timenetexperimentgenerator.simulation;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
+import timenetexperimentgenerator.datamodel.MeasureType;
 import timenetexperimentgenerator.datamodel.parameter;
 import timenetexperimentgenerator.datamodel.SimulationType;
 import timenetexperimentgenerator.support;
@@ -128,7 +129,7 @@ private String logFileName;
      * For Benchmark-Functions this can be caluclated.
      * For other simulators, this must be given by user.
      */
-    public SimulationType getCalculatedOptimum() {
+    public SimulationType getCalculatedOptimum(MeasureType targetMeasure) {
         return null;
     }
 }

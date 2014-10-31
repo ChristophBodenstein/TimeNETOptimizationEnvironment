@@ -133,11 +133,15 @@ private String logFileName;
     
     /**
      * Returns the calulated optimimum
-     * For Benchmark-Functions this can be caluclated.
+     * For Benchmark-Functions and Cache-only simulations this can be caluclated.
      * For other simulators, this must be given by user.
      * @return 
      */
-    public SimulationType getCalculatedOptimum() {
+    public SimulationType getCalculatedOptimum(MeasureType targetMeasure) {
+        //TODO the name of the measure needs to be used in this Method declaration!
+        
+    //iterate through all cached sims and look for best solution 
+        
         return null;
     }
 }
