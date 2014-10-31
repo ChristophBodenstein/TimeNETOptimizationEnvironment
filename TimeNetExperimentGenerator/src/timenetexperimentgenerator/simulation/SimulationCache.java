@@ -33,7 +33,7 @@ double[] listOfCachedParameterMin;
 double[] listOfCachedParameterMax;
 double[] listOfCachedParameterStepping;
 //ArrayList<MeasureType> MeasureList;
-ArrayList<SimulationType> simulationList;
+private ArrayList<SimulationType> simulationList;
 private int localSimulationCounter = 0;
 
 
@@ -212,7 +212,7 @@ private int localSimulationCounter = 0;
                 //this.MeasureList.add(tmpSimulation);
             
             }
-            simulationList.add(tmpSimulation);
+                getSimulationList().add(tmpSimulation);
         }   
 
         //Reformat Parameter-Table
@@ -297,9 +297,9 @@ private int localSimulationCounter = 0;
     
     //support.log("Size of All Measures from File: "+MeasureList.size());
         //Go through all Measures, find the one with the same parameterlist
-        for(int i=0;i<this.simulationList.size();i++)
+        for(int i=0;i<this.getSimulationList().size();i++)
         {
-            tmpSimulation=this.simulationList.get(i);
+            tmpSimulation=this.getSimulationList().get(i);
             if(compareParameterList(parameterList, tmpSimulation.getListOfParameters()))
             {
                 myTmpList = tmpSimulation.getMeasures(); //assumming cache-file did not have experiments with same Parameterset
@@ -318,10 +318,10 @@ private int localSimulationCounter = 0;
     public SimulationType getNearestParserWithParameterList(ArrayList<parameter> parameterList){
     ArrayList<Double[]> distArrayList=new ArrayList<Double[]>();    
         
-        for(int i=0;i<this.simulationList.size();i++)
+        for(int i=0;i<this.getSimulationList().size();i++)
         {
             Double[] tmpDist=new Double[2];//0->Dist, 1->Index
-            tmpDist[0]=getDistanceOfParameterLists(this.simulationList.get(i).getListOfParameters(), parameterList);
+            tmpDist[0]=getDistanceOfParameterLists(this.getSimulationList().get(i).getListOfParameters(), parameterList);
             tmpDist[1]= (double)i;
             distArrayList.add(tmpDist);
         }
@@ -341,7 +341,7 @@ private int localSimulationCounter = 0;
         //}
         
         //indexOfZeroDistance should contain the index of the Distance >=0
-        ArrayList<MeasureType> listOfMeasureWithGivenParameters=this.getAllMeasuresWithParameterList(this.simulationList.get(distArrayList.get(indexOfZeroDistance)[1].intValue()).getListOfParameters());
+        ArrayList<MeasureType> listOfMeasureWithGivenParameters=this.getAllMeasuresWithParameterList(this.getSimulationList().get(distArrayList.get(indexOfZeroDistance)[1].intValue()).getListOfParameters());
         if(listOfMeasureWithGivenParameters.size()>0){
         
         this.setLocalSimulationCounter(this.getLocalSimulationCounter()+1);
@@ -561,7 +561,7 @@ private int localSimulationCounter = 0;
      * @param SimulationToAdd Simulation to be added
      */
     public void addSimulationToCache(SimulationType SimulationToAdd){
-            this.simulationList.add(SimulationToAdd);
+        this.getSimulationList().add(SimulationToAdd);
     }
 
     /**
@@ -578,5 +578,12 @@ private int localSimulationCounter = 0;
             }
         }
     return returnList;
+    }
+
+    /**
+     * @return the simulationList
+     */
+    public ArrayList<SimulationType> getSimulationList() {
+        return simulationList;
     }
 }
