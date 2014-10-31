@@ -46,7 +46,7 @@ String filename="";//Original filename
 String pathToTimeNet="";
 MainFrame parent=null;
 JTabbedPane MeasureFormPane;
-ArrayList<MeasureType> listOfMeasures=new ArrayList<MeasureType>();//Liste aller Measures, abfragen von MeasureFormPane
+ArrayList<MeasureType> listOfMeasures=new ArrayList<MeasureType>();//Get List of all measures from MainFrame //Empty here
 ArrayList<SimulationType> historyOfParsers=new ArrayList<SimulationType>();//History of all simulation runs
 ArrayList<parameter> parameterBase;//Base set of parameters, start/end-value, stepping, etc.
 SimulationCache mySimulationCache=new SimulationCache();
