@@ -137,11 +137,45 @@ private String logFileName;
      * For other simulators, this must be given by user.
      * @return 
      */
-    public SimulationType getCalculatedOptimum(MeasureType targetMeasure) {
-        //TODO the name of the measure needs to be used in this Method declaration!
-        
+    public SimulationType getCalculatedOptimum(MeasureType targetMeasure) {   
     //iterate through all cached sims and look for best solution 
+    support.log("SimulatorCached: Getting absolute optimum simulation from Cache.");
+    ArrayList<SimulationType> mySimulationList=this.mySimulationCache.getSimulationList();
+    double distance=Double.MAX_VALUE;
+    double minValue=Double.MAX_VALUE;
+    double maxValue=Double.MIN_VALUE;
+    
+    int numberOfOptimalSimulation=Integer.MIN_VALUE;
+        for(int i=0;i<mySimulationList.size();i++){
+        SimulationType tmpSim=mySimulationList.get(i);
+        MeasureType tmpMeasure=tmpSim.getMeasureByName(targetMeasure.getMeasureName());
+        tmpMeasure.setTargetValue(targetMeasure.getTargetValue(), targetMeasure.getTargetKindOf());
+            if(tmpMeasure.getDistanceFromTarget()<=distance){
+            distance=tmpMeasure.getDistanceFromTarget();
+            numberOfOptimalSimulation=i;
+            }
+            double tmpV=tmpMeasure.getMeanValue();
+            if(tmpV<=minValue){
+            minValue=tmpV;
+            }
+            if(tmpV>=maxValue){
+            maxValue=tmpV;
+            }
+        }
+    
+        if(numberOfOptimalSimulation>=0){
+        support.log("Found optimal Simulation for Measure "+targetMeasure.getMeasureName());
         
-        return null;
+        }else{
+        support.log("No Optimum Solution for "+ targetMeasure.getMeasureName()+" could be found in cache.");
+        }
+        MeasureType tmpMeasure=mySimulationList.get(numberOfOptimalSimulation).getMeasureByName(targetMeasure.getMeasureName()) ;
+        tmpMeasure.setMinValue(minValue);
+        tmpMeasure.setMaxValue(maxValue);
+        support.log(support.padRight("Min", 10)+" | "+support.padRight("Mean", 10)+" | "+support.padRight("Max", 10));
+        support.log(support.padRight(Double.toString(tmpMeasure.getMinValue()), 10)+" | "+support.padRight(Double.toString(tmpMeasure.getMeanValue()), 10)+" | "+support.padRight(Double.toString(tmpMeasure.getMaxValue()), 10));
+        
+        
+        return mySimulationList.get(numberOfOptimalSimulation);
     }
 }

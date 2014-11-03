@@ -342,6 +342,7 @@ long timeStamp=0;//TimeStamp for measuring the runtime of one simulation
      * For other simulators, this must be given by user.
      */
     public SimulationType getCalculatedOptimum(MeasureType targetMeasure) {
+    support.log("SimulatorLocal: Getting absolute optimum simulation from Cache. Will return null.");    
         return null;
     }
 }

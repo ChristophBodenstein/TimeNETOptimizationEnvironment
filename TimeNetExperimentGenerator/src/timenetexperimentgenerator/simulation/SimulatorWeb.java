@@ -330,6 +330,7 @@ public class SimulatorWeb implements Runnable, Simulator{
      * For other simulators, this must be given by user.
      */
     public SimulationType getCalculatedOptimum(MeasureType targetMeasure) {
+    support.log("SimulatorWeb: Getting absolute optimum simulation from Cache. Will return null.");
         return null;
     }
 }

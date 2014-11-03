@@ -332,6 +332,7 @@ ArrayList<ArrayList <parameter> > listOfParameterSetsTMP;
      * @return 
      */
     public SimulationType getCalculatedOptimum(MeasureType targetMeasure) {
+    support.log("SimulatorBenchmark: Getting absolute optimum simulation from Cache.");
     ArrayList<parameter> optimumParameterlist=support.getCopyOfParameterSet(support.getOriginalParameterBase());
     ArrayList<parameter> optimumChangableParameterset=support.getListOfChangableParameters(optimumParameterlist);
     

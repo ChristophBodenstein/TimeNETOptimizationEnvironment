@@ -93,11 +93,14 @@ private boolean isFromDistributedSimulation=false;//Is False, if local simulated
 
     /**
      * Returns Distance to target Value (min->distance to 0)
-     * @return Sum Distance of all Measures to their target Values
+     * @return Sum Distance of Measures#0 to its target Value
+     * Only one Measure is supported!
      */
-    public double getDistance()
+    public double getDistanceToTargetValue()
     {
-        double distance=0;
+        //TODO Only use one MeasureType, the first, to calculate distance
+        
+        /*double distance=0;
         for(int measureCount=0;measureCount<Measures.size();measureCount++)
         {
             MeasureType activeMeasure = getMeasureByName(Measures.get(measureCount).getMeasureName());
@@ -120,23 +123,28 @@ private boolean isFromDistributedSimulation=false;//Is False, if local simulated
                     //TODO error handling for unknown target-type
                 }
             }
-        }
-        return distance;
+        }*/
+        //Get active OptimizationTarget from UI (via support)
+        MeasureType activeMeasure=support.getOptimizationMeasure();
+        //Set target Value and target Kind for Measure with same name but in list of this simulation
+        this.getMeasureByName(activeMeasure.getMeasureName()).setTargetValue(activeMeasure.getTargetValue(), activeMeasure.getTargetKindOf());
+        //Return the distance of local Measure from target, chosen from Master-Measure
+        return this.getMeasureByName(activeMeasure.getMeasureName()).getDistanceFromTarget();
     }
     
     /**
      * Returns distance to target value coordinates in design space
-     * the distance is realtive to the whole design space
+     * the distance is relative to the whole design space
      * So Sum of all parameter-value-ranges equals 100% 
      * It works only for few Benchmark functions and for normal petri nets if theroetical optimium is given!
      * @return List of relative Distances to target Values
-     * @param givenOptimum SimulationType of optimum Solution to calculate the distance
+     * @param targetSimulation SimulationType of target(i.e. optimum) Solution to calculate the distance
      */
-    public double getDistancesDesignSpace(SimulationType givenOptimum){
+    public double getRelativeDistanceInDefinitionRange(SimulationType targetSimulation){
     double rangeSum=0.0;
     double distanceSum=0.0;
-        for(int i=0;i<givenOptimum.getListOfParameters().size();i++){
-         parameter pOptimumCalculated=givenOptimum.getListOfParameters().get(i);
+        for(int i=0;i<targetSimulation.getListOfParameters().size();i++){
+         parameter pOptimumCalculated=targetSimulation.getListOfParameters().get(i);
          if(pOptimumCalculated.isIteratableAndIntern()){
          parameter pOptimumFound=support.getParameterByName(this.parameterList, pOptimumCalculated.getName());
          rangeSum = rangeSum + Math.abs(pOptimumCalculated.getEndValue()-pOptimumCalculated.getStartValue());
@@ -147,16 +155,17 @@ private boolean isFromDistributedSimulation=false;//Is False, if local simulated
     }
     
     /**
-     * Returns distance of found optimum to given optimum in relation to Maximum/Minimum of values of measures
+     * Returns distance of actual MeasureValue to target MeasureValue in relation to Maximum/Minimum of values of measures
      * This is only possible for benchmark-functions or if absolute minimum/maximum is given by user
-     * @return distance to theoretical optimum in % of possible range
+     * @return distance to targetMeasure in % of possible range
+     * @param targetMeasure Measure to calculate the distance to. Must contain Min/Max Values!
      */
-    public double getDistanceRelative(){
+    public double getRelativeDistanceToTargetValueInValueRange(MeasureType targetMeasure){
     //TODO implement this method!
-    double distance=this.getDistance();
+    double distance=this.getDistanceToTargetValue();
     double range=0.0;
     int numberOfParameters=support.getListOfChangableParameters(parameterList).size();
-        /*
+    /*
         Get Simulator type from support or Prefs
         get min-max-values based on Simulator
         */
@@ -191,8 +200,22 @@ private boolean isFromDistributedSimulation=false;//Is False, if local simulated
             
             
         }else{
+            if(support.getChosenSimulatorType()==typedef.typeOfSimulator.Cache_Only){
+            range=targetMeasure.getMaxValue()-targetMeasure.getMinValue();
+            //Get copy of actual optimization target (TargetMeasure is found by name)
+            MeasureType activeMeasure=new MeasureType(this.getMeasureByName(support.getOptimizationMeasure().getMeasureName()));
+            //set target Value of copied optimization target measure
+            activeMeasure.setTargetValue(targetMeasure.getMeanValue(), targetMeasure.getTargetKindOf());
+
+            distance=activeMeasure.getDistanceFromTarget();
+            support.log("Absolute Distance is "+distance);
+            }
         //TODO Get Min-Max, Opti-Values from somewhere else!
         }
+    
+        
+    
+        
         
     return (distance*100/range);
     }

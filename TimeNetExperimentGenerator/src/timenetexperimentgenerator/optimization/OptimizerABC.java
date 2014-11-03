@@ -91,7 +91,7 @@ public class OptimizerABC extends OptimizerPopulationBased implements Runnable, 
         
         for (ArrayList<SimulationType> source : foodSources)
         {
-            double sourceQuality = 1 / source.get(0).getDistance();
+            double sourceQuality = 1 / source.get(0).getDistanceToTargetValue();
             int numOnlookersOnSource = (int)(numOnlookerBees * (sourceQuality / distanceSum)) + 1;
             for (int i = 0; i<numOnlookerBees; ++i)
             {
@@ -142,7 +142,7 @@ public class OptimizerABC extends OptimizerPopulationBased implements Runnable, 
                 @Override
                 public int compare(SimulationType a, SimulationType b) 
                 {
-                    return Double.compare(a.getDistance(), b.getDistance());
+                    return Double.compare(a.getDistanceToTargetValue(), b.getDistanceToTargetValue());
                 }                    
             });
             ArrayList<SimulationType> topSource = new ArrayList<SimulationType>();
@@ -235,7 +235,7 @@ public class OptimizerABC extends OptimizerPopulationBased implements Runnable, 
         
         for (ArrayList<SimulationType> foodSource : foodSources)
         {
-            distanceSum += 1 / foodSource.get(0).getDistance(); //to get big weight to small distances
+            distanceSum += 1 / foodSource.get(0).getDistanceToTargetValue(); //to get big weight to small distances
         }               
         return distanceSum;
     }

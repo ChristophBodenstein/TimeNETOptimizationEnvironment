@@ -178,7 +178,7 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
             population.add(candidate);
             return population;
         }
-        if (population.get(population.size()-1).get(0).getDistance() >= candidate.get(0).getDistance())
+        if (population.get(population.size()-1).get(0).getDistanceToTargetValue() >= candidate.get(0).getDistanceToTargetValue())
         {
             population.set(population.size()-1, candidate);
             population = sortPopulation(population);

@@ -13,6 +13,7 @@ package timenetexperimentgenerator.helper;
 import java.util.ArrayList;
 import java.util.Iterator;
 import timenetexperimentgenerator.Parser;
+import timenetexperimentgenerator.datamodel.MeasureType;
 import timenetexperimentgenerator.datamodel.SimulationType;
 import timenetexperimentgenerator.support;
 import timenetexperimentgenerator.plot.RPlugin;
@@ -117,8 +118,8 @@ private static ArrayList<Statistic> listOfStatistics=new ArrayList<Statistic>();
     public static void printOptiStatistics(){
     int numberOfAllOptimizationRuns=0;
     double averageDistanceToOptimumAbsolute=0;
-    double averageDistanceToOptimumRelative=0;
-    double averageDistanceToOptimumInDesignSpace=0;
+    double averageDistanceToOptimumInValueRange=0;
+    double averageDistanceToOptimumInDefinitionRange=0;
     double averageNumberOfSimulations=0;
     double averageCPUTimeTotal=0;
     double averageCPUTimeLocal=0;
@@ -145,13 +146,13 @@ private static ArrayList<Statistic> listOfStatistics=new ArrayList<Statistic>();
         }
     
     ArrayList<Statistic> optiSimulationList=new ArrayList<Statistic>();
-    //Fill new ArrayList with Statistic that are Optimiation
+    //Fill new ArrayList with Statistic that are Optimization
     for (Statistic s : listOfStatistics) {
-        if(s.isOptimization()){
+        if(s.isOptimization()&&s.getCalculatedOptimum()!=null){
             optiSimulationList.add(s);
             averageDistanceToOptimumAbsolute+=s.getDistanceToTargetValue();
-            averageDistanceToOptimumRelative+=s.getDistanceRelative();
-            averageDistanceToOptimumInDesignSpace+=s.getDistanceToTargetDS();
+            averageDistanceToOptimumInValueRange+=s.getRelativeDistanceToOptimumInValueRange();
+            averageDistanceToOptimumInDefinitionRange+=s.getRelativeDistanceToOptimumInDefinitionRange();
             
             averageNumberOfSimulations+=s.getNumberOfSimulationsTotal();
             averageNumberOfSimulationsLocal+=s.getNumberOfSimulationsFromLocal();
@@ -172,10 +173,10 @@ private static ArrayList<Statistic> listOfStatistics=new ArrayList<Statistic>();
             
             //Calculate RangeClasses
             for(int i=1;i<=support.DEFAULT_NUMBER_OF_OPTI_PROB_CLASSES;i++){
-                if(s.getDistanceRelative()<=i*100/support.DEFAULT_NUMBER_OF_OPTI_PROB_CLASSES){
+                if(s.getRelativeDistanceToOptimumInValueRange()<=i*100/support.DEFAULT_NUMBER_OF_OPTI_PROB_CLASSES){
                 numberOfFoundOptimaWithinRangeClass[i-1]++;
                 }
-                if(s.getDistanceToTargetDS()<=i*100/support.DEFAULT_NUMBER_OF_OPTI_PROB_CLASSES){
+                if(s.getRelativeDistanceToOptimumInDefinitionRange()<=i*100/support.DEFAULT_NUMBER_OF_OPTI_PROB_CLASSES){
                 numberOfFoundOptimaWithinRangeClassDS[i-1]++;
                 }
             }
@@ -183,29 +184,32 @@ private static ArrayList<Statistic> listOfStatistics=new ArrayList<Statistic>();
         }
     }
     numberOfAllOptimizationRuns=optiSimulationList.size();
-    averageDistanceToOptimumAbsolute=averageDistanceToOptimumAbsolute/numberOfAllOptimizationRuns;
-    averageDistanceToOptimumRelative=averageDistanceToOptimumRelative/numberOfAllOptimizationRuns;
-    averageDistanceToOptimumInDesignSpace=averageDistanceToOptimumInDesignSpace/numberOfAllOptimizationRuns;
-    averageNumberOfSimulations=averageNumberOfSimulations/numberOfAllOptimizationRuns;
-    averageNumberOfSimulationsLocal=averageNumberOfSimulationsLocal/numberOfAllOptimizationRuns;
-    averageNumberOfSimulationsWeb=averageNumberOfSimulationsWeb/numberOfAllOptimizationRuns;
-    averageNumberOfSimulationsCache=averageNumberOfSimulationsCache/numberOfAllOptimizationRuns;
-    averageCPUTimeTotal=averageCPUTimeTotal/numberOfAllOptimizationRuns;
-    averageCPUTimeLocal=averageCPUTimeLocal/numberOfAllOptimizationRuns;
-    averageCPUTimeWeb=averageCPUTimeWeb/numberOfAllOptimizationRuns;
-    averageCPUTimeCache=averageCPUTimeCache/numberOfAllOptimizationRuns;
-    averageSimulationTimeFromLocal=averageSimulationTimeFromLocal/numberOfAllOptimizationRuns;
-    averageSimulationTimeFromWeb=averageSimulationTimeFromWeb/numberOfAllOptimizationRuns;
-    averageSimulationTimeFromCache=averageSimulationTimeFromCache/numberOfAllOptimizationRuns;
-    averageSimulationTimeTotal=averageSimulationTimeTotal/numberOfAllOptimizationRuns;
-    averageCacheRatio=averageCacheRatio/numberOfAllOptimizationRuns;
-       
-    
+        if(numberOfAllOptimizationRuns>=1){
+        averageDistanceToOptimumAbsolute=averageDistanceToOptimumAbsolute/numberOfAllOptimizationRuns;
+        averageDistanceToOptimumInValueRange=averageDistanceToOptimumInValueRange/numberOfAllOptimizationRuns;
+        averageDistanceToOptimumInDefinitionRange=averageDistanceToOptimumInDefinitionRange/numberOfAllOptimizationRuns;
+        averageNumberOfSimulations=averageNumberOfSimulations/numberOfAllOptimizationRuns;
+        averageNumberOfSimulationsLocal=averageNumberOfSimulationsLocal/numberOfAllOptimizationRuns;
+        averageNumberOfSimulationsWeb=averageNumberOfSimulationsWeb/numberOfAllOptimizationRuns;
+        averageNumberOfSimulationsCache=averageNumberOfSimulationsCache/numberOfAllOptimizationRuns;
+        averageCPUTimeTotal=averageCPUTimeTotal/numberOfAllOptimizationRuns;
+        averageCPUTimeLocal=averageCPUTimeLocal/numberOfAllOptimizationRuns;
+        averageCPUTimeWeb=averageCPUTimeWeb/numberOfAllOptimizationRuns;
+        averageCPUTimeCache=averageCPUTimeCache/numberOfAllOptimizationRuns;
+        averageSimulationTimeFromLocal=averageSimulationTimeFromLocal/numberOfAllOptimizationRuns;
+        averageSimulationTimeFromWeb=averageSimulationTimeFromWeb/numberOfAllOptimizationRuns;
+        averageSimulationTimeFromCache=averageSimulationTimeFromCache/numberOfAllOptimizationRuns;
+        averageSimulationTimeTotal=averageSimulationTimeTotal/numberOfAllOptimizationRuns;
+        averageCacheRatio=averageCacheRatio/numberOfAllOptimizationRuns;
+
+
+        MeasureType targetMeasure=support.getOptimizationMeasure();
+        
         support.log("++++ Start of Optimization Statistics ++++");
         support.log("Number of Optimization runs: "+numberOfAllOptimizationRuns);
-        support.log("Average distance to calculated optimum (absolute): "+averageDistanceToOptimumAbsolute);
-        support.log("Average distance to calculated optimum (relative): "+averageDistanceToOptimumRelative +" %");
-        support.log("Average distance to calculated optimum in Design Space " +averageDistanceToOptimumInDesignSpace+" %");
+        support.log("Average distance to target value (" +targetMeasure.getTargetValue() + "/"+ targetMeasure.getTargetKindOf() +"): "+averageDistanceToOptimumAbsolute);
+        support.log("Average relative distance to calculated optimum in value range: "+averageDistanceToOptimumInValueRange +" %");
+        support.log("Average relative distance to calculated optimum in definition range " +averageDistanceToOptimumInDefinitionRange+" %");
         support.log("Average number of Simulations: "+ averageNumberOfSimulations +" ( "+averageNumberOfSimulationsLocal+" | "+averageNumberOfSimulationsWeb+" | "+averageNumberOfSimulationsCache+" )"  +"  (Local|Web|Cache)");
         support.log("Average CPU Time used: "+ averageCPUTimeTotal +" ( "+averageCPUTimeLocal+" | "+averageCPUTimeWeb+" | "+averageCPUTimeCache+" )"  +"  (Local|Web|Cache)");
         support.log("Average Simulation Steps: "+ averageSimulationTimeTotal +" ( "+averageSimulationTimeFromLocal+" | "+averageSimulationTimeFromWeb+" | "+averageSimulationTimeFromCache+" )"  +"  (Local|Web|Cache)");
@@ -215,7 +219,7 @@ private static ArrayList<Statistic> listOfStatistics=new ArrayList<Statistic>();
         String tmpOutDSValue=   "DS-Values: ";
             for(int i=1;i<=support.DEFAULT_NUMBER_OF_OPTI_PROB_CLASSES;i++){
             tmpOutHead+="| "+support.padLeft( String.valueOf(i*100/support.DEFAULT_NUMBER_OF_OPTI_PROB_CLASSES)+"%",10) ;
-            
+
             //support.log("# of Optima within Radius of " +(i*100/support.DEFAULT_NUMBER_OF_OPTI_PROB_CLASSES)+" around Calculated Optimum: "+ numberOfFoundOptimaWithinRangeClass[i-1] +" --  "+(numberOfFoundOptimaWithinRangeClass[i-1]*100/numberOfAllOptimizationRuns)+"%");    
             tmpOutValue+="| "+support.padLeft(numberOfFoundOptimaWithinRangeClass[i-1] +"--"+(numberOfFoundOptimaWithinRangeClass[i-1]*100/numberOfAllOptimizationRuns)+"%",10); 
             //support.log("# of Optima within DS-Radius of " +(i*100/support.DEFAULT_NUMBER_OF_OPTI_PROB_CLASSES)+" around Calculated Optimum: "+ numberOfFoundOptimaWithinRangeClassDS[i-1] +" --  "+(numberOfFoundOptimaWithinRangeClassDS[i-1]*100/numberOfAllOptimizationRuns)+"%");        
@@ -225,6 +229,7 @@ private static ArrayList<Statistic> listOfStatistics=new ArrayList<Statistic>();
         support.log(tmpOutValue);
         support.log(tmpOutDSValue);
         support.log("++++ End of Optimization Statistics ++++");
+        }
     }
     
     /**

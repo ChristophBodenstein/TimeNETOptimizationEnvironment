@@ -60,6 +60,8 @@ private double minValue,maxValue=0.0;
         this.targetKindOf = originalMeasure.targetKindOf;
         this.CPUTime = originalMeasure.CPUTime;
         this.SimulationTime = originalMeasure.CPUTime;
+        this.minValue=originalMeasure.minValue;
+        this.maxValue=originalMeasure.maxValue;
     }
 
 

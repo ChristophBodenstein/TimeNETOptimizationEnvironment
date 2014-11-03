@@ -32,7 +32,8 @@ private double simulationTimeTotal=0;
 private double simulationTimeFromCache=0;
 private double simulationTimeFromWeb=0;
 private double simulationTimeFromLocal=0;
-SimulationType foundOptimum,calculatedOptimum=null;
+SimulationType foundOptimum;
+private SimulationType calculatedOptimum = null;
 private boolean optimization=false;
 
 
@@ -72,13 +73,13 @@ private boolean optimization=false;
      * Adds the found optimum and the calculated optimum to statistics.
      * Useful for statistics of optimization runs
      * @param foundOptimum The simulation incl. parameterset which was found by optimization algorithm
-     * @param optimumParameterset The calulated optimium parameterset to calulate the distance
+     * @param optimumParameterset The calculated optimium parameterset to calulate the distance
      */
     public void addFoundOptimum(SimulationType foundOptimum, SimulationType calculatedOptimum){
     support.log("Adding calculated optimium to List of Statistics.");
     this.foundOptimum=foundOptimum;
     this.calculatedOptimum=calculatedOptimum;
-        if(this.foundOptimum!=null && this.calculatedOptimum!=null){
+        if(this.foundOptimum!=null){
         this.setOptimization(true);
         }
     }
@@ -87,11 +88,11 @@ private boolean optimization=false;
      * Prints out Statistics about optimization to Log
      */
     public void printOptimizerStatisticsToLog(){
-        if(isOptimization()){
+        if(isOptimization()&&this.calculatedOptimum!=null){
         support.log("****Start*Optimization-Statistics****");
-        support.log("Distance to Optimum: "+this.getDistanceToTargetValue());
-        support.log("Distance to Optimum in Designspace: "+this.getDistanceToTargetDS()+" %");
-        support.log("Distance to Optimum in Value-Range: "+this.getDistanceRelative() +" %");
+        //support.log("Distance to Optimum: "+this.getDistanceToTargetValue());
+        support.log("Distance to Optimum in Definition range: "+this.getRelativeDistanceToOptimumInDefinitionRange() +" %");
+        support.log("Distance to Optimum in Value range: "+this.getRelativeDistanceToOptimumInValueRange()+" %");
         support.log("****End*Optimization-Statistics****");
         }
     }
@@ -101,26 +102,29 @@ private boolean optimization=false;
      * @return distance to target value (is calculated by SimulationType foundOptimum)
      */
     public double getDistanceToTargetValue(){
-    return this.foundOptimum.getDistance();
+    return this.foundOptimum.getDistanceToTargetValue();
     }
     
     /**
-     * Returns Distance of found optimum to target value in Design space
+     * Returns Distance of actual parameterValues to given set of parameterValues (calculated Optimum) in definition space (domain)
      * @return distance to target value in Design space
      * @see SimulationType
      */
-    public double getDistanceToTargetDS(){
-    return this.foundOptimum.getDistancesDesignSpace(this.calculatedOptimum);
+    public double getRelativeDistanceToOptimumInDefinitionRange(){
+    return this.foundOptimum.getRelativeDistanceInDefinitionRange(this.getCalculatedOptimum());
     }
     
     /**
      * Returns distance of found optimum to given optimum in relation to Maximum/Minimum of values of measures
-     * This is only possible for benchmark-functions or if absolute minimum/maximum is given by user
-     * Calls the getDistanceRelative of SimulationType
+ This is only possible for benchmark-functions or if absolute minimum/maximum is given by user
+ Calls the getRelativeDistanceToOptimumInValueRange of SimulationType
      * @return distance to theoretical optimum in % of possible range
      */
-    public double getDistanceRelative(){
-    return this.foundOptimum.getDistanceRelative();
+    public double getRelativeDistanceToOptimumInValueRange(){
+    MeasureType myOptiTargetMeasure=support.getOptimizationMeasure();//Take only the first Measure.
+    MeasureType myOptiMeasure=this.getCalculatedOptimum().getMeasureByName(myOptiTargetMeasure.getMeasureName());
+    support.log("Calculating Distance to "+myOptiMeasure.getMeanValue() + " for "+myOptiMeasure.getMeasureName());
+    return this.foundOptimum.getRelativeDistanceToTargetValueInValueRange(myOptiMeasure);
     }
     
     /**
@@ -270,6 +274,13 @@ private boolean optimization=false;
      */
     public double getCacheRatio(){
     return (((double)this.getNumberOfSimulationsFromCache()/(double)this.getNumberOfSimulationsTotal()));
+    }
+
+    /**
+     * @return the calculatedOptimum
+     */
+    public SimulationType getCalculatedOptimum() {
+        return calculatedOptimum;
     }
     
 }

@@ -71,7 +71,7 @@ public OptimizerChargedSystemSearch()
         //calculate attraction of each charge
         for(int i=0; i<population.size(); ++i)
         {
-            powerOfCharges[i] = 1 / population.get(i).get(0).getDistance(); //temporary function for calculating attraction. TODO: test other funktions
+            powerOfCharges[i] = 1 / population.get(i).get(0).getDistanceToTargetValue(); //temporary function for calculating attraction. TODO: test other funktions
         }
     }
     

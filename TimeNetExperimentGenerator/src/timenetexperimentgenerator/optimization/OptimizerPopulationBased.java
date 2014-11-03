@@ -221,7 +221,7 @@ public abstract class OptimizerPopulationBased implements Runnable, Optimizer
             @Override
             public int compare(ArrayList<SimulationType> a, ArrayList<SimulationType> b) 
             {
-                return Double.compare(a.get(0).getDistance(), b.get(0).getDistance());
+                return Double.compare(a.get(0).getDistanceToTargetValue(), b.get(0).getDistanceToTargetValue());
             }                    
         });
         return population;
@@ -231,7 +231,7 @@ public abstract class OptimizerPopulationBased implements Runnable, Optimizer
     {
         for (int i = 0; i<population.size(); ++i)
         {
-            String logString = "Distance " + i + " \t: " + population.get(i).get(0).getDistance();
+            String logString = "Distance " + i + " \t: " + population.get(i).get(0).getDistanceToTargetValue();
             support.log(logString);
         }
     }
@@ -241,9 +241,9 @@ public abstract class OptimizerPopulationBased implements Runnable, Optimizer
         boolean newTopMeasurefound = false;
         for (int i=0; i<population.size(); ++i)
         {
-            if(population.get(i).get(0).getDistance()<topDistance)
+            if(population.get(i).get(0).getDistanceToTargetValue()<topDistance)
             {
-                topDistance = population.get(i).get(0).getDistance();
+                topDistance = population.get(i).get(0).getDistanceToTargetValue();
                 topMeasure = new SimulationType(population.get(i).get(0));
                 newTopMeasurefound = true;
             }

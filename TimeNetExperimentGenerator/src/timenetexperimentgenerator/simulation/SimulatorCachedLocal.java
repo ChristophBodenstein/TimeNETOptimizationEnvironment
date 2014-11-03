@@ -130,6 +130,8 @@ private String logFileName;
      * For other simulators, this must be given by user.
      */
     public SimulationType getCalculatedOptimum(MeasureType targetMeasure) {
-        return null;
+    support.log("SimulatorCachedLocal: Getting absolute optimum simulation from Cache. Will return null.");
+    //TODO, Use the same function as in Full-Cached Simulator!
+    return null;
     }
 }
