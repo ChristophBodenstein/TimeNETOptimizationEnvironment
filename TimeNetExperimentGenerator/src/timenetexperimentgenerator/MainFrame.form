@@ -434,15 +434,6 @@
             </Constraint>
           </Constraints>
         </Component>
-        <Component class="timenetexperimentgenerator.MeasurementForm" name="measurementForm2">
-          <Constraints>
-            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-              <JTabbedPaneConstraints tabName="Target 2">
-                <Property name="tabTitle" type="java.lang.String" value="Target 2"/>
-              </JTabbedPaneConstraints>
-            </Constraint>
-          </Constraints>
-        </Component>
       </SubComponents>
     </Container>
     <Component class="javax.swing.JButton" name="jButtonStartOptimization">

@@ -119,6 +119,9 @@ private boolean optimization=false;
  This is only possible for benchmark-functions or if absolute minimum/maximum is given by user
  Calls the getRelativeDistanceToOptimumInValueRange of SimulationType
      * @return distance to theoretical optimum in % of possible range
+     * If an optimum was found and given to this statistic the distance to the calculated optimum is calculated. 
+     * Not the distance to target value as given in user interface!
+     * For calculation getRelativeDistanceToTargetValueInValueRange is called from this.foundOptimum
      */
     public double getRelativeDistanceToOptimumInValueRange(){
     MeasureType myOptiTargetMeasure=support.getOptimizationMeasure();//Take only the first Measure.

@@ -172,11 +172,13 @@ private static ArrayList<Statistic> listOfStatistics=new ArrayList<Statistic>();
             averageCacheRatio+=s.getCacheRatio();
             
             //Calculate RangeClasses
+            double tmpRelativeDistanceInValueRange=s.getRelativeDistanceToOptimumInValueRange();
+            double tmpRelativeDistanceInDefinitionRange=s.getRelativeDistanceToOptimumInDefinitionRange();
             for(int i=1;i<=support.DEFAULT_NUMBER_OF_OPTI_PROB_CLASSES;i++){
-                if(s.getRelativeDistanceToOptimumInValueRange()<=i*100/support.DEFAULT_NUMBER_OF_OPTI_PROB_CLASSES){
+                if(tmpRelativeDistanceInValueRange<=i*100/support.DEFAULT_NUMBER_OF_OPTI_PROB_CLASSES){
                 numberOfFoundOptimaWithinRangeClass[i-1]++;
                 }
-                if(s.getRelativeDistanceToOptimumInDefinitionRange()<=i*100/support.DEFAULT_NUMBER_OF_OPTI_PROB_CLASSES){
+                if(tmpRelativeDistanceInDefinitionRange<=i*100/support.DEFAULT_NUMBER_OF_OPTI_PROB_CLASSES){
                 numberOfFoundOptimaWithinRangeClassDS[i-1]++;
                 }
             }

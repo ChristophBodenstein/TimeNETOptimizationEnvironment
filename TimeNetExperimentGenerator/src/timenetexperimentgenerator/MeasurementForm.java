@@ -19,7 +19,11 @@ private ArrayList<MeasureType> listOfMeasureMents=new ArrayList<MeasureType>();
     /** Creates new form MeasurementForm */
     public MeasurementForm() {
         initComponents();
-        this.setActivated(false);
+        this.setActivated(true);
+        //Remove next two lines if multiple Measurements should be enabled again.
+        //Meanwhile this feature is disabled
+        this.jCheckBoxEnableOptimizationForThisMeasurement.setSelected(true);
+        this.jCheckBoxEnableOptimizationForThisMeasurement.setVisible(false);
     }
 
     /** This method is called from within the constructor to

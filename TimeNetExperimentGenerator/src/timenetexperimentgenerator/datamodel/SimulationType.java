@@ -208,7 +208,7 @@ private boolean isFromDistributedSimulation=false;//Is False, if local simulated
             activeMeasure.setTargetValue(targetMeasure.getMeanValue(), targetMeasure.getTargetKindOf());
 
             distance=activeMeasure.getDistanceFromTarget();
-            support.log("Absolute Distance is "+distance);
+            support.log("Absolute Distance to calculated Optimum ("+ targetMeasure.getMeanValue() +") is "+distance +" at a range of "+range+".");
             }
         //TODO Get Min-Max, Opti-Values from somewhere else!
         }

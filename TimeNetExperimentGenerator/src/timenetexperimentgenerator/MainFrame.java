@@ -288,8 +288,9 @@ private ArrayList<Boolean> listOfUIStatesPushed;
     /**
      * Check, if cached simulation is possible
      * if cached simulation is possible, then set some switches etc...
+     * @return true if CachedSimulation is possible, else false
      */
-    private void checkIfCachedSimulationIsPossible(){
+    private boolean checkIfCachedSimulationIsPossible(){
     
         if(mySimulationCache!=null){
             if(mySimulationCache.checkIfAllParameterMatchTable((parameterTableModel)this.jTableParameterList.getModel())){
@@ -305,6 +306,7 @@ private ArrayList<Boolean> listOfUIStatesPushed;
         support.setCachedSimulationEnabled(false);
         }
     this.updateComboBoxSimulationType();
+    return support.isCachedSimulationAvailable();
     }    
     
     /** This method is called from within the constructor to
@@ -330,7 +332,6 @@ private ArrayList<Boolean> listOfUIStatesPushed;
         jSeparator3 = new javax.swing.JSeparator();
         jTabbedPaneOptiTargets = new javax.swing.JTabbedPane();
         measurementForm1 = new timenetexperimentgenerator.MeasurementForm();
-        measurementForm2 = new timenetexperimentgenerator.MeasurementForm();
         jButtonStartOptimization = new javax.swing.JButton();
         jButtonPathToTimeNet = new javax.swing.JButton();
         jLabelExportStatus = new javax.swing.JLabel();
@@ -437,7 +438,6 @@ private ArrayList<Boolean> listOfUIStatesPushed;
         });
 
         jTabbedPaneOptiTargets.addTab("Target 1", measurementForm1);
-        jTabbedPaneOptiTargets.addTab("Target 2", measurementForm2);
 
         jButtonStartOptimization.setText("Start Optimization");
         jButtonStartOptimization.setEnabled(false);
@@ -1029,7 +1029,11 @@ private ArrayList<Boolean> listOfUIStatesPushed;
         this.pathToLastSimulationCache=fileChooser.getSelectedFile().getPath();
         this.saveProperties();
         }
-    this.checkIfCachedSimulationIsPossible();
+        //If cached simulation is available activate cache as Cache/local simulation
+        if(this.checkIfCachedSimulationIsPossible()){
+        this.jComboBoxSimulationType.setSelectedItem(typeOfSimulator.Cache_Only);
+        support.setChosenSimulatorType(typeOfSimulator.Cache_Only);
+        }
     }//GEN-LAST:event_jButtonLoadCacheFileActionPerformed
 
     private void jComboBoxOptimizationTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxOptimizationTypeActionPerformed
@@ -1425,7 +1429,6 @@ private ArrayList<Boolean> listOfUIStatesPushed;
     private javax.swing.JTable jTableParameterList;
     private javax.swing.JTextField jTextFieldSCPNFile;
     private timenetexperimentgenerator.MeasurementForm measurementForm1;
-    private timenetexperimentgenerator.MeasurementForm measurementForm2;
     // End of variables declaration//GEN-END:variables
 
 
@@ -1588,6 +1591,13 @@ private ArrayList<Boolean> listOfUIStatesPushed;
     saveProperties();
     calculateDesignSpace();
     checkIfCachedSimulationIsPossible();
+        if(this.jComboBoxSimulationType.getSelectedItem().equals(typeOfSimulator.Cache_Only)){
+            if(!support.isCachedSimulationAvailable()){
+            this.jComboBoxSimulationType.setSelectedItem(typeOfSimulator.Cached_Local);
+            support.setChosenSimulatorType(typeOfSimulator.Cached_Local);
+            }
+        }
+    
     }
 
     /**
@@ -2039,6 +2049,8 @@ private ArrayList<Boolean> listOfUIStatesPushed;
                 listOfUIStates.set(3, false);
                 listOfUIStates.set(5, false);
                 listOfUIStates.set(6, false);
+                //Deactivate Benchmark JCombobox if no benchmark-simulator is chosen        
+                listOfUIStates.set(16, jComboBoxSimulationType.getSelectedItem().equals(typeOfSimulator.Benchmark));
                 break;
             case clientState:
                 for(int i=0;i<listOfUIStates.size();i++){
