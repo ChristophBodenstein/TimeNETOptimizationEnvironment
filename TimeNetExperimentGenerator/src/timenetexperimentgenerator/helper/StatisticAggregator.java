@@ -116,6 +116,8 @@ private static ArrayList<Statistic> listOfStatistics=new ArrayList<Statistic>();
      * Prints all Optimization statistics and a summary of the last optimizations
      */
     public static void printOptiStatistics(){
+    boolean logToWindow=support.isLogToWindow();
+    support.setLogToWindow(true);//Activate log to Window, no matter what user checked in ui
     int numberOfAllOptimizationRuns=0;
     double averageDistanceToOptimumAbsolute=0;
     double averageDistanceToOptimumInValueRange=0;
@@ -232,6 +234,7 @@ private static ArrayList<Statistic> listOfStatistics=new ArrayList<Statistic>();
         support.log(tmpOutDSValue);
         support.log("++++ End of Optimization Statistics ++++");
         }
+    support.setLogToWindow(logToWindow);//Set Window-logging to original value
     }
     
     /**

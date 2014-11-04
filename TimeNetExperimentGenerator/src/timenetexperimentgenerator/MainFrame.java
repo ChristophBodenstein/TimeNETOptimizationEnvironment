@@ -2125,6 +2125,9 @@ private ArrayList<Boolean> listOfUIStatesPushed;
         this.popUIState();
         support.unsetListOfChangableParametersMultiphase();//Stop Multiphase if it was active
         support.setStatusText(message);
+        
+        StatisticAggregator.printOptiStatistics();
+        
         }   else{
             support.log("Starting next Optimization run, number:" +(tmpNumerOfOptiRunsToGo-1));
             support.setNumberOfOptiRunsToGo(tmpNumerOfOptiRunsToGo-1);
