@@ -32,9 +32,17 @@ public enum typeOfBenchmarkFunction{Sphere, Ackley, Matya, Schwefel, Rastrigin};
 
 public enum typeOfMVMOMutationSelection{Random, RandomWithMovingSingle, MovingGroupSingleStep, MovingGroupMultiStep};
 
-public enum typeOfMVMOParentSelection{Best, Random, Weighted}
+public enum typeOfMVMOParentSelection{Best, Random, Weighted};
 
 public static final String[] listOfParametersToIgnore={"TempPara","TempCost","UsedCPUTIME"};
 
 public enum uiState{defaultState, clientState, processRunning};
+
+
+public enum typeOfProcessFeedback{
+            OptimizationSuccessful, OptimizationCanceled, OptimizationNotSuccessful, 
+            SimulationSuccessful, SimulationCanceled, SimulationNoSuccessful, 
+            GenerationSuccessful, GenerationCanceled, GenerationNotSuccessful,
+            SomethingCanceled, SomethingSuccessful};
+
 }

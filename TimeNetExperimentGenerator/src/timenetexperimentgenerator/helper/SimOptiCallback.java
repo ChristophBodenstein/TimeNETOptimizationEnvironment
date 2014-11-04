@@ -8,12 +8,14 @@
  */
 package timenetexperimentgenerator.helper;
 
+import timenetexperimentgenerator.typedef;
+
 /**
  *
  * @author Christoph Bodenstein
  */
 public interface SimOptiCallback {
 
-    public void operationSucessfull(String message);
-    public void operationCanceled(String message);
+    public void operationSucessfull(String message, typedef.typeOfProcessFeedback feedback);
+    public void operationCanceled(String message, typedef.typeOfProcessFeedback feedback);
 }

@@ -48,7 +48,7 @@ import timenetexperimentgenerator.typedef.*;
 public class MainFrame extends javax.swing.JFrame implements TableModelListener,SimOptiCallback{
 Properties auto = new Properties();
 private String fileName="";
-public boolean cancelOperation=false;
+//public boolean cancelOperation=false;
 ArrayList < ArrayList<parameter> >ListOfParameterSetsToBeWritten=new ArrayList< ArrayList<parameter> >();//Name, Value
 generator myGenerator;
 public parameter pConfidenceIntervall=new parameter();
@@ -823,11 +823,10 @@ private ArrayList<Boolean> listOfUIStatesPushed;
         }else{
         support.log("Export-Operation cancled.");
         }
-    this.cancelOperation=false;
+    support.setCancelEverything(false);
     }//GEN-LAST:event_jButtonExportActionPerformed
 
     private void jButtonCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelActionPerformed
-    this.cancelOperation=true;
     support.setCancelEverything(true);
     support.log("Try to cancel everything.");
     }//GEN-LAST:event_jButtonCancelActionPerformed
@@ -887,8 +886,6 @@ private ArrayList<Boolean> listOfUIStatesPushed;
         support.setCancelEverything(false);
         this.restartGenerator();
         }
-    this.popUIState();
-    jButtonStartBatchSimulation.setEnabled(true);
     }//GEN-LAST:event_jButtonGenerateListOfExperimentsActionPerformed
 
     private void jButtonStartOptimizationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonStartOptimizationActionPerformed
@@ -1316,7 +1313,7 @@ private ArrayList<Boolean> listOfUIStatesPushed;
     public void buildListOfParameterSetsToExport(ArrayList ListOfParameterSetsToBeWritten, ArrayList ListOfParameterAsFromTable, ArrayList<parameter> lastParameterSet, JLabel infoLabel){
     boolean isAlreadyInExportList=false;
     
-    if(cancelOperation){
+    if(support.isCancelEverything()){
     this.activateReloadButtons();
         return;
     }
@@ -1492,7 +1489,7 @@ private ArrayList<Boolean> listOfUIStatesPushed;
     boolean existsInOutPutList=false;
         for(int i=0; i<ListOfParameterSetsToBeWritten.size();i++){
         infoLabel.setText("Checking "+i+"/"+ListOfParameterSetsToBeWritten.size());
-        if(cancelOperation){
+        if(support.isCancelEverything()){
         infoLabel.setText("Operation canceled");
         this.activateReloadButtons();
         return null;
@@ -1555,29 +1552,15 @@ private ArrayList<Boolean> listOfUIStatesPushed;
      * Starts and restarts the generator Thread
      */
     public void restartGenerator(){
-    this.cancelOperation=false;
+    support.setCancelEverything(false);
     myGenerator=null;
     ListOfParameterSetIds=new ArrayList<Long>();
     ListOfParameterSetsToBeWritten=new ArrayList<ArrayList<parameter>>();
     myGenerator=new generator(ListOfParameterSetsToBeWritten, fileName, jLabelExportStatus, this, jTableParameterList);
     myGenerator.start();
-    this.waitForGenerator();
+    support.waitForGeneratorAsynchronous(myGenerator, this);
     }
 
-
-    /**
-     * Waits for End of Generator
-     */
-    public void waitForGenerator(){
-        try{
-            while(this.myGenerator.isAlive()){
-            Thread.sleep(500);
-            support.spinInLabel();
-            }
-        }catch (InterruptedException e){
-            support.log("Error while waiting for Generator.");
-        }
-    }
 
     /**
      * Restarts the generator after Table has changed
@@ -2118,8 +2101,9 @@ private ArrayList<Boolean> listOfUIStatesPushed;
      * Callback-Method of SimOptiCallback
      * called when Simulation or optimization is ended succesfully
      * @param message will be shown in staus-label
+     * @param feedback will determine what to do next (button activation etc.)
      */
-    public void operationSucessfull(String message) {
+    public void operationSucessfull(String message, typeOfProcessFeedback feedback) {
         int tmpNumerOfOptiRunsToGo=support.getNumberOfOptiRunsToGo();
         if(tmpNumerOfOptiRunsToGo<=1){
         this.popUIState();
@@ -2128,11 +2112,20 @@ private ArrayList<Boolean> listOfUIStatesPushed;
         
         StatisticAggregator.printOptiStatistics();
         
+        
         }   else{
             support.log("Starting next Optimization run, number:" +(tmpNumerOfOptiRunsToGo-1));
             support.setNumberOfOptiRunsToGo(tmpNumerOfOptiRunsToGo-1);
             this.startOptimizationAgain();
             }
+        
+        switch(feedback){
+            case GenerationSuccessful:
+                jButtonStartBatchSimulation.setEnabled(true);
+                break;
+                
+            default:break;
+        }
     }
 
     /**
@@ -2140,9 +2133,20 @@ private ArrayList<Boolean> listOfUIStatesPushed;
      * called when Simulation or optimization is canceled
      * @param message will be shown in staus-label
      */
-    public void operationCanceled(String message) {
+    public void operationCanceled(String message, typeOfProcessFeedback feedback) {
         this.popUIState();
         support.setStatusText(message);
+        switch(feedback){
+            case GenerationCanceled:
+                jButtonStartBatchSimulation.setEnabled(false);
+                support.log("Generation canceled. Deactivate StartBatchButton.");
+                break;
+            case GenerationNotSuccessful:
+                jButtonStartBatchSimulation.setEnabled(false);
+                break;
+                
+            default:break;
+        }
     }
     
     /**

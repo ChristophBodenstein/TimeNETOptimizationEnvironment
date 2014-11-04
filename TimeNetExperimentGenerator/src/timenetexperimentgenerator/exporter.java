@@ -116,7 +116,7 @@ MainFrame parent;
       }
     else {
       support.log("No Selection ");
-      parent.cancelOperation=true;
+      //parent.cancelOperation=true;
       }
 
 

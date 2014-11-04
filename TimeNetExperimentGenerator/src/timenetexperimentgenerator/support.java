@@ -32,6 +32,7 @@ import timenetexperimentgenerator.optimization.OptimizerPreferences;
 import timenetexperimentgenerator.simulation.SimulationCache;
 import timenetexperimentgenerator.simulation.Simulator;
 import timenetexperimentgenerator.typedef.*;
+import timenetexperimentgenerator.typedef.typeOfProcessFeedback;
 
 
 
@@ -1428,7 +1429,7 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
      * @param message Text to be displayed in info-label of mainFrame
      */
     public static void simOptiOperationSuccessfull(String message){
-    mainFrame.operationSucessfull(message);
+    mainFrame.operationSucessfull(message, typeOfProcessFeedback.SomethingSuccessful);
     }
     
     /**
@@ -1437,7 +1438,7 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
      * @param message Text to be displayed in info-label of mainFrame
      */
     public static void simOptiOperationCanceled(String message){
-    mainFrame.operationCanceled(message);
+    mainFrame.operationCanceled(message, typeOfProcessFeedback.SomethingCanceled);
     }
     
     /**
@@ -1453,11 +1454,11 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
             @Override
             public void run() {
                 if (mySimulator.getStatus()>=100){
-                listener.operationSucessfull("The end.");
+                listener.operationSucessfull("The end.", typeOfProcessFeedback.SimulationSuccessful);
                 this.cancel();
                 }
                 if(support.isCancelEverything()){
-                listener.operationCanceled("Operation canceled by user.");
+                listener.operationCanceled("Operation canceled by user.", typeOfProcessFeedback.SimulationCanceled);
                 this.cancel();
                 }
             }
@@ -1478,19 +1479,39 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
             @Override
             public void run() {
                 if (myOptimizer.getOptimum()!=null){
-                listener.operationSucessfull("The end.");
+                listener.operationSucessfull("The end.", typeOfProcessFeedback.OptimizationSuccessful);
                 MeasureType myOptiMeasure=support.getOptimizationMeasure();
-                StatisticAggregator.getStatisticByName(myOptimizer.getLogFileName()).addFoundOptimum(myOptimizer.getOptimum(), SimOptiFactory.getSimulator().getCalculatedOptimum(myOptiMeasure)); ;
+                StatisticAggregator.getStatisticByName(myOptimizer.getLogFileName()).addFoundOptimum(myOptimizer.getOptimum(), SimOptiFactory.getSimulator().getCalculatedOptimum(myOptiMeasure));
                 this.cancel();
                 }
                 if(support.isCancelEverything()){
-                listener.operationCanceled("Operation canceled by user.");
+                listener.operationCanceled("Operation canceled by user.", typeOfProcessFeedback.OptimizationCanceled);
                 this.cancel();
                 }
             }
         }, 1000*support.DEFAULT_MEMORYPRINT_INTERVALL, 1000*support.DEFAULT_MEMORYPRINT_INTERVALL);
-
+    }
     
+    /**
+     * Waits for a generator to End
+     * @param myGenerator Optimizer to wait for
+     * @param listener SimOptiCallback Listener to be informed via method "operationSuccessfull" or "operationCanceled"
+     */
+    public static void waitForGeneratorAsynchronous(final generator myGenerator, final SimOptiCallback listener){
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                if (!myGenerator.isRunning()){
+                listener.operationSucessfull("DS generated.", typeOfProcessFeedback.GenerationSuccessful);
+                this.cancel();
+                }
+                if(support.isCancelEverything()){
+                listener.operationCanceled("Operation canceled by user.", typeOfProcessFeedback.GenerationCanceled);
+                this.cancel();
+                }
+            }
+        }, 1000*support.DEFAULT_MEMORYPRINT_INTERVALL, 1000*support.DEFAULT_MEMORYPRINT_INTERVALL);
     }
     
     
