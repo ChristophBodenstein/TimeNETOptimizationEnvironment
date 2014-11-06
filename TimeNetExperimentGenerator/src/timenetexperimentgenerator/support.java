@@ -62,7 +62,7 @@ public static final typeOfBenchmarkFunction DEFAULT_TYPE_OF_BENCHMARKFUNCTION = 
 //default values for distributed simulation
 public static final int DEFAULT_SLEEPING_TIME=2000;
 public static final int DEFAULT_NUMBER_OF_SLEEPING_TIMES_AS_TIMEOUT = 20;
-public static final int DEFAULT_CONNECTION_TIMEOUT=2000;
+public static final int DEFAULT_CONNECTION_TIMEOUT=5000;
 
 
 public static final double DEFAULT_T_RATIO_SCALE=0.00001;
