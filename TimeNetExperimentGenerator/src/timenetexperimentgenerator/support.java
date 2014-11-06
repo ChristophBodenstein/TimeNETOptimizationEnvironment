@@ -43,7 +43,7 @@ import timenetexperimentgenerator.typedef.typeOfProcessFeedback;
 public class support {
 
 //This Version of TimeNetExperimentGenerator
-public static final String VERSION ="0.9.281014";
+public static final String VERSION ="0.9.061114";
 
 
 //Define some program-wide default values
