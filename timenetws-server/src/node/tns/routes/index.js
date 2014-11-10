@@ -1,5 +1,7 @@
 var express = require('express');
 var router = express.Router();
+var mkdirp = require('mkdirp');
+
 
 // Required modules for form handling
 var express = require('express'),
@@ -15,33 +17,37 @@ router.get('/', function(req, res) {
 });
 
 // Upload route.
-router.post('/rest/file/upload', function(req, res) {
-  console.log("Incomming Post-Request.");
+router.post('/rest/file/upload', function(req, res) {  
   var form = new formidable.IncomingForm();
   form.parse(req, function(err, fields, files) {
-    // `file` is the name of the <input> field of type `file`
-    console.log("Parsing incomming Post-Request.");
-    var old_path = files.file.path,
-        file_size = files.file.size,
-        file_ext = files.file.name.split('.').pop(),
-        index = old_path.lastIndexOf('/') + 1,
-        file_name = old_path.substr(index),
-        new_path = path.join(process.env.PWD, '/uploads/', file_name + '.' + file_ext);
-    console.log("Filename: "+file_name);
-    console.log("Will be stored: "+new_path);
-    fs.readFile(old_path, function(err, data) {
-      fs.writeFile(new_path, data, function(err) {
-        fs.unlink(old_path, function(err) {
-          if (err) {
-            res.status(500);
-            res.json({'success': false});
-          } else {
-            res.status(200);
-            res.json({'success': true});
-          }
-        });
-      });
-    });
+    var old_path = files.attachment.path,
+        file_size = files.attachment.size,
+        file_name = files.attachment.name,
+		simid = fields.simid,
+		new_dir = './uploads/'+simid,
+        new_path = './uploads/'+simid+"/"+file_name;
+	mkdirp(new_dir, function(err) { 
+	    // path was created unless there was error
+		if(err){
+			console.log("There was an error creating dir:"+new_path);
+		}
+		
+	    fs.readFile(old_path, function(err, data) {
+	      fs.writeFile(new_path, data, function(err) {
+	        fs.unlink(old_path, function(err) {
+	          if (err) {
+	            res.status(500);
+	            res.json({'success': false});
+	          } else {
+	            res.status(200);
+	            res.json({'success': true});
+	          }
+	        });
+	      });
+	    });
+
+
+	});
   });
 });
 
