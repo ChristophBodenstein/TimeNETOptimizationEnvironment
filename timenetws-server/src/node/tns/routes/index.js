@@ -42,61 +42,37 @@ router.post('/rest/file/upload', function(req, res) {
 			console.log("There was an error creating dir:"+new_path);
 		}
 		
-	    fs.readFile(old_path, function(err, data) {
-	      fs.writeFile(new_path, data, function(err) {
+	    var data = fs.readFile(old_path, function(err, data) {
+		//console.log("Will try to write new file.");
+	      fs.writeFile(new_path, data, function(err){
+			  //console.log("Will try to delete old file.");
 	        fs.unlink(old_path, function(err) {
 	          if (err) {
+				console.log("Error unlinking old file."+old_path);
 	            res.status(500);
 	            res.json({'success': false});
 	          } else {
-	            res.status(200);
-	            res.json({'success': true});
-			  	//Close file handle
-			  	/*fs.close(old_path, function(err){
-					console.log("Error closing old_path: "+old_path);
-				});*/
-
+			  
 				//Enter simulation data into Mongodb
-
-				  simlist.insert({name: file_name, simid: simid, path: new_path, distributed: false, simulated: false, logdownloaded: false, logname:"", timestamp: Date.now()}, function(err, result){
-					/*if(result) {
-						//console.log("Added " + file_name + " to DB.");
-					}
-					if(err){
-						console.log("Error inserting into DB. Maybe it already exists, will update.");
-						simlist.findOne({name: file_name}, function(err, result){
-						console.log("Found Object in db: "+result);
-
-							if(err){
-								console.log("Error updating data for: "+file_name);
-							}
-						});
-
-						simlist.count(function(err, result){
-							console.log("There are "+result + "Entries in db.");
-						});
-
-						simlist.update({name: file_name, simid: simid}, {$set: {path: new_path, distributed: false, simulated: false, logdownloaded: false, timestamp: Date.now()}}, function(err, result){
-							if(err){
-								console.log("Error updating data for: "+file_name);
-							}
-						});
-					}*/
-
-				  });
-
-	          }
-	        });
+				//console.log("Try to enter into db.");
+				  	simlist.insert({name: file_name, simid: simid, path: new_path, distributed: false, simulated: false, logdownloaded: false, logname:"", timestamp: Date.now()}, function(err, result){
+		            	if (err) {
+							console.log("Error entering simulation into db.");
+		              	res.status(500);
+		              	res.json({'success': false});
+		            	} 	else {
+		              	  	res.status(200);
+		              		res.json({'success': true});
+		  					}
+			  
+					});
+				} 
+	       });
 	      });
-
-	    });
-		/*fs.close(new_path, function(err){
-			console.log("Error closing new_path: "+new_path);
-		});*/
-
-
+		});
+  	});
 	});
-  });
+  return true;
 });
 
 
