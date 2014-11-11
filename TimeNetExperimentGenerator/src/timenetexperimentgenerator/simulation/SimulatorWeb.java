@@ -315,7 +315,6 @@ public class SimulatorWeb implements Runnable, Simulator{
             
             
             
-            //TODO, wait for response!
             while(response==null){
             //Wait for response
             }
@@ -338,7 +337,7 @@ public class SimulatorWeb implements Runnable, Simulator{
    
    /**
      * Returns the calulated optimimum
-     * For Benchmark-Functions this can be caluclated.
+     * For Benchmark-Functions this can be calculated.
      * For other simulators, this must be given by user.
      */
     public SimulationType getCalculatedOptimum(MeasureType targetMeasure) {
