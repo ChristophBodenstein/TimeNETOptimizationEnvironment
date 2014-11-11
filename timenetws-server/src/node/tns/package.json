@@ -16,6 +16,7 @@
     "mongodb": "*",
     "mongoskin": "*",
     "formidable": "*",
-	"mkdirp": "*"
+	"mkdirp": "*",
+    "graceful-fs": "*"
   }
 }

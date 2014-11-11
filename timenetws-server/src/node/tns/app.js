@@ -12,6 +12,9 @@ var fs = require('fs');
 var mongo = require('mongoskin');
 var db = mongo.db('mongodb://localhost:27017/tnsnode',{native_parser:true});
 
+//Drop old collection
+//db.('simlist').drop();
+
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
