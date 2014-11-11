@@ -135,7 +135,7 @@ public void run() {
             tmpFile.delete();
             tmpFile=new File(support.removeExtention(exportFileName)+".result");
             tmpFile.delete();
-            support.log("Deleted original Log-file and directory.");
+            support.log("Deleted original Log-file and directory. Try to upload result.");
             this.actualSimulationLogFile=sinkFile;
             File logFile=new File(sinkFile);
             executeMultiPartRequest(support.getReMoteAddress() + "/rest/log/upload",logFile,logFile.getName(), "File Uploaded :: WORDS", simid) ;

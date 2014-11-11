@@ -35,6 +35,7 @@ import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import timenetexperimentgenerator.Parser;
@@ -60,6 +61,7 @@ public class SimulatorWeb implements Runnable, Simulator{
     boolean cancelSimulations=false;
     boolean log=true;
     boolean keepSimulationFiles=false;
+    HttpClient client = new DefaultHttpClient() ;
 
 
     /**
@@ -287,7 +289,7 @@ public class SimulatorWeb implements Runnable, Simulator{
     }
    public void executeMultiPartRequest(String urlString, File file, String fileName, String fileDescription,String simid) throws Exception 
     {
-    	HttpClient client = new DefaultHttpClient() ;
+    	//HttpClient client = new DefaultHttpClient() ;
         HttpPost postRequest = new HttpPost (urlString) ;
         try
         {
@@ -311,11 +313,21 @@ public class SimulatorWeb implements Runnable, Simulator{
             //Send request
             HttpResponse response = client.execute(postRequest) ;
             
+            
+            
+            //TODO, wait for response!
+            while(response==null){
+            //Wait for response
+            }
             //Verify response if any
             if (response != null)
             {
                 //System.out.println(response.getStatusLine().getStatusCode());
+                EntityUtils.consume(response.getEntity());
                 //TODO show Error in log and statuslabel
+            }else{
+            //Consume error
+                EntityUtils.consume(response.getEntity());
             }
         }
         catch (Exception ex)
