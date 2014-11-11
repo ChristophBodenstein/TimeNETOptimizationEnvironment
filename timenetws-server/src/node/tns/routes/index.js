@@ -59,7 +59,7 @@ router.post('/rest/file/upload', function(req, res) {
 				//Enter simulation data into Mongodb
 
 				  simlist.insert({name: file_name, simid: simid, path: new_path, distributed: false, simulated: false, logdownloaded: false, logname:"", timestamp: Date.now()}, function(err, result){
-					if(result) {
+					/*if(result) {
 						//console.log("Added " + file_name + " to DB.");
 					}
 					if(err){
@@ -81,7 +81,7 @@ router.post('/rest/file/upload', function(req, res) {
 								console.log("Error updating data for: "+file_name);
 							}
 						});
-					}
+					}*/
 
 				  });
 
