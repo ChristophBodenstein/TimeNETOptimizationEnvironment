@@ -48,7 +48,7 @@ public void run() {
         this.pathToTimeNet=support.getPathToTimeNet();//  pathToTimeNetTMP;
         //Request the server Api to get the Status Code and response body.
         // Getting the status code.
-        //HttpClient client = new DefaultHttpClient();
+        client = new DefaultHttpClient();
         HttpGet httpGet = new HttpGet(support.getReMoteAddress() + "/rest/api/downloads/ND");
         HttpResponse response = null;
         String responseString = null;
@@ -71,7 +71,7 @@ public void run() {
                 startLocalSimulation(exportFileName);
 
             }
-            HttpClient client = new DefaultHttpClient() ;
+            //HttpClient client = new DefaultHttpClient() ;
         } catch (IOException ex) {
             support.log("IOException during HTTP-Request for simulations.");
         }
