@@ -10,11 +10,20 @@ var express = require('express'),
     formidable = require('formidable'),
     fs = require('graceful-fs'),
     path = require('path');
+var DEFAULT_SLEEPING_TIME=1900;
 
 /* GET home page. */
 router.get('/', function(req, res) {
-  console.log("Delivering index-page.");
-  res.render('index', { title: 'TimeNET distribution server' });
+	var db=req.db;
+	var activeclients=db.collection('activeclients');
+  	console.log("Delivering index-page.");
+  
+	activeclients.count(function(err, count){
+	console.log(count +" clients in db.");
+	res.render('index', { title: 'TimeNET distribution server', clientcount:count});
+	});
+	
+
 });
 
 // Handles uploads of simulation files
@@ -80,9 +89,41 @@ router.post('/rest/file/upload', function(req, res) {
 router.get('/rest/api/downloads/ND', function(req, res){
 	var db= req.db;
 	var simlist=db.collection('simlist');
+	var activeclients=db.collection('activeclients');
 	//Update one from not distributed to distributed
 	//return this one as file to client
 
+	//Mark Request in DB for Statistics
+	console.log("Try to insert client into db");
+  	activeclients.insert({ip:req.connection.remoteAddress, timestamp: Date.now()}, function(err, result){
+    	if (err) {
+			console.log("Error updating client-collection.");
+    	} 	else {
+	console.log("insterted client into db");      	  	
+			}
+
+	});
+	
+	//Remove old client requests from DB
+	var borderTimeStamp=Date.now()-DEFAULT_SLEEPING_TIME;
+  	activeclients.find(function(err, resultcursor){
+    	if (err) {
+			console.log("Error reading from client-collection.");
+    	} 	else {
+					resultcursor.each(function(err, result){
+						if(result!=null){
+							if(result.timestamp<=borderTimeStamp){
+							activeclients.remove({timestamp: result.timestamp},function(err, result){	
+							});
+							}
+						}
+					});
+			}
+
+	});
+	activeclients.count(function(err, res){
+		console.log(res +" clients in db.");
+	});
 
 	simlist.findAndModify(
 		{distributed:false},
