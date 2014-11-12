@@ -836,6 +836,7 @@ private ArrayList<Boolean> listOfUIStatesPushed;
      */
     private void jButtonStartBatchSimulationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonStartBatchSimulationActionPerformed
         support.setCancelEverything(false);
+        this.pushUIState();
         this.switchUIState(uiState.processRunning);
         
         //Ask for Tmp-Path
@@ -2112,13 +2113,11 @@ private ArrayList<Boolean> listOfUIStatesPushed;
         
         StatisticAggregator.printOptiStatistics();
         
-        
         }   else{
             support.log("Starting next Optimization run, number:" +(tmpNumerOfOptiRunsToGo-1));
             support.setNumberOfOptiRunsToGo(tmpNumerOfOptiRunsToGo-1);
             this.startOptimizationAgain();
             }
-        
         switch(feedback){
             case GenerationSuccessful:
                 jButtonStartBatchSimulation.setEnabled(true);
