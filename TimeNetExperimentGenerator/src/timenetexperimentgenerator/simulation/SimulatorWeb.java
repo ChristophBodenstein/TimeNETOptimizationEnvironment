@@ -174,16 +174,19 @@ public class SimulatorWeb implements Runnable, Simulator{
                             }
                         }
                     }else{
+                        EntityUtils.consume(response.getEntity());
                         //if the time is up for the default simulation time ask for the missing log files
                         //the timeout is calculated by multiplying (DEFAULT_SLEEPING_TIME * DEFAULT_NUMBER_OF_SLEEPING_TIMES_AS_TIMEOUT)
                         if(j==support.DEFAULT_NUMBER_OF_SLEEPING_TIMES_AS_TIMEOUT) {
                             j=0;
                             for(int k=0;k<listOfUnproccessedFilesNames.size();k++) {
                                 //send the names of the files which the log files for them has not yet been recieved
-                                HttpClient client2 = new DefaultHttpClient();
+                                //HttpClient client2 = new DefaultHttpClient();
+                                
                                 HttpGet httpGet2 = new HttpGet(support.getReMoteAddress() + "/rest/api/update?filename=" + listOfUnproccessedFilesNames.get(k) + "&simid="+simid);
                                 support.log("Asking for the log file for "+ listOfUnproccessedFilesNames.get(k));
-                                response = client2.execute(httpGet2);
+                                response = client.execute(httpGet2);
+                                EntityUtils.consume(response.getEntity());
                             }      
                         }else{
                             j++;
@@ -314,12 +317,12 @@ public class SimulatorWeb implements Runnable, Simulator{
             HttpResponse response = client.execute(postRequest) ;
             
             
-            
-            while(response==null){
+            //while(response==null){
             //Wait for response
-            }
+            //}
+            EntityUtils.consume(response.getEntity());
             //Verify response if any
-            if (response != null)
+            /*if (response != null)
             {
                 //System.out.println(response.getStatusLine().getStatusCode());
                 EntityUtils.consume(response.getEntity());
@@ -327,7 +330,7 @@ public class SimulatorWeb implements Runnable, Simulator{
             }else{
             //Consume error
                 EntityUtils.consume(response.getEntity());
-            }
+            }*/
         }
         catch (Exception ex)
         {

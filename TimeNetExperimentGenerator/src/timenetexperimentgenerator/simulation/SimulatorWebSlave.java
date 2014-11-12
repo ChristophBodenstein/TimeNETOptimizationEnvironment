@@ -28,6 +28,7 @@ import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import timenetexperimentgenerator.support;
 
 /**
@@ -40,13 +41,14 @@ String pathToTimeNet;
 String simid="";
 String actualSimulationLogFile="";//actual log-file for one local simulation
 private final String nameOfTempDirectory="14623786483530251523506521233052";
+HttpClient client = new DefaultHttpClient() ;
 
 public void run() {
     while(!shouldEnd){
         this.pathToTimeNet=support.getPathToTimeNet();//  pathToTimeNetTMP;
         //Request the server Api to get the Status Code and response body.
         // Getting the status code.
-        HttpClient client = new DefaultHttpClient();
+        //HttpClient client = new DefaultHttpClient();
         HttpGet httpGet = new HttpGet(support.getReMoteAddress() + "/rest/api/downloads/ND");
         HttpResponse response = null;
         String responseString = null;
@@ -69,6 +71,7 @@ public void run() {
                 startLocalSimulation(exportFileName);
 
             }
+            HttpClient client = new DefaultHttpClient() ;
         } catch (IOException ex) {
             support.log("IOException during HTTP-Request for simulations.");
         }
@@ -153,7 +156,7 @@ public void run() {
     }
     public void executeMultiPartRequest(String urlString, File file, String fileName, String fileDescription, String simid) throws Exception 
     {
-    	HttpClient client = new DefaultHttpClient() ;
+    	//HttpClient client = new DefaultHttpClient() ;
         HttpPost postRequest = new HttpPost (urlString) ;
         try {
             //Set various attributes 
@@ -177,6 +180,7 @@ public void run() {
             if (response != null) {
                 System.out.println(response.getStatusLine().getStatusCode());
             }
+            EntityUtils.consume(response.getEntity());
         } catch (Exception ex) {
             ex.printStackTrace() ;
         }
