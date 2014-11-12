@@ -106,6 +106,7 @@ public class SimulatorWeb implements Runnable, Simulator{
                             Logger.getLogger(SimulatorWeb.class.getName()).log(Level.SEVERE, null, ex);
                         }
                         this.simulationCounter++;
+                        if(support.isCancelEverything())break;
                     }
                 }
             }catch(Exception e){
