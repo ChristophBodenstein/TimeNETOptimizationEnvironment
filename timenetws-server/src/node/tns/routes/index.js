@@ -19,7 +19,6 @@ router.get('/', function(req, res) {
   	console.log("Delivering index-page.");
   
 	activeclients.count(function(err, count){
-	console.log(count +" clients in db.");
 	res.render('index', { title: 'TimeNET distribution server', clientcount:count});
 	});
 	
@@ -94,12 +93,10 @@ router.get('/rest/api/downloads/ND', function(req, res){
 	//return this one as file to client
 
 	//Mark Request in DB for Statistics
-	console.log("Try to insert client into db");
   	activeclients.insert({ip:req.connection.remoteAddress, timestamp: Date.now()}, function(err, result){
     	if (err) {
 			console.log("Error updating client-collection.");
     	} 	else {
-	console.log("insterted client into db");      	  	
 			}
 
 	});
@@ -121,10 +118,10 @@ router.get('/rest/api/downloads/ND', function(req, res){
 			}
 
 	});
-	activeclients.count(function(err, res){
+/*	activeclients.count(function(err, res){
 		console.log(res +" clients in db.");
 	});
-
+*/
 	simlist.findAndModify(
 		{distributed:false},
 		[],
