@@ -175,7 +175,11 @@ public class SimulatorWeb implements Runnable, Simulator{
                             }
                         }
                     }else{
+                        try{
                         EntityUtils.consume(response.getEntity());
+                        }catch(Exception e){
+                        support.log("Error consuming the http-response while asking for results.");
+                        }
                         //if the time is up for the default simulation time ask for the missing log files
                         //the timeout is calculated by multiplying (DEFAULT_SLEEPING_TIME * DEFAULT_NUMBER_OF_SLEEPING_TIMES_AS_TIMEOUT)
                         if(j==support.DEFAULT_NUMBER_OF_SLEEPING_TIMES_AS_TIMEOUT) {
