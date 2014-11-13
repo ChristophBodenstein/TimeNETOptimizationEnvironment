@@ -11,7 +11,7 @@ var express = require('express'),
     formidable = require('formidable'),
     fs = require('graceful-fs'),
     path = require('path');
-var DEFAULT_SLEEPING_TIME=1900;// in ms
+var DEFAULT_SLEEPING_TIME=2000;// in ms
 var DEFAULT_MINIMUM_TIMEOUT=500;//in sec
 
 /* GET home page. */
@@ -118,7 +118,9 @@ router.get('/rest/api/downloads/ND', function(req, res){
 	activeclients.count(function(err, count){
 	if(global.clientcount==null)global.clientcount=0;
 	if(global.clientcount==NaN)global.clientcount=0;
-	global.clientcount=(global.clientcount*49 + count*1)/50;
+	global.clientcount=((global.clientcount*19) + (count*1)) / 20;
+	if(count==0){global.clientcount=0;}
+	//console.log("Count:"+count);
 	});
 
 	simlist.findAndModify(
@@ -158,18 +160,22 @@ router.get('/rest/api/downloads/ND', function(req, res){
 					res.json({'success': false});
 
 						//Mark Request in DB for Statistics, count the clients waiting for tasks.
-						activeclients.insert({ip:req.connection.remoteAddress, timestamp: Date.now()}, function(err, result){
-						if (err) {
-						console.log("Error updating client-collection.");
-						} 	else {}
-							//Check for timed out Simulations
-							checkForTimedOutSimulations(simlist, function(err){
+						activeclients.remove({ip:req.connection.remoteAddress}, function(err){
 							if(err){
-							console.log("Error checking for TimedOutSimulations.");
+							console.log("Error removing client from list.");
 							}
-						});
 						
-
+							activeclients.insert({ip:req.connection.remoteAddress, timestamp: Date.now()}, function(err, result){
+								if (err) {
+								console.log("Error updating client-collection.");
+								} else {}
+							});
+						});
+					//Check for timed out Simulations
+					checkForTimedOutSimulations(simlist, function(err){
+						if(err){
+						console.log("Error checking for TimedOutSimulations.");
+						}
 					});
 				}
 
