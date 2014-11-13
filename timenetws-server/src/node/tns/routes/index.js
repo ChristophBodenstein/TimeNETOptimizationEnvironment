@@ -11,7 +11,7 @@ var express = require('express'),
     formidable = require('formidable'),
     fs = require('graceful-fs'),
     path = require('path');
-var DEFAULT_SLEEPING_TIME=2000;// in ms
+var DEFAULT_SLEEPING_TIME=1900;// in ms
 var DEFAULT_MINIMUM_TIMEOUT=500;//in sec
 
 /* GET home page. */
@@ -94,14 +94,6 @@ router.get('/rest/api/downloads/ND', function(req, res){
 	//Update one from not distributed to distributed
 	//return this one as file to client
 
-	//Mark Request in DB for Statistics
-  	activeclients.insert({ip:req.connection.remoteAddress, timestamp: Date.now()}, function(err, result){
-    	if (err) {
-			console.log("Error updating client-collection.");
-    	} 	else {
-			}
-
-	});
 
 	//Remove old client requests from DB
 	var borderTimeStamp=Date.now()-DEFAULT_SLEEPING_TIME;
@@ -126,7 +118,7 @@ router.get('/rest/api/downloads/ND', function(req, res){
 	activeclients.count(function(err, count){
 	if(global.clientcount==null)global.clientcount=0;
 	if(global.clientcount==NaN)global.clientcount=0;
-	global.clientcount=(global.clientcount*140 + count*10)/150;
+	global.clientcount=(global.clientcount*49 + count*1)/50;
 	});
 
 	simlist.findAndModify(
@@ -164,12 +156,19 @@ router.get('/rest/api/downloads/ND', function(req, res){
 					//console.log("Will answer with res-code 500. No Simfiles available. Will check for timedoutsims.");
 					res.status(500);
 					res.json({'success': false});
-					//TODO check for timeouts only here!
 
-					checkForTimedOutSimulations(simlist, function(err){
-						if(err){
+						//Mark Request in DB for Statistics, count the clients waiting for tasks.
+						activeclients.insert({ip:req.connection.remoteAddress, timestamp: Date.now()}, function(err, result){
+						if (err) {
+						console.log("Error updating client-collection.");
+						} 	else {}
+							//Check for timed out Simulations
+							checkForTimedOutSimulations(simlist, function(err){
+							if(err){
 							console.log("Error checking for TimedOutSimulations.");
-						}
+							}
+						});
+						
 
 					});
 				}
