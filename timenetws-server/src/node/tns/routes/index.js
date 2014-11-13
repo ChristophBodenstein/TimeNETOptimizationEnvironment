@@ -4,13 +4,14 @@ var mkdirp = require('mkdirp');
 var path = require('path');
 
 
+
 // Required modules for form handling
 var express = require('express'),
     http = require('http'),
     formidable = require('formidable'),
     fs = require('graceful-fs'),
     path = require('path');
-var DEFAULT_SLEEPING_TIME=1900;// in ms
+var DEFAULT_SLEEPING_TIME=2000;// in ms
 var DEFAULT_MINIMUM_TIMEOUT=500;//in sec
 
 /* GET home page. */
@@ -19,9 +20,9 @@ router.get('/', function(req, res) {
 	var activeclients=db.collection('activeclients');
   	console.log("Delivering index-page.");
   
-	activeclients.count(function(err, count){
-	res.render('index', { title: 'TimeNET distribution server', clientcount:count});
-	});
+	//activeclients.count(function(err, count){
+	res.render('index', { title: 'TimeNET distribution server', clientcount:Math.round(global.clientcount)});
+	//});
 	
 
 });
@@ -122,10 +123,12 @@ router.get('/rest/api/downloads/ND', function(req, res){
 			}
 
 	});
-/*	activeclients.count(function(err, res){
-		console.log(res +" clients in db.");
+	activeclients.count(function(err, count){
+	if(global.clientcount==null)global.clientcount=0;
+	if(global.clientcount==NaN)global.clientcount=0;
+	global.clientcount=(global.clientcount*140 + count*10)/150;
 	});
-*/
+
 	simlist.findAndModify(
 		{distributed:false},
 		[],
