@@ -10,7 +10,8 @@ var express = require('express'),
     formidable = require('formidable'),
     fs = require('graceful-fs'),
     path = require('path');
-var DEFAULT_SLEEPING_TIME=1900;
+var DEFAULT_SLEEPING_TIME=1900;// in ms
+var DEFAULT_MINIMUM_TIMEOUT=500;//in sec
 
 /* GET home page. */
 router.get('/', function(req, res) {
@@ -100,7 +101,7 @@ router.get('/rest/api/downloads/ND', function(req, res){
 			}
 
 	});
-	
+
 	//Remove old client requests from DB
 	var borderTimeStamp=Date.now()-DEFAULT_SLEEPING_TIME;
   	activeclients.find(function(err, resultcursor){
@@ -110,7 +111,10 @@ router.get('/rest/api/downloads/ND', function(req, res){
 					resultcursor.each(function(err, result){
 						if(result!=null){
 							if(result.timestamp<=borderTimeStamp){
-							activeclients.remove({timestamp: result.timestamp},function(err, result){	
+							activeclients.remove({timestamp: result.timestamp},function(err, result){
+								if(err){
+									console.log("Error removing client from activeclientlist.");
+								}
 							});
 							}
 						}
@@ -125,7 +129,7 @@ router.get('/rest/api/downloads/ND', function(req, res){
 	simlist.findAndModify(
 		{distributed:false},
 		[],
-		{$set: {distributed:true}},
+		{$set: {distributed:true, timestamp:Date.now()}},
 		false,
 		true,
 		function(err, result){
@@ -154,10 +158,17 @@ router.get('/rest/api/downloads/ND', function(req, res){
 						}
 					});
 				}else{
-					console.log("Will answer with res-code 500. No Simfiles available.");
+					//console.log("Will answer with res-code 500. No Simfiles available. Will check for timedoutsims.");
 					res.status(500);
 					res.json({'success': false});
+					//TODO check for timeouts only here!
 
+					checkForTimedOutSimulations(simlist, function(err){
+						if(err){
+							console.log("Error checking for TimedOutSimulations.");
+						}
+
+					});
 				}
 
 
@@ -166,13 +177,73 @@ router.get('/rest/api/downloads/ND', function(req, res){
 	});
 
 
-	/*simlist.update({name: file_name, simid: simid, path: new_path, distributed: false, simulated: false, logdownloaded: false, timestamp: Date.now()}, function(err, result){
-		if(err){
-			console.log("Error updating data for: "+file_name);
-		}
-	});*/
 
 });
+
+//Checks if any simulation is longer distributed then in MaxTime allowed.
+//If yes, then rest it to undistributed
+function checkForTimedOutSimulations(simlist, cb){
+	//Check if timeout for one or more sims was, then reset it to undistributed
+	simlist.find({distributed:true, simulated:false}, function(err, result){
+		if(err){
+			console.log("Error finding distributed and unsimulated simulations in db.");
+		}else{
+			if(result!=null){
+				result.each(function(err, element){
+					if(element!=null) {
+						//todo get timeout from filename
+						getMaxTimeFromFileName(element.name, function(maxtime){
+
+							var localtimeout = maxtime;//sec
+							var now=Date.now();//ms
+
+							//Rest of logic is same
+							if (localtimeout < DEFAULT_MINIMUM_TIMEOUT) {
+								localtimeout = DEFAULT_MINIMUM_TIMEOUT;
+							}
+							localtimeout = localtimeout * 1000;
+							localtimeout = element.timestamp + localtimeout;
+							/*console.log("------------------");
+							 console.log("ELM:" + element.timestamp);
+							 console.log("Now:" + now);
+							 console.log("Tim:" + localtimeout);
+							 console.log("------------------");*/
+							if (localtimeout <= now) {
+								//console.log("Try to reset entry to undistributed.");
+								//set it to undistributed
+								simlist.findAndModify(
+									{_id: element._id},
+									[],
+									{$set: {distributed: false, timestamp: Date.now()}},
+									false,
+									true,
+									function (err, result) {
+										if (err) {
+											console.log("Error resetting to undistributed.");
+											cb(err);
+										}
+									});
+
+							}
+
+						});
+
+					}
+				});
+			}
+		}
+	});
+}
+
+//Extracts the maximum time from filename of simulation
+function getMaxTimeFromFileName(filename, cb){
+	var maxtime=500;
+	var tmpString=filename.split('_MaxTime_')[1];
+	tmpString=tmpString.split('_EndTime_')[0];
+	tmpString=tmpString.split('.')[0];
+	maxtime=tmpString;
+	cb(maxtime);
+}
 
 //Handles uploads of log-files (simulation results) from sim-slaves
 router.post('/rest/log/upload', function(req, res){
@@ -234,7 +305,7 @@ router.get('/rest/api/downloads/log/:simid', function(req, res){
 	var db= req.db;
 	var simlist=db.collection('simlist');
 	var simid=req.params.simid;
-	console.log("Asking for logfiles for: "+simid);
+	//console.log("Asking for logfiles for: "+simid);
 
 	simlist.findOne({simid: simid, simulated:true, logdownloaded:false}, function(err, result){
 
@@ -242,10 +313,10 @@ router.get('/rest/api/downloads/log/:simid', function(req, res){
 			console.log("Error searching logfiles for: "+req.params.simid);
 		}
 		if(result) {
-			console.log("findOne was sucessful.");
-			console.log(result.name);
+			//console.log("findOne was sucessful.");
+			//console.log(result.name);
 			var logfilepath=(result.path.split(result.name))[0] +result.logname ;//.split(result.name)[0]+"/"+result.logfilename;
-			console.log("Delivering logfile " + logfilepath);
+			//console.log("Delivering logfile " + logfilepath);
 
 			var options = {
 				headers: {
@@ -278,7 +349,7 @@ router.get('/rest/api/downloads/log/:simid', function(req, res){
 				}
 			});
 		}else{
-			console.log("Will answer with res-code 500. No Logfile available.");
+			//console.log("Will answer with res-code 500. No Logfile available.");
 			res.status(500);
 			res.json({'success': false});
 		}
