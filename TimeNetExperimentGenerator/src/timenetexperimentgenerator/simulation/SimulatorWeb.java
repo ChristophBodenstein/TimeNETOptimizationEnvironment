@@ -73,6 +73,7 @@ public class SimulatorWeb implements Runnable, Simulator{
     }
     
     public void run(){
+        long targetTime=0;
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         this.status=0;
         this.listOfCompletedSimulationParsers=new ArrayList<SimulationType>();
@@ -182,7 +183,7 @@ public class SimulatorWeb implements Runnable, Simulator{
                         }
                         //if the time is up for the default simulation time ask for the missing log files
                         //the timeout is calculated by multiplying (DEFAULT_SLEEPING_TIME * DEFAULT_NUMBER_OF_SLEEPING_TIMES_AS_TIMEOUT)
-                        if(j==support.DEFAULT_NUMBER_OF_SLEEPING_TIMES_AS_TIMEOUT) {
+                        /*if(j==support.DEFAULT_NUMBER_OF_SLEEPING_TIMES_AS_TIMEOUT) {
                             j=0;
                             for(int k=0;k<listOfUnproccessedFilesNames.size();k++) {
                                 //send the names of the files which the log files for them has not yet been recieved
@@ -195,11 +196,17 @@ public class SimulatorWeb implements Runnable, Simulator{
                             }      
                         }else{
                             j++;
-                        }
-                        try {
+                        }*/
+                        /*try {
                            Thread.sleep(support.DEFAULT_SLEEPING_TIME);         
                         } catch (InterruptedException ex) {
+                            Thread.currentThread().interrupt();
                             support.log("Error while sleeping Thread of Web simulator.");
+                        }*/
+                        targetTime=java.util.Calendar.getInstance().getTimeInMillis();
+                        targetTime+=support.DEFAULT_SLEEPING_TIME;
+                        while(java.util.Calendar.getInstance().getTimeInMillis()<=targetTime){
+                        //Wait with full force :-)
                         }
                     }
                 } catch (IOException ex) {

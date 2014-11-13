@@ -60,7 +60,7 @@ public static final typeOfOptimization DEFAULT_TYPE_OF_OPTIMIZER = typeOfOptimiz
 public static final typeOfBenchmarkFunction DEFAULT_TYPE_OF_BENCHMARKFUNCTION = typeOfBenchmarkFunction.Ackley;
 
 //default values for distributed simulation
-public static final int DEFAULT_SLEEPING_TIME=2000;
+public static final int DEFAULT_SLEEPING_TIME=1000;
 public static final int DEFAULT_NUMBER_OF_SLEEPING_TIMES_AS_TIMEOUT = 20;
 public static final int DEFAULT_CONNECTION_TIMEOUT=5000;
 
