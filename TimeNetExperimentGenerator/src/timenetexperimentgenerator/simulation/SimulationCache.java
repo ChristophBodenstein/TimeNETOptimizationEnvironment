@@ -87,7 +87,7 @@ private int localSimulationCounter = 0;
         listOfCachedParameterNames[i]=support.translateParameterNameFromLogFileToTable(listOfStringLines.get(0)[column]);
         listOfCachedParameterMax[i]=Double.NEGATIVE_INFINITY;
         listOfCachedParameterMin[i]=Double.POSITIVE_INFINITY;
-        listOfCachedParameterStepping[i]=support.DEFAULT_STEPPING;
+        listOfCachedParameterStepping[i]=Double.POSITIVE_INFINITY;
             //Walk through a column and get Min and Max Values
             for(int line=1;line<listOfStringLines.size();line++){
             tmpValue=support.getDouble(listOfStringLines.get(line)[column]);
@@ -101,7 +101,7 @@ private int localSimulationCounter = 0;
                     tmpValue2=(Math.abs(tmpValue-tmpValue2));
                     tmpValue2=support.round(tmpValue2);
                     if(tmpValue2>0){
-                    listOfCachedParameterStepping[i]=tmpValue2;
+                    listOfCachedParameterStepping[i]=Math.min(tmpValue2,listOfCachedParameterStepping[i]);
                     //support.log("Result of round: "+tmpValue2);
                     //support.log("Setting new Value for Stepping.");
                     }
@@ -111,7 +111,8 @@ private int localSimulationCounter = 0;
                     }
                 }
             }
-        if(listOfCachedParameterStepping[i]<=0.0){listOfCachedParameterStepping[i]=(float)1.0;}
+        //listOfCachedParameterStepping[i]=support.round( Math.abs( (listOfCachedParameterMax[i]-listOfCachedParameterMin[i])/(listOfStringLines.size()-1)) ) ; 
+        if(listOfCachedParameterStepping[i]==Double.POSITIVE_INFINITY){listOfCachedParameterStepping[i]=support.DEFAULT_STEPPING;}
         //support.log("ParameterName " +(i)+" = "+listOfCachedParameterNames[i]+" with Min="+listOfCachedParameterMin[i]+" and Max="+listOfCachedParameterMax[i]+" and Stepping="+listOfCachedParameterStepping[i]);
         }
         
