@@ -428,8 +428,8 @@
         <Component class="timenetexperimentgenerator.MeasurementForm" name="measurementForm1">
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-              <JTabbedPaneConstraints tabName="Target 1">
-                <Property name="tabTitle" type="java.lang.String" value="Target 1"/>
+              <JTabbedPaneConstraints tabName="Target">
+                <Property name="tabTitle" type="java.lang.String" value="Target"/>
               </JTabbedPaneConstraints>
             </Constraint>
           </Constraints>

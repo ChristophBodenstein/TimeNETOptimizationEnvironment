@@ -174,6 +174,7 @@ private boolean isFromDistributedSimulation=false;//Is False, if local simulated
             switch(support.getChosenBenchmarkFunction()){
                 case Ackley:
                     //Optimum is in the middle of each parameter, its exact at 0,0
+                    //TODO calculate value range fpr Ackley
                     break;
                 case Sphere:
                     //Optimum is in the middle of each parameter, its exact at 0,0
@@ -186,9 +187,11 @@ private boolean isFromDistributedSimulation=false;//Is False, if local simulated
                     range = 0.26 * (x0 * x0 + x1 * x1) - 0.48 * x0 * x1;
                     break;
                 case Schwefel:
+                    //TODO calculate value range for Schwefel
                     //Optimum is in the middle of each parameter, its exact at 0,0
                     break;
                 case Rastrigin:
+                    //TODO calculate value range for Rastrigin
                     //Optimum is in the middle of each parameter, its exact at 0,0
                     break;
 
@@ -201,6 +204,7 @@ private boolean isFromDistributedSimulation=false;//Is False, if local simulated
             
         }else{
             if(support.getChosenSimulatorType()==typedef.typeOfSimulator.Cache_Only){
+            //TODO add Cache-Local-Simulator
             range=targetMeasure.getMaxValue()-targetMeasure.getMinValue();
             //Get copy of actual optimization target (TargetMeasure is found by name)
             MeasureType activeMeasure=new MeasureType(this.getMeasureByName(support.getOptimizationMeasure().getMeasureName()));

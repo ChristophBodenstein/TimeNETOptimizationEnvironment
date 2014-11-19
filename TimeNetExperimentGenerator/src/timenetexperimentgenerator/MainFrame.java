@@ -437,7 +437,7 @@ private ArrayList<Boolean> listOfUIStatesPushed;
             }
         });
 
-        jTabbedPaneOptiTargets.addTab("Target 1", measurementForm1);
+        jTabbedPaneOptiTargets.addTab("Target", measurementForm1);
 
         jButtonStartOptimization.setText("Start Optimization");
         jButtonStartOptimization.setEnabled(false);

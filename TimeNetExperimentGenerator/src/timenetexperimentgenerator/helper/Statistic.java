@@ -126,7 +126,7 @@ private boolean optimization=false;
     public double getRelativeDistanceToOptimumInValueRange(){
     MeasureType myOptiTargetMeasure=support.getOptimizationMeasure();//Take only the first Measure.
     MeasureType myOptiMeasure=this.getCalculatedOptimum().getMeasureByName(myOptiTargetMeasure.getMeasureName());
-    support.log("Calculating Distance to "+myOptiMeasure.getMeanValue() + " for "+myOptiMeasure.getMeasureName());
+    //support.log("Calculating Distance to "+myOptiMeasure.getMeanValue() + " for "+myOptiMeasure.getMeasureName());
     return this.foundOptimum.getRelativeDistanceToTargetValueInValueRange(myOptiMeasure);
     }
     
