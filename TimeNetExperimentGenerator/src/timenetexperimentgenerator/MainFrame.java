@@ -1564,7 +1564,8 @@ private ArrayList<Boolean> listOfUIStatesPushed;
 
 
     /**
-     * Restarts the generator after Table has changed
+     * Recalculates the size of designspace after Table has changed
+     * Sends List of possible internal parameter to optimizer-preferences
      * @param e
      */
     public void tableChanged(TableModelEvent e) {
@@ -1581,7 +1582,15 @@ private ArrayList<Boolean> listOfUIStatesPushed;
             support.setChosenSimulatorType(typeOfSimulator.Cached_Local);
             }
         }
-    
+    ArrayList<parameter> myParameterList= ((parameterTableModel)this.jTableParameterList.getModel()).getListOfParameter();
+    ArrayList<parameter> resultParameterList=new ArrayList<parameter>();
+        for(int i=0;i<myParameterList.size();i++){
+        parameter p=myParameterList.get(i);
+            if( !p.isExternalParameter() && !p.isIteratable() ){
+            resultParameterList.add(p);
+            }
+        }
+    support.getOptimizerPreferences().setPossibleInternalParameters(resultParameterList);
     }
 
     /**

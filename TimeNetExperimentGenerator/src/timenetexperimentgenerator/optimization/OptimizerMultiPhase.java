@@ -184,11 +184,10 @@ String logFileName;
                 if(iterateMaxRelError){
                     support.getParameterByName(lastParamaterset, "MaxRelError").setValue(maxRelError);
                 }
-                //TODO: Get Internal Parametername by Combobox
-                /*if(iterateInternal){
-                    support.getParameterByName(parameterBase, filename)
+                if(iterateInternal){
+                    support.getParameterByName(lastParamaterset, support.getOptimizerPreferences().getInternalParameterToIterateInMultiphase().getName()).setValue(internal); ; 
                 }
-                */
+                
                 
                 
                 myOptimizer=SimOptiFactory.getOptimizer(support.getOptimizerPreferences().getPref_typeOfUsedMultiPhaseOptimization() );
