@@ -1585,6 +1585,18 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
     public static MeasureType getOptimizationMeasure(){
     return mainFrame.getListOfActiveMeasureMentsToOptimize().get(0);    
     }
+    
+    /**
+     * Wait a time in ms by blocking this thread with While-Loop
+     * @param timeToWaitInMS time in ms to wait
+     */
+    public static void waitSingleThreaded(long timeToWaitInMS){
+    long targetTime = java.util.Calendar.getInstance().getTimeInMillis();
+    targetTime+=timeToWaitInMS;
+    while(java.util.Calendar.getInstance().getTimeInMillis()<=targetTime){
+    //Wait with full force :-)
+    }
+    }
 }
 
 
