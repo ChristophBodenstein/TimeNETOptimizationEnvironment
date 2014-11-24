@@ -155,7 +155,7 @@ public class SimulatorWeb implements Runnable, Simulator{
                             myResults.setIsFromDistributedSimulation(true);
                             if(myParser.isParsingSuccessfullFinished()) {
                                 support.log("Parsing successful.");
-                                //listOfCompletedSimulationParsers.add(myResults);
+                                listOfCompletedSimulationParsers.add(myResults);
                                 if(this.log) {
                                     support.addLinesToLogFile(myResults, logFileName);
                                 }
@@ -300,7 +300,7 @@ public class SimulatorWeb implements Runnable, Simulator{
     }
 
     public ArrayList<SimulationType> getListOfCompletedSimulationParsers() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return this.listOfCompletedSimulationParsers;
     }
    public void executeMultiPartRequest(String urlString, File file, String fileName, String fileDescription,String simid) throws Exception 
     {
