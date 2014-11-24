@@ -190,8 +190,7 @@ private ArrayList<Boolean> listOfUIStatesPushed;
         });
 
 
-        //Reload the last File
-        this.readSCPNFile(jTextFieldSCPNFile.getText());
+        
         support.setStatusLabel(jLabelExportStatus);
         support.setMainFrame(this);
         support.setMeasureFormPane(jTabbedPaneOptiTargets);
@@ -254,6 +253,10 @@ private ArrayList<Boolean> listOfUIStatesPushed;
         listOfUIComponents.add(this.jComboBoxOptimizationType);
         listOfUIComponents.add(this.jButtonOpenSCPN);
         listOfUIComponents.add(this.jSpinnerNumberOfOptimizationRuns);
+        
+        
+        //Reload the last File
+        this.readSCPNFile(jTextFieldSCPNFile.getText());
         
         this.switchUIState(uiState.defaultState);
         if(support.isIsRunningAsSlave()){
@@ -1477,6 +1480,7 @@ private ArrayList<Boolean> listOfUIStatesPushed;
         } catch (IOException e) {
         } catch (DOMException e) {
         }
+        tableChanged(null);
     }
     
     /**
