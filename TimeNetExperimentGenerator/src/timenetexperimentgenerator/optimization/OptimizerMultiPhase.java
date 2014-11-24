@@ -141,7 +141,7 @@ String logFileName;
                 //Check if all parameters can iterate
                 boolean iterateConfidenceInterval=prefs.getPref_ConfidenceIntervallStart()<prefs.getPref_ConfidenceIntervallEnd();
                 boolean iterateMaxRelError=prefs.getPref_MaxRelErrorStart()>prefs.getPref_MaxRelErrorEnd();
-                boolean iterateInternal=true;//It can be iterated up and down
+                boolean iterateInternal=support.getOptimizerPreferences().getInternalParameterToIterateInMultiphase()!=null;//It can be iterated up and down
                 double confInterval,maxRelError,internal=0.0;
                 if(phaseCounter==0){
                 //First Phase, so we use the start-values for all parameters
