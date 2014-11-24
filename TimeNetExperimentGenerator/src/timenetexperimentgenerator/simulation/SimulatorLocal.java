@@ -283,7 +283,10 @@ long timeStamp=0;//TimeStamp for measuring the runtime of one simulation
         }
     }
 
-
+    /**
+     * Returns List of completed simulation parsers.
+     * @return List of completed simulation parsers
+     */
     public ArrayList<SimulationType> getListOfCompletedSimulationParsers(){
     return this.listOfCompletedSimulationParsers;
     }

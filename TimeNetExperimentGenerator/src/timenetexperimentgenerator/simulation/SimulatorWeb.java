@@ -288,20 +288,43 @@ public class SimulatorWeb implements Runnable, Simulator{
     }finally{}
     
     }
-
+    
+    /**
+     * Returns the status of simulations
+     * @return % of simulations that are finished
+     */
     public int getStatus() {
         return this.status;
         
     }
-
+    
+    /**
+     * Returns actual number of simulation
+     * @return number of actual simulation
+     */
     public int getSimulationCounter() {
         return this.simulationCounter;
         
     }
 
+    /**
+     * Returns List of completed simulation parsers.
+     * @return List of completed simulation parsers
+     */
     public ArrayList<SimulationType> getListOfCompletedSimulationParsers() {
         return this.listOfCompletedSimulationParsers;
     }
+    
+    /**
+     * Execute Multipart rquest to http-server for uploading files and text data
+     * 
+     * @param urlString complete Adress+dir for uploading file and addition data (http://example.com/dir)
+     * @param file File to be uploaded
+     * @param fileName Filename to be used in multipart-text-field fileName
+     * @param fileDescription fileDescription to be used in multipart-text-field fileDescription
+     * @param simid simid to be used in multipart-text-field simid, identifies th starting simulator
+     * @throws java.lang.Exception
+     */
    public void executeMultiPartRequest(String urlString, File file, String fileName, String fileDescription,String simid) throws Exception 
     {
     	//HttpClient client = new DefaultHttpClient() ;
@@ -327,26 +350,13 @@ public class SimulatorWeb implements Runnable, Simulator{
             
             //Send request
             HttpResponse response = client.execute(postRequest) ;
-            
-            
-            //while(response==null){
-            //Wait for response
-            //}
+
             EntityUtils.consume(response.getEntity());
-            //Verify response if any
-            /*if (response != null)
-            {
-                //System.out.println(response.getStatusLine().getStatusCode());
-                EntityUtils.consume(response.getEntity());
-                //TODO show Error in log and statuslabel
-            }else{
-            //Consume error
-                EntityUtils.consume(response.getEntity());
-            }*/
+            
         }
         catch (Exception ex)
         {
-            ex.printStackTrace() ;
+            support.log(ex.getLocalizedMessage());
         }
     }
    
