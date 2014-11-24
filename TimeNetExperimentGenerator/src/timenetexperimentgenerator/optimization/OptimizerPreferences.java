@@ -566,9 +566,9 @@ final String noParameterString="No parameter";
 
         jLabel21.setText("Internal Parameter End");
 
-        jSpinnerInternalParameterEnd.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(0.0f), null, null, Float.valueOf(1.0f)));
+        jSpinnerInternalParameterEnd.setModel(new javax.swing.SpinnerNumberModel());
 
-        jSpinnerInternalParameterStart.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(0.0f), null, null, Float.valueOf(1.0f)));
+        jSpinnerInternalParameterStart.setModel(new javax.swing.SpinnerNumberModel());
 
         jComboBoxInternalParameterMultiphase.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "No parameter" }));
         jComboBoxInternalParameterMultiphase.setEnabled(false);
