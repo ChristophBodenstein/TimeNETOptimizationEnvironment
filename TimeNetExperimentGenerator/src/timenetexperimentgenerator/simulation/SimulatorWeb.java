@@ -77,6 +77,7 @@ public class SimulatorWeb implements Runnable, Simulator{
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         this.status=0;
         this.listOfCompletedSimulationParsers=new ArrayList<SimulationType>();
+        boolean uploadSuccessful=false;//To handle upload errors
         //this.listOfCompletedSimulationParsers=new ArrayList<SimulationType>();
         String line="";
         simid = Long.toString(Calendar.getInstance().getTimeInMillis());
@@ -98,14 +99,21 @@ public class SimulatorWeb implements Runnable, Simulator{
 
                         String actualParameterFileName=createLocalSimulationFile(actualParameterSet, this.simulationCounter);//create actual SCPN xml-file and save it in tmp-folder
                         File file = new File(actualParameterFileName);
-                        try {
-                            //Upload the file
-                            executeMultiPartRequest(support.getReMoteAddress() + "/rest/file/upload",file,file.getName(), "File Uploaded :: WORDS",simid) ;
-                            //add the file to the unprocessed files names 
-                            listOfUnproccessedFilesNames.add(support.removeExtention(file.getName()));
-                        } catch (Exception ex) {
-                            Logger.getLogger(SimulatorWeb.class.getName()).log(Level.SEVERE, null, ex);
+                        while(!uploadSuccessful){
+                            try {
+                                //Upload the file
+                                executeMultiPartRequest(support.getReMoteAddress() + "/rest/file/upload",file,file.getName(), "File Uploaded :: WORDS",simid) ;
+                                uploadSuccessful=true;
+                            } catch (Exception ex) {
+                                Logger.getLogger(SimulatorWeb.class.getName()).log(Level.SEVERE, null, ex);
+                                support.log("Upload error, will try again in "+support.DEFAULT_SLEEPING_TIME+" ms.");
+                                support.waitSingleThreaded(support.DEFAULT_SLEEPING_TIME);
+                            }
+                            
                         }
+                        //add the file to the unprocessed files names 
+                        listOfUnproccessedFilesNames.add(support.removeExtention(file.getName()));
+                        uploadSuccessful=false;
                         this.simulationCounter++;
                         if(support.isCancelEverything())break;
                     }
@@ -181,36 +189,13 @@ public class SimulatorWeb implements Runnable, Simulator{
                         }catch(Exception e){
                         support.log("Error consuming the http-response while asking for results.");
                         }
-                        //if the time is up for the default simulation time ask for the missing log files
-                        //the timeout is calculated by multiplying (DEFAULT_SLEEPING_TIME * DEFAULT_NUMBER_OF_SLEEPING_TIMES_AS_TIMEOUT)
-                        /*if(j==support.DEFAULT_NUMBER_OF_SLEEPING_TIMES_AS_TIMEOUT) {
-                            j=0;
-                            for(int k=0;k<listOfUnproccessedFilesNames.size();k++) {
-                                //send the names of the files which the log files for them has not yet been recieved
-                                //HttpClient client2 = new DefaultHttpClient();
-                                
-                                HttpGet httpGet2 = new HttpGet(support.getReMoteAddress() + "/rest/api/update?filename=" + listOfUnproccessedFilesNames.get(k) + "&simid="+simid);
-                                support.log("Asking for the log file for "+ listOfUnproccessedFilesNames.get(k));
-                                response = client.execute(httpGet2);
-                                EntityUtils.consume(response.getEntity());
-                            }      
-                        }else{
-                            j++;
-                        }*/
-                        /*try {
-                           Thread.sleep(support.DEFAULT_SLEEPING_TIME);         
-                        } catch (InterruptedException ex) {
-                            Thread.currentThread().interrupt();
-                            support.log("Error while sleeping Thread of Web simulator.");
-                        }*/
-                        targetTime=java.util.Calendar.getInstance().getTimeInMillis();
-                        targetTime+=support.DEFAULT_SLEEPING_TIME;
-                        while(java.util.Calendar.getInstance().getTimeInMillis()<=targetTime){
-                        //Wait with full force :-)
-                        }
+                        
+                        //Wait with full force
+                        support.waitSingleThreaded(support.DEFAULT_SLEEPING_TIME);
                     }
-                } catch (IOException ex) {
+                } catch (Exception ex) {
                     Logger.getLogger(SimulatorWebSlave.class.getName()).log(Level.SEVERE, null, ex);
+                    support.log("Problem connecting to server. please check your network preferences.");
                 }
             }
         }else{
