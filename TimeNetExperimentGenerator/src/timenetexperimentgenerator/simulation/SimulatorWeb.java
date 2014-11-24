@@ -104,6 +104,7 @@ public class SimulatorWeb implements Runnable, Simulator{
                                 //Upload the file
                                 executeMultiPartRequest(support.getReMoteAddress() + "/rest/file/upload",file,file.getName(), "File Uploaded :: WORDS",simid) ;
                                 uploadSuccessful=true;
+                                support.log("Upload succesful. Will wait for results.");
                             } catch (Exception ex) {
                                 Logger.getLogger(SimulatorWeb.class.getName()).log(Level.SEVERE, null, ex);
                                 support.log("Upload error, will try again in "+support.DEFAULT_SLEEPING_TIME+" ms.");
@@ -342,6 +343,7 @@ public class SimulatorWeb implements Runnable, Simulator{
         catch (Exception ex)
         {
             support.log(ex.getLocalizedMessage());
+            throw(ex);
         }
     }
    
