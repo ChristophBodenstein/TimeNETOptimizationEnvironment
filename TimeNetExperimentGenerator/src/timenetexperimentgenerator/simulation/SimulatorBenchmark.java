@@ -29,7 +29,7 @@ import timenetexperimentgenerator.typedef.typeOfBenchmarkFunction;
 public class SimulatorBenchmark implements Simulator, Runnable{
 private SimulationCache mySimulationCache=null;
 private ArrayList<SimulationType> myListOfSimulations=null;
-private int simulationCounter=0;
+//private int simulationCounter=0;
 private String logFileName;
 private typeOfBenchmarkFunction benchmarkFunction=typeOfBenchmarkFunction.Schwefel;
 int status=0;
@@ -56,7 +56,7 @@ ArrayList<ArrayList <parameter> > listOfParameterSetsTMP;
      */
     public void initSimulator(ArrayList<ArrayList <parameter> > listOfParameterSetsTMP, int simulationCounterTMP, boolean log) {
     this.log=log;
-    this.simulationCounter=simulationCounterTMP;
+    //this.simulationCounter=simulationCounterTMP;
     this.listOfParameterSetsTMP=listOfParameterSetsTMP;
     this.status=0;
     new Thread(this).start();
@@ -76,7 +76,7 @@ ArrayList<ArrayList <parameter> > listOfParameterSetsTMP;
      * @return actual simulation counter
      */
     public int getSimulationCounter() {
-        return this.simulationCounter;
+        return support.getGlobalSimulationCounter();
     }
 
     
@@ -312,7 +312,7 @@ ArrayList<ArrayList <parameter> > listOfParameterSetsTMP;
         tmpSimulation.setListOfParameters(tmpParameterList);
         tmpSimulation.setMeasures(newListOfMeasurements);
         myListOfSimulations.add(tmpSimulation);
-
+        support.incGlobalSimulationCounter();
 
         this.status=(100/listOfParameterSetsTMP.size())*i;
         }//End of for-i-loop

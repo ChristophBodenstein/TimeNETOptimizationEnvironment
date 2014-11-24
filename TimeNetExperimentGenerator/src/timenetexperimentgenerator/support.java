@@ -164,6 +164,8 @@ public static final double DEFAULT_Rastrigin_limitupper=5;
 //Defaults for Opti-Statistics
 public static final int DEFAULT_NUMBER_OF_OPTI_PROB_CLASSES=100;
 
+private static int globalSimulationCounter=0;
+
 //List of Changable parameters for Multiphase-opi
 public static ArrayList<parameter> listOfChangableParametersMultiphase=null;
     /**
@@ -1592,10 +1594,44 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
      */
     public static void waitSingleThreaded(long timeToWaitInMS){
     long targetTime = java.util.Calendar.getInstance().getTimeInMillis();
+    int counter=0;
     targetTime+=timeToWaitInMS;
     while(java.util.Calendar.getInstance().getTimeInMillis()<=targetTime){
     //Wait with full force :-)
+        if( counter>=400 ){
+        support.spinInLabel();
+        counter=0;
+        }
+        counter++;
     }
+    }
+
+    /**
+     * @return the globalSimulationCounter
+     */
+    public static int getGlobalSimulationCounter() {
+        return globalSimulationCounter;
+    }
+
+    /**
+     * @param aGlobalSimulationCounter the globalSimulationCounter to set
+     */
+    public static void setGlobalSimulationCounter(int aGlobalSimulationCounter) {
+        globalSimulationCounter = aGlobalSimulationCounter;
+    }
+    
+    /**
+     * Increases the global simulation counter (+1)
+     */
+    public static void incGlobalSimulationCounter(){
+        globalSimulationCounter++;
+    }
+    
+    /**
+     * Resets the global simulation counter to 0
+     */
+    public static void resetGlobalSimulationCounter(){
+        globalSimulationCounter=0;
     }
 }
 

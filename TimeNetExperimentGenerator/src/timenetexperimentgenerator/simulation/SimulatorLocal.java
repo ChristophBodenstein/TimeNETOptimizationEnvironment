@@ -114,7 +114,7 @@ long timeStamp=0;//TimeStamp for measuring the runtime of one simulation
                             support.setStatusText("Operations canceled.");
                             return;}
                         ArrayList<parameter> actualParameterSet=listOfParameterSets.get(i);//get actual parameterset
-                        String actualParameterFileName=createLocalSimulationFile(actualParameterSet, this.simulationCounter);//create actual SCPN xml-file and save it in tmp-folder
+                        String actualParameterFileName=createLocalSimulationFile(actualParameterSet, support.getGlobalSimulationCounter());//create actual SCPN xml-file and save it in tmp-folder
                         support.log("Simulating file:"+actualParameterFileName);
                         startLocalSimulation(actualParameterFileName);//Returns, when Simulation has ended
                         //SimulationType myResults=new SimulationType();//create new SimulationResults
@@ -152,9 +152,10 @@ long timeStamp=0;//TimeStamp for measuring the runtime of one simulation
 
 
                     numberOfSimulations++;//increment local simulation counter
+                    support.incGlobalSimulationCounter();
                     
                     this.status=numberOfSimulations*100 / listOfParameterSets.size(); //update status of local simulations (in %)
-                    this.simulationCounter++;//increment given global simulation counter
+                    this.simulationCounter++;//increment given global simulation counter, TODO : remove this
 
                     }
 

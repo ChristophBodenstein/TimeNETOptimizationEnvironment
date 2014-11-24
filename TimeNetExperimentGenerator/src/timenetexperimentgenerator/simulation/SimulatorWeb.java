@@ -97,7 +97,7 @@ public class SimulatorWeb implements Runnable, Simulator{
                         if(cancelSimulations) return;
                         ArrayList<parameter> actualParameterSet=listOfParameterSets.get(i);//get actual parameterset
 
-                        String actualParameterFileName=createLocalSimulationFile(actualParameterSet, this.simulationCounter);//create actual SCPN xml-file and save it in tmp-folder
+                        String actualParameterFileName=createLocalSimulationFile(actualParameterSet, support.getGlobalSimulationCounter());//create actual SCPN xml-file and save it in tmp-folder
                         File file = new File(actualParameterFileName);
                         while(!uploadSuccessful){
                             try {
@@ -106,7 +106,7 @@ public class SimulatorWeb implements Runnable, Simulator{
                                 uploadSuccessful=true;
                                 support.log("Upload succesful. Will wait for results.");
                             } catch (Exception ex) {
-                                Logger.getLogger(SimulatorWeb.class.getName()).log(Level.SEVERE, null, ex);
+                                //Logger.getLogger(SimulatorWeb.class.getName()).log(Level.SEVERE, null, ex);
                                 support.log("Upload error, will try again in "+support.DEFAULT_SLEEPING_TIME+" ms.");
                                 support.waitSingleThreaded(support.DEFAULT_SLEEPING_TIME);
                             }
@@ -116,6 +116,7 @@ public class SimulatorWeb implements Runnable, Simulator{
                         listOfUnproccessedFilesNames.add(support.removeExtention(file.getName()));
                         uploadSuccessful=false;
                         this.simulationCounter++;
+                        support.incGlobalSimulationCounter();
                         if(support.isCancelEverything())break;
                     }
                 }
@@ -129,6 +130,7 @@ public class SimulatorWeb implements Runnable, Simulator{
             //Start sasking the server for log files
             while((i < listOfParameterSets.size())&&(!support.isCancelEverything())) {
                 support.setStatusText("Waiting for results.("+i+"/"+listOfParameterSets.size()+")");
+                support.spinInLabel();
                 HttpClient client = new DefaultHttpClient();
                 HttpGet httpGet = new HttpGet(support.getReMoteAddress() + "/rest/api/downloads/log/"+simid);
                 HttpResponse response = null;

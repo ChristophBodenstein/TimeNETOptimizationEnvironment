@@ -22,7 +22,7 @@ import timenetexperimentgenerator.support;
 public class SimulatorCachedLocal implements Simulator{
 private SimulationCache mySimulationCache=null;
 private ArrayList<SimulationType> myListOfSimulationParsers=null;
-private int simulationCounter=0;
+//private int simulationCounter=0;
 private String logFileName;
     
 
@@ -42,10 +42,10 @@ private String logFileName;
     public void initSimulator(ArrayList< ArrayList<parameter> > listOfParameterSetsTMP, int simulationCounterTMP, boolean log) {
     Simulator myLocalSimulator=null;
     this.myListOfSimulationParsers=null;
-    this.simulationCounter=simulationCounterTMP;
+    //this.simulationCounter=simulationCounterTMP;
     
         if(mySimulationCache!=null){
-        this.myListOfSimulationParsers=mySimulationCache.getListOfCompletedSimulationParsers(listOfParameterSetsTMP, simulationCounter);
+        this.myListOfSimulationParsers=mySimulationCache.getListOfCompletedSimulationParsers(listOfParameterSetsTMP, support.getGlobalSimulationCounter());
         //this.simulationCounter=mySimulationCache.getLocalSimulationCounter();
         }else{
         support.log("No local Simulation file loaded. Will build my own cache from scratch.");
@@ -58,8 +58,8 @@ private String logFileName;
             //if(myLocalSimulator==null){myLocalSimulator=new SimulatorLocal();}
         
         myLocalSimulator=new SimulatorLocal();
-        myLocalSimulator.initSimulator(listOfParameterSetsTMP, this.simulationCounter, false);
-        support.waitForEndOfSimulator(myLocalSimulator, simulationCounter, support.DEFAULT_TIMEOUT);
+        myLocalSimulator.initSimulator(listOfParameterSetsTMP, support.getGlobalSimulationCounter(), false);
+        support.waitForEndOfSimulator(myLocalSimulator, support.getGlobalSimulationCounter(), support.DEFAULT_TIMEOUT);
             
         myListOfSimulationParsers=myLocalSimulator.getListOfCompletedSimulationParsers();
         support.log("Size of resultList is " +myListOfSimulationParsers.size() );
@@ -72,8 +72,9 @@ private String logFileName;
             //Print out a log file
             support.addLinesToLogFileFromListOfParser(myListOfSimulationParsers, logFileName);
             //Count up simulation-counter
-            this.simulationCounter+=myListOfSimulationParsers.size();
-            support.log("SimulationCounter is now: "+this.simulationCounter);
+            //this.simulationCounter+=  myListOfSimulationParsers.size();
+            support.setGlobalSimulationCounter(support.getGlobalSimulationCounter()+myListOfSimulationParsers.size());
+            support.log("SimulationCounter is now: "+support.getGlobalSimulationCounter());
             }
         
     }
@@ -94,7 +95,7 @@ private String logFileName;
      * @return actual simulation counter
      */
     public int getSimulationCounter() {
-        return this.simulationCounter;
+        return support.getGlobalSimulationCounter();
     }
 
     

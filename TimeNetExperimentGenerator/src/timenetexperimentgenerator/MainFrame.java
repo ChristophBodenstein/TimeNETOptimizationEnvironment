@@ -362,8 +362,10 @@ private ArrayList<Boolean> listOfUIStatesPushed;
         jMenu3 = new javax.swing.JMenu();
         jCheckBoxMenuItemLogToFile = new javax.swing.JCheckBoxMenuItem();
         jMenuItemClearLogFile = new javax.swing.JMenuItem();
+        jSeparator7 = new javax.swing.JPopupMenu.Separator();
         jCheckBoxMenuItemLogToWindow = new javax.swing.JCheckBoxMenuItem();
         jMenuItemClearLogWindow = new javax.swing.JMenuItem();
+        jSeparator8 = new javax.swing.JPopupMenu.Separator();
         jMenuItem4 = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
 
@@ -600,6 +602,7 @@ private ArrayList<Boolean> listOfUIStatesPushed;
             }
         });
         jMenu3.add(jMenuItemClearLogFile);
+        jMenu3.add(jSeparator7);
 
         jCheckBoxMenuItemLogToWindow.setSelected(true);
         jCheckBoxMenuItemLogToWindow.setText("Log to window");
@@ -617,6 +620,7 @@ private ArrayList<Boolean> listOfUIStatesPushed;
             }
         });
         jMenu3.add(jMenuItemClearLogWindow);
+        jMenu3.add(jSeparator8);
 
         jMenuItem4.setText("Print all Statistics in Log");
         jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
@@ -839,6 +843,7 @@ private ArrayList<Boolean> listOfUIStatesPushed;
      */
     private void jButtonStartBatchSimulationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonStartBatchSimulationActionPerformed
         support.setCancelEverything(false);
+        support.resetGlobalSimulationCounter();
         this.pushUIState();
         this.switchUIState(uiState.processRunning);
         
@@ -894,6 +899,7 @@ private ArrayList<Boolean> listOfUIStatesPushed;
 
     private void jButtonStartOptimizationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonStartOptimizationActionPerformed
     support.setCancelEverything(false);
+    support.resetGlobalSimulationCounter();
     
     
     //Set base parameterset and orignal base parameterset in support
@@ -1425,6 +1431,8 @@ private ArrayList<Boolean> listOfUIStatesPushed;
     private javax.swing.JPopupMenu.Separator jSeparator4;
     private javax.swing.JPopupMenu.Separator jSeparator5;
     private javax.swing.JPopupMenu.Separator jSeparator6;
+    private javax.swing.JPopupMenu.Separator jSeparator7;
+    private javax.swing.JPopupMenu.Separator jSeparator8;
     private javax.swing.JSpinner jSpinnerNumberOfOptimizationRuns;
     private javax.swing.JTabbedPane jTabbedPaneOptiTargets;
     private javax.swing.JTable jTableParameterList;

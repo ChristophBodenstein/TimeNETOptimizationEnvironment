@@ -40,6 +40,7 @@ int numberOfPhases=2;
 boolean keepSizeAndResolutionOfDesignspace=false;
 boolean optimized=false;
 String logFileName;
+int simulationCount=0;
 
     /**
      * Constructor

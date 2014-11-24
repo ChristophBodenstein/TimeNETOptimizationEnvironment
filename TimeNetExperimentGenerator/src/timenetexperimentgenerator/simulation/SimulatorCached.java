@@ -24,7 +24,7 @@ import timenetexperimentgenerator.support;
 public class SimulatorCached implements Simulator{
 private SimulationCache mySimulationCache=null;
 private ArrayList<SimulationType> myListOfSimulations=null;
-private int simulationCounter=0;
+//private int simulationCounter=0;
 private String logFileName;
     
 
@@ -43,8 +43,9 @@ private String logFileName;
      */
     public void initSimulator(ArrayList<ArrayList <parameter> > listOfParameterSetsTMP, int simulationCounterTMP, boolean log) {
         if(mySimulationCache!=null){
-        this.myListOfSimulations=mySimulationCache.getListOfCompletedSimulationParsers(listOfParameterSetsTMP, simulationCounter);
-        this.simulationCounter=mySimulationCache.getLocalSimulationCounter();
+        this.myListOfSimulations=mySimulationCache.getListOfCompletedSimulationParsers(listOfParameterSetsTMP, support.getGlobalSimulationCounter());
+        //this.simulationCounter=mySimulationCache.getLocalSimulationCounter();
+        support.setGlobalSimulationCounter(mySimulationCache.getLocalSimulationCounter());
         }else{
         support.log("No local Simulation file loaded. Simulation not possible.");
         }
@@ -101,7 +102,7 @@ private String logFileName;
      * @return actual simulation counter
      */
     public int getSimulationCounter() {
-        return this.simulationCounter;
+        return support.getGlobalSimulationCounter();
     }
 
     
