@@ -147,8 +147,7 @@ public class SimulatorWeb implements Runnable, Simulator{
                         String filenameWithoutExtension=tmpFilenameArray[0];
                         //Check wether we already got the same file before if yes discard it else process it 
                         if (listOfUnproccessedFilesNames.contains(filenameWithoutExtension)){
-                            i++;
-                            listOfUnproccessedFilesNames.remove(filenameWithoutExtension);
+                            
                             List<String> lines = null;
                             FileWriter fileWriter = null;
 
@@ -163,9 +162,12 @@ public class SimulatorWeb implements Runnable, Simulator{
                             //here the SimType has to get Data From Parser;
                             Parser myParser = new Parser();
                             SimulationType myResults= myParser.parse(actualSimulationLogFile);//parse Log-file and xml-file
-                            myResults.setIsFromDistributedSimulation(true);
+                            
                             if(myParser.isParsingSuccessfullFinished()) {
+                                i++;
+                                listOfUnproccessedFilesNames.remove(filenameWithoutExtension);
                                 support.log("Parsing successful.");
+                                myResults.setIsFromDistributedSimulation(true);
                                 listOfCompletedSimulationParsers.add(myResults);
                                 if(this.log) {
                                     support.addLinesToLogFile(myResults, logFileName);
@@ -183,7 +185,8 @@ public class SimulatorWeb implements Runnable, Simulator{
                             //Update status
                             this.status=100*i/listOfParameterSets.size();
                             }else{
-                                support.log("The recieved file has been ignored because it has been proccessed earlier: " + filenameWithoutExtension);
+                                //TODO trigger simulation again (send request to server)
+                                support.log("The recieved file has been ignored because of problems parsing the result logfile " + filenameWithoutExtension);
                             }
                         }
                     }else{
