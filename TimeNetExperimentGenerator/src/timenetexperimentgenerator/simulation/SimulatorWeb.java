@@ -196,6 +196,7 @@ public class SimulatorWeb implements Runnable, Simulator{
                         support.log("Error consuming the http-response while asking for results.");
                         }
                         
+                        support.log("Response from server was negative. Will wait "+support.DEFAULT_SLEEPING_TIME+" ms.");
                         //Wait with full force
                         support.waitSingleThreaded(support.DEFAULT_SLEEPING_TIME);
                     }
