@@ -607,8 +607,10 @@ int stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;
      */
     public SimulationType getOptimum(){
         if(this.optimized){
+        support.log("Its optimized, so returning best solution.");
         return this.bestSolution;
         }else{
+        support.log("Its NOT optimized, returning null.");
         return null;
         }
     }

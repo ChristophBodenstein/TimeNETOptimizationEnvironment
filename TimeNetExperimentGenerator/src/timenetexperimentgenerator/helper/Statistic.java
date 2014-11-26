@@ -76,7 +76,7 @@ private boolean optimization=false;
      * @param optimumParameterset The calculated optimium parameterset to calulate the distance
      */
     public void addFoundOptimum(SimulationType foundOptimum, SimulationType calculatedOptimum){
-    support.log("Adding calculated optimium to List of Statistics.");
+    support.log("Adding found and calculated optimium (if exists) to List of Statistics.");
     this.foundOptimum=foundOptimum;
     this.calculatedOptimum=calculatedOptimum;
         if(this.foundOptimum!=null){
