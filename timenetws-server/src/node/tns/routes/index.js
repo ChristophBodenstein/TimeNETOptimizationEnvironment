@@ -11,7 +11,7 @@ var express = require('express'),
     formidable = require('formidable'),
     fs = require('graceful-fs'),
     path = require('path');
-var DEFAULT_SLEEPING_TIME=2000;// in ms
+var DEFAULT_SLEEPING_TIME=1900;// in ms
 var DEFAULT_MINIMUM_TIMEOUT=500;//in sec
 
 /* GET home page. */
@@ -40,14 +40,19 @@ router.post('/rest/file/upload', function(req, res) {
 	*/
 
   	form.parse(req, function(err, fields, files) {
-    var old_path = files.attachment.path,
+	if(err){
+	res.status(500);
+	res.json({'success': false});
+	return false;
+		}else{
+		var old_path = files.attachment.path,
         file_size = files.attachment.size,
         file_name = files.attachment.name,
 		simid = fields.simid,
 		new_dir = './uploads/'+simid,
         new_path = './uploads/'+simid+"/"+file_name;
-	mkdirp(new_dir, function(err) { 
-	    // path was created unless there was error
+		mkdirp(new_dir, function(err) { 
+			// path was created unless there was error
 		if(err){
 			console.log("There was an error creating dir:"+new_path);
 		}
@@ -65,6 +70,10 @@ router.post('/rest/file/upload', function(req, res) {
 			  
 				//Enter simulation data into Mongodb
 				//console.log("Try to enter into db.");
+				//Check if filesize is bigger then 20 byte
+				var stats = fs.statSync(new_path);
+				var fileSizeInBytes = stats["size"];
+					if(fileSizeInBytes>=20){
 				  	simlist.insert({name: file_name, simid: simid, path: new_path, distributed: false, simulated: false, logdownloaded: false, logname:"", timestamp: Date.now()}, function(err, result){
 		            	if (err) {
 							console.log("Error entering simulation into db.");
@@ -76,13 +85,19 @@ router.post('/rest/file/upload', function(req, res) {
 		  					}
 			  
 					});
+					}else{
+					console.log("Error with written file"+new_path);
+					res.status(500);
+					res.json({'success': false});
+					}
 				} 
 	       });
 	      });
 		});
   	});
+	}
 	});
-  return true;
+	return true;
 });
 
 
@@ -171,6 +186,13 @@ router.get('/rest/api/downloads/ND', function(req, res){
 								} else {}
 							});
 						});
+						/*
+							activeclients.insert({ip:req.connection.remoteAddress, timestamp: Date.now()}, function(err, result){
+								if (err) {
+								console.log("Error updating client-collection.");
+								} else {}
+							});*/
+							
 					//Check for timed out Simulations
 					checkForTimedOutSimulations(simlist, function(err){
 						if(err){
