@@ -995,6 +995,7 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
             setStatusText("Simulations started.");
                 while(mySimulator.getStatus()<100){
                     try {
+                        //TODO Timer verwenden statt sleep!
                         Thread.sleep(1000);
                     } catch (InterruptedException ex) {
                         support.log("InterruptedException in main loop of optimization. Optimization aborted.");
