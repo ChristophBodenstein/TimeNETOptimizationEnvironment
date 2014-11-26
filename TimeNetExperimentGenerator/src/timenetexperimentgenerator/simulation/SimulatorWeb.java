@@ -61,7 +61,7 @@ public class SimulatorWeb implements Runnable, Simulator{
     boolean cancelSimulations=false;
     boolean log=true;
     boolean keepSimulationFiles=true;
-    HttpClient client = new DefaultHttpClient() ;
+    HttpClient client = null;
 
 
     /**
@@ -74,6 +74,7 @@ public class SimulatorWeb implements Runnable, Simulator{
     
     public void run(){
         long targetTime=0;
+        client = new DefaultHttpClient() ;
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         this.status=0;
         this.listOfCompletedSimulationParsers=new ArrayList<SimulationType>();
