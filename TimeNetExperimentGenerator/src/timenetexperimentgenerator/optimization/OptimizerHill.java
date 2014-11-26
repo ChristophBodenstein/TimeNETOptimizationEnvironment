@@ -87,7 +87,7 @@ int stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;
     this.parent=support.getMainFrame();// parentTMP;
     this.parameterBase=support.getParameterBase();
     support.setParameterBase(parameterBase);
-
+    this.optimized=false;
     this.listOfMeasures=parent.getListOfActiveMeasureMentsToOptimize(); //((MeasurementForm)MeasureFormPane.getComponent(0)).getListOfMeasurements();
     support.log("# of Measures to be optimized: "+this.listOfMeasures.size());
 

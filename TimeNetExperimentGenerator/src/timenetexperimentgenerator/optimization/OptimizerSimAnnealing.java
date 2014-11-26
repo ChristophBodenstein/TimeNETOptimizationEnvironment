@@ -43,6 +43,7 @@ String nameOfdummyLogfile;
     nameOfdummyLogfile=new String(this.logFileName);
     nameOfdummyLogfile=support.removeExtention(nameOfdummyLogfile)+"_SA_Temperatures.csv";
     support.addLinesToLogFileFromListOfParser(null, nameOfdummyLogfile);
+    this.optimized=false;
 
     }
 

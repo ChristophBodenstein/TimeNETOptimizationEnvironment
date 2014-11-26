@@ -51,6 +51,7 @@ int simulationCount=0;
     this.parent=support.getMainFrame();// parentTMP;
     this.parameterBase=support.getOriginalParameterBase();
     support.setParameterBase(parameterBase);
+    this.optimized=false;
     logFileName=support.getTmpPath()+File.separator+this.getClass().getSimpleName()+"_"+Calendar.getInstance().getTimeInMillis()+support.getOptimizerPreferences().getPref_LogFileAddon()+".csv";
     support.log("LogfileName:"+logFileName);
     //this.keepSizeAndResolutionOfDesignspace=support.getOptimizerPreferences().getPref_KeepDesignSpaceAndResolution();
@@ -59,6 +60,7 @@ int simulationCount=0;
     }
 
     public void run() {
+    this.optimized=false;
     ArrayList<ArrayList<parameter>> newParameterset;
     ArrayList<parameter> originalParameterset=support.getOriginalParameterBase();
     //Optimizer init with initial parameterset
