@@ -185,6 +185,7 @@ public class SimulatorWeb implements Runnable, Simulator{
                                 }
                             //Update status
                             this.status=100*i/listOfParameterSets.size();
+                            support.log("Status of WebSimulator: "+this.status);
                             }else{
                                 //TODO trigger simulation again (send request to server)
                                 support.log("The recieved file has been ignored because of problems parsing the result logfile " + filenameWithoutExtension);
