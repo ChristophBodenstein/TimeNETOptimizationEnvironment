@@ -2132,6 +2132,7 @@ private ArrayList<Boolean> listOfUIStatesPushed;
         support.unsetListOfChangableParametersMultiphase();//Stop Multiphase if it was active
         support.setStatusText(message);
         support.log("Last simulation run has ended. Will show statistics.");
+        support.log("Ended was: "+feedback.toString());
         StatisticAggregator.printOptiStatistics();
         
         }   else{
