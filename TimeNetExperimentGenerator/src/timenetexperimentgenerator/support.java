@@ -986,8 +986,9 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
     support.log("wait for Simulator has 100% completed.");
     //Shortcut for benchmark-Simulators
         try {
-            Thread.sleep(10);
-        } catch (InterruptedException ex) {
+            //Thread.sleep(10);
+            support.waitSingleThreaded(10);
+        } catch (Exception ex) {
             support.log("InterruptedException in main loop of optimization. Optimization aborted.");
         }
     if(mySimulator.getStatus()>=100)return true;
@@ -996,8 +997,9 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
                 while(mySimulator.getStatus()<100){
                     try {
                         //TODO Timer verwenden statt sleep!
-                        Thread.sleep(1000);
-                    } catch (InterruptedException ex) {
+                        //Thread.sleep(1000);
+                        support.waitSingleThreaded(1000);
+                    } catch (Exception ex) {
                         support.log("InterruptedException in main loop of optimization. Optimization aborted.");
                         statusLabel.setText("Aborted / Error");
                     }
