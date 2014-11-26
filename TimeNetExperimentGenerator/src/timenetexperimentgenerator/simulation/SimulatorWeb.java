@@ -60,7 +60,7 @@ public class SimulatorWeb implements Runnable, Simulator{
     private int simulationCounter=0;//Startvalue for count of simulations, will be in the filename of sim and log
     boolean cancelSimulations=false;
     boolean log=true;
-    boolean keepSimulationFiles=false;
+    boolean keepSimulationFiles=true;
     HttpClient client = new DefaultHttpClient() ;
 
 
@@ -196,7 +196,7 @@ public class SimulatorWeb implements Runnable, Simulator{
                         support.log("Error consuming the http-response while asking for results.");
                         }
                         
-                        support.log("Response from server was negative. Will wait "+support.DEFAULT_SLEEPING_TIME+" ms.");
+                        //support.log("Response from server was negative. Will wait "+support.DEFAULT_SLEEPING_TIME+" ms.");
                         //Wait with full force
                         support.waitSingleThreaded(support.DEFAULT_SLEEPING_TIME);
                     }
