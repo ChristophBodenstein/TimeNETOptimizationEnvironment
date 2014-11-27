@@ -244,7 +244,7 @@ int simulationCount=0;
     
     /**
      * Returns the found optmium (SimulationType)
-     * If optimium is not found or optimizer is still running it returns null
+     * If optimum is not found or optimizer is still running it returns null
      * @return null if optimization not yet ended, else Optimum
      */
     public SimulationType getOptimum(){

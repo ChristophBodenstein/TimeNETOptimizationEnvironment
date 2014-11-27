@@ -934,9 +934,9 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
         distributedSimulationAvailable = aDistributedSimulationAvailable;
     }
 
-        /**
+    /**
      * Creates and returns a set of Parameters made by deep-copying
-     * @param parameterBase the array of parameters to be dublicated
+     * @param parameterBase the array of parameters to be duplicated
      * @return array of parameters, the copy of input
      */
     public static ArrayList<parameter> getCopyOfParameterSet(ArrayList<parameter> parameterBase){
@@ -955,6 +955,20 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
     return newParameterSet;
     }
 
+    /**
+     * Creates and returns an ArrayList of sets of Parameters made by deep-copying
+     * @param oldArrayList the arrayList of parametersets to be duplicated
+     * @return array of parameters, the copy of input
+     */
+    public static ArrayList< ArrayList<parameter> > getCopyOfArrayListOfParametersets(ArrayList< ArrayList<parameter> > oldArrayList){
+    ArrayList< ArrayList<parameter> > result=new ArrayList< ArrayList<parameter> >();
+    
+        for(int i=0; i<oldArrayList.size();i++){
+        result.add(getCopyOfParameterSet(oldArrayList.get(i)));
+        }
+    return result;
+    }
+    
     /**
      * @return the isRunningAsSlave
      */
@@ -1483,10 +1497,12 @@ private static boolean logToFile=DEFAULT_LOG_TO_FILE;
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
+                support.log("Entering again waitForOptimizerTimer.");
                 if (myOptimizer.getOptimum()!=null){
+                
+                //MeasureType myOptiMeasure=support.getOptimizationMeasure();
+                //StatisticAggregator.getStatisticByName(myOptimizer.getLogFileName()).addFoundOptimum(myOptimizer.getOptimum(), SimOptiFactory.getSimulator().getCalculatedOptimum(myOptiMeasure));
                 listener.operationSucessfull("The end.", typeOfProcessFeedback.OptimizationSuccessful);
-                MeasureType myOptiMeasure=support.getOptimizationMeasure();
-                StatisticAggregator.getStatisticByName(myOptimizer.getLogFileName()).addFoundOptimum(myOptimizer.getOptimum(), SimOptiFactory.getSimulator().getCalculatedOptimum(myOptiMeasure));
                 this.cancel();
                 }
                 if(support.isCancelEverything()){

@@ -2126,18 +2126,18 @@ private ArrayList<Boolean> listOfUIStatesPushed;
      * @param feedback will determine what to do next (button activation etc.)
      */
     public void operationSucessfull(String message, typeOfProcessFeedback feedback) {
-        int tmpNumerOfOptiRunsToGo=support.getNumberOfOptiRunsToGo();
-        if(tmpNumerOfOptiRunsToGo<=1){
+        int tmpNumberOfOptiRunsToGo=support.getNumberOfOptiRunsToGo();
+        if(tmpNumberOfOptiRunsToGo<=1){
         this.popUIState();
         support.unsetListOfChangableParametersMultiphase();//Stop Multiphase if it was active
         support.setStatusText(message);
         support.log("Last simulation run has ended. Will show statistics.");
         support.log("Ended was: "+feedback.toString());
-        StatisticAggregator.printOptiStatistics();
+        //StatisticAggregator.printOptiStatistics();
         
         }   else{
-            support.log("Starting next Optimization run, number:" +(tmpNumerOfOptiRunsToGo-1));
-            support.setNumberOfOptiRunsToGo(tmpNumerOfOptiRunsToGo-1);
+            support.log("Starting next Optimization run, number:" +(tmpNumberOfOptiRunsToGo-1));
+            support.setNumberOfOptiRunsToGo(tmpNumberOfOptiRunsToGo-1);
             this.startOptimizationAgain();
             }
         switch(feedback){

@@ -73,10 +73,10 @@ private boolean optimization=false;
      * Adds the found optimum and the calculated optimum to statistics.
      * Useful for statistics of optimization runs
      * @param foundOptimum The simulation incl. parameterset which was found by optimization algorithm
-     * @param optimumParameterset The calculated optimium parameterset to calulate the distance
+     * @param optimumParameterset The calculated optimum parameterset to calulate the distance
      */
     public void addFoundOptimum(SimulationType foundOptimum, SimulationType calculatedOptimum){
-    support.log("Adding found and calculated optimium (if exists) to List of Statistics.");
+    support.log("Adding found and calculated optimum (if exists) to List of Statistics.");
     this.foundOptimum=foundOptimum;
     this.calculatedOptimum=calculatedOptimum;
         if(this.foundOptimum!=null){

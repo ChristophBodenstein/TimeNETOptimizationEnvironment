@@ -27,7 +27,9 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.MultipartEntity;
@@ -38,6 +40,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
+import timenetexperimentgenerator.HttpFactory;
 import timenetexperimentgenerator.Parser;
 import timenetexperimentgenerator.datamodel.MeasureType;
 import timenetexperimentgenerator.datamodel.SimulationType;
@@ -60,9 +63,9 @@ public class SimulatorWeb implements Runnable, Simulator{
     private int simulationCounter=0;//Startvalue for count of simulations, will be in the filename of sim and log
     boolean cancelSimulations=false;
     boolean log=true;
-    boolean keepSimulationFiles=true;
+    boolean keepSimulationFiles=false;
     HttpClient client = null;
-
+    HttpGet httpGet= null;
 
     /**
      * Constructor
@@ -70,24 +73,29 @@ public class SimulatorWeb implements Runnable, Simulator{
     public SimulatorWeb(){
         logFileName=support.getTmpPath()+File.separator+"SimLog_DistributedSimulation"+Calendar.getInstance().getTimeInMillis()+".csv";  
         listOfUnproccessedFilesNames = new ArrayList<String>();
+        simid = Long.toString(Calendar.getInstance().getTimeInMillis());
     }
     
     public void run(){
         long targetTime=0;
-        client = new DefaultHttpClient() ;
+        client = HttpFactory.getHttpClient();
+        
+        
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         this.status=0;
         this.listOfCompletedSimulationParsers=new ArrayList<SimulationType>();
         boolean uploadSuccessful=false;//To handle upload errors
         //this.listOfCompletedSimulationParsers=new ArrayList<SimulationType>();
         String line="";
-        simid = Long.toString(Calendar.getInstance().getTimeInMillis());
+        
         //int numberOfSimulations=0;
+        support.log("Web-Simulation-Thread started to simulate "+listOfParameterSets.size()+" simulations.");
         if(support.isDistributedSimulationAvailable()){
             try{
                 support.log("Distributed Simulation available, starting distributed simulations.");
 
                 support.log("Logfilename is:"+logFileName);
+                support.log("simid: "+simid);
                 //Open Logfile and write first line
                 //FileWriter fw;
                 if(listOfParameterSets.size()>0){
@@ -100,22 +108,25 @@ public class SimulatorWeb implements Runnable, Simulator{
 
                         String actualParameterFileName=createLocalSimulationFile(actualParameterSet, support.getGlobalSimulationCounter());//create actual SCPN xml-file and save it in tmp-folder
                         File file = new File(actualParameterFileName);
+                        int count=0;
+                        uploadSuccessful=false;
                         while(!uploadSuccessful){
+                        count++;
+                        support.log("Trying to upload the same simulation "+ count+" time. ThreadID:"+Thread.currentThread().toString());
                             try {
                                 //Upload the file
                                 executeMultiPartRequest(support.getReMoteAddress() + "/rest/file/upload",file,file.getName(), "File Uploaded :: WORDS",simid) ;
                                 uploadSuccessful=true;
-                                support.log("Upload succesful. Will wait for results.");
+                                support.log("Upload successful. Will wait for results. Try: "+count);
                             } catch (Exception ex) {
                                 //Logger.getLogger(SimulatorWeb.class.getName()).log(Level.SEVERE, null, ex);
                                 support.log("Upload error, will try again in "+support.DEFAULT_SLEEPING_TIME+" ms.");
-                                support.waitSingleThreaded(support.DEFAULT_SLEEPING_TIME);
+                                support.waitSingleThreaded(support.DEFAULT_SLEEPING_TIME);Thread.currentThread().join();
                             }
                             
                         }
                         //add the file to the unprocessed files names 
                         listOfUnproccessedFilesNames.add(support.removeExtention(file.getName()));
-                        uploadSuccessful=false;
                         this.simulationCounter++;
                         support.incGlobalSimulationCounter();
                         if(support.isCancelEverything())break;
@@ -127,21 +138,22 @@ public class SimulatorWeb implements Runnable, Simulator{
             //end of the first phase which is uploading the XML files
             
             //do not start the timer unless we get the first log file
-            int i=0,j=Integer.MIN_VALUE;
-            //Start sasking the server for log files
+            int i=0;
+            //Start asking the server for log files
             while((i < listOfParameterSets.size())&&(!support.isCancelEverything())) {
                 support.setStatusText("Waiting for results.("+i+"/"+listOfParameterSets.size()+")");
                 support.spinInLabel();
-                HttpClient client = new DefaultHttpClient();
-                HttpGet httpGet = new HttpGet(support.getReMoteAddress() + "/rest/api/downloads/log/"+simid);
                 HttpResponse response = null;
                 String responseString = null;
+                
+                httpGet = HttpFactory.getGetRequest(support.getReMoteAddress() + "/rest/api/downloads/log/"+simid);
+                support.log("asking for results with address:"+support.getReMoteAddress() + "/rest/api/downloads/log/"+simid);     
                 try {
+                    
                     response = client.execute(httpGet);
+                    
                     int statusCode = response.getStatusLine().getStatusCode();
                     if(statusCode == 200) {
-                        //reset the timer each time we recieve a new log file
-                        j = 0;
                         responseString = new BasicResponseHandler().handleResponse(response);
                         String filename = response.getFirstHeader("filename").getValue(); 
                         String[] tmpFilenameArray=filename.split("simTime");                       
@@ -169,7 +181,7 @@ public class SimulatorWeb implements Runnable, Simulator{
                                 listOfUnproccessedFilesNames.remove(filenameWithoutExtension);
                                 support.log("Parsing successful.");
                                 myResults.setIsFromDistributedSimulation(true);
-                                listOfCompletedSimulationParsers.add(myResults);
+                                
                                 if(this.log) {
                                     support.addLinesToLogFile(myResults, logFileName);
                                 }
@@ -191,30 +203,57 @@ public class SimulatorWeb implements Runnable, Simulator{
                                 support.log("The recieved file has been ignored because of problems parsing the result logfile " + filenameWithoutExtension);
                             }
                         }
+                    
                     }else{
-                        try{
-                        EntityUtils.consume(response.getEntity());
-                        }catch(Exception e){
-                        support.log("Error consuming the http-response while asking for results.");
-                        }
-                        
                         //support.log("Response from server was negative. Will wait "+support.DEFAULT_SLEEPING_TIME+" ms.");
                         //Wait with full force
                         support.waitSingleThreaded(support.DEFAULT_SLEEPING_TIME);
                     }
+                        
                 } catch (Exception ex) {
                     Logger.getLogger(SimulatorWebSlave.class.getName()).log(Level.SEVERE, null, ex);
                     support.log("Problem connecting to server. please check your network preferences.");
+                }finally{
+                        //support.log("Trying to consume Response from upload.");
+                        try{
+                            if( response != null ) {
+                            EntityUtils.consume(response.getEntity());
+                            
+                            
+                            
+                            }
+                        }catch(Exception ex){
+                        Logger.getLogger(SimulatorWebSlave.class.getName()).log(Level.SEVERE, null, ex);
+                        support.log("Error consuming the http-response while asking for results.");
+                        }
+                    support.log("Try to cleanup after download.");
+                    httpGet.releaseConnection();
+                    //httpGet=null;
+                    //client=null;
                 }
+                        
+                        
             }
+            support.log("All Simulation results collected from server. Simulator will end.");
+            
+            /*try {
+                Thread.currentThread().join();
+            } catch (InterruptedException ex) {
+                support.log("Error joining this distributed-simulation thread.");
+            }*/
+            
         }else{
             support.log("Timenet-Path NOT ok!");
         }
+        support.log("End of Thread reached, should end now.");
+        
+    
     }
 
     public void initSimulator(ArrayList< ArrayList<parameter> > listOfParameterSetsTMP, int simulationCounterTMP, boolean log) {
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        this.listOfParameterSets=listOfParameterSetsTMP;
+        this.listOfParameterSets=support.getCopyOfArrayListOfParametersets(listOfParameterSetsTMP);
+        support.log("Given "+listOfParameterSetsTMP.size()+" parametersets to be simulated via web.");
         this.log=log;
         this.originalFilename=support.getOriginalFilename();//  originalFilenameTMP;
         this.tmpFilePath=support.getTmpPath();// tmpFilePathTMP;
@@ -274,7 +313,7 @@ public class SimulatorWeb implements Runnable, Simulator{
                 DOMSource source = new DOMSource(doc);
                 StreamResult result = new StreamResult(new File(exportFileName));
                 transformer.transform(source, result);
-
+                
                 return exportFileName;
 
     }catch(Exception e){
@@ -321,8 +360,8 @@ public class SimulatorWeb implements Runnable, Simulator{
      */
    public void executeMultiPartRequest(String urlString, File file, String fileName, String fileDescription,String simid) throws Exception 
     {
-    	//HttpClient client = new DefaultHttpClient() ;
-        HttpPost postRequest = new HttpPost (urlString) ;
+    	DefaultHttpClient client = HttpFactory.getHttpClient();
+        HttpPost postRequest = HttpFactory.getPostRequest(urlString) ;
         try
         {
             support.log("Try to connect "+urlString);
@@ -339,13 +378,26 @@ public class SimulatorWeb implements Runnable, Simulator{
             //Prepare payload
             multiPartEntity.addPart("attachment", fileBody) ;
  
+            
             //Set to request body
             postRequest.setEntity(multiPartEntity) ;
             
+            BasicResponseHandler myTmpResponseHandler = new BasicResponseHandler();
+            
             //Send request
-            HttpResponse response = client.execute(postRequest) ;
-
-            EntityUtils.consume(response.getEntity());
+            //HttpResponse response = client.execute(postRequest, myTmpResponseHandler) ;
+            String result=client.execute(postRequest, myTmpResponseHandler);
+            //support.waitSingleThreaded(support.DEFAULT_TIMEOUT);
+            support.log("Response of Upload was:"+result);
+            if(result.contains("false")){
+            throw new Exception("Upload not successful. Server returned false!");
+            }
+            multiPartEntity.consumeContent();
+            //EntityUtils.consume(response.getEntity());
+            postRequest.releaseConnection();
+            postRequest.reset();
+            
+            client=null;
             
         }
         catch (Exception ex)
@@ -356,7 +408,7 @@ public class SimulatorWeb implements Runnable, Simulator{
     }
    
    /**
-     * Returns the calulated optimimum
+     * Returns the calculated optimimum
      * For Benchmark-Functions this can be calculated.
      * For other simulators, this must be given by user.
      */
@@ -364,4 +416,6 @@ public class SimulatorWeb implements Runnable, Simulator{
     support.log("SimulatorWeb: Getting absolute optimum simulation from Cache. Will return null.");
         return null;
     }
+
+   
 }

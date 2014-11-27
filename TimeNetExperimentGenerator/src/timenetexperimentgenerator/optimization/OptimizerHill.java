@@ -156,7 +156,7 @@ int stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;
                 support.waitForEndOfSimulator(mySimulator, getSimulationCounter(), support.DEFAULT_TIMEOUT);
                 this.setSimulationCounter(mySimulator.getSimulationCounter());
                 listOfCompletedSimulations=mySimulator.getListOfCompletedSimulationParsers();
-
+                support.log("List of Simulation results is: "+listOfCompletedSimulations.size() +" elements big.");
                 //Shrink to first element of List
                 listOfCompletedSimulations=support.shrinkArrayListToFirstMember(listOfCompletedSimulations);
 
@@ -589,7 +589,7 @@ int stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;
      * @return the simulationCounter
      */
     public int getSimulationCounter() {
-        return simulationCounter;
+        return support.getGlobalSimulationCounter();// simulationCounter;
     }
 
     /**
@@ -602,7 +602,7 @@ int stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;
 
     /**
      * Returns the found optmium (SimulationType)
-     * If optimium is not found or optimizer is still running it returns null
+     * If optimum is not found or optimizer is still running it returns null
      * @return null if optimization not yet ended, else Optimum
      */
     public SimulationType getOptimum(){
@@ -610,7 +610,7 @@ int stuckInCacheCounter=support.DEFAULT_CACHE_STUCK;
         support.log("Its optimized, so returning best solution.");
         return this.bestSolution;
         }else{
-        support.log("Its NOT optimized, returning null.");
+        //support.log("Its NOT optimized, returning null.");
         return null;
         }
     }
