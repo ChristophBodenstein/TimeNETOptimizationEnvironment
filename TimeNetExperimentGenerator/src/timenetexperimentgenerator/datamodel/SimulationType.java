@@ -136,7 +136,7 @@ private boolean isFromDistributedSimulation=false;//Is False, if local simulated
      * Returns distance to target value coordinates in design space
      * the distance is relative to the whole design space
      * So Sum of all parameter-value-ranges equals 100% 
-     * It works only for few Benchmark functions and for normal petri nets if theroetical optimium is given!
+     * It works only for few Benchmark functions and for normal petri nets if theroetical optimum is given!
      * @return List of relative Distances to target Values
      * @param targetSimulation SimulationType of target(i.e. optimum) Solution to calculate the distance
      */
