@@ -82,8 +82,7 @@ public class SimulatorWeb implements Runnable, Simulator{
         
         
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        this.status=0;
-        this.listOfCompletedSimulationParsers=new ArrayList<SimulationType>();
+        
         boolean uploadSuccessful=false;//To handle upload errors
         //this.listOfCompletedSimulationParsers=new ArrayList<SimulationType>();
         String line="";
@@ -252,6 +251,9 @@ public class SimulatorWeb implements Runnable, Simulator{
 
     public void initSimulator(ArrayList< ArrayList<parameter> > listOfParameterSetsTMP, int simulationCounterTMP, boolean log) {
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.status=0;
+        this.listOfCompletedSimulationParsers=new ArrayList<SimulationType>();
+        
         this.listOfParameterSets=support.getCopyOfArrayListOfParametersets(listOfParameterSetsTMP);
         support.log("Given "+listOfParameterSetsTMP.size()+" parametersets to be simulated via web.");
         this.log=log;
