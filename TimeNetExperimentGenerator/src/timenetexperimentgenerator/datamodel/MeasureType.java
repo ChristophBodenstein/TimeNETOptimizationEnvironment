@@ -4,93 +4,102 @@
  * Christoph Bodenstein
  * TU-Ilmenau, FG SSE
  */
-
 package timenetexperimentgenerator.datamodel;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import timenetexperimentgenerator.support;
+import timenetexperimentgenerator.typedef.*;
 
 /**
  *
  * @author Christoph Bodenstein
  */
 public class MeasureType {
-private String MeasureName="";
-private boolean AccuraryReached=false;
-private double MeanValue=0.0;
-private double Variance=0.0;
-private double[] ConfidenceInterval=new double[2];
-private double Epsilon=0.0;;
-//private ArrayList<parameter> parameterList=new ArrayList<parameter>();
-private double targetValue=0.0;
-private String targetKindOf="min";
-private double SimulationTime=0.0;
-private double CPUTime=0;
-private double minValue,maxValue=0.0;
 
+    private String MeasureName = "";
+    private boolean AccuraryReached = false;
+    private double MeanValue = 0.0;
+    private double Variance = 0.0;
+    private double[] ConfidenceInterval = new double[2];
+    private double Epsilon = 0.0;
+    ;
+private double targetValue = 0.0;
+    private typeOfTarget targetKindOf = typeOfTarget.min;
+    private double SimulationTime = 0.0;
+    private double CPUTime = 0;
+    private double minValue, maxValue = 0.0;
+
+    /**
+     * Constructor
+     */
     public MeasureType() {
-        ConfidenceInterval[0]=0.0;
-        ConfidenceInterval[1]=0.0;
+        ConfidenceInterval[0] = 0.0;
+        ConfidenceInterval[1] = 0.0;
 
     }
-    
-    public MeasureType(MeasureType originalMeasure)
-    {
+
+    /**
+     * Special constructor, copies all internal values from given measuretype
+     * object to new object
+     *
+     * @param originalMeasure
+     */
+    public MeasureType(MeasureType originalMeasure) {
         this.MeasureName = originalMeasure.MeasureName;
         this.AccuraryReached = originalMeasure.AccuraryReached;
         this.MeanValue = originalMeasure.MeanValue;
         this.Variance = originalMeasure.Variance;
         this.ConfidenceInterval = Arrays.copyOf(originalMeasure.ConfidenceInterval, originalMeasure.ConfidenceInterval.length);
         this.Epsilon = originalMeasure.Epsilon;
-//        this.parameterList = new ArrayList<parameter>();
-//        for (int i = 0; i<originalMeasure.getParameterListSize(); ++i)
-//        {
-//            try
-//            {
-//                parameter tmpParameter = (parameter)originalMeasure.getParameterList().get(i).clone();
-//                this.parameterList.add(tmpParameter);
-//            }
-//            catch (CloneNotSupportedException e)
-//            {
-//                support.log(e.getMessage());
-//            }
-//        }
         this.targetValue = originalMeasure.targetValue;
         this.targetKindOf = originalMeasure.targetKindOf;
         this.CPUTime = originalMeasure.CPUTime;
         this.SimulationTime = originalMeasure.CPUTime;
-        this.minValue=originalMeasure.minValue;
-        this.maxValue=originalMeasure.maxValue;
+        this.minValue = originalMeasure.minValue;
+        this.maxValue = originalMeasure.maxValue;
     }
 
-
     /**
+     * @param value targetvalue (double) for optimization and to calculate
+     * distance of measure
+     * @param kindOfTarget
      * @set targetValue and/or (min/max/value)
      */
-     public void setTargetValue(double value, String kindOfTarget){
+    public void setTargetValue(double value, typeOfTarget kindOfTarget) {
 
-        if(kindOfTarget.equals("min")||kindOfTarget.equals("max")){
-        this.targetKindOf=kindOfTarget;
-        }else{
-        this.targetKindOf="value";
+        if (kindOfTarget.equals(typeOfTarget.min) || kindOfTarget.equals(typeOfTarget.max)) {
+            this.targetKindOf = kindOfTarget;
+        } else {
+            this.targetKindOf = typeOfTarget.value;
         }
-     this.targetValue=value;
-     }
+        this.targetValue = value;
+    }
 
+    /**
+     * Returns distance from Target value abs(actual value - target value)
+     *
+     * @return distance to target value
+     */
+    public double getDistanceFromTarget() {
+        return Math.abs(this.MeanValue - this.targetValue);
+    }
 
-     public double getDistanceFromTarget(){
-     return Math.abs(this.MeanValue-this.targetValue);
-     }
+    /**
+     * Return Type of Target (min, max, value)
+     *
+     * @return type of Target
+     */
+    public typeOfTarget getTargetKindOf() {
+        return this.targetKindOf;
+    }
 
-     public String getTargetKindOf(){
-     return this.targetKindOf;
-     }
-     public double getTargetValue(){
-     return this.targetValue;
-     }
-
-
+    /**
+     * Return Target value to optimize for (double)
+     *
+     * @return target value
+     */
+    public double getTargetValue() {
+        return this.targetValue;
+    }
 
     /**
      * @return the MeasureName
@@ -189,8 +198,7 @@ private double minValue,maxValue=0.0;
 //    public void setParameterList(ArrayList<parameter> parameterList) {
 //        this.parameterList = parameterList;
 //    }
-    
-     /**
+    /**
      * @return the size of the paramterList
      */
 //    public int getParameterListSize()
@@ -201,7 +209,6 @@ private double minValue,maxValue=0.0;
 //        }
 //        return 0;
 //    }
-
     /**
      * @return the SimulationTime
      */
@@ -229,20 +236,19 @@ private double minValue,maxValue=0.0;
     public void setCPUTime(double CPUTime) {
         this.CPUTime = CPUTime;
     }
-    
-    public String getStateAsString()
-    {
+
+    /**
+     * returns some infroamtion about measure object as string for logging etc.
+     *
+     * @return String containing useful information about Measure (Name,
+     * targetvalue, value, etc.)
+     */
+    public String getStateAsString() {
         String state = "";
         state += "MeasureName\tMeanValue\tVariance\tTargetValue\tTargetKindOf\n";
         state += this.MeasureName + " \t" + this.MeanValue + " \t" + this.Variance + " \t" + this.targetValue + " \t" + this.targetKindOf + "\n\n";
-        
+
         state += "ParameterName\tCurrentValue\tStartValue\tEndValue\tStepping\n";
-//        for (int i = 0; i<this.parameterList.size(); ++i)
-//        {
-//            parameter p = this.parameterList.get(i);
-//            state += p.getName() + " \t" + p.getValue() + " \t" + p.getStartValue() + " \t" + p.getEndValue() + " \t" + p.getStepping() + "\n";
-//        }
-        
         return state;
     }
 

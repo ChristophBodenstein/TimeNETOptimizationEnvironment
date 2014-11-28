@@ -8,6 +8,7 @@ package timenetexperimentgenerator;
 
 import timenetexperimentgenerator.datamodel.MeasureType;
 import java.util.ArrayList;
+import timenetexperimentgenerator.typedef.*;
 
 /**
  *
@@ -160,14 +161,14 @@ private ArrayList<MeasureType> listOfMeasureMents=new ArrayList<MeasureType>();
         this.jComboBoxMeasurementName.setSelectedIndex(i);
     }
 
-    public String getOptimizationTarget(){
+    public typeOfTarget getOptimizationTarget(){
         if(this.jComboBoxOptimizationTarget.getSelectedIndex()==0){
-        return "min";
+        return typeOfTarget.min;
         }
         if(this.jComboBoxOptimizationTarget.getSelectedIndex()==1){
-        return "max";
+        return typeOfTarget.max;
         }else{
-        return "value";
+        return typeOfTarget.value;
         }
     }
 

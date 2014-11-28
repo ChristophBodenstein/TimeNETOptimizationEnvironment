@@ -22,8 +22,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.JDialog;
@@ -1934,7 +1932,7 @@ private ArrayList<Boolean> listOfUIStatesPushed;
             if(tmpMeasurementForm.isActive()){
             MeasureType tmpMeasure=tmpMeasurementForm.getChosenMeasurement();
             float targetValue=tmpMeasurementForm.getCustomTargetValue();
-            String targetKind=tmpMeasurementForm.getOptimizationTarget();
+                typedef.typeOfTarget targetKind=tmpMeasurementForm.getOptimizationTarget();
             tmpMeasure.setTargetValue(targetValue, targetKind);
             myTmpList.add(tmpMeasure);
             }
@@ -2133,7 +2131,7 @@ private ArrayList<Boolean> listOfUIStatesPushed;
         support.setStatusText(message);
         support.log("Last simulation run has ended. Will show statistics.");
         support.log("Ended was: "+feedback.toString());
-        //StatisticAggregator.printOptiStatistics();
+        StatisticAggregator.printOptiStatistics();
         
         }   else{
             support.log("Starting next Optimization run, number:" +(tmpNumberOfOptiRunsToGo-1));
