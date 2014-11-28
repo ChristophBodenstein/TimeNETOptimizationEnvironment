@@ -74,6 +74,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
 
     /**
      * Creates new form MainFrame
+     *
      * @throws java.io.IOException
      */
     public MainFrame() throws IOException {
@@ -253,12 +254,15 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         DefaultListSelectionModel model = new DefaultListSelectionModel();
         model.addSelectionInterval(0, 0);
         model.addSelectionInterval(2, 2);
-        model.addSelectionInterval(4, 4);
+        model.addSelectionInterval(5, 5);
         if (support.isCachedSimulationAvailable()) {
             model.addSelectionInterval(1, 1);
         }
         if (support.isDistributedSimulationAvailable()) {
             model.addSelectionInterval(3, 3);
+            if (support.isCachedSimulationAvailable()) {
+                model.addSelectionInterval(4, 4);
+            }
         }
 
         this.jComboBoxSimulationType.setRenderer(new EnabledJComboBoxRenderer(model));
@@ -834,7 +838,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
             support.setStatusLabel(jLabelExportStatus);
             support.setMeasureFormPane(jTabbedPaneOptiTargets);
 
-        //LocalBatchSimulatorEngine mySimulator=new LocalBatchSimulatorEngine(ListOfParameterSetsToBeWritten);
+            //LocalBatchSimulatorEngine mySimulator=new LocalBatchSimulatorEngine(ListOfParameterSetsToBeWritten);
             //SimulatorLocal mySimulator=new SimulatorLocal();
             //Set base parameterset and orignal base parameterset in support
             support.setOriginalParameterBase(((parameterTableModel) jTableParameterList.getModel()).getListOfParameter());
@@ -993,7 +997,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
             support.log("No input file chosen!");
             return;
         }
-      //this.mySimulationCache=SimOptiFactory.getSimulationCache();
+        //this.mySimulationCache=SimOptiFactory.getSimulationCache();
         // Should we empty the cache each time, or only at user-wish?
         support.emptyCache();
         this.mySimulationCache = support.getMySimulationCache();
@@ -1337,7 +1341,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                     for (parameter lastParameterSet1 : lastParameterSet) {
                         try {
                             nextParameterSet.add((parameter) lastParameterSet1.clone());
-                        }catch (CloneNotSupportedException e) {
+                        } catch (CloneNotSupportedException e) {
                             support.log("Clone is not Supported:" + e.toString());
                         }
                     }
@@ -1492,9 +1496,9 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                     long tmpParameterSetID = getIDOfParameterSet(tmpParameterSet);
                     long tmpListParameterID = getIDOfParameterSet(tmpListParameter);
                     /*
-                    support.log("P1: "+tmpParemeterSetID);
-                    support.log("P2: "+tmpListParameterID);
-                    * */
+                     support.log("P1: "+tmpParemeterSetID);
+                     support.log("P2: "+tmpListParameterID);
+                     * */
                     if (tmpListParameterID == tmpParameterSetID) {
                         existsInOutPutList = true;
                         support.log("These Parameters are equal:");
@@ -1556,7 +1560,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
      * @param e
      */
     public void tableChanged(TableModelEvent e) {
-    //support.log("Editing of Cell stopped, restarting generator.");
+        //support.log("Editing of Cell stopped, restarting generator.");
         //this.restartGenerator();
         jButtonStartBatchSimulation.setEnabled(false);
         readStaticParametersFromTable();
@@ -1747,7 +1751,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         }
         support.log("Saving Properties.");
         try {
-    //support.log("rpath = " + this.getPathToR());
+            //support.log("rpath = " + this.getPathToR());
             //support.log("timenetpath = " + this.getPathToTimeNet());
 
             auto.setProperty("timenetpath", this.getPathToTimeNet());
@@ -1798,7 +1802,6 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
 
     }
 
-
     /**
      * Prints 2 parametersets and it`s values to see the difference Just used
      * for debug reasons
@@ -1845,7 +1848,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         //String [][] parameterArray=tModel.getParameterArray();
         ArrayList<parameter> parameterArray = new ArrayList<parameter>();
 
-    //ArrayListe aufbauen und Funktion mit dieser Liste aufrufen
+        //ArrayListe aufbauen und Funktion mit dieser Liste aufrufen
         for (int i = 0; i < tModel.getRowCount(); i++) {
             parameter tmpParameter = new parameter();
             tmpParameter.setName(tModel.getValueAt(i, 0).toString());
@@ -1925,6 +1928,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
 
     /**
      * Sets the progressbar for Memory-Usage to a value between 0..100
+     *
      * @param s value of progressbar (0..100)
      */
     public void setMemoryProgressbar(int s) {
@@ -2066,7 +2070,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         for (Component oList1 : oList) {
             try {
                 oList1.setEnabled(true);
-            }catch (Exception e) {
+            } catch (Exception e) {
                 //
             }
         }
