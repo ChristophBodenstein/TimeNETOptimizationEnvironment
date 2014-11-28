@@ -217,7 +217,7 @@ public class StatisticAggregator {
 
             support.log("++++ Start of Optimization Statistics ++++");
             support.log("Number of Optimization runs: " + numberOfAllOptimizationRuns);
-            support.log("Average distance to target value (" + targetMeasure.getTargetValue() + "/" + targetMeasure.getTargetKindOf() + "): " + averageDistanceToOptimumAbsolute);
+            support.log("Average distance to target value (" + targetMeasure.getTargetValue() + "/" + targetMeasure.getTargetTypeOf() + "): " + averageDistanceToOptimumAbsolute);
 
             support.log("Average number of Simulations: " + averageNumberOfSimulations + " ( " + averageNumberOfSimulationsLocal + " | " + averageNumberOfSimulationsWeb + " | " + averageNumberOfSimulationsCache + " )" + "  (Local|Web|Cache)");
             support.log("Average CPU Time used: " + averageCPUTimeTotal + " ( " + averageCPUTimeLocal + " | " + averageCPUTimeWeb + " | " + averageCPUTimeCache + " )" + "  (Local|Web|Cache)");
