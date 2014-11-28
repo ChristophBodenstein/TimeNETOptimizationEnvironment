@@ -5,7 +5,6 @@
  * Christoph Bodenstein
  * TU-Ilmenau, FG SSE
  */
-
 package timenetexperimentgenerator.helper;
 
 import java.util.ArrayList;
@@ -19,78 +18,78 @@ import timenetexperimentgenerator.support;
  *
  * @author sse
  */
-
 public class parameterTableModel extends AbstractTableModel {
-private NodeList parameterList;
-private String[] columnNames ={"Name","StartValue","EndValue","Stepping"};
-private String[][] parameterArray;
+
+    private final NodeList parameterList;
+    private final String[] columnNames = {"Name", "StartValue", "EndValue", "Stepping"};
+    private final String[][] parameterArray;
 
     /**
      * Constructor
+     *
      * @param p Nodelist from XML-File
      * @param parent Parent Frame to show some information on infoLabel etc.
      */
-    public parameterTableModel(NodeList p, MainFrame parent){
-    this.parameterList=p;
-    this.parameterArray=new String[p.getLength()+5][4];
-    
-        for(int i=0;i<parameterList.getLength();i++){
-        parameterArray[i][0]=parameterList.item(i).getAttributes().getNamedItem("name").getNodeValue();
-/*            if(parameterList.item(i).getAttributes().getNamedItem("dataType").getNodeValue().equals("int")){
-            parameterArray[i][1]=(Integer.getInteger(parameterList.item(i).getAttributes().getNamedItem("defaultValue").getNodeValue())).toString();
-            parameterArray[i][2]=(Integer.getInteger(parameterList.item(i).getAttributes().getNamedItem("defaultValue").getNodeValue())).toString();
-            }else {
+    public parameterTableModel(NodeList p, MainFrame parent) {
+        this.parameterList = p;
+        this.parameterArray = new String[p.getLength() + 5][4];
 
-                    if(parameterList.item(i).getAttributes().getNamedItem("dataType").getNodeValue().equals("real")){
-                    parameterArray[i][1]=(Double.valueOf(parameterList.item(i).getAttributes().getNamedItem("defaultValue").getNodeValue())).toString();
-                    parameterArray[i][2]=(Double.valueOf(parameterList.item(i).getAttributes().getNamedItem("defaultValue").getNodeValue())).toString();
-                    }else{
-                    parameterArray[i][1]=parameterList.item(i).getAttributes().getNamedItem("defaultValue").getNodeValue();
-                    parameterArray[i][2]=parameterList.item(i).getAttributes().getNamedItem("defaultValue").getNodeValue();
-                    }
+        for (int i = 0; i < parameterList.getLength(); i++) {
+            parameterArray[i][0] = parameterList.item(i).getAttributes().getNamedItem("name").getNodeValue();
+            /*            if(parameterList.item(i).getAttributes().getNamedItem("dataType").getNodeValue().equals("int")){
+             parameterArray[i][1]=(Integer.getInteger(parameterList.item(i).getAttributes().getNamedItem("defaultValue").getNodeValue())).toString();
+             parameterArray[i][2]=(Integer.getInteger(parameterList.item(i).getAttributes().getNamedItem("defaultValue").getNodeValue())).toString();
+             }else {
+
+             if(parameterList.item(i).getAttributes().getNamedItem("dataType").getNodeValue().equals("real")){
+             parameterArray[i][1]=(Double.valueOf(parameterList.item(i).getAttributes().getNamedItem("defaultValue").getNodeValue())).toString();
+             parameterArray[i][2]=(Double.valueOf(parameterList.item(i).getAttributes().getNamedItem("defaultValue").getNodeValue())).toString();
+             }else{
+             parameterArray[i][1]=parameterList.item(i).getAttributes().getNamedItem("defaultValue").getNodeValue();
+             parameterArray[i][2]=parameterList.item(i).getAttributes().getNamedItem("defaultValue").getNodeValue();
              }
-*/
-        parameterArray[i][1]=parameterList.item(i).getAttributes().getNamedItem("defaultValue").getNodeValue();
-        parameterArray[i][2]=parameterList.item(i).getAttributes().getNamedItem("defaultValue").getNodeValue();
-        parameterArray[i][3]="1";
+             }
+             */
+            parameterArray[i][1] = parameterList.item(i).getAttributes().getNamedItem("defaultValue").getNodeValue();
+            parameterArray[i][2] = parameterList.item(i).getAttributes().getNamedItem("defaultValue").getNodeValue();
+            parameterArray[i][3] = "1";
         }
-        int i= parameterList.getLength();
-        parameterArray[i][0]="ConfidenceIntervall";
-        parameterArray[i][1]=support.getString(parent.pConfidenceIntervall.getStartValue());
-        parameterArray[i][2]=support.getString(parent.pConfidenceIntervall.getEndValue());
-        parameterArray[i][3]=support.getString(parent.pConfidenceIntervall.getStepping());
-        i= parameterList.getLength()+1;
-        parameterArray[i][0]="Seed";
-        parameterArray[i][1]=support.getString(parent.pSeed.getStartValue());
-        parameterArray[i][2]=support.getString(parent.pSeed.getEndValue());
-        parameterArray[i][3]=support.getString(parent.pSeed.getStepping());
+        int i = parameterList.getLength();
+        parameterArray[i][0] = "ConfidenceIntervall";
+        parameterArray[i][1] = support.getString(parent.pConfidenceIntervall.getStartValue());
+        parameterArray[i][2] = support.getString(parent.pConfidenceIntervall.getEndValue());
+        parameterArray[i][3] = support.getString(parent.pConfidenceIntervall.getStepping());
+        i = parameterList.getLength() + 1;
+        parameterArray[i][0] = "Seed";
+        parameterArray[i][1] = support.getString(parent.pSeed.getStartValue());
+        parameterArray[i][2] = support.getString(parent.pSeed.getEndValue());
+        parameterArray[i][3] = support.getString(parent.pSeed.getStepping());
         i++;
-        parameterArray[i][0]="EndTime";
-        parameterArray[i][1]=support.getString(parent.pEndTime.getStartValue());
-        parameterArray[i][2]=support.getString(parent.pEndTime.getEndValue());
-        parameterArray[i][3]=support.getString(parent.pEndTime.getStepping());
+        parameterArray[i][0] = "EndTime";
+        parameterArray[i][1] = support.getString(parent.pEndTime.getStartValue());
+        parameterArray[i][2] = support.getString(parent.pEndTime.getEndValue());
+        parameterArray[i][3] = support.getString(parent.pEndTime.getStepping());
         i++;
-        parameterArray[i][0]="MaxTime";
-        parameterArray[i][1]=support.getString(parent.pMaxTime.getStartValue());
-        parameterArray[i][2]=support.getString(parent.pMaxTime.getEndValue());
-        parameterArray[i][3]=support.getString(parent.pMaxTime.getStepping());
+        parameterArray[i][0] = "MaxTime";
+        parameterArray[i][1] = support.getString(parent.pMaxTime.getStartValue());
+        parameterArray[i][2] = support.getString(parent.pMaxTime.getEndValue());
+        parameterArray[i][3] = support.getString(parent.pMaxTime.getStepping());
         i++;
-        parameterArray[i][0]="MaxRelError";
-        parameterArray[i][1]=support.getString(parent.pMaxError.getStartValue());
-        parameterArray[i][2]=support.getString(parent.pMaxError.getEndValue());
-        parameterArray[i][3]=support.getString(parent.pMaxError.getStepping());
+        parameterArray[i][0] = "MaxRelError";
+        parameterArray[i][1] = support.getString(parent.pMaxError.getStartValue());
+        parameterArray[i][2] = support.getString(parent.pMaxError.getEndValue());
+        parameterArray[i][3] = support.getString(parent.pMaxError.getStepping());
     }
 
     /**
      * Returns raw String values from Table cells as Array
-     * 
+     *
      * @return 2-Dimensional Array of Strings with table contents
      */
-    public String[][] getParameterArray(){
-    return this.parameterArray;    
+    public String[][] getParameterArray() {
+        return this.parameterArray;
     }
 
-    
     public int getColumnCount() {
         return 4;
     }
@@ -107,7 +106,7 @@ private String[][] parameterArray;
     public Object getValueAt(int row, int col) {
         return parameterArray[row][col];
     }
-    
+
     public double getDoubleValueAt(int row, int col) {
         return support.round(support.getDouble(parameterArray[row][col]));
     }
@@ -123,9 +122,9 @@ private String[][] parameterArray;
      */
     @Override
     public boolean isCellEditable(int row, int col) {
-    //Note that the data/cell address is constant,
-    //no matter where the cell appears onscreen.
-    return col >= 1;
+        //Note that the data/cell address is constant,
+        //no matter where the cell appears onscreen.
+        return col >= 1;
     }
 
     /*
@@ -138,129 +137,139 @@ private String[][] parameterArray;
         fireTableCellUpdated(row, col);
     }
 
-
     /**
-     * Gets the Value for StartValue, EndValue or Stepping for one parameter as String
-     * The fieldname (StartValue, EndValue or Stepping) must be given as String for col
+     * Gets the Value for StartValue, EndValue or Stepping for one parameter as
+     * String The fieldname (StartValue, EndValue or Stepping) must be given as
+     * String for col
+     *
      * @param name name of the parameter
      * @param col column of the parameter (StartValue, EndValue, Stepping)
      * @return The Value of one table cell
      */
-    public String getValueByName(String name, String col){
-    String returnValue=null;
-    int count=-1;
-    //Search the row for this parameter
-    for(int i=0;i<this.parameterList.getLength()+5;i++){
-        if(parameterArray[i][0].equals(name)){
-        count=i;
+    public String getValueByName(String name, String col) {
+        String returnValue = null;
+        int count = -1;
+        //Search the row for this parameter
+        for (int i = 0; i < this.parameterList.getLength() + 5; i++) {
+            if (parameterArray[i][0].equals(name)) {
+                count = i;
+            }
         }
-    }
-    if(count==-1){return null;}else{
+        if (count == -1) {
+            return null;
+        } else {
 
-        if(col.equals("StartValue")){
-        return(parameterArray[count][1]);
-        }
-        if(col.equals("EndValue")){
-        return(parameterArray[count][2]);
-        }
-        if(col.equals("Stepping")){
-        return(parameterArray[count][3]);
+            if (col.equals("StartValue")) {
+                return (parameterArray[count][1]);
+            }
+            if (col.equals("EndValue")) {
+                return (parameterArray[count][2]);
+            }
+            if (col.equals("Stepping")) {
+                return (parameterArray[count][3]);
+            }
+
         }
 
-    }
-
-    return returnValue;
+        return returnValue;
     }
 
     /**
-     * Gets the Value for StartValue, EndValue or Stepping for one parameter as double
-     * The fieldname (StartValue, EndValue or Stepping) must be given as String for col
+     * Gets the Value for StartValue, EndValue or Stepping for one parameter as
+     * double The fieldname (StartValue, EndValue or Stepping) must be given as
+     * String for col
+     *
      * @param name name of the parameter
      * @param col column of the parameter (StartValue, EndValue, Stepping)
      * @return Double value of table cell
      */
-    public double getDoubleValueByName(String name, String col){
+    public double getDoubleValueByName(String name, String col) {
 
-       return support.getDouble(this.getValueByName(name, col));
+        return support.getDouble(this.getValueByName(name, col));
 
     }
 
-
     /**
-     * Set the value for StartValue, EndValue or Stepping
-     * The fieldname (StartValue, EndValue or Stepping) must be given as String
-     * Value must also be given as String
+     * Set the value for StartValue, EndValue or Stepping The fieldname
+     * (StartValue, EndValue or Stepping) must be given as String Value must
+     * also be given as String
+     *
      * @param name name of the parameter
      * @param col column of the parameter (StartValue, EndValue, Stepping)
      * @param value the value to be set
      * @return true if successfull, else false
      */
-    public boolean setValueByName(String name, String col, String value){
-    boolean returnValue=false;
-    int count=-1;
-    //Search the row for this parameter
-    for(int i=0;i<this.parameterList.getLength()+5;i++){
-        if(parameterArray[i][0].equals(name)){
-        count=i;
-        }
-    }
-
-    if(count==-1){returnValue=false;}else{
-        if(col.equals("StartValue")){
-        parameterArray[count][1]=value;
-        returnValue=true;
-        }
-        if(col.equals("EndValue")){
-        parameterArray[count][2]=value;
-        returnValue=true;
-        }
-        if(col.equals("Stepping")){
-        parameterArray[count][3]=value;
-        returnValue=true;
-        }
-    }
-
-    return returnValue;
-    }
-
-
-    /**
-     * Set the value for StartValue, EndValue or Stepping as double
-     * The fieldname (StartValue, EndValue or Stepping) must be given as String
-     * Value must also be given as Double
-     * @param name name of the parameter
-     * @param col column of the parameter (StartValue, EndValue, Stepping)
-     * @param value the value to be set
-     * @return true if successfull, else false
-     */
-    public boolean setValueByName(String name, String col, double value){
-    
-        return this.setValueByName(name, col, Double.toString(value));
-        
-    }
-
-    /**
-     * Returns ArrayList of Parameters as shown in table, used as base parameterset
-     * @return ArrayList of Parameters, Base Parameterset for Optimization and Batch-Simulation
-     */
-    public ArrayList<parameter> getListOfParameter(){
-    //Build initial ArrayList of parameters
-    ArrayList <parameter>ListOfParameterAsFromTable=new ArrayList();//will be reduced recursively
-        for (int i=0; i<this.getRowCount();i++){
-        parameter tmpParameter=new parameter();
-        tmpParameter.setName(this.getValueAt(i, 0).toString());
-        tmpParameter.setValue(this.getDoubleValueAt(i, 1));
-        tmpParameter.setStartValue(this.getDoubleValueAt(i, 1));//=StartValue
-        tmpParameter.setEndValue(this.getDoubleValueAt(i, 2));
-            //If StartValue>EndValue --> exchange them
-            if(tmpParameter.getStartValue()>tmpParameter.getEndValue()){
-            double tmpValue=tmpParameter.getStartValue();
-            tmpParameter.setStartValue(tmpParameter.getEndValue());
-            tmpParameter.setEndValue(tmpValue);
+    public boolean setValueByName(String name, String col, String value) {
+        boolean returnValue = false;
+        int count = -1;
+        //Search the row for this parameter
+        for (int i = 0; i < this.parameterList.getLength() + 5; i++) {
+            if (parameterArray[i][0].equals(name)) {
+                count = i;
             }
-        tmpParameter.setStepping(this.getDoubleValueAt(i, 3));
-        ListOfParameterAsFromTable.add(tmpParameter);
         }
-    return ListOfParameterAsFromTable;
+
+        if (count == -1) {
+            returnValue = false;
+        } else {
+            if (col.equals("StartValue")) {
+                parameterArray[count][1] = value;
+                returnValue = true;
+            }
+            if (col.equals("EndValue")) {
+                parameterArray[count][2] = value;
+                returnValue = true;
+            }
+            if (col.equals("Stepping")) {
+                parameterArray[count][3] = value;
+                returnValue = true;
+            }
+        }
+
+        return returnValue;
+    }
+
+    /**
+     * Set the value for StartValue, EndValue or Stepping as double The
+     * fieldname (StartValue, EndValue or Stepping) must be given as String
+     * Value must also be given as Double
+     *
+     * @param name name of the parameter
+     * @param col column of the parameter (StartValue, EndValue, Stepping)
+     * @param value the value to be set
+     * @return true if successfull, else false
+     */
+    public boolean setValueByName(String name, String col, double value) {
+
+        return this.setValueByName(name, col, Double.toString(value));
+
+    }
+
+    /**
+     * Returns ArrayList of Parameters as shown in table, used as base
+     * parameterset
+     *
+     * @return ArrayList of Parameters, Base Parameterset for Optimization and
+     * Batch-Simulation
+     */
+    public ArrayList<parameter> getListOfParameter() {
+        //Build initial ArrayList of parameters
+        ArrayList<parameter> ListOfParameterAsFromTable = new ArrayList();//will be reduced recursively
+        for (int i = 0; i < this.getRowCount(); i++) {
+            parameter tmpParameter = new parameter();
+            tmpParameter.setName(this.getValueAt(i, 0).toString());
+            tmpParameter.setValue(this.getDoubleValueAt(i, 1));
+            tmpParameter.setStartValue(this.getDoubleValueAt(i, 1));//=StartValue
+            tmpParameter.setEndValue(this.getDoubleValueAt(i, 2));
+            //If StartValue>EndValue --> exchange them
+            if (tmpParameter.getStartValue() > tmpParameter.getEndValue()) {
+                double tmpValue = tmpParameter.getStartValue();
+                tmpParameter.setStartValue(tmpParameter.getEndValue());
+                tmpParameter.setEndValue(tmpValue);
+            }
+            tmpParameter.setStepping(this.getDoubleValueAt(i, 3));
+            ListOfParameterAsFromTable.add(tmpParameter);
+        }
+        return ListOfParameterAsFromTable;
     }
 }
