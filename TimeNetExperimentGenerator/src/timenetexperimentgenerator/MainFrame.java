@@ -260,9 +260,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         }
         if (support.isDistributedSimulationAvailable()) {
             model.addSelectionInterval(3, 3);
-            if (support.isCachedSimulationAvailable()) {
-                model.addSelectionInterval(4, 4);
-            }
+            model.addSelectionInterval(4, 4);
         }
 
         this.jComboBoxSimulationType.setRenderer(new EnabledJComboBoxRenderer(model));

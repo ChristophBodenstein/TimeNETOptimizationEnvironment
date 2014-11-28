@@ -195,6 +195,7 @@ public class StatisticAggregator {
             }
         }
         numberOfAllOptimizationRuns = optiSimulationList.size();
+        support.log("Number of optimizations: " + numberOfAllOptimizationRuns);
         if (numberOfAllOptimizationRuns >= 1) {
             averageDistanceToOptimumAbsolute = averageDistanceToOptimumAbsolute / numberOfAllOptimizationRuns;
             averageDistanceToOptimumInValueRange = averageDistanceToOptimumInValueRange / numberOfAllOptimizationRuns;

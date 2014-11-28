@@ -1539,8 +1539,8 @@ public class support {
                 //support.log("Entering again waitForOptimizerTimer.");
                 if (myOptimizer.getOptimum() != null) {
 
-                //MeasureType myOptiMeasure=support.getOptimizationMeasure();
-                    //StatisticAggregator.getStatisticByName(myOptimizer.getLogFileName()).addFoundOptimum(myOptimizer.getOptimum(), SimOptiFactory.getSimulator().getCalculatedOptimum(myOptiMeasure));
+                    MeasureType myOptiMeasure=support.getOptimizationMeasure();
+                    StatisticAggregator.getStatisticByName(myOptimizer.getLogFileName()).addFoundOptimum(myOptimizer.getOptimum(), SimOptiFactory.getSimulator().getCalculatedOptimum(myOptiMeasure));
                     listener.operationSucessfull("The end.", typeOfProcessFeedback.OptimizationSuccessful);
                     this.cancel();
                 }
