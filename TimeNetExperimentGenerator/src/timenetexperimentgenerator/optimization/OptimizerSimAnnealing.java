@@ -38,7 +38,7 @@ public class OptimizerSimAnnealing extends OptimizerHill implements Runnable, Op
         c = c * Math.exp(-Math.log(support.getOptimizerPreferences().getPref_TAnnealScale()) / this.D);
         actualTempCost = support.getOptimizerPreferences().getPref_MaxTempCost();
         actualTempParameter = support.getOptimizerPreferences().getPref_MaxTempParameter();
-        nameOfdummyLogfile = new String(this.logFileName);
+        nameOfdummyLogfile = this.logFileName;
         nameOfdummyLogfile = support.removeExtention(nameOfdummyLogfile) + "_SA_Temperatures.csv";
         support.addLinesToLogFileFromListOfParser(null, nameOfdummyLogfile);
         this.optimized = false;
@@ -133,12 +133,12 @@ public class OptimizerSimAnnealing extends OptimizerHill implements Runnable, Op
         for (int i = 0; i < listOfChangableParameters.size(); i++) {
 
             parameter p = listOfChangableParameters.get(i);
-            double sign = 1;
+            double sign;
             double distanceMax = p.getEndValue() - p.getStartValue();
-            double r = 0;
+            double r;
 
             double nextValue = p.getEndValue() + 1;
-            double simpleValue = p.getEndValue() + 1;
+            double simpleValue;
 
             while ((nextValue < p.getStartValue() || nextValue > p.getEndValue()) && (!support.isCancelEverything())) {
                 //while(r<1){
