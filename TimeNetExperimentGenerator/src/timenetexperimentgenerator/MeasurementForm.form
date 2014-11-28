@@ -22,7 +22,7 @@
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="jComboBoxOptimizationTarget" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jTextFieldCustomTargetValue" pref="92" max="32767" attributes="0"/>
+                      <Component id="jTextFieldCustomTargetValue" pref="170" max="32767" attributes="0"/>
                   </Group>
                   <Component id="jComboBoxMeasurementName" alignment="0" pref="204" max="32767" attributes="1"/>
               </Group>
@@ -64,12 +64,8 @@
     </Component>
     <Component class="javax.swing.JComboBox" name="jComboBoxOptimizationTarget">
       <Properties>
-        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="3">
-            <StringItem index="0" value="Min"/>
-            <StringItem index="1" value="Max"/>
-            <StringItem index="2" value="Custom"/>
-          </StringArray>
+        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="new DefaultComboBoxModel(typeOfTarget.values())" type="code"/>
         </Property>
         <Property name="toolTipText" type="java.lang.String" value="Chose Optimization Target Value"/>
       </Properties>
