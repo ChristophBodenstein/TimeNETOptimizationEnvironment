@@ -3,7 +3,6 @@
  */
 package timenetexperimentgenerator.helper;
 
-
 import java.awt.Color;
 import java.awt.Component;
 import javax.swing.JList;
@@ -12,112 +11,102 @@ import javax.swing.UIManager;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
 
 /**
-
- * Class that can be used as a renderer for a JComboBox which enables/disables
-
- * items based upon a ListSelectionModel that specifies which items are enabled. 
-
- * @author Greg Cope
-
  *
-
+ * Class that can be used as a renderer for a JComboBox which enables/disables
+ *
+ * items based upon a ListSelectionModel that specifies which items are enabled.
+ *
+ *
+ * @author Greg Cope, modified by Christoph Bodenstein
+ *
+ *
+ *
  */
-public class EnabledJComboBoxRenderer extends BasicComboBoxRenderer{
+public class EnabledJComboBoxRenderer extends BasicComboBoxRenderer {
 
-	
+    static final long serialVersionUID = -984932432414L;
 
-	static final long serialVersionUID = -984932432414L;
+    private final ListSelectionModel enabledItems;
 
-	
+    private Color disabledColor = Color.lightGray;
 
-	private final ListSelectionModel enabledItems;
+    /**
+     *
+     * Constructs a new renderer for a JComboBox which enables/disables items
+     *
+     * based upon the parameter model.
+     *
+     * @param enabled
+     *
+     */
+    public EnabledJComboBoxRenderer(ListSelectionModel enabled) {
 
-	
+        super();
 
-	private Color disabledColor = Color.lightGray;
+        this.enabledItems = enabled;
 
-	
+    }
 
-	/**
+    /**
+     *
+     * Sets the color to render disabled items.
+     *
+     *
+     * @param disabledColor
+     *
+     */
+    public void setDisabledColor(Color disabledColor) {
 
-	 * Constructs a new renderer for a JComboBox which enables/disables items
+        this.disabledColor = disabledColor;
 
-	 * based upon the parameter model.
+    }
 
-	 * @param enabled
+    /**
+     *
+     * Custom implementation to color items as enabled or disabled.
+     *
+     *
+     * @param list
+     * @param value
+     * @param index
+     * @param cellHasFocus
+     * @param isSelected
+     * @return
+     */
+    @Override
 
-	 */
-
-	public EnabledJComboBoxRenderer(ListSelectionModel enabled){
-
-		super();
-
-		this.enabledItems = enabled;
-
-	}
-
-	
-
-	/**
-
-	 * Sets the color to render disabled items. 
-
-	 * @param disabledColor
-
-	 */
-
-	public void setDisabledColor(Color disabledColor){
-
-		this.disabledColor = disabledColor;
-
-	}
-
-	
-
-	/**
-
-	 * Custom implementation to color items as enabled or disabled. 
-
-	 */
-
-	@Override
-
-	public Component getListCellRendererComponent(JList list,
-
+    public Component getListCellRendererComponent(JList list,
             Object value,
-
             int index,
-
             boolean isSelected,
-
             boolean cellHasFocus) {
 
-		Component c = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+        Component c = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 
-		if ( !enabledItems.isSelectedIndex(index) ){//not enabled
+        if (!enabledItems.isSelectedIndex(index)) {//not enabled
 
-			if ( isSelected ){
+            if (isSelected) {
 
-				c.setBackground(UIManager.getColor("ComboBox.background"));
+                c.setBackground(UIManager.getColor("ComboBox.background"));
 
-			}else{
+            } else {
 
-				c.setBackground(super.getBackground());
+                c.setBackground(super.getBackground());
 
-			}
+            }
 
-			c.setForeground(disabledColor);
+            c.setForeground(disabledColor);
 
-		}else{
+        } else {
 
-			c.setBackground(super.getBackground());
+            c.setBackground(super.getBackground());
 
-			c.setForeground(super.getForeground());
+            c.setForeground(super.getForeground());
 
-		}
+        }
 
-		return c;
+        return c;
 
-	}
+    }
 
 }
