@@ -41,32 +41,27 @@ import timenetexperimentgenerator.typedef.*;
  *
  * @author Christoph Bodenstein
  */
-public class MainFrame extends javax.swing.JFrame implements TableModelListener, SimOptiCallback {
+public final class MainFrame extends javax.swing.JFrame implements TableModelListener, SimOptiCallback {
 
     Properties auto = new Properties();
     private String fileName = "";
-//public boolean cancelOperation=false;
     ArrayList< ArrayList<parameter>> ListOfParameterSetsToBeWritten = new ArrayList< ArrayList<parameter>>();//Name, Value
     generator myGenerator;
-    public parameter pConfidenceIntervall = new parameter();
-    public parameter pSeed = new parameter();
-    public parameter pEndTime = new parameter();
-    public parameter pMaxTime = new parameter();
-    public parameter pMaxError = new parameter();
-    private int colorClm = -1, colorRow = -1;
+    private parameter pConfidenceIntervall = new parameter();
+    private parameter pSeed = new parameter();
+    private parameter pEndTime = new parameter();
+    private parameter pMaxTime = new parameter();
+    private parameter pMaxError = new parameter();
     ArrayList<Long> ListOfParameterSetIds = new ArrayList<Long>();
     private int sizeOfDesignSpace;
     private String pathToTimeNet = "";
     private SimulationCache mySimulationCache = null;
     private String pathToLastSimulationCache = "";
     private SimulationTypeComboBoxModel mySimulationTypeModel = new SimulationTypeComboBoxModel(typeOfSimulator.values());
-    private DefaultComboBoxModel myOptiTypeModel = new DefaultComboBoxModel();
     SimulatorWebSlave mySlave = new SimulatorWebSlave();
 
     private RPlugin rplugin;
     private String pathToR = "";
-
-    private AboutPanel aboutFrame = new AboutPanel();
     private JDialog aboutDialog;
 
     private boolean savePropertiesEnabled = false;
@@ -79,6 +74,7 @@ public class MainFrame extends javax.swing.JFrame implements TableModelListener,
 
     /**
      * Creates new form MainFrame
+     * @throws java.io.IOException
      */
     public MainFrame() throws IOException {
 
@@ -86,7 +82,7 @@ public class MainFrame extends javax.swing.JFrame implements TableModelListener,
 
         initComponents();
 
-        aboutDialog = new JDialog(this.getWindows()[0], ModalityType.DOCUMENT_MODAL);
+        aboutDialog = new JDialog(MainFrame.getWindows()[0], ModalityType.DOCUMENT_MODAL);
         aboutDialog.setContentPane(new AboutPanel());
         aboutDialog.pack();
         aboutDialog.setVisible(false);
@@ -191,24 +187,12 @@ public class MainFrame extends javax.swing.JFrame implements TableModelListener,
         });
 
         support.setStatusLabel(jLabelExportStatus);
-        support.setMainFrame(this);
         support.setMeasureFormPane(jTabbedPaneOptiTargets);
         support.setPathToTimeNet(pathToTimeNet);
         support.setPathToR(pathToR);
 
         this.checkIfCachedSimulationIsPossible();
 
-        /*for (String SIMTYPES : support.SIMTYPES) {
-         mySimulationTypeModel.addElement(SIMTYPES);
-         }
-         */
-
-        /*for (String OPTITYPES : support.OPTITYPES){
-         myOptiTypeModel.addElement(OPTITYPES);
-         }
-         this.jComboBoxOptimizationType.setModel(myOptiTypeModel);
-         */
-       // this.jComboBoxOptimizationType.setModel(new Combo);
         this.updateComboBoxSimulationType();
 
         if (support.isIsRunningAsSlave()) {
@@ -953,7 +937,6 @@ public class MainFrame extends javax.swing.JFrame implements TableModelListener,
                 } else {
                     support.log("No Tmp-Path given, Optimization not possible.");
                     this.popUIState();
-                    return;
                 }
 
             } else {
@@ -1326,9 +1309,9 @@ public class MainFrame extends javax.swing.JFrame implements TableModelListener,
             ListOfParameterAsFromTable.remove(loopParameter);
 
             String loopName = loopParameter.getName();
-            boolean canIterate = true;
+            boolean canIterate;
 
-            double start = 1, end = 1, step = 1;
+            double start, end, step;
             try {
                 start = support.getDouble(loopParameter.getStartValue());
                 end = support.getDouble(loopParameter.getEndValue());
@@ -1351,22 +1334,21 @@ public class MainFrame extends javax.swing.JFrame implements TableModelListener,
                     usedValue = support.round(usedValue);
                     ArrayList<parameter> nextParameterSet = new ArrayList<parameter>();
                     //Get copy of parameterset
-                    for (int c = 0; c < lastParameterSet.size(); c++) {
+                    for (parameter lastParameterSet1 : lastParameterSet) {
                         try {
-                            nextParameterSet.add((parameter) lastParameterSet.get(c).clone());
-                        } catch (CloneNotSupportedException e) {
+                            nextParameterSet.add((parameter) lastParameterSet1.clone());
+                        }catch (CloneNotSupportedException e) {
                             support.log("Clone is not Supported:" + e.toString());
                         }
-
                     }
 
-                    for (int c = 0; c < nextParameterSet.size(); c++) {
-                        if (nextParameterSet.get(c).getName().equals(loopName)) {
+                    for (parameter nextParameterSet1 : nextParameterSet) {
+                        if (nextParameterSet1.getName().equals(loopName)) {
                             //set modified parameterset
-                            nextParameterSet.get(c).setValue(usedValue);
+                            nextParameterSet1.setValue(usedValue);
                         }
                     }
-                    if (ListOfParameterAsFromTable.size() == 0) {
+                    if (ListOfParameterAsFromTable.isEmpty()) {
                         addToListOfParameterSetsToBeWritten(nextParameterSet);
                     }
                     //call this method again with reduced parameterset
@@ -1494,7 +1476,7 @@ public class MainFrame extends javax.swing.JFrame implements TableModelListener,
      */
     public ArrayList<parameter[]> removeDuplicates(ArrayList<parameter[]> ListOfParameterSetsToBeWritten, JLabel infoLabel) {
         ArrayList<parameter[]> tmpList = new ArrayList();
-        boolean existsInOutPutList = false;
+        boolean existsInOutPutList;
         for (int i = 0; i < ListOfParameterSetsToBeWritten.size(); i++) {
             infoLabel.setText("Checking " + i + "/" + ListOfParameterSetsToBeWritten.size());
             if (support.isCancelEverything()) {
@@ -1505,15 +1487,14 @@ public class MainFrame extends javax.swing.JFrame implements TableModelListener,
             parameter[] tmpParameterSet = (parameter[]) ListOfParameterSetsToBeWritten.get(i);
             existsInOutPutList = false;
             if (tmpList.size() > 0) {
-                for (int c = 0; c < tmpList.size(); c++) {
-                    parameter[] tmpListParameter = (parameter[]) tmpList.get(c);
+                for (parameter[] tmpList1 : tmpList) {
+                    parameter[] tmpListParameter = (parameter[]) tmpList1;
                     long tmpParameterSetID = getIDOfParameterSet(tmpParameterSet);
                     long tmpListParameterID = getIDOfParameterSet(tmpListParameter);
                     /*
-                     support.log("P1: "+tmpParemeterSetID);
-                     support.log("P2: "+tmpListParameterID);
-                     * */
-
+                    support.log("P1: "+tmpParemeterSetID);
+                    support.log("P2: "+tmpListParameterID);
+                    * */
                     if (tmpListParameterID == tmpParameterSetID) {
                         existsInOutPutList = true;
                         support.log("These Parameters are equal:");
@@ -1546,10 +1527,10 @@ public class MainFrame extends javax.swing.JFrame implements TableModelListener,
         long id = 0;
         String tmpString = "";
         //Arrays.sort(parameterset);
-        for (int i = 0; i < parameterset.length; i++) {
-            id = id + parameterset[i].getID();
+        for (parameter parameterset1 : parameterset) {
+            id = id + parameterset1.getID();
             //support.log("ID of:"+ parameterset[i].getName()+" is " +parameterset[i].getID());
-            tmpString = tmpString + String.valueOf(parameterset[i].getID());
+            tmpString = tmpString + String.valueOf(parameterset1.getID());
         }
         //return id;
         return (long) tmpString.hashCode();
@@ -1590,8 +1571,7 @@ public class MainFrame extends javax.swing.JFrame implements TableModelListener,
         }
         ArrayList<parameter> myParameterList = ((parameterTableModel) this.jTableParameterList.getModel()).getListOfParameter();
         ArrayList<parameter> resultParameterList = new ArrayList<parameter>();
-        for (int i = 0; i < myParameterList.size(); i++) {
-            parameter p = myParameterList.get(i);
+        for (parameter p : myParameterList) {
             if (!p.isExternalParameter() && !p.isIteratable()) {
                 resultParameterList.add(p);
             }
@@ -1605,25 +1585,25 @@ public class MainFrame extends javax.swing.JFrame implements TableModelListener,
      */
     private void readStaticParametersFromTable() {
 
-        this.pConfidenceIntervall.setStartValue(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("ConfidenceIntervall", "StartValue"));
-        this.pConfidenceIntervall.setEndValue(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("ConfidenceIntervall", "EndValue"));
-        this.pConfidenceIntervall.setStepping(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("ConfidenceIntervall", "Stepping"));
+        this.getpConfidenceIntervall().setStartValue(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("ConfidenceIntervall", "StartValue"));
+        this.getpConfidenceIntervall().setEndValue(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("ConfidenceIntervall", "EndValue"));
+        this.getpConfidenceIntervall().setStepping(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("ConfidenceIntervall", "Stepping"));
 
-        this.pEndTime.setStartValue(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("EndTime", "StartValue"));
-        this.pEndTime.setEndValue(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("EndTime", "EndValue"));
-        this.pEndTime.setStepping(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("EndTime", "Stepping"));
+        this.getpEndTime().setStartValue(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("EndTime", "StartValue"));
+        this.getpEndTime().setEndValue(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("EndTime", "EndValue"));
+        this.getpEndTime().setStepping(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("EndTime", "Stepping"));
 
-        this.pMaxTime.setStartValue(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("MaxTime", "StartValue"));
-        this.pMaxTime.setEndValue(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("MaxTime", "EndValue"));
-        this.pMaxTime.setStepping(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("MaxTime", "Stepping"));
+        this.getpMaxTime().setStartValue(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("MaxTime", "StartValue"));
+        this.getpMaxTime().setEndValue(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("MaxTime", "EndValue"));
+        this.getpMaxTime().setStepping(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("MaxTime", "Stepping"));
 
-        this.pSeed.setStartValue(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("Seed", "StartValue"));
-        this.pSeed.setEndValue(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("Seed", "EndValue"));
-        this.pSeed.setStepping(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("Seed", "Stepping"));
+        this.getpSeed().setStartValue(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("Seed", "StartValue"));
+        this.getpSeed().setEndValue(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("Seed", "EndValue"));
+        this.getpSeed().setStepping(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("Seed", "Stepping"));
 
-        this.pMaxError.setStartValue(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("MaxRelError", "StartValue"));
-        this.pMaxError.setEndValue(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("MaxRelError", "EndValue"));
-        this.pMaxError.setStepping(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("MaxRelError", "Stepping"));
+        this.getpMaxError().setStartValue(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("MaxRelError", "StartValue"));
+        this.getpMaxError().setEndValue(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("MaxRelError", "EndValue"));
+        this.getpMaxError().setStepping(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("MaxRelError", "Stepping"));
 
     }
 
@@ -1725,7 +1705,7 @@ public class MainFrame extends javax.swing.JFrame implements TableModelListener,
      */
     private void checkIfRPathIsCorrect() {
         String path = this.getPathToR();
-        String rApplicationName = "";
+        String rApplicationName;
 
         String OS = System.getProperty("os.name").toLowerCase();
         if ((OS.contains("win"))) {
@@ -1771,28 +1751,28 @@ public class MainFrame extends javax.swing.JFrame implements TableModelListener,
             //support.log("timenetpath = " + this.getPathToTimeNet());
 
             auto.setProperty("timenetpath", this.getPathToTimeNet());
-            auto.setProperty("file", this.jTextFieldSCPNFile.getText().toString());
+            auto.setProperty("file", this.jTextFieldSCPNFile.getText());
 
             auto.setProperty("rpath", this.getPathToR());
 
-            auto.setProperty("ConfidenceIntervallStart", support.getString(this.pConfidenceIntervall.getStartValue()));
-            auto.setProperty("ConfidenceIntervallEnd", support.getString(this.pConfidenceIntervall.getEndValue()));
-            auto.setProperty("ConfidenceIntervallStepping", support.getString(this.pConfidenceIntervall.getStepping()));
+            auto.setProperty("ConfidenceIntervallStart", support.getString(this.getpConfidenceIntervall().getStartValue()));
+            auto.setProperty("ConfidenceIntervallEnd", support.getString(this.getpConfidenceIntervall().getEndValue()));
+            auto.setProperty("ConfidenceIntervallStepping", support.getString(this.getpConfidenceIntervall().getStepping()));
 
-            auto.setProperty("EndTimeStart", support.getString(this.pEndTime.getStartValue()));
-            auto.setProperty("EndTimeEnd", support.getString(this.pEndTime.getEndValue()));
-            auto.setProperty("EndTimeStepping", support.getString(this.pEndTime.getStepping()));
+            auto.setProperty("EndTimeStart", support.getString(this.getpEndTime().getStartValue()));
+            auto.setProperty("EndTimeEnd", support.getString(this.getpEndTime().getEndValue()));
+            auto.setProperty("EndTimeStepping", support.getString(this.getpEndTime().getStepping()));
 
-            auto.setProperty("MaxTimeStart", support.getString(this.pMaxTime.getStartValue()));
-            auto.setProperty("MaxTimeEnd", support.getString(this.pMaxTime.getEndValue()));
-            auto.setProperty("MaxTimeStepping", support.getString(this.pMaxTime.getStepping()));
-            auto.setProperty("SeedStart", support.getString(this.pSeed.getStartValue()));
-            auto.setProperty("SeedEnd", support.getString(this.pSeed.getEndValue()));
-            auto.setProperty("SeedStepping", support.getString(this.pSeed.getStepping()));
+            auto.setProperty("MaxTimeStart", support.getString(this.getpMaxTime().getStartValue()));
+            auto.setProperty("MaxTimeEnd", support.getString(this.getpMaxTime().getEndValue()));
+            auto.setProperty("MaxTimeStepping", support.getString(this.getpMaxTime().getStepping()));
+            auto.setProperty("SeedStart", support.getString(this.getpSeed().getStartValue()));
+            auto.setProperty("SeedEnd", support.getString(this.getpSeed().getEndValue()));
+            auto.setProperty("SeedStepping", support.getString(this.getpSeed().getStepping()));
 
-            auto.setProperty("MaxErrorStart", support.getString(this.pMaxError.getStartValue()));
-            auto.setProperty("MaxErrorEnd", support.getString(this.pMaxError.getEndValue()));
-            auto.setProperty("MaxErrorStepping", support.getString(this.pMaxError.getStepping()));
+            auto.setProperty("MaxErrorStart", support.getString(this.getpMaxError().getStartValue()));
+            auto.setProperty("MaxErrorEnd", support.getString(this.getpMaxError().getEndValue()));
+            auto.setProperty("MaxErrorStepping", support.getString(this.getpMaxError().getStepping()));
 
             auto.setProperty("pathToLastSimulationCache", this.pathToLastSimulationCache);
 
@@ -1818,43 +1798,7 @@ public class MainFrame extends javax.swing.JFrame implements TableModelListener,
 
     }
 
-    /**
-     * Returns a String, if String is != null, else defaultvalue. If
-     * defaultvalue is null, then returns "0"
-     *
-     * @param loadedValue String to be checked and returned
-     * @param defaultValue Defaultvalue to be returned if String is null
-     * @returns loadedValue if != null, else defaultValue or "0"
-     */
-    private String checkIfStringIsNull(String loadedValue, String defaultValue) {
-        if (loadedValue != null) {
-            return loadedValue;
-        } else {
-            if (defaultValue != null) {
-                return defaultValue;
-            } else {
-                return "0";
-            }
-        }
 
-    }
-
-    /**
-     * Return double value of loaded property If any error occurs, the given
-     * default value is returned
-     *
-     * @param name Name of the property to be loaded
-     * @param defaultValue The default to be returned, if error occurs
-     * @return double value of property
-     */
-    /*private double loadDouble(String name, double defaultValue){
-     try{
-     return Double.valueOf(auto.getProperty(name));
-     }catch(Exception e){
-     support.log("Error loading property: "+name);
-     return defaultValue;
-     }
-     }*/
     /**
      * Prints 2 parametersets and it`s values to see the difference Just used
      * for debug reasons
@@ -1973,6 +1917,7 @@ public class MainFrame extends javax.swing.JFrame implements TableModelListener,
     /**
      * Enables or disables the Combobox for chosing benchmark functions
      *
+     * @param b true to enable benchmark combobox
      */
     public void setBenchmarkFunctionComboboxEnabled(boolean b) {
         this.jComboBoxBenchmarkFunction.setEnabled(b);
@@ -1980,6 +1925,7 @@ public class MainFrame extends javax.swing.JFrame implements TableModelListener,
 
     /**
      * Sets the progressbar for Memory-Usage to a value between 0..100
+     * @param s value of progressbar (0..100)
      */
     public void setMemoryProgressbar(int s) {
 
@@ -2045,7 +1991,7 @@ public class MainFrame extends javax.swing.JFrame implements TableModelListener,
          */
         this.listOfUIStates = new ArrayList<Boolean>();
         //Activate all
-        for (int i = 0; i < listOfUIComponents.size(); i++) {
+        for (Component listOfUIComponent : listOfUIComponents) {
             listOfUIStates.add(true);
         }
 
@@ -2086,7 +2032,7 @@ public class MainFrame extends javax.swing.JFrame implements TableModelListener,
         this.listOfUIStatesPushed = new ArrayList();
         //Create deep copy of UI-States
         for (int i = 0; i < listOfUIStates.size(); i++) {
-            listOfUIStatesPushed.add(new Boolean(listOfUIComponents.get(i).isEnabled()));
+            listOfUIStatesPushed.add(listOfUIComponents.get(i).isEnabled());
         }
     }
 
@@ -2113,14 +2059,14 @@ public class MainFrame extends javax.swing.JFrame implements TableModelListener,
     public void deactivateEveryComponentExcept(Component[] oList) {
         this.jButtonGenerateListOfExperiments.setEnabled(false);
 
-        for (int i = 0; i < this.listOfUIComponents.size(); i++) {
-            this.listOfUIComponents.get(i).setEnabled(false);
+        for (Component listOfUIComponent : this.listOfUIComponents) {
+            listOfUIComponent.setEnabled(false);
         }
 
-        for (int i = 0; i < oList.length; i++) {
+        for (Component oList1 : oList) {
             try {
-                oList[i].setEnabled(true);
-            } catch (Exception e) {
+                oList1.setEnabled(true);
+            }catch (Exception e) {
                 //
             }
         }
@@ -2192,5 +2138,75 @@ public class MainFrame extends javax.swing.JFrame implements TableModelListener,
         myOptimizer.initOptimizer();
         //Wait for end of Optimizer
         support.waitForOptimizerAsynchronous(myOptimizer, this);
+    }
+
+    /**
+     * @return the pConfidenceIntervall
+     */
+    public parameter getpConfidenceIntervall() {
+        return pConfidenceIntervall;
+    }
+
+    /**
+     * @param pConfidenceIntervall the pConfidenceIntervall to set
+     */
+    public void setpConfidenceIntervall(parameter pConfidenceIntervall) {
+        this.pConfidenceIntervall = pConfidenceIntervall;
+    }
+
+    /**
+     * @return the pSeed
+     */
+    public parameter getpSeed() {
+        return pSeed;
+    }
+
+    /**
+     * @param pSeed the pSeed to set
+     */
+    public void setpSeed(parameter pSeed) {
+        this.pSeed = pSeed;
+    }
+
+    /**
+     * @return the pEndTime
+     */
+    public parameter getpEndTime() {
+        return pEndTime;
+    }
+
+    /**
+     * @param pEndTime the pEndTime to set
+     */
+    public void setpEndTime(parameter pEndTime) {
+        this.pEndTime = pEndTime;
+    }
+
+    /**
+     * @return the pMaxTime
+     */
+    public parameter getpMaxTime() {
+        return pMaxTime;
+    }
+
+    /**
+     * @param pMaxTime the pMaxTime to set
+     */
+    public void setpMaxTime(parameter pMaxTime) {
+        this.pMaxTime = pMaxTime;
+    }
+
+    /**
+     * @return the pMaxError
+     */
+    public parameter getpMaxError() {
+        return pMaxError;
+    }
+
+    /**
+     * @param pMaxError the pMaxError to set
+     */
+    public void setpMaxError(parameter pMaxError) {
+        this.pMaxError = pMaxError;
     }
 }
