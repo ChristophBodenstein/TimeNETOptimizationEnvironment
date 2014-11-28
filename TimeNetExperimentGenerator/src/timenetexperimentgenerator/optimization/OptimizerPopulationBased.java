@@ -128,7 +128,7 @@ public abstract class OptimizerPopulationBased implements Runnable, Optimizer
             {
                 activeMeasure=pList.get(populationCount).getMeasureByName(listOfMeasures.get(measureCount).getMeasureName());
                 activeMeasureFromInterface=listOfMeasures.get(measureCount);//Contains Optimization targets
-                activeMeasure.setTargetValue(activeMeasureFromInterface.getTargetValue(), activeMeasureFromInterface.getTargetKindOf());
+                activeMeasure.setTargetValue(activeMeasureFromInterface.getTargetValue(), activeMeasureFromInterface.getTargetTypeOf());
             }
         }
     }

@@ -23,7 +23,7 @@ public class MeasureType {
     private double Epsilon = 0.0;
     ;
 private double targetValue = 0.0;
-    private typeOfTarget targetKindOf = typeOfTarget.min;
+    private typeOfTarget targetTypeOf = typeOfTarget.min;
     private double SimulationTime = 0.0;
     private double CPUTime = 0;
     private double minValue, maxValue = 0.0;
@@ -51,7 +51,7 @@ private double targetValue = 0.0;
         this.ConfidenceInterval = Arrays.copyOf(originalMeasure.ConfidenceInterval, originalMeasure.ConfidenceInterval.length);
         this.Epsilon = originalMeasure.Epsilon;
         this.targetValue = originalMeasure.targetValue;
-        this.targetKindOf = originalMeasure.targetKindOf;
+        this.targetTypeOf = originalMeasure.targetTypeOf;
         this.CPUTime = originalMeasure.CPUTime;
         this.SimulationTime = originalMeasure.CPUTime;
         this.minValue = originalMeasure.minValue;
@@ -61,15 +61,15 @@ private double targetValue = 0.0;
     /**
      * @param value targetvalue (double) for optimization and to calculate
      * distance of measure
-     * @param kindOfTarget
+     * @param typeOfTarget
      * @set targetValue and/or (min/max/value)
      */
-    public void setTargetValue(double value, typeOfTarget kindOfTarget) {
+    public void setTargetValue(double value, typeOfTarget typeOfTarget) {
 
-        if (kindOfTarget.equals(typeOfTarget.min) || kindOfTarget.equals(typeOfTarget.max)) {
-            this.targetKindOf = kindOfTarget;
+        if (typeOfTarget.equals(typeOfTarget.min) || typeOfTarget.equals(typeOfTarget.max)) {
+            this.targetTypeOf = typeOfTarget;
         } else {
-            this.targetKindOf = typeOfTarget.value;
+            this.targetTypeOf = typeOfTarget.value;
         }
         this.targetValue = value;
     }
@@ -88,8 +88,8 @@ private double targetValue = 0.0;
      *
      * @return type of Target
      */
-    public typeOfTarget getTargetKindOf() {
-        return this.targetKindOf;
+    public typeOfTarget getTargetTypeOf() {
+        return this.targetTypeOf;
     }
 
     /**
@@ -245,8 +245,8 @@ private double targetValue = 0.0;
      */
     public String getStateAsString() {
         String state = "";
-        state += "MeasureName\tMeanValue\tVariance\tTargetValue\tTargetKindOf\n";
-        state += this.MeasureName + " \t" + this.MeanValue + " \t" + this.Variance + " \t" + this.targetValue + " \t" + this.targetKindOf + "\n\n";
+        state += "MeasureName\tMeanValue\tVariance\tTargetValue\tTargetTypeOf\n";
+        state += this.MeasureName + " \t" + this.MeanValue + " \t" + this.Variance + " \t" + this.targetValue + " \t" + this.targetTypeOf + "\n\n";
 
         state += "ParameterName\tCurrentValue\tStartValue\tEndValue\tStepping\n";
         return state;

@@ -112,7 +112,7 @@ public class SimulationType {
         //Get active OptimizationTarget from UI (via support)
         MeasureType activeMeasure = support.getOptimizationMeasure();
         //Set target Value and target Kind for Measure with same name but in list of this simulation
-        this.getMeasureByName(activeMeasure.getMeasureName()).setTargetValue(activeMeasure.getTargetValue(), activeMeasure.getTargetKindOf());
+        this.getMeasureByName(activeMeasure.getMeasureName()).setTargetValue(activeMeasure.getTargetValue(), activeMeasure.getTargetTypeOf());
         //Return the distance of local Measure from target, chosen from Master-Measure
         return this.getMeasureByName(activeMeasure.getMeasureName()).getDistanceFromTarget();
     }
@@ -197,7 +197,7 @@ public class SimulationType {
                 //Get copy of actual optimization target (TargetMeasure is found by name)
                 MeasureType activeMeasure = new MeasureType(this.getMeasureByName(support.getOptimizationMeasure().getMeasureName()));
                 //set target Value of copied optimization target measure
-                activeMeasure.setTargetValue(targetMeasure.getMeanValue(), targetMeasure.getTargetKindOf());
+                activeMeasure.setTargetValue(targetMeasure.getMeanValue(), targetMeasure.getTargetTypeOf());
 
                 distance = activeMeasure.getDistanceFromTarget();
                 support.log("Absolute Distance to calculated Optimum (" + targetMeasure.getMeanValue() + ") is " + distance + " at a range of " + range + ".");
