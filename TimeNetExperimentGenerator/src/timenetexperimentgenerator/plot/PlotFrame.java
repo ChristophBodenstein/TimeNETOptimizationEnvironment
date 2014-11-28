@@ -1,7 +1,6 @@
 /*
  * Implements the frame which displays the R plots.
  */
-
 package timenetexperimentgenerator.plot;
 
 import java.awt.*;
@@ -14,25 +13,24 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import timenetexperimentgenerator.support;
 
 /**
- * @author Bastian Mauerer, Simon Niebler
+ * @author Bastian Mauerer, Simon Niebler, Christoph Bodenstein
  */
-public class PlotFrame extends javax.swing.JFrame 
-{   
+public class PlotFrame extends javax.swing.JFrame {
+
     JLabel label;
     ImageIcon icon;
-    
+
     /**
      * Creates new form PlotFrame
      */
-    public PlotFrame() 
-    {
+    public PlotFrame() {
         initComponents();
         setResizable(false);
         this.setTitle("R Plot");
         label = new JLabel();
         this.getContentPane().add(label);
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -89,83 +87,45 @@ public class PlotFrame extends javax.swing.JFrame
 
     /**
      * Save plot image as jpg
-     **/
+     *
+     * @param evt ActionEvent sent from button
+     */
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         FileNameExtensionFilter filter = new FileNameExtensionFilter("JPG File", "jpg");
-        
+
         JFileChooser jFileChooser = new JFileChooser();
         jFileChooser.removeChoosableFileFilter(jFileChooser.getAcceptAllFileFilter());
         jFileChooser.setSelectedFile(new File("image.jpg"));
-        if(jFileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION)
-        {
+        if (jFileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
             Image img = icon.getImage();
 
-            BufferedImage bi = new BufferedImage(img.getWidth(null),img.getHeight(null),BufferedImage.TYPE_USHORT_555_RGB);
+            BufferedImage bi = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_USHORT_555_RGB);
             Graphics2D g2 = bi.createGraphics();
             g2.drawImage(img, 0, 0, null);
             g2.dispose();
-            try
-            {
+            try {
                 ImageIO.write(bi, "jpg", new File(jFileChooser.getSelectedFile().getAbsolutePath()));
                 support.log(jFileChooser.getSelectedFile().getAbsolutePath() + " saved!");
-            }
-            catch(Exception e)
-            {
+            } catch (Exception e) {
                 support.log("exception occured while saving image!");
             }
-        }
-        else
+        } else {
             support.log("image not saved!");
+        }
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(PlotFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(PlotFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(PlotFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(PlotFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new PlotFrame().setVisible(true);
-            }
-        });
-        
-        
-    }
-    
-    /**
      * Sets a given image to the background of the frame.
-     **/
-    public void showImage(String path)
-    {   
-        this.setVisible(true);  
-        try
-        {
+     *
+     * @param path Path of image to be shown
+     *
+     */
+    public void showImage(String path) {
+        this.setVisible(true);
+        try {
             BufferedImage bufferedImage = ImageIO.read(new File(path));
-        
-            icon = new ImageIcon(bufferedImage); 
+
+            icon = new ImageIcon(bufferedImage);
 
             label.setSize(icon.getIconWidth(), icon.getIconHeight());
             label.setIcon(icon);
@@ -174,13 +134,11 @@ public class PlotFrame extends javax.swing.JFrame
             label.repaint();
 
             this.getContentPane().setPreferredSize(new Dimension(icon.getIconWidth(), icon.getIconHeight()));
-            this.pack(); 
-            }
-        catch(Exception e)
-        {
-        }                     
+            this.pack();
+        } catch (Exception e) {
+        }
     }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
