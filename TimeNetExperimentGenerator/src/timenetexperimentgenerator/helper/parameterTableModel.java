@@ -56,29 +56,29 @@ public class parameterTableModel extends AbstractTableModel {
         }
         int i = parameterList.getLength();
         parameterArray[i][0] = "ConfidenceIntervall";
-        parameterArray[i][1] = support.getString(parent.pConfidenceIntervall.getStartValue());
-        parameterArray[i][2] = support.getString(parent.pConfidenceIntervall.getEndValue());
-        parameterArray[i][3] = support.getString(parent.pConfidenceIntervall.getStepping());
+        parameterArray[i][1] = support.getString(parent.getpConfidenceIntervall().getStartValue());
+        parameterArray[i][2] = support.getString(parent.getpConfidenceIntervall().getEndValue());
+        parameterArray[i][3] = support.getString(parent.getpConfidenceIntervall().getStepping());
         i = parameterList.getLength() + 1;
         parameterArray[i][0] = "Seed";
-        parameterArray[i][1] = support.getString(parent.pSeed.getStartValue());
-        parameterArray[i][2] = support.getString(parent.pSeed.getEndValue());
-        parameterArray[i][3] = support.getString(parent.pSeed.getStepping());
+        parameterArray[i][1] = support.getString(parent.getpSeed().getStartValue());
+        parameterArray[i][2] = support.getString(parent.getpSeed().getEndValue());
+        parameterArray[i][3] = support.getString(parent.getpSeed().getStepping());
         i++;
         parameterArray[i][0] = "EndTime";
-        parameterArray[i][1] = support.getString(parent.pEndTime.getStartValue());
-        parameterArray[i][2] = support.getString(parent.pEndTime.getEndValue());
-        parameterArray[i][3] = support.getString(parent.pEndTime.getStepping());
+        parameterArray[i][1] = support.getString(parent.getpEndTime().getStartValue());
+        parameterArray[i][2] = support.getString(parent.getpEndTime().getEndValue());
+        parameterArray[i][3] = support.getString(parent.getpEndTime().getStepping());
         i++;
         parameterArray[i][0] = "MaxTime";
-        parameterArray[i][1] = support.getString(parent.pMaxTime.getStartValue());
-        parameterArray[i][2] = support.getString(parent.pMaxTime.getEndValue());
-        parameterArray[i][3] = support.getString(parent.pMaxTime.getStepping());
+        parameterArray[i][1] = support.getString(parent.getpMaxTime().getStartValue());
+        parameterArray[i][2] = support.getString(parent.getpMaxTime().getEndValue());
+        parameterArray[i][3] = support.getString(parent.getpMaxTime().getStepping());
         i++;
         parameterArray[i][0] = "MaxRelError";
-        parameterArray[i][1] = support.getString(parent.pMaxError.getStartValue());
-        parameterArray[i][2] = support.getString(parent.pMaxError.getEndValue());
-        parameterArray[i][3] = support.getString(parent.pMaxError.getStepping());
+        parameterArray[i][1] = support.getString(parent.getpMaxError().getStartValue());
+        parameterArray[i][2] = support.getString(parent.getpMaxError().getEndValue());
+        parameterArray[i][3] = support.getString(parent.getpMaxError().getStepping());
     }
 
     /**
