@@ -11,7 +11,6 @@ package timenetexperimentgenerator.helper;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import timenetexperimentgenerator.Parser;
 import timenetexperimentgenerator.datamodel.MeasureType;
 import timenetexperimentgenerator.datamodel.SimulationType;
 import timenetexperimentgenerator.support;
@@ -55,9 +54,9 @@ public class StatisticAggregator {
     public static Statistic getStatisticByName(String filename) {
         Statistic returnValue = null;
 
-        for (int i = 0; i < listOfStatistics.size(); i++) {
-            if (listOfStatistics.get(i).getName().equals(filename)) {
-                returnValue = listOfStatistics.get(i);
+        for (Statistic listOfStatistic : listOfStatistics) {
+            if (listOfStatistic.getName().equals(filename)) {
+                returnValue = listOfStatistic;
             }
         }
         if (returnValue == null) {
@@ -78,8 +77,8 @@ public class StatisticAggregator {
             return;
         }
 
-        for (int i = 0; i < listOfStatistics.size(); i++) {
-            listOfStatistics.get(i).printStatisticToLog();
+        for (Statistic listOfStatistic : listOfStatistics) {
+            listOfStatistic.printStatisticToLog();
         }
         //Print all Optimization Statistics if available
         printOptiStatistics();
@@ -120,7 +119,7 @@ public class StatisticAggregator {
     public static void printOptiStatistics() {
         boolean logToWindow = support.isLogToWindow();
         support.setLogToWindow(true);//Activate log to Window, no matter what user checked in ui
-        int numberOfAllOptimizationRuns = 0;
+        int numberOfAllOptimizationRuns;
         double averageDistanceToOptimumAbsolute = 0;
         double averageDistanceToOptimumInValueRange = 0;
         double averageDistanceToOptimumInDefinitionRange = 0;
@@ -138,7 +137,7 @@ public class StatisticAggregator {
         double averageSimulationTimeTotal = 0;
         double averageCacheRatio = 0;
         double tmpRelativeDistanceInValueRange = 101;
-        double tmpRelativeDistanceInDefinitionRange = 101;
+        double tmpRelativeDistanceInDefinitionRange;
 
         int numberOfFoundOptimaWithinRangeClass[] = new int[support.DEFAULT_NUMBER_OF_OPTI_PROB_CLASSES];
         int numberOfFoundOptimaWithinRangeClassDS[] = new int[support.DEFAULT_NUMBER_OF_OPTI_PROB_CLASSES];
