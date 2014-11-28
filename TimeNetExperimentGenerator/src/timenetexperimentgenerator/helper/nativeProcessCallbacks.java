@@ -6,7 +6,6 @@
  * Christoph Bodenstein
  * TU-Ilmenau, FG SSE
  */
-
 package timenetexperimentgenerator.helper;
 
 /**
@@ -15,6 +14,14 @@ package timenetexperimentgenerator.helper;
  */
 public interface nativeProcessCallbacks {
 
+    /**
+     * Called by client to inform that a given Process has ended
+     */
     public void processEnded();
+
+    /**
+     * Called by client to inform that a given Process has exited with error
+     * @param message Errormessage to be displayed.
+     */
     public void errorOccured(String message);
 }
