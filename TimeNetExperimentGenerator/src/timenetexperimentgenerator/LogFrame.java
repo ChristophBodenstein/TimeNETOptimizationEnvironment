@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package timenetexperimentgenerator;
 
 /**
@@ -60,15 +59,22 @@ public class LogFrame extends javax.swing.JFrame {
     private javax.swing.JTextArea jTextAreaLog;
     // End of variables declaration//GEN-END:variables
 
-
-    public void addText(String s){
-    this.jTextAreaLog.append(System.getProperty("line.separator"));
-    this.jTextAreaLog.append(s);
-    this.jTextAreaLog.setCaretPosition(jTextAreaLog.getDocument().getLength()-s.length());
+    /**
+     * Append text to logframe Textfield
+     *
+     * @param s String to add to logframe textfield
+     */
+    public void addText(String s) {
+        this.jTextAreaLog.append(System.getProperty("line.separator"));
+        this.jTextAreaLog.append(s);
+        this.jTextAreaLog.setCaretPosition(jTextAreaLog.getDocument().getLength() - s.length());
     }
-    
-    public void clearText(){
-    this.jTextAreaLog.setText("");
+
+    /**
+     * Empty Texfield. Delete complete log.
+     */
+    public void clearText() {
+        this.jTextAreaLog.setText("");
     }
 
 }

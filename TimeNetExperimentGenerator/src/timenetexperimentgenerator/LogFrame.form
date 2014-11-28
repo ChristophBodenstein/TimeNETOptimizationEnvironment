@@ -7,9 +7,6 @@
     <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
       <Color id="Standardcursor"/>
     </Property>
-    <Property name="location" type="java.awt.Point" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-      <Connection code="java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode().getWidth()/2 - 325,java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode().getHeight()/2  - this.getHeight()/2" type="code"/>
-    </Property>
     <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
       <Connection code="java.awt.Toolkit.getDefaultToolkit().getScreenSize()" type="code"/>
     </Property>
