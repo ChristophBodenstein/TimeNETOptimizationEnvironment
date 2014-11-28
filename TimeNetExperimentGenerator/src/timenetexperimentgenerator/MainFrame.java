@@ -4,9 +4,7 @@
  * Christoph Bodenstein
  * TU-Ilmenau, FG SSE
  */
-
 package timenetexperimentgenerator;
-
 
 import timenetexperimentgenerator.helper.*;
 import timenetexperimentgenerator.datamodel.*;
@@ -43,72 +41,75 @@ import timenetexperimentgenerator.typedef.*;
  *
  * @author Christoph Bodenstein
  */
-public class MainFrame extends javax.swing.JFrame implements TableModelListener,SimOptiCallback{
-Properties auto = new Properties();
-private String fileName="";
+public class MainFrame extends javax.swing.JFrame implements TableModelListener, SimOptiCallback {
+
+    Properties auto = new Properties();
+    private String fileName = "";
 //public boolean cancelOperation=false;
-ArrayList < ArrayList<parameter> >ListOfParameterSetsToBeWritten=new ArrayList< ArrayList<parameter> >();//Name, Value
-generator myGenerator;
-public parameter pConfidenceIntervall=new parameter();
-public parameter pSeed=new parameter();
-public parameter pEndTime=new parameter();
-public parameter pMaxTime=new parameter();
-public parameter pMaxError=new parameter();
-private int colorClm = -1, colorRow = -1;
-ArrayList <Long>ListOfParameterSetIds=new ArrayList<Long>();
-private int sizeOfDesignSpace;
-private String pathToTimeNet="";
-private SimulationCache mySimulationCache=null;
-private String pathToLastSimulationCache="";
-private SimulationTypeComboBoxModel mySimulationTypeModel=new SimulationTypeComboBoxModel(typeOfSimulator.values());
-private DefaultComboBoxModel myOptiTypeModel=new DefaultComboBoxModel();
-SimulatorWebSlave mySlave=new SimulatorWebSlave();
+    ArrayList< ArrayList<parameter>> ListOfParameterSetsToBeWritten = new ArrayList< ArrayList<parameter>>();//Name, Value
+    generator myGenerator;
+    public parameter pConfidenceIntervall = new parameter();
+    public parameter pSeed = new parameter();
+    public parameter pEndTime = new parameter();
+    public parameter pMaxTime = new parameter();
+    public parameter pMaxError = new parameter();
+    private int colorClm = -1, colorRow = -1;
+    ArrayList<Long> ListOfParameterSetIds = new ArrayList<Long>();
+    private int sizeOfDesignSpace;
+    private String pathToTimeNet = "";
+    private SimulationCache mySimulationCache = null;
+    private String pathToLastSimulationCache = "";
+    private SimulationTypeComboBoxModel mySimulationTypeModel = new SimulationTypeComboBoxModel(typeOfSimulator.values());
+    private DefaultComboBoxModel myOptiTypeModel = new DefaultComboBoxModel();
+    SimulatorWebSlave mySlave = new SimulatorWebSlave();
 
-private RPlugin rplugin;
-private String pathToR="";
+    private RPlugin rplugin;
+    private String pathToR = "";
 
-private AboutPanel aboutFrame=new AboutPanel();
-private JDialog aboutDialog;
+    private AboutPanel aboutFrame = new AboutPanel();
+    private JDialog aboutDialog;
 
-private boolean savePropertiesEnabled=false;
+    private boolean savePropertiesEnabled = false;
 
-private String logFileNameOfOptimizer=null;
+    private String logFileNameOfOptimizer = null;
 
-private ArrayList<Component> listOfUIComponents=new ArrayList<Component>();//List of all Components
-private ArrayList<Boolean> listOfUIStates=new ArrayList<Boolean>();
-private ArrayList<Boolean> listOfUIStatesPushed;
-    /** Creates new form MainFrame */
+    private ArrayList<Component> listOfUIComponents = new ArrayList<Component>();//List of all Components
+    private ArrayList<Boolean> listOfUIStates = new ArrayList<Boolean>();
+    private ArrayList<Boolean> listOfUIStatesPushed;
+
+    /**
+     * Creates new form MainFrame
+     */
     public MainFrame() throws IOException {
 
-    support.setMainFrame(this);
-    
+        support.setMainFrame(this);
+
         initComponents();
 
-        aboutDialog=new JDialog(this.getWindows()[0], ModalityType.DOCUMENT_MODAL);
+        aboutDialog = new JDialog(this.getWindows()[0], ModalityType.DOCUMENT_MODAL);
         aboutDialog.setContentPane(new AboutPanel());
         aboutDialog.pack();
         aboutDialog.setVisible(false);
 
-
         try {
-                FileInputStream in=new FileInputStream(support.NAME_OF_PREFERENCES_FILE);
-		auto.load(in);
-                in.close();
-	} catch (IOException e) {
-		// Exception bearbeiten
-	}
-        
+            FileInputStream in = new FileInputStream(support.NAME_OF_PREFERENCES_FILE);
+            auto.load(in);
+            in.close();
+        } catch (IOException e) {
+            // Exception bearbeiten
+        }
+
         jButtonPathToTimeNet.setBackground(Color.GRAY);
         jButtonPathToTimeNet.setText("Enter Path To TimeNet");
-        
+
         jButtonPathToR.setBackground(Color.GRAY);
         jButtonPathToR.setText("Enter Path To R");
-        
-        pConfidenceIntervall.initWithValues("ConfidenceIntervall", 95, 95, 1); 
+
+        pConfidenceIntervall.initWithValues("ConfidenceIntervall", 95, 95, 1);
         pSeed.initWithValues("Seed", 0, 0, 1);
-        pEndTime.initWithValues("EndTime",0,0,1);
-        pMaxTime.initWithValues("MaxTime",0,0,1);
-        pMaxError.initWithValues("MaxError",5,5,1);
+        pEndTime.initWithValues("EndTime", 0, 0, 1);
+        pMaxTime.initWithValues("MaxTime", 0, 0, 1);
+        pMaxError.initWithValues("MaxError", 5, 5, 1);
 
         this.jTextFieldSCPNFile.setText(auto.getProperty("file"));
         //this.jTextFieldPathToTimeNet.setText(auto.getProperty("timenetpath"));
@@ -117,45 +118,47 @@ private ArrayList<Boolean> listOfUIStatesPushed;
         this.setPathToR(auto.getProperty("rpath"));
         //Read tmp path from properties, needed for client-mode-start
         support.setTmpPath(auto.getProperty("tmppath"));
-        
+
         //set null strings to empty strings, avoids a crash when saving the configuration
-        if(this.getPathToR() == null)
+        if (this.getPathToR() == null) {
             this.setPathToR("");
-        if(this.getPathToTimeNet() == null)
+        }
+        if (this.getPathToTimeNet() == null) {
             this.setPathToTimeNet("");
-        
+        }
+
         //init r plugin
         rplugin = new RPlugin();
-        
-        this.pConfidenceIntervall.setStartValue(support.loadDoubleFromProperties("ConfidenceIntervallStart",pConfidenceIntervall.getStartValue(),auto));
-        this.pConfidenceIntervall.setEndValue(support.loadDoubleFromProperties("ConfidenceIntervallEnd",pConfidenceIntervall.getEndValue(),auto));
-        this.pConfidenceIntervall.setStepping(support.loadDoubleFromProperties("ConfidenceIntervallStepping",pConfidenceIntervall.getStepping(),auto));
 
-        this.pEndTime.setStartValue(support.loadDoubleFromProperties("EndTimeStart",pEndTime.getStartValue(),auto));
-        this.pEndTime.setEndValue(support.loadDoubleFromProperties("EndTimeEnd",pEndTime.getEndValue(),auto));
-        this.pEndTime.setStepping(support.loadDoubleFromProperties("EndTimeStepping",pEndTime.getStepping(),auto));
+        this.pConfidenceIntervall.setStartValue(support.loadDoubleFromProperties("ConfidenceIntervallStart", pConfidenceIntervall.getStartValue(), auto));
+        this.pConfidenceIntervall.setEndValue(support.loadDoubleFromProperties("ConfidenceIntervallEnd", pConfidenceIntervall.getEndValue(), auto));
+        this.pConfidenceIntervall.setStepping(support.loadDoubleFromProperties("ConfidenceIntervallStepping", pConfidenceIntervall.getStepping(), auto));
 
-        this.pMaxTime.setStartValue(support.loadDoubleFromProperties("MaxTimeStart",pMaxTime.getStartValue(),auto));
-        this.pMaxTime.setEndValue(support.loadDoubleFromProperties("MaxTimeEnd",pMaxTime.getEndValue(),auto));
-        this.pMaxTime.setStepping(support.loadDoubleFromProperties("MaxTimeStepping",pMaxTime.getStepping(),auto));
+        this.pEndTime.setStartValue(support.loadDoubleFromProperties("EndTimeStart", pEndTime.getStartValue(), auto));
+        this.pEndTime.setEndValue(support.loadDoubleFromProperties("EndTimeEnd", pEndTime.getEndValue(), auto));
+        this.pEndTime.setStepping(support.loadDoubleFromProperties("EndTimeStepping", pEndTime.getStepping(), auto));
 
-        this.pSeed.setStartValue(support.loadDoubleFromProperties("SeedStart",pSeed.getStartValue(),auto));
-        this.pSeed.setEndValue(support.loadDoubleFromProperties("SeedEnd",pSeed.getEndValue(),auto));
-        this.pSeed.setStepping(support.loadDoubleFromProperties("SeedStepping",pSeed.getStepping(),auto));
+        this.pMaxTime.setStartValue(support.loadDoubleFromProperties("MaxTimeStart", pMaxTime.getStartValue(), auto));
+        this.pMaxTime.setEndValue(support.loadDoubleFromProperties("MaxTimeEnd", pMaxTime.getEndValue(), auto));
+        this.pMaxTime.setStepping(support.loadDoubleFromProperties("MaxTimeStepping", pMaxTime.getStepping(), auto));
 
-        this.pMaxError.setStartValue(support.loadDoubleFromProperties("MaxErrorStart",pMaxError.getStartValue(),auto));
-        this.pMaxError.setEndValue(support.loadDoubleFromProperties("MaxErrorEnd",pMaxError.getEndValue(),auto));
-        this.pMaxError.setStepping(support.loadDoubleFromProperties("MaxErrorStepping",pMaxError.getStepping(),auto));
+        this.pSeed.setStartValue(support.loadDoubleFromProperties("SeedStart", pSeed.getStartValue(), auto));
+        this.pSeed.setEndValue(support.loadDoubleFromProperties("SeedEnd", pSeed.getEndValue(), auto));
+        this.pSeed.setStepping(support.loadDoubleFromProperties("SeedStepping", pSeed.getStepping(), auto));
 
-        this.pathToLastSimulationCache=auto.getProperty("pathToLastSimulationCache", "");
+        this.pMaxError.setStartValue(support.loadDoubleFromProperties("MaxErrorStart", pMaxError.getStartValue(), auto));
+        this.pMaxError.setEndValue(support.loadDoubleFromProperties("MaxErrorEnd", pMaxError.getEndValue(), auto));
+        this.pMaxError.setStepping(support.loadDoubleFromProperties("MaxErrorStepping", pMaxError.getStepping(), auto));
 
-        support.setChosenBenchmarkFunction(typeOfBenchmarkFunction.valueOf(auto.getProperty("BenchmarkType",typeOfBenchmarkFunction.Sphere.toString() )));
+        this.pathToLastSimulationCache = auto.getProperty("pathToLastSimulationCache", "");
+
+        support.setChosenBenchmarkFunction(typeOfBenchmarkFunction.valueOf(auto.getProperty("BenchmarkType", typeOfBenchmarkFunction.Sphere.toString())));
         this.jComboBoxBenchmarkFunction.setSelectedItem(support.getChosenBenchmarkFunction());
-       
-        support.setIsRunningAsSlave(Boolean.parseBoolean(auto.getProperty("isRunningAsSlave","false")));
+
+        support.setIsRunningAsSlave(Boolean.parseBoolean(auto.getProperty("isRunningAsSlave", "false")));
 
         support.setRemoteAddress(auto.getProperty("RemoteAddress", ""));
-        
+
         this.checkIfTimeNetPathIsCorrect();
         this.checkIfRPathIsCorrect();
         this.checkIfURLIsCorrect();
@@ -170,67 +173,63 @@ private ArrayList<Boolean> listOfUIStatesPushed;
                 Component c = super.getTableCellRendererComponent(table, value,
                         isSelected, hasFocus, row, column);
 
-                        try{
-                            String rowName=(String)table.getValueAt(row, 0);
-                            //TODO: get List of external Parameters from Support-Class!!!
-                            if (rowName.equals("Seed")||rowName.equals("MaxTime")||rowName.equals("EndTime")||rowName.equals("ConfidenceIntervall")||rowName.equals("MaxRelError")){
-                            //if (row == colorRow && column == colorClm) {
-                                setBackground(Color.LIGHT_GRAY);
-                                setForeground(Color.BLACK);
-                            } else {
-                                setBackground(Color.WHITE);
-                                setForeground(Color.BLUE);
-                            }
-                        }catch(Exception e){
-                         }
+                try {
+                    String rowName = (String) table.getValueAt(row, 0);
+                    //TODO: get List of external Parameters from Support-Class!!!
+                    if (rowName.equals("Seed") || rowName.equals("MaxTime") || rowName.equals("EndTime") || rowName.equals("ConfidenceIntervall") || rowName.equals("MaxRelError")) {
+                        //if (row == colorRow && column == colorClm) {
+                        setBackground(Color.LIGHT_GRAY);
+                        setForeground(Color.BLACK);
+                    } else {
+                        setBackground(Color.WHITE);
+                        setForeground(Color.BLUE);
+                    }
+                } catch (Exception e) {
+                }
                 return this;
             }
         });
 
-
-        
         support.setStatusLabel(jLabelExportStatus);
         support.setMainFrame(this);
         support.setMeasureFormPane(jTabbedPaneOptiTargets);
         support.setPathToTimeNet(pathToTimeNet);
         support.setPathToR(pathToR);
-        
+
         this.checkIfCachedSimulationIsPossible();
-        
-        
+
         /*for (String SIMTYPES : support.SIMTYPES) {
-        mySimulationTypeModel.addElement(SIMTYPES);
-        }
-        */
+         mySimulationTypeModel.addElement(SIMTYPES);
+         }
+         */
 
         /*for (String OPTITYPES : support.OPTITYPES){
-        myOptiTypeModel.addElement(OPTITYPES);
-        }
-        this.jComboBoxOptimizationType.setModel(myOptiTypeModel);
-        */
+         myOptiTypeModel.addElement(OPTITYPES);
+         }
+         this.jComboBoxOptimizationType.setModel(myOptiTypeModel);
+         */
        // this.jComboBoxOptimizationType.setModel(new Combo);
-
         this.updateComboBoxSimulationType();
-        
-        if(support.isIsRunningAsSlave()){
-        this.jCheckBoxSlaveSimulator.setSelected(true);
-        new Thread(this.mySlave).start();
-        }else{
-        this.jCheckBoxSlaveSimulator.setSelected(false);
-        }
-        
-        support.log(auto.getProperty("SimulationType"));
-        
-        this.jComboBoxSimulationType.setSelectedItem(typeOfSimulator.valueOf(auto.getProperty("SimulationType",support.DEFAULT_TYPE_OF_SIMULATOR.toString() )));
-        
-        this.jComboBoxOptimizationType.setSelectedItem(typeOfOptimization.valueOf(auto.getProperty("OptimizationType",support.DEFAULT_TYPE_OF_OPTIMIZER.toString() )));
-        
-        this.jComboBoxBenchmarkFunction.setSelectedItem(typeOfBenchmarkFunction.valueOf(auto.getProperty("BenchmarkType",support.DEFAULT_TYPE_OF_BENCHMARKFUNCTION.toString() )));
 
-        savePropertiesEnabled=true;//Enable property saving after init of all components
-        
+        if (support.isIsRunningAsSlave()) {
+            this.jCheckBoxSlaveSimulator.setSelected(true);
+            new Thread(this.mySlave).start();
+        } else {
+            this.jCheckBoxSlaveSimulator.setSelected(false);
+        }
+
+        support.log(auto.getProperty("SimulationType"));
+
+        this.jComboBoxSimulationType.setSelectedItem(typeOfSimulator.valueOf(auto.getProperty("SimulationType", support.DEFAULT_TYPE_OF_SIMULATOR.toString())));
+
+        this.jComboBoxOptimizationType.setSelectedItem(typeOfOptimization.valueOf(auto.getProperty("OptimizationType", support.DEFAULT_TYPE_OF_OPTIMIZER.toString())));
+
+        this.jComboBoxBenchmarkFunction.setSelectedItem(typeOfBenchmarkFunction.valueOf(auto.getProperty("BenchmarkType", support.DEFAULT_TYPE_OF_BENCHMARKFUNCTION.toString())));
+
+        savePropertiesEnabled = true;//Enable property saving after init of all components
+
         //Add all Components to ListOfUIComponents
-        listOfUIComponents.add(this.jTextFieldSCPNFile);        
+        listOfUIComponents.add(this.jTextFieldSCPNFile);
         listOfUIComponents.add(this.jButtonReload);
         listOfUIComponents.add(this.jButtonExport);
         listOfUIComponents.add(this.jButtonCancel);
@@ -251,69 +250,67 @@ private ArrayList<Boolean> listOfUIStatesPushed;
         listOfUIComponents.add(this.jComboBoxOptimizationType);
         listOfUIComponents.add(this.jButtonOpenSCPN);
         listOfUIComponents.add(this.jSpinnerNumberOfOptimizationRuns);
-        
-        
+
         //Reload the last File
         this.readSCPNFile(jTextFieldSCPNFile.getText());
-        
+
         this.switchUIState(uiState.defaultState);
-        if(support.isIsRunningAsSlave()){
-        this.switchUIState(uiState.clientState);
+        if (support.isIsRunningAsSlave()) {
+            this.switchUIState(uiState.clientState);
         }
     }
 
-
     /**
-     * Updates the combobox for selection of Simulation type
-     * if cache is available --> Selection is possible
-     * if server is available --> Selection of Distr. is available
+     * Updates the combobox for selection of Simulation type if cache is
+     * available --> Selection is possible if server is available --> Selection
+     * of Distr. is available
      */
-    public void updateComboBoxSimulationType(){
-    DefaultListSelectionModel model = new DefaultListSelectionModel();
-    model.addSelectionInterval(0, 0);
-    model.addSelectionInterval(2, 2);
-    model.addSelectionInterval(4, 4);
-    if(support.isCachedSimulationAvailable()){
-    model.addSelectionInterval(1, 1);
-    }
-    if(support.isDistributedSimulationAvailable()){
-    model.addSelectionInterval(3, 3);
-    }
-    
-    this.jComboBoxSimulationType.setRenderer(new EnabledJComboBoxRenderer(model));
-    
-    this.jComboBoxSimulationType.setModel(mySimulationTypeModel);
-    }
+    public void updateComboBoxSimulationType() {
+        DefaultListSelectionModel model = new DefaultListSelectionModel();
+        model.addSelectionInterval(0, 0);
+        model.addSelectionInterval(2, 2);
+        model.addSelectionInterval(4, 4);
+        if (support.isCachedSimulationAvailable()) {
+            model.addSelectionInterval(1, 1);
+        }
+        if (support.isDistributedSimulationAvailable()) {
+            model.addSelectionInterval(3, 3);
+        }
 
+        this.jComboBoxSimulationType.setRenderer(new EnabledJComboBoxRenderer(model));
+
+        this.jComboBoxSimulationType.setModel(mySimulationTypeModel);
+    }
 
     /**
-     * Check, if cached simulation is possible
-     * if cached simulation is possible, then set some switches etc...
+     * Check, if cached simulation is possible if cached simulation is possible,
+     * then set some switches etc...
+     *
      * @return true if CachedSimulation is possible, else false
      */
-    private boolean checkIfCachedSimulationIsPossible(){
-    
-        if(mySimulationCache!=null){
-            if(mySimulationCache.checkIfAllParameterMatchTable((parameterTableModel)this.jTableParameterList.getModel())){
-            support.log("Cached Simulation available, all Parameter match.");
-            support.setMySimulationCache(mySimulationCache);
-            support.setCachedSimulationEnabled(true);
-            }else{
-            support.log("Cached Simulation not available, but all Parameter match. Maybe Stepping or Range is wrong.");
-            support.setCachedSimulationEnabled(false);
+    private boolean checkIfCachedSimulationIsPossible() {
+
+        if (mySimulationCache != null) {
+            if (mySimulationCache.checkIfAllParameterMatchTable((parameterTableModel) this.jTableParameterList.getModel())) {
+                support.log("Cached Simulation available, all Parameter match.");
+                support.setMySimulationCache(mySimulationCache);
+                support.setCachedSimulationEnabled(true);
+            } else {
+                support.log("Cached Simulation not available, but all Parameter match. Maybe Stepping or Range is wrong.");
+                support.setCachedSimulationEnabled(false);
             }
-        }else{
-        support.log("Cached Simulation not available, no simulation cache given.");    
-        support.setCachedSimulationEnabled(false);
+        } else {
+            support.log("Cached Simulation not available, no simulation cache given.");
+            support.setCachedSimulationEnabled(false);
         }
-    this.updateComboBoxSimulationType();
-    return support.isCachedSimulationAvailable();
-    }    
-    
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
+        this.updateComboBoxSimulationType();
+        return support.isCachedSimulationAvailable();
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -783,37 +780,34 @@ private ArrayList<Boolean> listOfUIStatesPushed;
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonOpenSCPNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonOpenSCPNActionPerformed
-    support.setCancelEverything(false);
-    
-      javax.swing.filechooser.FileFilter myFilter=new javax.swing.filechooser.FileNameExtensionFilter("xml file", "xml");
-      JFileChooser fileChooser = new JFileChooser(this.jTextFieldSCPNFile.getText());
-      fileChooser.setCurrentDirectory(new java.io.File(this.jTextFieldSCPNFile.getText()+"/.."));
-      fileChooser.setFileFilter(myFilter);
-      fileChooser.setDialogTitle("Select SCPN-Net");
+        support.setCancelEverything(false);
 
+        javax.swing.filechooser.FileFilter myFilter = new javax.swing.filechooser.FileNameExtensionFilter("xml file", "xml");
+        JFileChooser fileChooser = new JFileChooser(this.jTextFieldSCPNFile.getText());
+        fileChooser.setCurrentDirectory(new java.io.File(this.jTextFieldSCPNFile.getText() + "/.."));
+        fileChooser.setFileFilter(myFilter);
+        fileChooser.setDialogTitle("Select SCPN-Net");
 
-
-      if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-        support.log("getCurrentDirectory(): "
-         +  fileChooser.getCurrentDirectory());
-        support.log("getSelectedFile() : "
-         +  fileChooser.getSelectedFile());
-        this.jTextFieldSCPNFile.setText(fileChooser.getSelectedFile().toString());
-        this.readSCPNFile(fileChooser.getSelectedFile().toString());
-        this.saveProperties();
-      }
-    else {
-      support.log("No Selection ");
-      }
+        if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            support.log("getCurrentDirectory(): "
+                    + fileChooser.getCurrentDirectory());
+            support.log("getSelectedFile() : "
+                    + fileChooser.getSelectedFile());
+            this.jTextFieldSCPNFile.setText(fileChooser.getSelectedFile().toString());
+            this.readSCPNFile(fileChooser.getSelectedFile().toString());
+            this.saveProperties();
+        } else {
+            support.log("No Selection ");
+        }
     }//GEN-LAST:event_jButtonOpenSCPNActionPerformed
 
     private void jButtonReloadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonReloadActionPerformed
-    this.readSCPNFile(jTextFieldSCPNFile.getText());
+        this.readSCPNFile(jTextFieldSCPNFile.getText());
     }//GEN-LAST:event_jButtonReloadActionPerformed
 
     private void jButtonExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonExportActionPerformed
-    support.setCancelEverything(false);
-    
+        support.setCancelEverything(false);
+
         //Ask for Export-Path
         //support.setTmpPath(support.getPathToDirByDialog("Dir for export of xml-Files.\n "+"Go INTO the dir to choose it!", null));
         support.setPathToTimeNet(pathToTimeNet);
@@ -821,19 +815,19 @@ private ArrayList<Boolean> listOfUIStatesPushed;
         support.setOriginalFilename(fileName);
         support.setStatusLabel(jLabelExportStatus);
         support.setMeasureFormPane(jTabbedPaneOptiTargets);
-        
-        if(ListOfParameterSetsToBeWritten!=null){
-        support.log("Length of ParameterSet-List: "+ListOfParameterSetsToBeWritten.size());
-        exporter tmpExporter=new exporter(ListOfParameterSetsToBeWritten);
-        }else{
-        support.log("Export-Operation cancled.");
+
+        if (ListOfParameterSetsToBeWritten != null) {
+            support.log("Length of ParameterSet-List: " + ListOfParameterSetsToBeWritten.size());
+            exporter tmpExporter = new exporter(ListOfParameterSetsToBeWritten);
+        } else {
+            support.log("Export-Operation cancled.");
         }
-    support.setCancelEverything(false);
+        support.setCancelEverything(false);
     }//GEN-LAST:event_jButtonExportActionPerformed
 
     private void jButtonCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelActionPerformed
-    support.setCancelEverything(true);
-    support.log("Try to cancel everything.");
+        support.setCancelEverything(true);
+        support.log("Try to cancel everything.");
     }//GEN-LAST:event_jButtonCancelActionPerformed
 
     /**
@@ -844,78 +838,76 @@ private ArrayList<Boolean> listOfUIStatesPushed;
         support.resetGlobalSimulationCounter();
         this.pushUIState();
         this.switchUIState(uiState.processRunning);
-        
+
         //Ask for Tmp-Path
-        String tmpPath=support.getPathToDirByDialog("Dir for export TMP-Files and log.\n ", support.getTmpPath() );
-        
-        if(tmpPath!=null){
-        support.setTmpPath(tmpPath);
-        support.setPathToTimeNet(pathToTimeNet);
-        support.setMainFrame(this);
-        support.setOriginalFilename(fileName);
-        support.setStatusLabel(jLabelExportStatus);
-        support.setMeasureFormPane(jTabbedPaneOptiTargets);
-    
+        String tmpPath = support.getPathToDirByDialog("Dir for export TMP-Files and log.\n ", support.getTmpPath());
+
+        if (tmpPath != null) {
+            support.setTmpPath(tmpPath);
+            support.setPathToTimeNet(pathToTimeNet);
+            support.setMainFrame(this);
+            support.setOriginalFilename(fileName);
+            support.setStatusLabel(jLabelExportStatus);
+            support.setMeasureFormPane(jTabbedPaneOptiTargets);
+
         //LocalBatchSimulatorEngine mySimulator=new LocalBatchSimulatorEngine(ListOfParameterSetsToBeWritten);
-        //SimulatorLocal mySimulator=new SimulatorLocal();
-        
-        //Set base parameterset and orignal base parameterset in support
-        support.setOriginalParameterBase(((parameterTableModel)jTableParameterList.getModel()).getListOfParameter());
-        support.setParameterBase(((parameterTableModel)jTableParameterList.getModel()).getListOfParameter());
-    
+            //SimulatorLocal mySimulator=new SimulatorLocal();
+            //Set base parameterset and orignal base parameterset in support
+            support.setOriginalParameterBase(((parameterTableModel) jTableParameterList.getModel()).getListOfParameter());
+            support.setParameterBase(((parameterTableModel) jTableParameterList.getModel()).getListOfParameter());
+
             //If ListOfParameterSetsToBeWritten is null -->eject
-            if(ListOfParameterSetsToBeWritten==null){
-            support.setStatusText("No Parametersets to simulate.");
-            support.log("No Parametersets to simulate.");
-            this.popUIState();
-            return;
+            if (ListOfParameterSetsToBeWritten == null) {
+                support.setStatusText("No Parametersets to simulate.");
+                support.log("No Parametersets to simulate.");
+                this.popUIState();
+                return;
             }
             //If Parameterbase is null -->eject (This is needed for benchmark-simulations)
-            if(support.getParameterBase()==null){
-            support.setStatusText("No Paramaterbase set.");
-            support.log("No Paramaterbase set. No Simulation possible.");
-            this.popUIState();
-            return;
+            if (support.getParameterBase() == null) {
+                support.setStatusText("No Paramaterbase set.");
+                support.log("No Paramaterbase set. No Simulation possible.");
+                this.popUIState();
+                return;
             }
-            
-        Simulator mySimulator=SimOptiFactory.getSimulator();
-        mySimulator.initSimulator(ListOfParameterSetsToBeWritten, 0, true);
-        support.waitForSimulatorAsynchronous(mySimulator, this);
-        }else{
-        this.popUIState();
+
+            Simulator mySimulator = SimOptiFactory.getSimulator();
+            mySimulator.initSimulator(ListOfParameterSetsToBeWritten, 0, true);
+            support.waitForSimulatorAsynchronous(mySimulator, this);
+        } else {
+            this.popUIState();
         }
     }//GEN-LAST:event_jButtonStartBatchSimulationActionPerformed
 
     private void jButtonGenerateListOfExperimentsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGenerateListOfExperimentsActionPerformed
-    this.switchUIState(uiState.processRunning);
-    int i=JOptionPane.showConfirmDialog(this,"Really generate Designspace? This could take some time.","Generate Design space?",JOptionPane.YES_NO_OPTION);
-        if(i==0){
-        support.setCancelEverything(false);
-        this.restartGenerator();
+        this.switchUIState(uiState.processRunning);
+        int i = JOptionPane.showConfirmDialog(this, "Really generate Designspace? This could take some time.", "Generate Design space?", JOptionPane.YES_NO_OPTION);
+        if (i == 0) {
+            support.setCancelEverything(false);
+            this.restartGenerator();
         }
     }//GEN-LAST:event_jButtonGenerateListOfExperimentsActionPerformed
 
     private void jButtonStartOptimizationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonStartOptimizationActionPerformed
-    support.setCancelEverything(false);
-    support.resetGlobalSimulationCounter();
-    
-    
-    //Set base parameterset and orignal base parameterset in support
-    support.setOriginalParameterBase(((parameterTableModel)jTableParameterList.getModel()).getListOfParameter());
-    support.setParameterBase(((parameterTableModel)jTableParameterList.getModel()).getListOfParameter());
-        
-    //Send chosen Optimizertype to support-class
-    support.setChosenOptimizerType((typeOfOptimization)this.jComboBoxOptimizationType.getSelectedItem());
-        if(this.sizeOfDesignSpace<=support.DEFAULT_MINIMUM_DESIGNSPACE_FOR_OPTIMIZATION){
-        support.log("Design space to small, no Optimization posible.");
-        support.setStatusText("Designspace to small for Opti.");
-        }else{
-                if(this.getListOfActiveMeasureMentsToOptimize().size()>=1){
+        support.setCancelEverything(false);
+        support.resetGlobalSimulationCounter();
+
+        //Set base parameterset and orignal base parameterset in support
+        support.setOriginalParameterBase(((parameterTableModel) jTableParameterList.getModel()).getListOfParameter());
+        support.setParameterBase(((parameterTableModel) jTableParameterList.getModel()).getListOfParameter());
+
+        //Send chosen Optimizertype to support-class
+        support.setChosenOptimizerType((typeOfOptimization) this.jComboBoxOptimizationType.getSelectedItem());
+        if (this.sizeOfDesignSpace <= support.DEFAULT_MINIMUM_DESIGNSPACE_FOR_OPTIMIZATION) {
+            support.log("Design space to small, no Optimization posible.");
+            support.setStatusText("Designspace to small for Opti.");
+        } else {
+            if (this.getListOfActiveMeasureMentsToOptimize().size() >= 1) {
                 this.switchUIState(uiState.processRunning);
                 //Ask for Tmp-Path
-                String tPath=(support.getPathToDirByDialog("Dir for export TMP-Files and log.\n ",  support.getTmpPath() ));
+                String tPath = (support.getPathToDirByDialog("Dir for export TMP-Files and log.\n ", support.getTmpPath()));
                 //if tmpPath is empty or null --> return
-                    if(tPath!=null){
+                if (tPath != null) {
                     support.setTmpPath(tPath);
                     this.saveProperties();
                     support.setPathToTimeNet(pathToTimeNet);
@@ -924,147 +916,143 @@ private ArrayList<Boolean> listOfUIStatesPushed;
                     support.setStatusLabel(jLabelExportStatus);
                     support.setMeasureFormPane(jTabbedPaneOptiTargets);
                     //support.setTypeOfStartValue((typeOfStartValueEnum)support.getOptimizerPreferences().jComboBoxTypeOfStartValue.getSelectedItem());
-                    
+
                     //If Parameterbase is null -->eject
-                    if(support.getParameterBase()==null){
-                    support.setStatusText("No Paramaterbase set.");
-                    support.log("No Paramaterbase set. No Simulation possible.");
-                    this.popUIState();
-                    return;
+                    if (support.getParameterBase() == null) {
+                        support.setStatusText("No Paramaterbase set.");
+                        support.log("No Paramaterbase set. No Simulation possible.");
+                        this.popUIState();
+                        return;
                     }
                     //Remove all old Optimizationstatistics
                     StatisticAggregator.removeOldOptimizationsFromList();
-                    
+
                     //Save original Parameterset, for stepping and designspace borders
                     support.setOriginalParameterBase(support.getCopyOfParameterSet(support.getParameterBase()));
                     //start Optimization via extra method, set number of multiple optimizations before
-                    support.setNumberOfOptiRunsToGo((Integer)this.jSpinnerNumberOfOptimizationRuns.getValue());
+                    support.setNumberOfOptiRunsToGo((Integer) this.jSpinnerNumberOfOptimizationRuns.getValue());
                     startOptimizationAgain();
                     /*
-                    Optimizer myOptimizer=SimOptiFactory.getOptimizer();
-                    logFileNameOfOptimizer=support.getTmpPath()+File.separator+this.getClass().getSimpleName()+"_"+Calendar.getInstance().getTimeInMillis()+support.getOptimizerPreferences().getPref_LogFileAddon()+".csv";
-                    myOptimizer.setLogFileName(logFileNameOfOptimizer);
-                    myOptimizer.initOptimizer();
-                    //Wait for end of Optimizer
-                    support.waitForOptimizerAsynchronous(myOptimizer, this);
-                    */
-                    
+                     Optimizer myOptimizer=SimOptiFactory.getOptimizer();
+                     logFileNameOfOptimizer=support.getTmpPath()+File.separator+this.getClass().getSimpleName()+"_"+Calendar.getInstance().getTimeInMillis()+support.getOptimizerPreferences().getPref_LogFileAddon()+".csv";
+                     myOptimizer.setLogFileName(logFileNameOfOptimizer);
+                     myOptimizer.initOptimizer();
+                     //Wait for end of Optimizer
+                     support.waitForOptimizerAsynchronous(myOptimizer, this);
+                     */
+
                     /*    while(myOptimizer.getOptimum()==null){
-                            try {
-                                Thread.sleep(500);
-                            } catch (InterruptedException ex) {
-                                support.log("Problem while waiting for Optimizer.");
-                            }
-                        }
-                    */
+                     try {
+                     Thread.sleep(500);
+                     } catch (InterruptedException ex) {
+                     support.log("Problem while waiting for Optimizer.");
+                     }
+                     }
+                     */
                     //support.log("Optimum found, activating the UIComponents");
-                    
-                    }else{
+                } else {
                     support.log("No Tmp-Path given, Optimization not possible.");
                     this.popUIState();
                     return;
-                    }
-                    
-                    
-                }else{
+                }
+
+            } else {
                 support.log("No Measurements to optimize for are chosen.");
                 support.setStatusText("No Measurements chosen. No Opti possible.");
-                }
-             }
+            }
+        }
     }//GEN-LAST:event_jButtonStartOptimizationActionPerformed
 
     private void jButtonPathToTimeNetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPathToTimeNetActionPerformed
-    JFileChooser fileChooser = new JFileChooser(this.getPathToTimeNet());
-    fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-    fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
-    fileChooser.setControlButtonsAreShown(true);
-    fileChooser.setDialogTitle(" Choose Dir of TimeNet ");
-    String outputDir;
+        JFileChooser fileChooser = new JFileChooser(this.getPathToTimeNet());
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
+        fileChooser.setControlButtonsAreShown(true);
+        fileChooser.setDialogTitle(" Choose Dir of TimeNet ");
+        String outputDir;
 
-
-      if (fileChooser.showDialog(this, "Choose this") == JFileChooser.APPROVE_OPTION) {
-        if(fileChooser.getSelectedFile().isDirectory() ){
-            outputDir=fileChooser.getSelectedFile().toString();
-        }else{
-            outputDir=fileChooser.getCurrentDirectory().toString();
+        if (fileChooser.showDialog(this, "Choose this") == JFileChooser.APPROVE_OPTION) {
+            if (fileChooser.getSelectedFile().isDirectory()) {
+                outputDir = fileChooser.getSelectedFile().toString();
+            } else {
+                outputDir = fileChooser.getCurrentDirectory().toString();
+            }
+            support.log("choosen outputdir: " + outputDir);
+            this.setPathToTimeNet(outputDir);
+            this.checkIfTimeNetPathIsCorrect();
+        } else {
+            support.log("No Path to TimeNet chosen.");
         }
-        support.log("choosen outputdir: "+outputDir);
-        this.setPathToTimeNet(outputDir);
-        this.checkIfTimeNetPathIsCorrect();
-      }else{
-      support.log("No Path to TimeNet chosen.");
-      }  
-        
-        
+
+
     }//GEN-LAST:event_jButtonPathToTimeNetActionPerformed
 
     private void jButtonLoadCacheFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLoadCacheFileActionPerformed
-    //JFileChooser fileChooser = new JFileChooser(this.getPathToTimeNet());
-    javax.swing.filechooser.FileFilter myFilter=new javax.swing.filechooser.FileNameExtensionFilter("csv file", "csv");
-    JFileChooser fileChooser = new JFileChooser(this.pathToLastSimulationCache);
-    fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-    fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
-    fileChooser.setControlButtonsAreShown(true);
-    fileChooser.setDialogTitle(" Choose File with cached simulation files ");
-    fileChooser.setFileFilter(myFilter);
-    String inputFile;
+        //JFileChooser fileChooser = new JFileChooser(this.getPathToTimeNet());
+        javax.swing.filechooser.FileFilter myFilter = new javax.swing.filechooser.FileNameExtensionFilter("csv file", "csv");
+        JFileChooser fileChooser = new JFileChooser(this.pathToLastSimulationCache);
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
+        fileChooser.setControlButtonsAreShown(true);
+        fileChooser.setDialogTitle(" Choose File with cached simulation files ");
+        fileChooser.setFileFilter(myFilter);
+        String inputFile;
 
-
-      if (fileChooser.showDialog(this, "Open") == JFileChooser.APPROVE_OPTION) {
-        if(fileChooser.getSelectedFile().isDirectory() ){
+        if (fileChooser.showDialog(this, "Open") == JFileChooser.APPROVE_OPTION) {
+            if (fileChooser.getSelectedFile().isDirectory()) {
+                support.log("No input file chosen!");
+                return;
+            } else {
+                inputFile = fileChooser.getSelectedFile().toString();
+            }
+            support.log("choosen input file with cached simulation results: " + inputFile);
+        } else {
             support.log("No input file chosen!");
             return;
-        }else{
-            inputFile=fileChooser.getSelectedFile().toString();
         }
-        support.log("choosen input file with cached simulation results: "+inputFile);
-      }else{
-      support.log("No input file chosen!");
-      return;
-      }  
       //this.mySimulationCache=SimOptiFactory.getSimulationCache();
-    // Should we empty the cache each time, or only at user-wish?
-    support.emptyCache();
-      this.mySimulationCache=support.getMySimulationCache();
-        if(!mySimulationCache.parseSimulationCacheFile(inputFile,((MeasurementForm)this.jTabbedPaneOptiTargets.getComponent(0)).getMeasurements(), (parameterTableModel)this.jTableParameterList.getModel(),this )){
+        // Should we empty the cache each time, or only at user-wish?
+        support.emptyCache();
+        this.mySimulationCache = support.getMySimulationCache();
+        if (!mySimulationCache.parseSimulationCacheFile(inputFile, ((MeasurementForm) this.jTabbedPaneOptiTargets.getComponent(0)).getMeasurements(), (parameterTableModel) this.jTableParameterList.getModel(), this)) {
             support.log("Wrong Simulation cache file for this SCPN!");
             support.setStatusText("Error loading cache-file!");
             return;
-        }else{
-        this.pathToLastSimulationCache=fileChooser.getSelectedFile().getPath();
-        this.saveProperties();
+        } else {
+            this.pathToLastSimulationCache = fileChooser.getSelectedFile().getPath();
+            this.saveProperties();
         }
         //If cached simulation is available activate cache as Cache/local simulation
-        if(this.checkIfCachedSimulationIsPossible()){
-        this.jComboBoxSimulationType.setSelectedItem(typeOfSimulator.Cache_Only);
-        support.setChosenSimulatorType(typeOfSimulator.Cache_Only);
+        if (this.checkIfCachedSimulationIsPossible()) {
+            this.jComboBoxSimulationType.setSelectedItem(typeOfSimulator.Cache_Only);
+            support.setChosenSimulatorType(typeOfSimulator.Cache_Only);
         }
     }//GEN-LAST:event_jButtonLoadCacheFileActionPerformed
 
     private void jComboBoxOptimizationTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxOptimizationTypeActionPerformed
-        
+
     }//GEN-LAST:event_jComboBoxOptimizationTypeActionPerformed
 
     private void jComboBoxSimulationTypeItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxSimulationTypeItemStateChanged
-        support.setChosenSimulatorType((typedef.typeOfSimulator)this.jComboBoxSimulationType.getSelectedItem());
+        support.setChosenSimulatorType((typedef.typeOfSimulator) this.jComboBoxSimulationType.getSelectedItem());
         this.saveProperties();
     }//GEN-LAST:event_jComboBoxSimulationTypeItemStateChanged
 
     private void jComboBoxOptimizationTypeItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxOptimizationTypeItemStateChanged
-        support.setChosenOptimizerType((typedef.typeOfOptimization)this.jComboBoxOptimizationType.getSelectedItem());
+        support.setChosenOptimizerType((typedef.typeOfOptimization) this.jComboBoxOptimizationType.getSelectedItem());
         this.saveProperties();
     }//GEN-LAST:event_jComboBoxOptimizationTypeItemStateChanged
 
     private void jButtonEnterURLToSimServerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEnterURLToSimServerActionPerformed
-        
-        String s = (String)JOptionPane.showInputDialog(
-                    this,
-                    "Enter URL of Simulation Server:\n",
-                    "URL of Simulation Server",
-                    JOptionPane.PLAIN_MESSAGE,
-                    null,
-                    null,
-                    support.getReMoteAddress());
+
+        String s = (String) JOptionPane.showInputDialog(
+                this,
+                "Enter URL of Simulation Server:\n",
+                "URL of Simulation Server",
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                null,
+                support.getReMoteAddress());
 
         //If a string was returned, say so.
         if ((s != null) && (s.length() > 0)) {
@@ -1075,39 +1063,36 @@ private ArrayList<Boolean> listOfUIStatesPushed;
             } catch (IOException ex) {
                 support.log("Problem setting the url to distributed simulation server.");
             }
-        }else{
-        support.log("URL of Simulation-Server was not entered!");    
+        } else {
+            support.log("URL of Simulation-Server was not entered!");
         }
     }//GEN-LAST:event_jButtonEnterURLToSimServerActionPerformed
 
     /**
-     * Checks if URL to simulation server is correct.
-     * If it` correct, button will be green, else red
+     * Checks if URL to simulation server is correct. If it` correct, button
+     * will be green, else red
      */
-    private void checkIfURLIsCorrect(){
-    String tmpURL=support.getReMoteAddress();
-    boolean checksuccessful=false;
-    support.log("Will try to check URL.");
-    try {
-        checksuccessful=support.checkRemoteAddress(tmpURL);
-    } catch (IOException ex) {
-        support.log("Problem checking the URL to disctributed simulation.");
-    }
-    
-    support.log("Checking URL of distributed simulation server.");
-    support.setDistributedSimulationAvailable(checksuccessful);
-    updateComboBoxSimulationType();
-        if(checksuccessful)
-        {
+    private void checkIfURLIsCorrect() {
+        String tmpURL = support.getReMoteAddress();
+        boolean checksuccessful = false;
+        support.log("Will try to check URL.");
+        try {
+            checksuccessful = support.checkRemoteAddress(tmpURL);
+        } catch (IOException ex) {
+            support.log("Problem checking the URL to disctributed simulation.");
+        }
+
+        support.log("Checking URL of distributed simulation server.");
+        support.setDistributedSimulationAvailable(checksuccessful);
+        updateComboBoxSimulationType();
+        if (checksuccessful) {
             jButtonEnterURLToSimServer.setBackground(Color.GREEN);
             jButtonEnterURLToSimServer.setOpaque(true);
             jButtonEnterURLToSimServer.setBorderPainted(false);
             jButtonEnterURLToSimServer.setText("RESET URL of Sim.-Server");
             this.saveProperties();
             jButtonEnterURLToSimServer.setEnabled(true);
-        }
-        else
-        {
+        } else {
             jButtonEnterURLToSimServer.setBackground(Color.RED);
             jButtonEnterURLToSimServer.setOpaque(true);
             jButtonEnterURLToSimServer.setBorderPainted(false);
@@ -1115,30 +1100,30 @@ private ArrayList<Boolean> listOfUIStatesPushed;
             jButtonEnterURLToSimServer.setEnabled(true);
         }
     }
-    
+
     private void jCheckBoxSlaveSimulatorItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBoxSlaveSimulatorItemStateChanged
         //Removed functionality
-        
+
     }//GEN-LAST:event_jCheckBoxSlaveSimulatorItemStateChanged
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-    System.exit(0);
+        System.exit(0);
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
-    StatisticAggregator.printAllStatistics();
+        StatisticAggregator.printAllStatistics();
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-    support.getMyLogFrame().setVisible(true);
+        support.getMyLogFrame().setVisible(true);
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void jMenuItemClearLogWindowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemClearLogWindowActionPerformed
-    support.getMyLogFrame().clearText();
+        support.getMyLogFrame().clearText();
     }//GEN-LAST:event_jMenuItemClearLogWindowActionPerformed
 
     private void jButtonOptiOptionsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonOptiOptionsActionPerformed
-    support.getOptimizerPreferences().setVisible(true);
+        support.getOptimizerPreferences().setVisible(true);
 
 
     }//GEN-LAST:event_jButtonOptiOptionsActionPerformed
@@ -1151,22 +1136,22 @@ private ArrayList<Boolean> listOfUIStatesPushed;
         fileChooser.setDialogTitle(" Choose Dir of R ");
         String outputDir;
 
-
         if (fileChooser.showDialog(this, "Choose this") == JFileChooser.APPROVE_OPTION) {
-          if(fileChooser.getSelectedFile().isDirectory() ){
-              outputDir=fileChooser.getSelectedFile().toString();
-          }else{
-              outputDir=fileChooser.getCurrentDirectory().toString();
-          }
-          support.log("chosen outputdir: "+outputDir);
-          this.setPathToR(outputDir);
-          this.checkIfRPathIsCorrect();
-        }else{
-        support.log("No Path to R chosen.");
-        }  
+            if (fileChooser.getSelectedFile().isDirectory()) {
+                outputDir = fileChooser.getSelectedFile().toString();
+            } else {
+                outputDir = fileChooser.getCurrentDirectory().toString();
+            }
+            support.log("chosen outputdir: " + outputDir);
+            this.setPathToR(outputDir);
+            this.checkIfRPathIsCorrect();
+        } else {
+            support.log("No Path to R chosen.");
+        }
     }//GEN-LAST:event_jButtonPathToRActionPerformed
     /**
      * Open R-Plot-Frame (R-Plot-Plugin)
+     *
      * @param evt ActionEvent
      */
     private void jButtonPlotRActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPlotRActionPerformed
@@ -1175,215 +1160,227 @@ private ArrayList<Boolean> listOfUIStatesPushed;
 
     /**
      * Show about-dialog of application
+     *
      * @param evt ActionEvent
      */
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
-    aboutDialog.setVisible(true);
+        aboutDialog.setVisible(true);
     }//GEN-LAST:event_jMenuItem5ActionPerformed
 
     /**
      * If user turns on/off logging to window, this will be set in support-class
      * It will not be saved in properties because standard is to log to a window
-     * To increase application speed or decrease system resource usage it can be deactivated
+     * To increase application speed or decrease system resource usage it can be
+     * deactivated
+     *
      * @param evt ItemEvent
      */
     private void jCheckBoxMenuItemLogToWindowItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItemLogToWindowItemStateChanged
-    support.setLogToWindow(this.jCheckBoxMenuItemLogToWindow.isSelected());
+        support.setLogToWindow(this.jCheckBoxMenuItemLogToWindow.isSelected());
     }//GEN-LAST:event_jCheckBoxMenuItemLogToWindowItemStateChanged
 
     /**
      * If user turns on/off logging to file, this will be set in support-class
-     * It will not be saved in properties because standard is not to log to a file
+     * It will not be saved in properties because standard is not to log to a
+     * file
      */
     private void jCheckBoxMenuItemLogToFileItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItemLogToFileItemStateChanged
-    support.setLogToFile(this.jCheckBoxMenuItemLogToFile.isSelected());
+        support.setLogToFile(this.jCheckBoxMenuItemLogToFile.isSelected());
     }//GEN-LAST:event_jCheckBoxMenuItemLogToFileItemStateChanged
 
     /**
-     * Clear logfile/delete log file
-     * User will be asked in a dialog if he really wants to delete log file
+     * Clear logfile/delete log file User will be asked in a dialog if he really
+     * wants to delete log file
+     *
      * @param evt ActionEvent
      */
     private void jMenuItemClearLogFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemClearLogFileActionPerformed
-    //Show dialog, if yes, delete file
-    JOptionPane pane = new JOptionPane(
-        "To be or not to be ?\nThat is the question.");
-    Object[] options = new String[] { "Yes, Delete log file!", "No / Cancel" };
-    pane.setOptions(options);
-    JDialog dialog = pane.createDialog(new JFrame(), "Delete Log file?");
-    dialog.setVisible(true);
-    Object obj = pane.getValue();
-    int result = -1;
-        for (int k = 0; k < options.length; k++){
-            if (options[k].equals(obj)){
-            result = k;
+        //Show dialog, if yes, delete file
+        JOptionPane pane = new JOptionPane(
+                "To be or not to be ?\nThat is the question.");
+        Object[] options = new String[]{"Yes, Delete log file!", "No / Cancel"};
+        pane.setOptions(options);
+        JDialog dialog = pane.createDialog(new JFrame(), "Delete Log file?");
+        dialog.setVisible(true);
+        Object obj = pane.getValue();
+        int result = -1;
+        for (int k = 0; k < options.length; k++) {
+            if (options[k].equals(obj)) {
+                result = k;
             }
         }
-        
-        if(result==0){
-        support.deleteLogFile();
+
+        if (result == 0) {
+            support.deleteLogFile();
         }
 
     }//GEN-LAST:event_jMenuItemClearLogFileActionPerformed
 
     /**
-     * Everytime the Benchmark-function is changed by user, this will be saved to properties
+     * Everytime the Benchmark-function is changed by user, this will be saved
+     * to properties
+     *
      * @param evt ItemChangedEvent
      */
     private void jComboBoxBenchmarkFunctionItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxBenchmarkFunctionItemStateChanged
-    support.setChosenBenchmarkFunction((typeOfBenchmarkFunction)this.jComboBoxBenchmarkFunction.getSelectedItem());
-    this.saveProperties();
+        support.setChosenBenchmarkFunction((typeOfBenchmarkFunction) this.jComboBoxBenchmarkFunction.getSelectedItem());
+        this.saveProperties();
     }//GEN-LAST:event_jComboBoxBenchmarkFunctionItemStateChanged
 
     /**
      * A click on the memorybar will cause a print of Memory statistics to log
      */
     private void jProgressBarMemoryUsageMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jProgressBarMemoryUsageMouseClicked
-    support.printMemoryStats();
+        support.printMemoryStats();
     }//GEN-LAST:event_jProgressBarMemoryUsageMouseClicked
     /**
-     * This method is called when checkbox for slave-simulation is clicked
-     * If slave-mode was activated, it will be deactivated and slave thread will try to end
-     * If slave mode was deactivated, program will ask for tmp-path and if successful, start the client thread
-     * while program is in cleint mode, all buttons will be deactivated
+     * This method is called when checkbox for slave-simulation is clicked If
+     * slave-mode was activated, it will be deactivated and slave thread will
+     * try to end If slave mode was deactivated, program will ask for tmp-path
+     * and if successful, start the client thread while program is in cleint
+     * mode, all buttons will be deactivated
+     *
      * @param evt Event from mouseclick
      */
     private void jCheckBoxSlaveSimulatorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jCheckBoxSlaveSimulatorMouseClicked
          //set Property for startup
         //start the Slave-Thread
-        
+
         //If is selected and will be unselected then stop thread
-        if(!this.jCheckBoxSlaveSimulator.isSelected()){
-        this.mySlave.setShouldEnd(true);
-        if(support.isIsRunningAsSlave()){
-            this.popUIState();            
-        }
-        support.setIsRunningAsSlave(false);               
-        this.saveProperties();
-        }else{
-        String tmpPath=support.getPathToDirByDialog("Dir for export TMP-Files and log.\n ", support.getTmpPath() );
-        
-            if(tmpPath!=null){
-            support.setTmpPath(tmpPath);
-                if(support.checkTimeNetPath()){
-                //TimeNet-Path ok, we can start
-                support.setIsRunningAsSlave(true);
-                    if(support.isIsRunningAsSlave()){
-                    support.log("Tmp Path ok and timenetpath ok, try to start slave-thread.");
-                    this.mySlave.setShouldEnd(false);
-                    this.saveProperties();
-                    new Thread(this.mySlave).start();
-                    this.jCheckBoxSlaveSimulator.setSelected(true);
-                    this.switchUIState(uiState.clientState);
-                    }
-                }
-            }else{
-            //No tmp path selected -->eject
-            support.log("No Tmp Path selected for slave mode.");
-            this.jCheckBoxSlaveSimulator.setSelected(false);
+        if (!this.jCheckBoxSlaveSimulator.isSelected()) {
+            this.mySlave.setShouldEnd(true);
+            if (support.isIsRunningAsSlave()) {
+                this.popUIState();
+            }
             support.setIsRunningAsSlave(false);
             this.saveProperties();
+        } else {
+            String tmpPath = support.getPathToDirByDialog("Dir for export TMP-Files and log.\n ", support.getTmpPath());
+
+            if (tmpPath != null) {
+                support.setTmpPath(tmpPath);
+                if (support.checkTimeNetPath()) {
+                    //TimeNet-Path ok, we can start
+                    support.setIsRunningAsSlave(true);
+                    if (support.isIsRunningAsSlave()) {
+                        support.log("Tmp Path ok and timenetpath ok, try to start slave-thread.");
+                        this.mySlave.setShouldEnd(false);
+                        this.saveProperties();
+                        new Thread(this.mySlave).start();
+                        this.jCheckBoxSlaveSimulator.setSelected(true);
+                        this.switchUIState(uiState.clientState);
+                    }
+                }
+            } else {
+                //No tmp path selected -->eject
+                support.log("No Tmp Path selected for slave mode.");
+                this.jCheckBoxSlaveSimulator.setSelected(false);
+                support.setIsRunningAsSlave(false);
+                this.saveProperties();
             }
         }
     }//GEN-LAST:event_jCheckBoxSlaveSimulatorMouseClicked
 
     private void jCheckBoxSlaveSimulatorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxSlaveSimulatorActionPerformed
-        
+
     }//GEN-LAST:event_jCheckBoxSlaveSimulatorActionPerformed
 
     /**
      * Calculates the design space, number of all permutations of parameters
      * with respect to the stepping sizes
      */
-    public void calculateDesignSpace(){
-        myGenerator=new generator(ListOfParameterSetsToBeWritten, fileName, jLabelExportStatus, this, jTableParameterList);
-        this.sizeOfDesignSpace=myGenerator.getSizeOfDesignspace();
-        support.setStatusText("Designspace-Size:"+ sizeOfDesignSpace);
+    public void calculateDesignSpace() {
+        myGenerator = new generator(ListOfParameterSetsToBeWritten, fileName, jLabelExportStatus, this, jTableParameterList);
+        this.sizeOfDesignSpace = myGenerator.getSizeOfDesignspace();
+        support.setStatusText("Designspace-Size:" + sizeOfDesignSpace);
 
-        if(sizeOfDesignSpace>support.DEFAULT_MINIMUM_DESIGNSPACE_FOR_OPTIMIZATION){
-        this.jButtonStartOptimization.setEnabled(true);
-        }else{
-        this.jButtonStartOptimization.setEnabled(false);
-        support.log("Design space smaller then "+support.DEFAULT_MINIMUM_DESIGNSPACE_FOR_OPTIMIZATION+". Optimization not possible!");
-        support.setStatusText(jLabelExportStatus.getText()+". DS to small for Optimization.");
+        if (sizeOfDesignSpace > support.DEFAULT_MINIMUM_DESIGNSPACE_FOR_OPTIMIZATION) {
+            this.jButtonStartOptimization.setEnabled(true);
+        } else {
+            this.jButtonStartOptimization.setEnabled(false);
+            support.log("Design space smaller then " + support.DEFAULT_MINIMUM_DESIGNSPACE_FOR_OPTIMIZATION + ". Optimization not possible!");
+            support.setStatusText(jLabelExportStatus.getText() + ". DS to small for Optimization.");
         }
     }
 
-    
     /**
      * Builds list of parametersets based on parameters and steppings from table
      * is used recursive
+     *
      * @param ListOfParameterAsFromTable List of parameters from table
-     * @param ListOfParameterSetsToBeWritten List of parameterset to be simulated, this is the designspace
+     * @param ListOfParameterSetsToBeWritten List of parameterset to be
+     * simulated, this is the designspace
      * @param lastParameterSet the last parameterset while generating recursive
      * @param infoLabel Label to display some information while generating
      */
-    public void buildListOfParameterSetsToExport(ArrayList ListOfParameterSetsToBeWritten, ArrayList ListOfParameterAsFromTable, ArrayList<parameter> lastParameterSet, JLabel infoLabel){
-    boolean isAlreadyInExportList=false;
-    
-    if(support.isCancelEverything()){
-    this.activateReloadButtons();
-        return;
-    }
-        if(ListOfParameterAsFromTable.size()>0){
-        parameter loopParameter=(parameter)ListOfParameterAsFromTable.get(ListOfParameterAsFromTable.size()-1);
+    public void buildListOfParameterSetsToExport(ArrayList ListOfParameterSetsToBeWritten, ArrayList ListOfParameterAsFromTable, ArrayList<parameter> lastParameterSet, JLabel infoLabel) {
+        boolean isAlreadyInExportList = false;
 
-        ListOfParameterAsFromTable.remove(loopParameter);
-
-        String loopName=loopParameter.getName();
-        boolean canIterate=true;
-
-        double start=1, end=1, step=1;
-            try{
-            start=support.getDouble(loopParameter.getStartValue());
-            end=support.getDouble(loopParameter.getEndValue());
-            step=support.getDouble(loopParameter.getStepping());
-            canIterate=true;
-            }catch(NumberFormatException e){
-            support.log("Could not convert into double, maybe String is used. Will not iterate through parameter "+loopParameter.getName());
+        if (support.isCancelEverything()) {
+            this.activateReloadButtons();
             return;
+        }
+        if (ListOfParameterAsFromTable.size() > 0) {
+            parameter loopParameter = (parameter) ListOfParameterAsFromTable.get(ListOfParameterAsFromTable.size() - 1);
+
+            ListOfParameterAsFromTable.remove(loopParameter);
+
+            String loopName = loopParameter.getName();
+            boolean canIterate = true;
+
+            double start = 1, end = 1, step = 1;
+            try {
+                start = support.getDouble(loopParameter.getStartValue());
+                end = support.getDouble(loopParameter.getEndValue());
+                step = support.getDouble(loopParameter.getStepping());
+                canIterate = true;
+            } catch (NumberFormatException e) {
+                support.log("Could not convert into double, maybe String is used. Will not iterate through parameter " + loopParameter.getName());
+                return;
             }
 
-            if(canIterate){
-            double usedValue;
-            int endCounter=1;
-                    if((end-start)>0){
-                        endCounter=(int)Math.ceil((end-start)/step) +1 ;
-                    }
-            
-                for(int i=0;i<endCounter;i++){
-                usedValue=start+(double)i*step;
-                usedValue=support.round(usedValue);
-                ArrayList<parameter> nextParameterSet = new ArrayList<parameter>();
-                    //Get copy of parameterset
-                    for(int c=0;c<lastParameterSet.size();c++){
-                        try{nextParameterSet.add((parameter) lastParameterSet.get(c).clone());}
-                        catch(CloneNotSupportedException e){
-                        support.log("Clone is not Supported:"+e.toString());
-                        }
-
-                    }
-
-                    for(int c=0;c<nextParameterSet.size();c++){
-                        if(nextParameterSet.get(c).getName().equals(loopName)){
-                        //set modified parameterset
-                        nextParameterSet.get(c).setValue(usedValue);
-                        }
-                    }
-                if(ListOfParameterAsFromTable.size()==0){
-                addToListOfParameterSetsToBeWritten(nextParameterSet);}
-                //call this method again with reduced parameterset
-                buildListOfParameterSetsToExport(ListOfParameterSetsToBeWritten, ListOfParameterAsFromTable, nextParameterSet, infoLabel);
+            if (canIterate) {
+                double usedValue;
+                int endCounter = 1;
+                if ((end - start) > 0) {
+                    endCounter = (int) Math.ceil((end - start) / step) + 1;
                 }
-            }else{
+
+                for (int i = 0; i < endCounter; i++) {
+                    usedValue = start + (double) i * step;
+                    usedValue = support.round(usedValue);
+                    ArrayList<parameter> nextParameterSet = new ArrayList<parameter>();
+                    //Get copy of parameterset
+                    for (int c = 0; c < lastParameterSet.size(); c++) {
+                        try {
+                            nextParameterSet.add((parameter) lastParameterSet.get(c).clone());
+                        } catch (CloneNotSupportedException e) {
+                            support.log("Clone is not Supported:" + e.toString());
+                        }
+
+                    }
+
+                    for (int c = 0; c < nextParameterSet.size(); c++) {
+                        if (nextParameterSet.get(c).getName().equals(loopName)) {
+                            //set modified parameterset
+                            nextParameterSet.get(c).setValue(usedValue);
+                        }
+                    }
+                    if (ListOfParameterAsFromTable.size() == 0) {
+                        addToListOfParameterSetsToBeWritten(nextParameterSet);
+                    }
+                    //call this method again with reduced parameterset
+                    buildListOfParameterSetsToExport(ListOfParameterSetsToBeWritten, ListOfParameterAsFromTable, nextParameterSet, infoLabel);
+                }
+            } else {
                 //check if entry ia already in list
                 //no more used...
-                isAlreadyInExportList=false; 
+                isAlreadyInExportList = false;
             }
-        ListOfParameterAsFromTable.add(loopParameter);
-        
-        }else{
-        //Exit the loop, popup
+            ListOfParameterAsFromTable.add(loopParameter);
+
+        } else {
+            //Exit the loop, popup
         }
     }
 
@@ -1438,324 +1435,321 @@ private ArrayList<Boolean> listOfUIStatesPushed;
     private timenetexperimentgenerator.MeasurementForm measurementForm1;
     // End of variables declaration//GEN-END:variables
 
-
     /**
      * Reads the xml-file of SCPN and sets the User Interface
+     *
      * @param filename String name of the SCPN-File to read
      */
-    private void readSCPNFile(String filename){
+    private void readSCPNFile(String filename) {
         deactivateExportButtons();
-        try{
-        DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-	DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-	Document doc = docBuilder.parse(filename);
-        NodeList parameterList=doc.getElementsByTagName("parameter");
+        try {
+            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+            Document doc = docBuilder.parse(filename);
+            NodeList parameterList = doc.getElementsByTagName("parameter");
 
-            for(int i=0;i<parameterList.getLength();i++){
-            support.log(parameterList.item(i).getAttributes().getNamedItem("name").getNodeValue());
+            for (int i = 0; i < parameterList.getLength(); i++) {
+                support.log(parameterList.item(i).getAttributes().getNamedItem("name").getNodeValue());
             }
-        jTableParameterList.setModel(new parameterTableModel(parameterList, this));
-        jTableParameterList.getModel().addTableModelListener(this);
+            jTableParameterList.setModel(new parameterTableModel(parameterList, this));
+            jTableParameterList.getModel().addTableModelListener(this);
 
-        
-        //Measures auslesen
-        NodeList MeasurenameList=doc.getElementsByTagName("measure");
-        if(MeasurenameList.getLength()>=1){
-        ArrayList<MeasureType> Measures=new ArrayList();
-        support.log("****** Measure-Names ******");
-            for(int i=0;i<MeasurenameList.getLength();i++){
-            support.log(MeasurenameList.item(i).getAttributes().getNamedItem("name").getNodeValue());
-            MeasureType tmpMeasure=new MeasureType();
-            tmpMeasure.setMeasureName(MeasurenameList.item(i).getAttributes().getNamedItem("name").getNodeValue());
-            Measures.add(tmpMeasure);
+            //Measures auslesen
+            NodeList MeasurenameList = doc.getElementsByTagName("measure");
+            if (MeasurenameList.getLength() >= 1) {
+                ArrayList<MeasureType> Measures = new ArrayList();
+                support.log("****** Measure-Names ******");
+                for (int i = 0; i < MeasurenameList.getLength(); i++) {
+                    support.log(MeasurenameList.item(i).getAttributes().getNamedItem("name").getNodeValue());
+                    MeasureType tmpMeasure = new MeasureType();
+                    tmpMeasure.setMeasureName(MeasurenameList.item(i).getAttributes().getNamedItem("name").getNodeValue());
+                    Measures.add(tmpMeasure);
+                }
+
+                for (int i = 0; i < this.jTabbedPaneOptiTargets.getComponentCount(); i++) {
+                    ((MeasurementForm) this.jTabbedPaneOptiTargets.getComponent(i)).setMeasurements(Measures);
+                }
+
             }
-        
-            for(int i=0;i<this.jTabbedPaneOptiTargets.getComponentCount();i++){
-            ((MeasurementForm)this.jTabbedPaneOptiTargets.getComponent(i)).setMeasurements(Measures);
-            }
-        
-        }
-        
-        
-        this.fileName=filename;//nach Erfolg, globalen filename setzen
-        support.setOriginalFilename(filename);
-        activateGenerateButtons();
-        activateReloadButtons();
-        }catch(ParserConfigurationException e){
+
+            this.fileName = filename;//nach Erfolg, globalen filename setzen
+            support.setOriginalFilename(filename);
+            activateGenerateButtons();
+            activateReloadButtons();
+        } catch (ParserConfigurationException e) {
         } catch (SAXException e) {
         } catch (IOException e) {
         } catch (DOMException e) {
         }
         tableChanged(null);
     }
-    
+
     /**
      * removed duplicate parametersets, not used anymore?
-     * @param ListOfParameterSetsToBeWritten List of parametersets to be checked for duplicates
+     *
+     * @param ListOfParameterSetsToBeWritten List of parametersets to be checked
+     * for duplicates
      * @param infoLabel label to print out some information while checking
      * @return List of parametersets without duplicates
      */
-    public ArrayList<parameter[]> removeDuplicates(ArrayList<parameter[]> ListOfParameterSetsToBeWritten, JLabel infoLabel){
-    ArrayList<parameter[]> tmpList=new ArrayList();
-    boolean existsInOutPutList=false;
-        for(int i=0; i<ListOfParameterSetsToBeWritten.size();i++){
-        infoLabel.setText("Checking "+i+"/"+ListOfParameterSetsToBeWritten.size());
-        if(support.isCancelEverything()){
-        infoLabel.setText("Operation canceled");
-        this.activateReloadButtons();
-        return null;
-        }
-        parameter[] tmpParameterSet=(parameter[])ListOfParameterSetsToBeWritten.get(i);
-        existsInOutPutList=false;
-            if(tmpList.size()>0){
-                for(int c=0;c<tmpList.size();c++){
-                    parameter[] tmpListParameter=(parameter[])tmpList.get(c);
-                    long tmpParameterSetID=getIDOfParameterSet(tmpParameterSet);
-                    long tmpListParameterID=getIDOfParameterSet(tmpListParameter);
+    public ArrayList<parameter[]> removeDuplicates(ArrayList<parameter[]> ListOfParameterSetsToBeWritten, JLabel infoLabel) {
+        ArrayList<parameter[]> tmpList = new ArrayList();
+        boolean existsInOutPutList = false;
+        for (int i = 0; i < ListOfParameterSetsToBeWritten.size(); i++) {
+            infoLabel.setText("Checking " + i + "/" + ListOfParameterSetsToBeWritten.size());
+            if (support.isCancelEverything()) {
+                infoLabel.setText("Operation canceled");
+                this.activateReloadButtons();
+                return null;
+            }
+            parameter[] tmpParameterSet = (parameter[]) ListOfParameterSetsToBeWritten.get(i);
+            existsInOutPutList = false;
+            if (tmpList.size() > 0) {
+                for (int c = 0; c < tmpList.size(); c++) {
+                    parameter[] tmpListParameter = (parameter[]) tmpList.get(c);
+                    long tmpParameterSetID = getIDOfParameterSet(tmpParameterSet);
+                    long tmpListParameterID = getIDOfParameterSet(tmpListParameter);
                     /*
-                    support.log("P1: "+tmpParemeterSetID);
-                    support.log("P2: "+tmpListParameterID);
-                    * */
+                     support.log("P1: "+tmpParemeterSetID);
+                     support.log("P2: "+tmpListParameterID);
+                     * */
 
-                    if(tmpListParameterID==tmpParameterSetID){
-                    existsInOutPutList=true;
-                    support.log("These Parameters are equal:");
-                    support.log(tmpParameterSetID + " and " + tmpListParameterID);
-                    printParameterSetCompare(tmpParameterSet, tmpListParameter);
-                    
+                    if (tmpListParameterID == tmpParameterSetID) {
+                        existsInOutPutList = true;
+                        support.log("These Parameters are equal:");
+                        support.log(tmpParameterSetID + " and " + tmpListParameterID);
+                        printParameterSetCompare(tmpParameterSet, tmpListParameter);
+
                     }
                 }
             }
-            if(!existsInOutPutList){
-            tmpList.add(tmpParameterSet);
+            if (!existsInOutPutList) {
+                tmpList.add(tmpParameterSet);
             }
         }
         /*
-        support.log("Size of List without duplicates: "+tmpList.size());
-        for(int i=0;i<tmpList.size();i++){
-        support.log("P-ID: "+ getIDOfParameterSet(tmpList.get(i)) );
-        }
+         support.log("Size of List without duplicates: "+tmpList.size());
+         for(int i=0;i<tmpList.size();i++){
+         support.log("P-ID: "+ getIDOfParameterSet(tmpList.get(i)) );
+         }
          */
-    return tmpList;
+        return tmpList;
     }
 
     /**
      * Returns id of a parameterset to compare with other parametersets
+     *
      * @param parameterset Set of parameters to calculate the id from
      * @return ID of whole parameterset
      */
-    public long getIDOfParameterSet(parameter[] parameterset){
-    long id=0;
-    String tmpString="";
-    //Arrays.sort(parameterset);
-        for(int i=0;i<parameterset.length;i++){
-        id=id+parameterset[i].getID();
-        //support.log("ID of:"+ parameterset[i].getName()+" is " +parameterset[i].getID());
-        tmpString=tmpString+String.valueOf(parameterset[i].getID());
+    public long getIDOfParameterSet(parameter[] parameterset) {
+        long id = 0;
+        String tmpString = "";
+        //Arrays.sort(parameterset);
+        for (int i = 0; i < parameterset.length; i++) {
+            id = id + parameterset[i].getID();
+            //support.log("ID of:"+ parameterset[i].getName()+" is " +parameterset[i].getID());
+            tmpString = tmpString + String.valueOf(parameterset[i].getID());
         }
-    //return id;
-    return (long)tmpString.hashCode();
+        //return id;
+        return (long) tmpString.hashCode();
     }
-
-    
 
     /**
      * Starts and restarts the generator Thread
      */
-    public void restartGenerator(){
-    support.setCancelEverything(false);
-    myGenerator=null;
-    ListOfParameterSetIds=new ArrayList<Long>();
-    ListOfParameterSetsToBeWritten=new ArrayList<ArrayList<parameter>>();
-    myGenerator=new generator(ListOfParameterSetsToBeWritten, fileName, jLabelExportStatus, this, jTableParameterList);
-    myGenerator.start();
-    support.waitForGeneratorAsynchronous(myGenerator, this);
+    public void restartGenerator() {
+        support.setCancelEverything(false);
+        myGenerator = null;
+        ListOfParameterSetIds = new ArrayList<Long>();
+        ListOfParameterSetsToBeWritten = new ArrayList<ArrayList<parameter>>();
+        myGenerator = new generator(ListOfParameterSetsToBeWritten, fileName, jLabelExportStatus, this, jTableParameterList);
+        myGenerator.start();
+        support.waitForGeneratorAsynchronous(myGenerator, this);
     }
 
-
     /**
-     * Recalculates the size of designspace after Table has changed
-     * Sends List of possible internal parameter to optimizer-preferences
+     * Recalculates the size of designspace after Table has changed Sends List
+     * of possible internal parameter to optimizer-preferences
+     *
      * @param e
      */
     public void tableChanged(TableModelEvent e) {
     //support.log("Editing of Cell stopped, restarting generator.");
-    //this.restartGenerator();
-    jButtonStartBatchSimulation.setEnabled(false);
-    readStaticParametersFromTable();
-    saveProperties();
-    calculateDesignSpace();
-    checkIfCachedSimulationIsPossible();
-        if(this.jComboBoxSimulationType.getSelectedItem().equals(typeOfSimulator.Cache_Only)){
-            if(!support.isCachedSimulationAvailable()){
-            this.jComboBoxSimulationType.setSelectedItem(typeOfSimulator.Cached_Local);
-            support.setChosenSimulatorType(typeOfSimulator.Cached_Local);
+        //this.restartGenerator();
+        jButtonStartBatchSimulation.setEnabled(false);
+        readStaticParametersFromTable();
+        saveProperties();
+        calculateDesignSpace();
+        checkIfCachedSimulationIsPossible();
+        if (this.jComboBoxSimulationType.getSelectedItem().equals(typeOfSimulator.Cache_Only)) {
+            if (!support.isCachedSimulationAvailable()) {
+                this.jComboBoxSimulationType.setSelectedItem(typeOfSimulator.Cached_Local);
+                support.setChosenSimulatorType(typeOfSimulator.Cached_Local);
             }
         }
-    ArrayList<parameter> myParameterList= ((parameterTableModel)this.jTableParameterList.getModel()).getListOfParameter();
-    ArrayList<parameter> resultParameterList=new ArrayList<parameter>();
-        for(int i=0;i<myParameterList.size();i++){
-        parameter p=myParameterList.get(i);
-            if( !p.isExternalParameter() && !p.isIteratable() ){
-            resultParameterList.add(p);
+        ArrayList<parameter> myParameterList = ((parameterTableModel) this.jTableParameterList.getModel()).getListOfParameter();
+        ArrayList<parameter> resultParameterList = new ArrayList<parameter>();
+        for (int i = 0; i < myParameterList.size(); i++) {
+            parameter p = myParameterList.get(i);
+            if (!p.isExternalParameter() && !p.isIteratable()) {
+                resultParameterList.add(p);
             }
         }
-    support.getOptimizerPreferences().setPossibleInternalParameters(resultParameterList);
+        support.getOptimizerPreferences().setPossibleInternalParameters(resultParameterList);
     }
 
     /**
      * Reads the simulation-parameters from table (not SCPN-Specific parameters)
      * and stores these parameters in local fields
      */
-    private void readStaticParametersFromTable(){
-    
-    this.pConfidenceIntervall.setStartValue( ((parameterTableModel)this.jTableParameterList.getModel()).getDoubleValueByName("ConfidenceIntervall", "StartValue")) ;
-    this.pConfidenceIntervall.setEndValue( ((parameterTableModel)this.jTableParameterList.getModel()).getDoubleValueByName("ConfidenceIntervall", "EndValue")) ;
-    this.pConfidenceIntervall.setStepping( ((parameterTableModel)this.jTableParameterList.getModel()).getDoubleValueByName("ConfidenceIntervall", "Stepping")) ;
+    private void readStaticParametersFromTable() {
 
-    this.pEndTime.setStartValue( ((parameterTableModel)this.jTableParameterList.getModel()).getDoubleValueByName("EndTime", "StartValue")) ;
-    this.pEndTime.setEndValue( ((parameterTableModel)this.jTableParameterList.getModel()).getDoubleValueByName("EndTime", "EndValue")) ;
-    this.pEndTime.setStepping( ((parameterTableModel)this.jTableParameterList.getModel()).getDoubleValueByName("EndTime", "Stepping")) ;
+        this.pConfidenceIntervall.setStartValue(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("ConfidenceIntervall", "StartValue"));
+        this.pConfidenceIntervall.setEndValue(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("ConfidenceIntervall", "EndValue"));
+        this.pConfidenceIntervall.setStepping(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("ConfidenceIntervall", "Stepping"));
 
-    this.pMaxTime.setStartValue( ((parameterTableModel)this.jTableParameterList.getModel()).getDoubleValueByName("MaxTime", "StartValue")) ;
-    this.pMaxTime.setEndValue( ((parameterTableModel)this.jTableParameterList.getModel()).getDoubleValueByName("MaxTime", "EndValue")) ;
-    this.pMaxTime.setStepping( ((parameterTableModel)this.jTableParameterList.getModel()).getDoubleValueByName("MaxTime", "Stepping")) ;
+        this.pEndTime.setStartValue(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("EndTime", "StartValue"));
+        this.pEndTime.setEndValue(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("EndTime", "EndValue"));
+        this.pEndTime.setStepping(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("EndTime", "Stepping"));
 
-    this.pSeed.setStartValue( ((parameterTableModel)this.jTableParameterList.getModel()).getDoubleValueByName("Seed", "StartValue")) ;
-    this.pSeed.setEndValue( ((parameterTableModel)this.jTableParameterList.getModel()).getDoubleValueByName("Seed", "EndValue")) ;
-    this.pSeed.setStepping( ((parameterTableModel)this.jTableParameterList.getModel()).getDoubleValueByName("Seed", "Stepping")) ;
+        this.pMaxTime.setStartValue(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("MaxTime", "StartValue"));
+        this.pMaxTime.setEndValue(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("MaxTime", "EndValue"));
+        this.pMaxTime.setStepping(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("MaxTime", "Stepping"));
 
-    this.pMaxError.setStartValue( ((parameterTableModel)this.jTableParameterList.getModel()).getDoubleValueByName("MaxRelError", "StartValue")) ;
-    this.pMaxError.setEndValue( ((parameterTableModel)this.jTableParameterList.getModel()).getDoubleValueByName("MaxRelError", "EndValue")) ;
-    this.pMaxError.setStepping( ((parameterTableModel)this.jTableParameterList.getModel()).getDoubleValueByName("MaxRelError", "Stepping")) ;
+        this.pSeed.setStartValue(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("Seed", "StartValue"));
+        this.pSeed.setEndValue(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("Seed", "EndValue"));
+        this.pSeed.setStepping(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("Seed", "Stepping"));
+
+        this.pMaxError.setStartValue(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("MaxRelError", "StartValue"));
+        this.pMaxError.setEndValue(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("MaxRelError", "EndValue"));
+        this.pMaxError.setStepping(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("MaxRelError", "Stepping"));
 
     }
 
     /**
      * Sets the Export-Button for Experiments/Simulations De-active
      */
-    protected final void deactivateExportButtons(){
-    this.jButtonExport.setEnabled(false);
-    this.jButtonStartBatchSimulation.setEnabled(false);
-    //this.jButtonOpenSCPN.setEnabled(false);
-    this.jButtonReload.setEnabled(false);
-    this.jButtonStartOptimization.setEnabled(false);
-    this.jButtonGenerateListOfExperiments.setEnabled(false);
+    protected final void deactivateExportButtons() {
+        this.jButtonExport.setEnabled(false);
+        this.jButtonStartBatchSimulation.setEnabled(false);
+        //this.jButtonOpenSCPN.setEnabled(false);
+        this.jButtonReload.setEnabled(false);
+        this.jButtonStartOptimization.setEnabled(false);
+        this.jButtonGenerateListOfExperiments.setEnabled(false);
     }
+
     /**
      * Sets the Export-Button for Experiments/Simulations active
      */
-    public void activateExportButtons(){
-    this.jButtonExport.setEnabled(true);
-    //this.jButtonOpenSCPN.setEnabled(true);
-    this.jButtonReload.setEnabled(true);
-    //this.jButtonStartOptimization.setEnabled(true);
-    this.jButtonGenerateListOfExperiments.setEnabled(true);
-    this.checkIfTimeNetPathIsCorrect();
+    public void activateExportButtons() {
+        this.jButtonExport.setEnabled(true);
+        //this.jButtonOpenSCPN.setEnabled(true);
+        this.jButtonReload.setEnabled(true);
+        //this.jButtonStartOptimization.setEnabled(true);
+        this.jButtonGenerateListOfExperiments.setEnabled(true);
+        this.checkIfTimeNetPathIsCorrect();
     }
+
     /**
      * Sets the Reload-SCPN-Button and open-SCPN-Button active
      */
-    public void activateReloadButtons(){
-    this.jButtonOpenSCPN.setEnabled(true);
-    this.jButtonReload.setEnabled(true);
+    public void activateReloadButtons() {
+        this.jButtonOpenSCPN.setEnabled(true);
+        this.jButtonReload.setEnabled(true);
     }
+
     /**
      * Sets the Generate- and OptimizeButtons active
      */
-    public void activateGenerateButtons(){
-    //this.jButtonStartOptimization.setEnabled(true);
-    this.jButtonGenerateListOfExperiments.setEnabled(true);
-    //this.jButtonStartBatchSimulation.setEnabled(true);
+    public void activateGenerateButtons() {
+        //this.jButtonStartOptimization.setEnabled(true);
+        this.jButtonGenerateListOfExperiments.setEnabled(true);
+        //this.jButtonStartBatchSimulation.setEnabled(true);
     }
 
-    
     /*
-    * Checks, if given Path to TimeNet is correct
-    * If correct, then install new "RemoteSystem Client.config"
-    */
-    private void checkIfTimeNetPathIsCorrect(){
-    String path=this.getPathToTimeNet();//jTextFieldPathToTimeNet.getText();
-    File tmpFile=new File(path+File.separator+"TimeNET.jar");
-    support.log("TimeNet should be here: "+tmpFile.getAbsolutePath());
-        if(tmpFile.exists()){
-        this.jButtonStartBatchSimulation.setEnabled(true);
-        //this.jLabelCheckPathToTimeNet.setVisible(false);
-        jButtonPathToTimeNet.setBackground(Color.GREEN);
-        jButtonPathToTimeNet.setOpaque(true);
-        jButtonPathToTimeNet.setBorderPainted(false);
-        jButtonPathToTimeNet.setText("RESET Path To TimeNet");
-        //jButtonStartOptimization.setEnabled(true);
-        support.setPathToTimeNet(path);
-        this.pathToTimeNet=path;
-        this.saveProperties();
+     * Checks, if given Path to TimeNet is correct
+     * If correct, then install new "RemoteSystem Client.config"
+     */
+    private void checkIfTimeNetPathIsCorrect() {
+        String path = this.getPathToTimeNet();//jTextFieldPathToTimeNet.getText();
+        File tmpFile = new File(path + File.separator + "TimeNET.jar");
+        support.log("TimeNet should be here: " + tmpFile.getAbsolutePath());
+        if (tmpFile.exists()) {
+            this.jButtonStartBatchSimulation.setEnabled(true);
+            //this.jLabelCheckPathToTimeNet.setVisible(false);
+            jButtonPathToTimeNet.setBackground(Color.GREEN);
+            jButtonPathToTimeNet.setOpaque(true);
+            jButtonPathToTimeNet.setBorderPainted(false);
+            jButtonPathToTimeNet.setText("RESET Path To TimeNet");
+            //jButtonStartOptimization.setEnabled(true);
+            support.setPathToTimeNet(path);
+            this.pathToTimeNet = path;
+            this.saveProperties();
             //Try to install "RemoteSystem Client.config"
-            try{
-            InputStream ddlStream = this.getClass().getClassLoader().getResourceAsStream("timenetexperimentgenerator/RemoteSystem Client.config");
+            try {
+                InputStream ddlStream = this.getClass().getClassLoader().getResourceAsStream("timenetexperimentgenerator/RemoteSystem Client.config");
                 FileOutputStream fos = null;
                 try {
-                    fos = new FileOutputStream(path+File.separator+"RemoteSystem Client.config");
+                    fos = new FileOutputStream(path + File.separator + "RemoteSystem Client.config");
                     byte[] buf = new byte[2048];
                     int r = ddlStream.read(buf);
-                    while(r != -1) {
+                    while (r != -1) {
                         fos.write(buf, 0, r);
                         r = ddlStream.read(buf);
                     }
                 } finally {
-                    if(fos != null) {
+                    if (fos != null) {
                         fos.close();
                     }
                 }
-            }catch(IOException e){
-            support.log("Failed to install RemoteSystem Clent.config");
+            } catch (IOException e) {
+                support.log("Failed to install RemoteSystem Clent.config");
             }
-        }else{
-        
-        this.jButtonStartBatchSimulation.setEnabled(false);
-        //this.jLabelCheckPathToTimeNet.setVisible(true);
-        jButtonPathToTimeNet.setBackground(Color.RED);
-        jButtonPathToTimeNet.setOpaque(true);
-        jButtonPathToTimeNet.setBorderPainted(true);
-        jButtonPathToTimeNet.setText("Enter Path To TimeNet");
-        jButtonStartOptimization.setEnabled(false);
-        
-        
+        } else {
+
+            this.jButtonStartBatchSimulation.setEnabled(false);
+            //this.jLabelCheckPathToTimeNet.setVisible(true);
+            jButtonPathToTimeNet.setBackground(Color.RED);
+            jButtonPathToTimeNet.setOpaque(true);
+            jButtonPathToTimeNet.setBorderPainted(true);
+            jButtonPathToTimeNet.setText("Enter Path To TimeNet");
+            jButtonStartOptimization.setEnabled(false);
+
         }
     }
-    
+
     /*
-    * Checks, if given Path to R is correct
-    */
-    private void checkIfRPathIsCorrect(){
-    String path=this.getPathToR();
-    String rApplicationName="";
-    
-    String OS = System.getProperty("os.name").toLowerCase();
-    if((OS.contains("win"))){
-    //We are on a windows-system
-    rApplicationName="R.exe";
-    }else{
-    //We are on a non-windows-system
-    rApplicationName="R";
-    }
-    File tmpFile=new File(path+File.separator+"bin"+File.separator+rApplicationName);
-    
-    support.log("R should be here: "+tmpFile.getAbsolutePath());
-        if(tmpFile.exists())
-        {
+     * Checks, if given Path to R is correct
+     */
+    private void checkIfRPathIsCorrect() {
+        String path = this.getPathToR();
+        String rApplicationName = "";
+
+        String OS = System.getProperty("os.name").toLowerCase();
+        if ((OS.contains("win"))) {
+            //We are on a windows-system
+            rApplicationName = "R.exe";
+        } else {
+            //We are on a non-windows-system
+            rApplicationName = "R";
+        }
+        File tmpFile = new File(path + File.separator + "bin" + File.separator + rApplicationName);
+
+        support.log("R should be here: " + tmpFile.getAbsolutePath());
+        if (tmpFile.exists()) {
             jButtonPathToR.setBackground(Color.GREEN);
             jButtonPathToR.setOpaque(true);
             jButtonPathToR.setBorderPainted(false);
             jButtonPathToR.setText("RESET Path To R");
 
             support.setPathToR(path);
-            this.pathToR=path;
+            this.pathToR = path;
             this.saveProperties();
-            
+
             jButtonPlotR.setEnabled(true);
-        }
-        else
-        {
+        } else {
             jButtonPathToR.setBackground(Color.RED);
             jButtonPathToR.setOpaque(true);
             jButtonPathToR.setBorderPainted(true);
@@ -1767,286 +1761,296 @@ private ArrayList<Boolean> listOfUIStatesPushed;
     /**
      * Saves program-properties to a local file in home-dir
      */
-    private void saveProperties(){
-    if(!savePropertiesEnabled){return;}
-    support.log("Saving Properties.");
-        try{
+    private void saveProperties() {
+        if (!savePropertiesEnabled) {
+            return;
+        }
+        support.log("Saving Properties.");
+        try {
     //support.log("rpath = " + this.getPathToR());
-    //support.log("timenetpath = " + this.getPathToTimeNet());
-    
-    
-    auto.setProperty("timenetpath", this.getPathToTimeNet());
-    auto.setProperty("file", this.jTextFieldSCPNFile.getText().toString());
-    
-    auto.setProperty("rpath", this.getPathToR());
-    
-    auto.setProperty("ConfidenceIntervallStart",support.getString(this.pConfidenceIntervall.getStartValue()));
-    auto.setProperty("ConfidenceIntervallEnd",support.getString(this.pConfidenceIntervall.getEndValue()));
-    auto.setProperty("ConfidenceIntervallStepping",support.getString(this.pConfidenceIntervall.getStepping()));
+            //support.log("timenetpath = " + this.getPathToTimeNet());
 
-    auto.setProperty("EndTimeStart",support.getString(this.pEndTime.getStartValue()));
-    auto.setProperty("EndTimeEnd",support.getString(this.pEndTime.getEndValue()));
-    auto.setProperty("EndTimeStepping",support.getString(this.pEndTime.getStepping()));
-        
-    auto.setProperty("MaxTimeStart",support.getString(this.pMaxTime.getStartValue()));
-    auto.setProperty("MaxTimeEnd",support.getString(this.pMaxTime.getEndValue()));
-    auto.setProperty("MaxTimeStepping",support.getString(this.pMaxTime.getStepping()));
-    auto.setProperty("SeedStart",support.getString(this.pSeed.getStartValue()));
-    auto.setProperty("SeedEnd",support.getString(this.pSeed.getEndValue()));
-    auto.setProperty("SeedStepping",support.getString(this.pSeed.getStepping()));
-        
-    auto.setProperty("MaxErrorStart",support.getString(this.pMaxError.getStartValue()));
-    auto.setProperty("MaxErrorEnd",support.getString(this.pMaxError.getEndValue()));
-    auto.setProperty("MaxErrorStepping",support.getString(this.pMaxError.getStepping()));
-    
-    auto.setProperty("pathToLastSimulationCache", this.pathToLastSimulationCache);
-    
-    auto.setProperty("OptimizationType", support.getChosenOptimizerType().toString());
-    auto.setProperty("SimulationType", support.getChosenSimulatorType().toString());
-    auto.setProperty("BenchmarkType", support.getChosenBenchmarkFunction().toString());
-    
-    
-    auto.setProperty("isRunningAsSlave", Boolean.toString(support.isIsRunningAsSlave()));
+            auto.setProperty("timenetpath", this.getPathToTimeNet());
+            auto.setProperty("file", this.jTextFieldSCPNFile.getText().toString());
 
-    auto.setProperty("RemoteAddress", support.getReMoteAddress());
-    
-    if(support.getTmpPath()!=null){
-    auto.setProperty("tmppath", support.getTmpPath());
-    }else{
-    support.log("No tmp-path yet given. Please do so.");
-    }
-    
-    File parserprops =  new File(support.NAME_OF_PREFERENCES_FILE);
-    auto.store(new FileOutputStream(parserprops), "ExperimentGenerator-Properties");
-        }catch(IOException e){
-        support.log("Problem Saving the properties.");
+            auto.setProperty("rpath", this.getPathToR());
+
+            auto.setProperty("ConfidenceIntervallStart", support.getString(this.pConfidenceIntervall.getStartValue()));
+            auto.setProperty("ConfidenceIntervallEnd", support.getString(this.pConfidenceIntervall.getEndValue()));
+            auto.setProperty("ConfidenceIntervallStepping", support.getString(this.pConfidenceIntervall.getStepping()));
+
+            auto.setProperty("EndTimeStart", support.getString(this.pEndTime.getStartValue()));
+            auto.setProperty("EndTimeEnd", support.getString(this.pEndTime.getEndValue()));
+            auto.setProperty("EndTimeStepping", support.getString(this.pEndTime.getStepping()));
+
+            auto.setProperty("MaxTimeStart", support.getString(this.pMaxTime.getStartValue()));
+            auto.setProperty("MaxTimeEnd", support.getString(this.pMaxTime.getEndValue()));
+            auto.setProperty("MaxTimeStepping", support.getString(this.pMaxTime.getStepping()));
+            auto.setProperty("SeedStart", support.getString(this.pSeed.getStartValue()));
+            auto.setProperty("SeedEnd", support.getString(this.pSeed.getEndValue()));
+            auto.setProperty("SeedStepping", support.getString(this.pSeed.getStepping()));
+
+            auto.setProperty("MaxErrorStart", support.getString(this.pMaxError.getStartValue()));
+            auto.setProperty("MaxErrorEnd", support.getString(this.pMaxError.getEndValue()));
+            auto.setProperty("MaxErrorStepping", support.getString(this.pMaxError.getStepping()));
+
+            auto.setProperty("pathToLastSimulationCache", this.pathToLastSimulationCache);
+
+            auto.setProperty("OptimizationType", support.getChosenOptimizerType().toString());
+            auto.setProperty("SimulationType", support.getChosenSimulatorType().toString());
+            auto.setProperty("BenchmarkType", support.getChosenBenchmarkFunction().toString());
+
+            auto.setProperty("isRunningAsSlave", Boolean.toString(support.isIsRunningAsSlave()));
+
+            auto.setProperty("RemoteAddress", support.getReMoteAddress());
+
+            if (support.getTmpPath() != null) {
+                auto.setProperty("tmppath", support.getTmpPath());
+            } else {
+                support.log("No tmp-path yet given. Please do so.");
+            }
+
+            File parserprops = new File(support.NAME_OF_PREFERENCES_FILE);
+            auto.store(new FileOutputStream(parserprops), "ExperimentGenerator-Properties");
+        } catch (IOException e) {
+            support.log("Problem Saving the properties.");
         }
 
     }
 
     /**
-     * Returns a String, if String is != null, else defaultvalue.
-     * If defaultvalue is null, then returns "0"
+     * Returns a String, if String is != null, else defaultvalue. If
+     * defaultvalue is null, then returns "0"
+     *
      * @param loadedValue String to be checked and returned
      * @param defaultValue Defaultvalue to be returned if String is null
      * @returns loadedValue if != null, else defaultValue or "0"
      */
-    private String checkIfStringIsNull(String loadedValue, String defaultValue){
-        if(loadedValue!=null){
-        return loadedValue;
-        }else{
-            if(defaultValue!=null){
-            return defaultValue;
-            }else{
-            return "0";
+    private String checkIfStringIsNull(String loadedValue, String defaultValue) {
+        if (loadedValue != null) {
+            return loadedValue;
+        } else {
+            if (defaultValue != null) {
+                return defaultValue;
+            } else {
+                return "0";
             }
         }
 
     }
 
     /**
-     * Return double value of loaded property
-     * If any error occurs, the given default value is returned
+     * Return double value of loaded property If any error occurs, the given
+     * default value is returned
+     *
      * @param name Name of the property to be loaded
      * @param defaultValue The default to be returned, if error occurs
      * @return double value of property
      */
     /*private double loadDouble(String name, double defaultValue){
-        try{
-        return Double.valueOf(auto.getProperty(name));
-        }catch(Exception e){
-        support.log("Error loading property: "+name);
-        return defaultValue;
-        }
-    }*/
-
+     try{
+     return Double.valueOf(auto.getProperty(name));
+     }catch(Exception e){
+     support.log("Error loading property: "+name);
+     return defaultValue;
+     }
+     }*/
     /**
-     * Prints 2 parametersets and it`s values to see the difference
-     * Just used for debug reasons
+     * Prints 2 parametersets and it`s values to see the difference Just used
+     * for debug reasons
+     *
      * @param p parameter to be compared with p1
      * @param p1 parameter to be compared with p
      */
-    private void printParameterSetCompare(parameter[] p, parameter[] p1){
+    private void printParameterSetCompare(parameter[] p, parameter[] p1) {
         support.log("Printing P-Set:");
-        for(int i=0; i<p.length; i++){
-        support.log( ((parameter)p[i]).getName());
-        support.log( ((parameter)p[i]).getValue() + " vs "+((parameter)p1[i]).getValue());
+        for (int i = 0; i < p.length; i++) {
+            support.log(((parameter) p[i]).getName());
+            support.log(((parameter) p[i]).getValue() + " vs " + ((parameter) p1[i]).getValue());
 
         }
     }
 
     /**
      * Adds a parameterset to the list of parametersets
+     *
      * @param p parameterset to be added
      */
-    public void addToListOfParameterSetsToBeWritten(ArrayList<parameter> p){
-    ListOfParameterSetsToBeWritten.add(p);
-    support.setStatusText("Building Parametersets:"+ListOfParameterSetsToBeWritten.size()*100/this.sizeOfDesignSpace +"%");
+    public void addToListOfParameterSetsToBeWritten(ArrayList<parameter> p) {
+        ListOfParameterSetsToBeWritten.add(p);
+        support.setStatusText("Building Parametersets:" + ListOfParameterSetsToBeWritten.size() * 100 / this.sizeOfDesignSpace + "%");
 
     }
 
-     /**
-     * calculates list of parameters from table
-     * this is the base list with start/end/stepping values
+    /**
+     * calculates list of parameters from table this is the base list with
+     * start/end/stepping values
+     *
      * @return List of Parameters from Table (Base of Parameter Iterations)
-     **/
-    public ArrayList<parameter> getParameterBase(){
+     *
+     */
+    public ArrayList<parameter> getParameterBase() {
 
         //Return the saved parameterset in support-class for Multiphase-Opti
-        if(support.getParameterBase()!=null){
-        return support.getParameterBase();
+        if (support.getParameterBase() != null) {
+            return support.getParameterBase();
         }
 
-
-    //int parameterCount=this.jTableParameterList.getModel().getRowCount();
-    parameterTableModel tModel=(parameterTableModel) this.jTableParameterList.getModel();
-    //String [][] parameterArray=tModel.getParameterArray();
-    ArrayList<parameter> parameterArray = new ArrayList<parameter>();
+        //int parameterCount=this.jTableParameterList.getModel().getRowCount();
+        parameterTableModel tModel = (parameterTableModel) this.jTableParameterList.getModel();
+        //String [][] parameterArray=tModel.getParameterArray();
+        ArrayList<parameter> parameterArray = new ArrayList<parameter>();
 
     //ArrayListe aufbauen und Funktion mit dieser Liste aufrufen
-    
-        for (int i=0; i<tModel.getRowCount();i++){
-        parameter tmpParameter=new parameter();
-        tmpParameter.setName(tModel.getValueAt(i, 0).toString());
-        tmpParameter.setStartValue(tModel.getDoubleValueAt(i, 1));//=StartValue
-        tmpParameter.setEndValue(tModel.getDoubleValueAt(i, 2));
-        tmpParameter.setValue(tModel.getDoubleValueAt(i, 1));
-        
-        tmpParameter.setStepping(tModel.getDoubleValueAt(i, 3));
-        //ListOfParameterAsFromTable.add(tmpParameter);
-        parameterArray.add(tmpParameter);
+        for (int i = 0; i < tModel.getRowCount(); i++) {
+            parameter tmpParameter = new parameter();
+            tmpParameter.setName(tModel.getValueAt(i, 0).toString());
+            tmpParameter.setStartValue(tModel.getDoubleValueAt(i, 1));//=StartValue
+            tmpParameter.setEndValue(tModel.getDoubleValueAt(i, 2));
+            tmpParameter.setValue(tModel.getDoubleValueAt(i, 1));
+
+            tmpParameter.setStepping(tModel.getDoubleValueAt(i, 3));
+            //ListOfParameterAsFromTable.add(tmpParameter);
+            parameterArray.add(tmpParameter);
         }
-    return parameterArray;
+        return parameterArray;
     }
- 
-    
+
     /**
      * Returns list of MeasureTypes to be optimized
-     * @return List of MeasureTypes, given by Tabbed-Pane, to which it should be optimized
+     *
+     * @return List of MeasureTypes, given by Tabbed-Pane, to which it should be
+     * optimized
      */
-    public ArrayList<MeasureType> getListOfActiveMeasureMentsToOptimize(){
-    ArrayList<MeasureType> myTmpList=new ArrayList<MeasureType>();//((MeasurementForm)this.jTabbedPane1.getComponent(0)).getListOfMeasurements();
+    public ArrayList<MeasureType> getListOfActiveMeasureMentsToOptimize() {
+        ArrayList<MeasureType> myTmpList = new ArrayList<MeasureType>();//((MeasurementForm)this.jTabbedPane1.getComponent(0)).getListOfMeasurements();
 
-        for(int i=0; i<this.jTabbedPaneOptiTargets.getComponentCount();i++){
-            MeasurementForm tmpMeasurementForm=(MeasurementForm)this.jTabbedPaneOptiTargets.getComponent(i);
-            if(tmpMeasurementForm.isActive()){
-            MeasureType tmpMeasure=tmpMeasurementForm.getChosenMeasurement();
-            float targetValue=tmpMeasurementForm.getCustomTargetValue();
-                typedef.typeOfTarget targetKind=tmpMeasurementForm.getOptimizationTarget();
-            tmpMeasure.setTargetValue(targetValue, targetKind);
-            myTmpList.add(tmpMeasure);
+        for (int i = 0; i < this.jTabbedPaneOptiTargets.getComponentCount(); i++) {
+            MeasurementForm tmpMeasurementForm = (MeasurementForm) this.jTabbedPaneOptiTargets.getComponent(i);
+            if (tmpMeasurementForm.isActive()) {
+                MeasureType tmpMeasure = tmpMeasurementForm.getChosenMeasurement();
+                double targetValue = tmpMeasurementForm.getCustomTargetValue();
+                typedef.typeOfTarget targetKind = tmpMeasurementForm.getOptimizationTarget();
+                tmpMeasure.setTargetValue(targetValue, targetKind);
+                myTmpList.add(tmpMeasure);
             }
         }
-    return myTmpList;
+        return myTmpList;
     }
 
     /**
      * Set local variable of path to Timenet
+     *
      * @param pathToTimeNet the pathToTimeNet to set
      */
     private void setPathToTimeNet(String pathToTimeNet) {
-        this.pathToTimeNet = pathToTimeNet;   
+        this.pathToTimeNet = pathToTimeNet;
     }
-    
+
     /**
      * Set local variable of path to R
+     *
      * @param pathToR the pathToR to set
      */
     private void setPathToR(String pathToR) {
-        this.pathToR = pathToR;   
+        this.pathToR = pathToR;
     }
-    
+
     /**
      * returns local value of path to TimeNet
      */
-    private String getPathToTimeNet(){
-    return this.pathToTimeNet;
+    private String getPathToTimeNet() {
+        return this.pathToTimeNet;
     }
-    
+
     /**
      * returns local value of path to R
      */
-    private String getPathToR(){
-    return this.pathToR;
+    private String getPathToR() {
+        return this.pathToR;
     }
 
     /**
      * Enables or disables the Combobox for chosing benchmark functions
-     * 
+     *
      */
-    public void setBenchmarkFunctionComboboxEnabled(boolean b){
-    this.jComboBoxBenchmarkFunction.setEnabled(b);
+    public void setBenchmarkFunctionComboboxEnabled(boolean b) {
+        this.jComboBoxBenchmarkFunction.setEnabled(b);
     }
-    
+
     /**
      * Sets the progressbar for Memory-Usage to a value between 0..100
      */
-    public void setMemoryProgressbar(int s){
-    
-        if((s<=100)&&(s>=0)){
-        this.jProgressBarMemoryUsage.setValue(s);
+    public void setMemoryProgressbar(int s) {
+
+        if ((s <= 100) && (s >= 0)) {
+            this.jProgressBarMemoryUsage.setValue(s);
         }
-        
+
     }
-    
+
     /**
-     * Checks alle inforamtion about System state and sets the boolean operators for UI Element activation
-     * UI Components are not modified by this method, just updates the UIState-ArrayList
+     * Checks alle inforamtion about System state and sets the boolean operators
+     * for UI Element activation UI Components are not modified by this method,
+     * just updates the UIState-ArrayList
      */
-    public void updateAllUIStates(){
-    //jTextFieldSCPNFile    
+    public void updateAllUIStates() {
+        //jTextFieldSCPNFile    
     }
+
     /**
-     *updates all UI Components by information from UIState-ArrayList 
+     * updates all UI Components by information from UIState-ArrayList
      */
-    public void updateAllUIComponents(){
-        try{
-            if(this.listOfUIStates.size()==this.listOfUIComponents.size()){
-                for(int i=0;i<listOfUIStates.size();i++){
-                listOfUIComponents.get(i).setEnabled(listOfUIStates.get(i));
+    public void updateAllUIComponents() {
+        try {
+            if (this.listOfUIStates.size() == this.listOfUIComponents.size()) {
+                for (int i = 0; i < listOfUIStates.size(); i++) {
+                    listOfUIComponents.get(i).setEnabled(listOfUIStates.get(i));
                 }
             }
-        }catch(Exception e){
-        //Exception could be trown, if listOfUIStates is not initialized correctly
+        } catch (Exception e) {
+            //Exception could be trown, if listOfUIStates is not initialized correctly
         }
     }
+
     /**
      * Switches to a specific UI-State (Default/Client Mode etc)
+     *
      * @param newState new UI-State to be activated
      */
-    public void switchUIState(uiState newState){
-    this.pushUIState();//Save active UI-State
+    public void switchUIState(uiState newState) {
+        this.pushUIState();//Save active UI-State
         /*
-        0-jTextFieldSCPNFile
-        1-jButtonReload
-        2-jButtonExport
-        3-jButtonCancel
-        4-jButtonGenerateListOfExperiments
-        5-jButtonStartBatchSimulation
-        6-jButtonStartOptimization
-        7-jButtonLoadCacheFile
-        8-jButtonOptiOptions
-        9-jButtonPathToTimeNet
-        10-jButtonPathToR
-        11-jButtonEnterURLToSimServer
-        12-this.jButtonPlotR
-        13-jTableParameterList
-        14-jTabbedPaneOptiTargets
-        15-jCheckBoxSlaveSimulator
-        16-jComboBoxBenchmarkFunction
-        17-jComboBoxSimulationType
-        18-jComboBoxOptimizationType
-        19-jButtonOpenSCPN
-        20-jSpinnerNumberOfOptimizationRuns
-        */
-    this.listOfUIStates=new ArrayList<Boolean>();
+         0-jTextFieldSCPNFile
+         1-jButtonReload
+         2-jButtonExport
+         3-jButtonCancel
+         4-jButtonGenerateListOfExperiments
+         5-jButtonStartBatchSimulation
+         6-jButtonStartOptimization
+         7-jButtonLoadCacheFile
+         8-jButtonOptiOptions
+         9-jButtonPathToTimeNet
+         10-jButtonPathToR
+         11-jButtonEnterURLToSimServer
+         12-this.jButtonPlotR
+         13-jTableParameterList
+         14-jTabbedPaneOptiTargets
+         15-jCheckBoxSlaveSimulator
+         16-jComboBoxBenchmarkFunction
+         17-jComboBoxSimulationType
+         18-jComboBoxOptimizationType
+         19-jButtonOpenSCPN
+         20-jSpinnerNumberOfOptimizationRuns
+         */
+        this.listOfUIStates = new ArrayList<Boolean>();
         //Activate all
-        for(int i=0;i<listOfUIComponents.size();i++){
-        listOfUIStates.add(true);
+        for (int i = 0; i < listOfUIComponents.size(); i++) {
+            listOfUIStates.add(true);
         }
-        
-        switch(newState){
-            
+
+        switch (newState) {
+
             case defaultState:
                 listOfUIStates.set(2, false);
                 listOfUIStates.set(3, false);
@@ -2056,106 +2060,115 @@ private ArrayList<Boolean> listOfUIStatesPushed;
                 listOfUIStates.set(16, jComboBoxSimulationType.getSelectedItem().equals(typeOfSimulator.Benchmark));
                 break;
             case clientState:
-                for(int i=0;i<listOfUIStates.size();i++){
-                listOfUIStates.set(i, false);
+                for (int i = 0; i < listOfUIStates.size(); i++) {
+                    listOfUIStates.set(i, false);
                 }
                 listOfUIStates.set(15, true);
                 break;
             case processRunning:
                 //Something is running, only cancel is possible
-                for(int i=0;i<listOfUIStates.size();i++){
-                listOfUIStates.set(i, false);
+                for (int i = 0; i < listOfUIStates.size(); i++) {
+                    listOfUIStates.set(i, false);
                 }
                 listOfUIStates.set(3, true);
                 break;
-            default:break;
+            default:
+                break;
         }
-    updateAllUIComponents();    
-    }
-    /**
-     * pushes active UI-State to switch temporary to another state and possibly back
-     */
-    public void pushUIState(){
-    this.listOfUIStatesPushed=new ArrayList();
-        //Create deep copy of UI-States
-        for(int i=0;i<listOfUIStates.size();i++){
-        listOfUIStatesPushed.add(new Boolean(listOfUIComponents.get(i).isEnabled()));
-        }
-    }
-    /**
-     * restores last saved UI-State
-     */
-    public void popUIState(){
-        if(listOfUIStatesPushed!=null){
-            for(int i=0;i<listOfUIStates.size();i++){
-            listOfUIStates.set(i, listOfUIStatesPushed.get(i));
-            }
-        listOfUIStatesPushed=null;
         updateAllUIComponents();
-        }
-    }
-    
-    /**
-     * Deactivate every UI component, like buttons, spinners, etc.
-     * Except the ones, given in oList
-     * @param oList Array of User-Interface components that will not be deactivated
-     */
-    public void deactivateEveryComponentExcept(Component[] oList){
-    this.jButtonGenerateListOfExperiments.setEnabled(false);
-    
-        for(int i=0;i<this.listOfUIComponents.size();i++){
-        this.listOfUIComponents.get(i).setEnabled(false);
-        }
-    
-        for(int i=0;i<oList.length;i++){
-            try{
-            oList[i].setEnabled(true);
-            }catch(Exception e){
-            //
-            }
-        }
-    
     }
 
     /**
-     * Callback-Method of SimOptiCallback
-     * called when Simulation or optimization is ended succesfully
+     * pushes active UI-State to switch temporary to another state and possibly
+     * back
+     */
+    public void pushUIState() {
+        this.listOfUIStatesPushed = new ArrayList();
+        //Create deep copy of UI-States
+        for (int i = 0; i < listOfUIStates.size(); i++) {
+            listOfUIStatesPushed.add(new Boolean(listOfUIComponents.get(i).isEnabled()));
+        }
+    }
+
+    /**
+     * restores last saved UI-State
+     */
+    public void popUIState() {
+        if (listOfUIStatesPushed != null) {
+            for (int i = 0; i < listOfUIStates.size(); i++) {
+                listOfUIStates.set(i, listOfUIStatesPushed.get(i));
+            }
+            listOfUIStatesPushed = null;
+            updateAllUIComponents();
+        }
+    }
+
+    /**
+     * Deactivate every UI component, like buttons, spinners, etc. Except the
+     * ones, given in oList
+     *
+     * @param oList Array of User-Interface components that will not be
+     * deactivated
+     */
+    public void deactivateEveryComponentExcept(Component[] oList) {
+        this.jButtonGenerateListOfExperiments.setEnabled(false);
+
+        for (int i = 0; i < this.listOfUIComponents.size(); i++) {
+            this.listOfUIComponents.get(i).setEnabled(false);
+        }
+
+        for (int i = 0; i < oList.length; i++) {
+            try {
+                oList[i].setEnabled(true);
+            } catch (Exception e) {
+                //
+            }
+        }
+
+    }
+
+    /**
+     * Callback-Method of SimOptiCallback called when Simulation or optimization
+     * is ended succesfully
+     *
      * @param message will be shown in staus-label
      * @param feedback will determine what to do next (button activation etc.)
      */
     public void operationSucessfull(String message, typeOfProcessFeedback feedback) {
-        int tmpNumberOfOptiRunsToGo=support.getNumberOfOptiRunsToGo();
-        if(tmpNumberOfOptiRunsToGo<=1){
-        this.popUIState();
-        support.unsetListOfChangableParametersMultiphase();//Stop Multiphase if it was active
-        support.setStatusText(message);
-        support.log("Last simulation run has ended. Will show statistics.");
-        support.log("Ended was: "+feedback.toString());
-        StatisticAggregator.printOptiStatistics();
-        
-        }   else{
-            support.log("Starting next Optimization run, number:" +(tmpNumberOfOptiRunsToGo-1));
-            support.setNumberOfOptiRunsToGo(tmpNumberOfOptiRunsToGo-1);
+        int tmpNumberOfOptiRunsToGo = support.getNumberOfOptiRunsToGo();
+        if (tmpNumberOfOptiRunsToGo <= 1) {
+            this.popUIState();
+            support.unsetListOfChangableParametersMultiphase();//Stop Multiphase if it was active
+            support.setStatusText(message);
+            support.log("Last simulation run has ended. Will show statistics.");
+            support.log("Ended was: " + feedback.toString());
+            StatisticAggregator.printOptiStatistics();
+
+        } else {
+            support.log("Starting next Optimization run, number:" + (tmpNumberOfOptiRunsToGo - 1));
+            support.setNumberOfOptiRunsToGo(tmpNumberOfOptiRunsToGo - 1);
             this.startOptimizationAgain();
-            }
-        switch(feedback){
+        }
+        switch (feedback) {
             case GenerationSuccessful:
                 jButtonStartBatchSimulation.setEnabled(true);
                 break;
-                
-            default:break;
+
+            default:
+                break;
         }
     }
 
     /**
-     * Callback-Method of SimOptiCallback
-     * called when Simulation or optimization is canceled
+     * Callback-Method of SimOptiCallback called when Simulation or optimization
+     * is canceled
+     *
      * @param message will be shown in staus-label
      */
     public void operationCanceled(String message, typeOfProcessFeedback feedback) {
         this.popUIState();
         support.setStatusText(message);
-        switch(feedback){
+        switch (feedback) {
             case GenerationCanceled:
                 jButtonStartBatchSimulation.setEnabled(false);
                 support.log("Generation canceled. Deactivate StartBatchButton.");
@@ -2163,20 +2176,21 @@ private ArrayList<Boolean> listOfUIStatesPushed;
             case GenerationNotSuccessful:
                 jButtonStartBatchSimulation.setEnabled(false);
                 break;
-                
-            default:break;
+
+            default:
+                break;
         }
     }
-    
+
     /**
      * Starts an OptimizationRun, useful for Multiple optimization runs
      */
-    private void startOptimizationAgain(){
-    Optimizer myOptimizer=SimOptiFactory.getOptimizer();
-                    logFileNameOfOptimizer=support.getTmpPath()+File.separator+myOptimizer.getClass().getSimpleName()+"_"+Calendar.getInstance().getTimeInMillis()+support.getOptimizerPreferences().getPref_LogFileAddon()+".csv";
-                    myOptimizer.setLogFileName(logFileNameOfOptimizer);
-                    myOptimizer.initOptimizer();
-                    //Wait for end of Optimizer
-                    support.waitForOptimizerAsynchronous(myOptimizer, this);
+    private void startOptimizationAgain() {
+        Optimizer myOptimizer = SimOptiFactory.getOptimizer();
+        logFileNameOfOptimizer = support.getTmpPath() + File.separator + myOptimizer.getClass().getSimpleName() + "_" + Calendar.getInstance().getTimeInMillis() + support.getOptimizerPreferences().getPref_LogFileAddon() + ".csv";
+        myOptimizer.setLogFileName(logFileNameOfOptimizer);
+        myOptimizer.initOptimizer();
+        //Wait for end of Optimizer
+        support.waitForOptimizerAsynchronous(myOptimizer, this);
     }
 }
