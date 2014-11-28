@@ -110,6 +110,25 @@ public class typedef {
     };
 
     /**
+     * Tyoe of target for optimization (minimization maximization, target value)
+     */
+    public enum typeOfTarget {
+
+        /**
+         * try to find the minimal value of measure
+         */
+        min,
+        /**
+         * try to find the maximum value of measure
+         */
+        max,
+        /**
+         * try to find a measure value that is near to target value
+         */
+        value
+    };
+
+    /**
      * Type of optimization to use
      */
     public enum typeOfOptimization {
