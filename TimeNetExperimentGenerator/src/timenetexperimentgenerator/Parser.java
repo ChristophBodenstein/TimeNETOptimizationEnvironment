@@ -1,85 +1,84 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Parser, to read information from log-files (from stationary SCPN-Simulation)
+ * to use in csv files or for optimization.
+ * XML-Source for Simulaiton is needed to parse log file
+ *
+ * Christoph Bodenstein
+ * TU-Ilmenau, FG SSE
  */
 package timenetexperimentgenerator;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.*;
-import timenetexperimentgenerator.*;
 import timenetexperimentgenerator.datamodel.MeasureType;
 import timenetexperimentgenerator.datamodel.SimulationType;
 import timenetexperimentgenerator.datamodel.parameter;
 
 /**
  *
- * @author Andy
+ * @author Christoph Bodenstein, Andy Seidel
  */
 public class Parser {
 
     private String logName;
     private String SimulationType;
-    private double SimulationTime;
-//private ArrayList<MeasureType> Measures=new ArrayList();
     private ArrayList<String> tmpStrings = new ArrayList();
     private int parseStatus = 0;
     private double CPUTime = 0;
-//private ArrayList<parameter> parameterList=null;
     private String xmlFileName = "";
     private boolean isFromCache = true;//is true, if from cache and false if logfile is parsed
     private boolean isFromDistributedSimulation = false;//Is False, if local simulated, true if simulated via Web
     private boolean parsingSuccessfullFinished = false;
 
+    /**
+     * Constructor
+     */
     public Parser() {
         this.logName = "";
         this.SimulationType = "";
-        this.SimulationTime = 0.0;
-        //       this.Measures=new ArrayList();
         this.tmpStrings = new ArrayList();
         this.parseStatus = 0;
         this.CPUTime = 0;
-        //      this.parameterList=null;
         this.xmlFileName = "";
         this.isFromCache = true;
         this.isFromDistributedSimulation = false;
     }
 
+    /**
+     * Special Constructor. Copies all nested data from old parser to new one
+     * (deep copy)
+     *
+     * @param originalParser Original parser to be copied
+     */
     public Parser(Parser originalParser) {
         this.logName = originalParser.logName;
         this.SimulationType = originalParser.SimulationType;
         this.tmpStrings = originalParser.tmpStrings;
         this.parseStatus = originalParser.parseStatus;
         this.CPUTime = originalParser.CPUTime;
-        //      this.parameterList = new ArrayList<parameter>();
         this.xmlFileName = originalParser.xmlFileName;
         this.isFromCache = originalParser.isFromCache;
         this.isFromDistributedSimulation = originalParser.isFromDistributedSimulation;
     }
 
-    public SimulationType parse(String filename, String XMLFileName) {
-        if (!XMLFileName.equals("")) {
-            this.xmlFileName = XMLFileName;
-        }
-        return parse(filename);
-    }
-
-    /*
+    /**
      * parses the log-file
+     *
+     * @param filename Name of logfile to parse
+     * @return SimulationType incl. all information from logfile (measurement
+     * values etc.)
      */
     public SimulationType parse(String filename) {
-        String xmlFilename = "";
+        String xmlFilename;
         ArrayList<parameter> tmpParameterList = new ArrayList<parameter>();
         String[] segs;
         SimulationType results = new SimulationType();
         parsingSuccessfullFinished = false;
-        this.setIsFromCache(false);
 
         if (this.xmlFileName.equals("")) {
             support.log("Searching corresponding xml-file for: " + filename);
@@ -114,6 +113,7 @@ public class Parser {
             support.log("***End of List of Available parameters in xml-file***");
         } catch (Exception e) {
             support.log("Error while parsing xml-file " + xmlFilename);
+            support.log("ErrorMsg: " + e.getLocalizedMessage());
         }
 
         this.logName = filename;
@@ -125,9 +125,8 @@ public class Parser {
 
         try {
             BufferedReader in = new BufferedReader(new FileReader(filename));
-            String line = null;
+            String line;
             while ((line = in.readLine()) != null) {
-                //support.log("Read line: " + line);
                 tmpStrings.add(line);
             }
             in.close();
@@ -144,7 +143,7 @@ public class Parser {
             double localSimulationTime = (Float.valueOf(segs[2]));
             double localCPUTime = 0;
 
-        //support.log("SimulationType: "+SimulationType);
+            //support.log("SimulationType: "+SimulationType);
             //support.log("SimulationTime: "+getSimulationTime().toString()+" seconds.");
             //Add all Parameters from logfile-name
             segs = logName.split("_");
@@ -197,7 +196,7 @@ public class Parser {
             tmpMeasure.setSimulationTime(localSimulationTime);
             //tmpMeasure.setParameterList(tmpParameterList);
             tmpMeasure.setCPUTime(localCPUTime);
-            String tmpConfidence = "";
+            String tmpConfidence;
             for (int i = 0; i < tmpStrings.size(); i++) {
                 switch (parseStatus) {
                     case 0:
@@ -216,15 +215,15 @@ public class Parser {
                             String input = tmpStrings.get(i + 2);
                             Scanner s = new Scanner(input).useDelimiter("\\s+");
                             //segs=tmpStrings.get(i+2).split( "\\s*" );
-                            tmpMeasure.setMeanValue(getFloatString(s.next()));
-                            tmpMeasure.setVariance(getFloatString(s.next()));
+                            tmpMeasure.setMeanValue(support.getDouble(s.next()));
+                            tmpMeasure.setVariance(support.getDouble(s.next()));
                             tmpConfidence = s.next();
                             tmpConfidence = tmpConfidence.replaceAll("\\[|\\]", "");
                             segs = tmpConfidence.split(Pattern.quote(";"));
                             //float[] tmpConf={ (segs[0]),Float.valueOf(segs[1])};
-                            double[] tmpConf = {getFloatString(segs[0]), getFloatString(segs[1])};
+                            double[] tmpConf = {support.getDouble(segs[0]), support.getDouble(segs[1])};
                             tmpMeasure.setConfidenceInterval(tmpConf);
-                            tmpMeasure.setEpsilon(getFloatString(s.next()));
+                            tmpMeasure.setEpsilon(support.getDouble(s.next()));
                             //tmpMeasure.setParameterList(tmpParameterList);
                             results.getMeasures().add(tmpMeasure);
                             parseStatus = 0;
@@ -251,41 +250,24 @@ public class Parser {
         }
     }
 
-    public boolean isIsFromCache() {
-        return isFromCache;
-    }
-
     /**
-     * @param isFromCache the isFromCache to set
+     * Returns success of parsing the log file. Returns false if any error
+     * occured or parsing was not yet started
+     *
+     * @return true if parsing was succesful. false if any error occured
      */
-    public void setIsFromCache(boolean isFromCache) {
-        this.isFromCache = isFromCache;
-    }
-
-    /**
-     * @return the isFromDistributedSimulation
-     */
-    public boolean isIsFromDistributedSimulation() {
-        return isFromDistributedSimulation;
-    }
-
     public boolean isParsingSuccessfullFinished() {
         return this.parsingSuccessfullFinished;
     }
 
     /**
+     * Returns true if logfile was returned from sim server / simulation was
+     * executed distributed
+     *
      * @param isFromDistributedSimulation the isFromDistributedSimulation to set
      */
     public void setIsFromDistributedSimulation(boolean isFromDistributedSimulation) {
         this.isFromDistributedSimulation = isFromDistributedSimulation;
-    }
-
-    public double getFloatString(String testString) {
-        if (!testString.equals("nan")) {
-            return Double.valueOf(testString);
-        } else {
-            return 0;
-        }
     }
 
 }
