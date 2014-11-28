@@ -1,7 +1,7 @@
 /**
-* This frame is used to setup the R Plots, create the R script and run it.
-**/
-
+ * This frame is used to setup the R Plots, create the R script and run it.
+*
+ */
 package timenetexperimentgenerator.plot;
 
 import java.awt.Color;
@@ -25,120 +25,113 @@ import timenetexperimentgenerator.support;
 import java.awt.ComponentOrientation;
 import javax.swing.JColorChooser;
 import java.io.FileOutputStream;
-import static timenetexperimentgenerator.support.setStatusText;
 
 /**
  *
- * @author Bastian Mauerer, Simon Niebler
+ * @author Bastian Mauerer, Simon Niebler, Christoph Bodenstein
  */
 public class PlotFrameController extends javax.swing.JFrame implements nativeProcessCallbacks {
-private String imageFilePath=System.getProperty("user.dir") + File.separator + "rplot.png";
-private String rScriptFilePath=System.getProperty("user.dir") + File.separator + "rscript.r";
-Color plotColor = Color.black;
 
-    private PlotFrame plotFrame;
+    private final String imageFilePath = System.getProperty("user.dir") + File.separator + "rplot.png";
+    private final String rScriptFilePath = System.getProperty("user.dir") + File.separator + "rscript.r";
+    Color plotColor = Color.black;
+
+    private final PlotFrame plotFrame;
+
     /**
      * Creates new form PlotFrameController
      */
     public PlotFrameController() {
         initComponents();
-        
-        CachedFilesList.addMouseListener(new MouseAdapter() 
-        {
-            public void mouseClicked(MouseEvent evt) 
-            {
-                
-                if (evt.getClickCount() == 2 && !CachedFilesList.isSelectionEmpty()) 
-                {
+
+        CachedFilesList.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent evt) {
+
+                if (evt.getClickCount() == 2 && !CachedFilesList.isSelectionEmpty()) {
                     OpenFileTextField.setText(CachedFilesList.getSelectedValue().toString());
                     loadCSV(CachedFilesList.getSelectedValue().toString());
-                } 
+                }
             }
         });
-        
+
         this.setTitle("R Plugin");
         plotFrame = new PlotFrame();
         setResizable(false);
-        
+
         jButton1.setBackground(Color.black);
         jCheckBox1.setEnabled(false);
-        
+
         //jlist alignment
         CachedFilesList.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
         final int maximum = jScrollPane1.getHorizontalScrollBar().getMaximum();
         jScrollPane1.getHorizontalScrollBar().setValue(maximum);
     }
-    
+
     /**
      * Loads the header and MeasureNames from a .csv file.
-     **/
-    public void loadCSV(String fileName)
-    {
+     *
+     * @param fileName Name of csv file to be loaded for plotting
+     */
+    public void loadCSV(String fileName) {
         jCheckBox1.setSelected(false);
         jCheckBox1.setEnabled(false);
-        
+
         File file = new File(fileName);
-        try
-        {
+        try {
             FileReader namereader = new FileReader(file);
             BufferedReader in = new BufferedReader(namereader);
             String header = in.readLine();
-            
+
             support.log("csv header is: " + header);
-                       
+
             String[] parts = header.split(";");
             DefaultListModel model = new DefaultListModel();
             model.addElement("None");
-            
-            for(int i = 0; i<parts.length; i++)
-            {
+
+            for (int i = 0; i < parts.length; i++) {
                 parts[i] = parts[i].trim();
                 model.addElement(parts[i]);
             }
-            
+
             ColumnList.setModel(model);
-            
+
             DefaultComboBoxModel cmodel = new DefaultComboBoxModel();
-            
+
             String first;
             String current;
-            
-            
-            if((first = in.readLine()) != null)
-            {
+
+            if ((first = in.readLine()) != null) {
                 first = first.split(";")[0];
-                cmodel.addElement( first.split(";")[0] );
-                while( ( current = in.readLine() ) != null && !current.split( ";" )[0].equals( first ) )
-                    {
-                        cmodel.addElement( current.split(";")[0] );
-                    }
-            }        
-            MeasureComboBox.setModel( cmodel );
+                cmodel.addElement(first.split(";")[0]);
+                while ((current = in.readLine()) != null && !current.split(";")[0].equals(first)) {
+                    cmodel.addElement(current.split(";")[0]);
+                }
+            }
+            MeasureComboBox.setModel(cmodel);
+        } catch (Exception e) {
+
         }
-        catch(Exception e)
-        {
-            
-        }
-        
+
         XValueLabel.setText("None");
         YValueLabel.setText("None");
         ZValueLabel.setText("None");
     }
-    
+
     /**
      * Get all cached simulation files and add them to the CachedFilesList.
-     **/
-    public void readCachedListOfStatistics()
-    {
+     *
+     */
+    public void readCachedListOfStatistics() {
         DefaultListModel cachedFilesListModel = new DefaultListModel();
         ArrayList<Statistic> cachedListOfStatistics;
         cachedListOfStatistics = StatisticAggregator.getListOfStatistics();
-        
-        for(int i = 0; i<cachedListOfStatistics.size(); i++)
-                cachedFilesListModel.addElement(cachedListOfStatistics.get(i).getName());
-            
+
+        for (int i = 0; i < cachedListOfStatistics.size(); i++) {
+            cachedFilesListModel.addElement(cachedListOfStatistics.get(i).getName());
+        }
+
         CachedFilesList.setModel(cachedFilesListModel);
-        
+
         final int maximum = jScrollPane1.getHorizontalScrollBar().getMaximum();
         jScrollPane1.getHorizontalScrollBar().setValue(maximum);
     }
@@ -401,13 +394,14 @@ Color plotColor = Color.black;
 
     /**
      * File Open Dialog for .csv files.
-     **/
+     *
+     */
     private void OpenButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OpenButtonActionPerformed
-        
+
         FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV File", "csv");
-        
+
         JFileChooser fileChooser = new JFileChooser();
-        
+
         fileChooser.removeChoosableFileFilter(fileChooser.getAcceptAllFileFilter());
         fileChooser.setFileFilter(filter);
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -417,29 +411,29 @@ Color plotColor = Color.black;
         String filePath;
 
         if (fileChooser.showDialog(this, "Choose this") == JFileChooser.APPROVE_OPTION) {
-          if(fileChooser.getSelectedFile().isFile() ){
-              filePath=fileChooser.getSelectedFile().toString();
-          }else{
-              filePath=fileChooser.getCurrentDirectory().toString();
-          }
-          support.log("chosen .csv file: " + filePath);
-          OpenFileTextField.setText(filePath);
-          loadCSV(filePath);
-    
-        }else{
-        support.log("No .csv file selected.");
-        } 
+            if (fileChooser.getSelectedFile().isFile()) {
+                filePath = fileChooser.getSelectedFile().toString();
+            } else {
+                filePath = fileChooser.getCurrentDirectory().toString();
+            }
+            support.log("chosen .csv file: " + filePath);
+            OpenFileTextField.setText(filePath);
+            loadCSV(filePath);
+
+        } else {
+            support.log("No .csv file selected.");
+        }
     }//GEN-LAST:event_OpenButtonActionPerformed
 
     /**
      * Load cached .csv file.
-     **/
+     *
+     */
     private void LoadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoadButtonActionPerformed
-        if(!CachedFilesList.isSelectionEmpty())
-        {
+        if (!CachedFilesList.isSelectionEmpty()) {
             OpenFileTextField.setText(CachedFilesList.getSelectedValue().toString());
             loadCSV(CachedFilesList.getSelectedValue().toString());
-        }      
+        }
     }//GEN-LAST:event_LoadButtonActionPerformed
 
     private void OpenFileTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OpenFileTextFieldActionPerformed
@@ -448,13 +442,13 @@ Color plotColor = Color.black;
 
     /**
      * Set y axis column name.
-     **/
+     *
+     */
     private void SetYButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SetYButtonActionPerformed
-        if(!ColumnList.isSelectionEmpty())
-        {
+        if (!ColumnList.isSelectionEmpty()) {
             YValueLabel.setText(ColumnList.getSelectedValue().toString());
         }
-        
+
     }//GEN-LAST:event_SetYButtonActionPerformed
 
     private void MeasureComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MeasureComboBoxActionPerformed
@@ -463,19 +457,19 @@ Color plotColor = Color.black;
 
     /**
      * Create the R script and run it.
-     **/
+     *
+     * @param evt ActionEvent, sent by Button
+     */
     private void JButtonPlotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JButtonPlotActionPerformed
-    char plotChar=support.DEFAULT_PLOT_CHAR;
-        
-        try{
-        plotChar=this.jComboBoxPlotChar.getSelectedItem().toString().charAt(0);
-        }   catch(Exception e){
-            }
-        
-        
-        try
-        {
-            if(!jCheckBox1.isSelected()) //create new script
+        char plotChar = support.DEFAULT_PLOT_CHAR;
+
+        try {
+            plotChar = this.jComboBoxPlotChar.getSelectedItem().toString().charAt(0);
+        } catch (Exception e) {
+        }
+
+        try {
+            if (!jCheckBox1.isSelected()) //create new script
             {
                 //Delete old script file and old image file
                 support.del(new File(imageFilePath));
@@ -488,36 +482,28 @@ Color plotColor = Color.black;
                 writer.println("library(plot3D)");
                 writer.println("base<-read.csv(\"" + OpenFileTextField.getText().replace("\\", "/") + "\", sep=\";\", dec=\",\",check.names=FALSE)");
 
-                if(MeasureComboBox.getSelectedItem() != null)
-                {
+                if (MeasureComboBox.getSelectedItem() != null) {
                     writer.println("sub<-subset(base,  base$MeasureName ==  \"" + MeasureComboBox.getSelectedItem().toString() + "\")");
-                }
-                else
-                {
+                } else {
                     writer.println("sub<-base");
                 }
 
                 writer.println("setwd(\"" + userdir + "\")");
                 writer.println("png(filename=\"rplot.png\")");
 
-                if(XValueLabel.getText() != "None" && YValueLabel.getText() != "None" && ZValueLabel.getText() == "None")
-                {
-                    writer.println("plot(as.numeric(as.character( sub(\""+","+"\" , \""+"."+
-                            "\" , sub$\"" + XValueLabel.getText() + "\"))),as.numeric(as.character( sub(\""+","+"\" , \""+"."+
-                            "\" , sub$\"" + YValueLabel.getText() + "\"))), xlab=\"" + XValueLabel.getText() + 
-                            "\",ylab=\"" + YValueLabel.getText() + "\" , pch=\""+plotChar+"\", col=\"" + 
-                            String.format("#%02X%02X%02X", plotColor.getRed(), plotColor.getGreen(), plotColor.getBlue()) + "\")");
-                }
-                else if(XValueLabel.getText() != "None" && YValueLabel.getText() != "None" && ZValueLabel.getText() != "None")
-                {
-                    writer.println("scatter3D(as.numeric(as.character( sub(\""+","+"\" , \""+"."+"\" , sub$\"" + XValueLabel.getText() + 
-                            "\"))),as.numeric(as.character( sub(\""+","+"\" , \""+"."+"\" , sub$\"" + YValueLabel.getText() + 
-                            "\"))),as.numeric(as.character( sub(\""+","+"\" , \""+"."+"\" , sub$\"" + ZValueLabel.getText() + 
-                            "\"))), xlab=\"" + XValueLabel.getText() + "\",ylab=\"" + YValueLabel.getText() + "\",zlab=\"" + 
-                            ZValueLabel.getText() + "\", phi=15, theta=120, col=NULL, NAcol=\"white\", colkey=NULL, panel.first=NULL, clim=NULL, clab=NULL, bty=\"b2\", pch=\""+plotChar+"\", add=FALSE)");
-                }
-                else
-                {
+                if (!XValueLabel.getText().equals("None") && !YValueLabel.getText().equals("None") && ZValueLabel.getText().equals("None")) {
+                    writer.println("plot(as.numeric(as.character( sub(\"" + "," + "\" , \"" + "."
+                            + "\" , sub$\"" + XValueLabel.getText() + "\"))),as.numeric(as.character( sub(\"" + "," + "\" , \"" + "."
+                            + "\" , sub$\"" + YValueLabel.getText() + "\"))), xlab=\"" + XValueLabel.getText()
+                            + "\",ylab=\"" + YValueLabel.getText() + "\" , pch=\"" + plotChar + "\", col=\""
+                            + String.format("#%02X%02X%02X", plotColor.getRed(), plotColor.getGreen(), plotColor.getBlue()) + "\")");
+                } else if (!XValueLabel.getText().equals("None") && !YValueLabel.getText().equals("None") && !ZValueLabel.getText().equals("None")) {
+                    writer.println("scatter3D(as.numeric(as.character( sub(\"" + "," + "\" , \"" + "." + "\" , sub$\"" + XValueLabel.getText()
+                            + "\"))),as.numeric(as.character( sub(\"" + "," + "\" , \"" + "." + "\" , sub$\"" + YValueLabel.getText()
+                            + "\"))),as.numeric(as.character( sub(\"" + "," + "\" , \"" + "." + "\" , sub$\"" + ZValueLabel.getText()
+                            + "\"))), xlab=\"" + XValueLabel.getText() + "\",ylab=\"" + YValueLabel.getText() + "\",zlab=\""
+                            + ZValueLabel.getText() + "\", phi=15, theta=120, col=NULL, NAcol=\"white\", colkey=NULL, panel.first=NULL, clim=NULL, clab=NULL, bty=\"b2\", pch=\"" + plotChar + "\", add=FALSE)");
+                } else {
                     writer.close();
                     return;
                 }
@@ -533,43 +519,33 @@ Color plotColor = Color.black;
 
                 this.JButtonPlot.setEnabled(false);
                 jCheckBox1.setEnabled(true);
-            }
-            else
-            {
+            } else {
                 //append to existing script (hold is checked)
-                PrintWriter writer = new PrintWriter(new FileOutputStream(new File( "rscript.r"),true));
-                
-                if(MeasureComboBox.getSelectedItem() != null)
-                {
+                PrintWriter writer = new PrintWriter(new FileOutputStream(new File("rscript.r"), true));
+
+                if (MeasureComboBox.getSelectedItem() != null) {
                     writer.println("sub<-subset(base,  base$MeasureName ==  \"" + MeasureComboBox.getSelectedItem().toString() + "\")");
-                }
-                else
-                {
+                } else {
                     writer.println("sub<-base");
                 }
-                
-                if(XValueLabel.getText() != "None" && YValueLabel.getText() != "None" && ZValueLabel.getText() == "None")
-                {
-                    writer.println("points(as.numeric(as.character( sub(\""+","+"\" , \""+"."+
-                            "\" , sub$\"" + XValueLabel.getText() + "\"))),as.numeric(as.character( sub(\""+","+"\" , \""+"."+
-                            "\" , sub$\"" + YValueLabel.getText() + "\"))), xlab=\"" + XValueLabel.getText() + 
-                            "\",ylab=\"" + YValueLabel.getText() + "\" , pch=\""+plotChar+"\", col=\"" + 
-                            String.format("#%02X%02X%02X", plotColor.getRed(), plotColor.getGreen(), plotColor.getBlue()) + "\")");
-                }
-                else if(XValueLabel.getText() != "None" && YValueLabel.getText() != "None" && ZValueLabel.getText() != "None")
-                {
-                    writer.println("scatter3D(as.numeric(as.character( sub(\""+","+"\" , \""+"."+"\" , sub$\"" + XValueLabel.getText() + 
-                            "\"))),as.numeric(as.character( sub(\""+","+"\" , \""+"."+"\" , sub$\"" + YValueLabel.getText() + 
-                            "\"))),as.numeric(as.character( sub(\""+","+"\" , \""+"."+"\" , sub$\"" + ZValueLabel.getText() + 
-                            "\"))), xlab=\"" + XValueLabel.getText() + "\",ylab=\"" + YValueLabel.getText() + "\",zlab=\"" + 
-                            ZValueLabel.getText() + "\", col=NULL, NAcol=\"white\", colkey=NULL, panel.first=NULL, clim=NULL, clab=NULL, bty=\"b2\", pch=\""+plotChar+"\", add=TRUE)");
-                }
-                else
-                {
+
+                if (!XValueLabel.getText().equals("None") && !YValueLabel.getText().equals("None") && ZValueLabel.getText().equals("None")) {
+                    writer.println("points(as.numeric(as.character( sub(\"" + "," + "\" , \"" + "."
+                            + "\" , sub$\"" + XValueLabel.getText() + "\"))),as.numeric(as.character( sub(\"" + "," + "\" , \"" + "."
+                            + "\" , sub$\"" + YValueLabel.getText() + "\"))), xlab=\"" + XValueLabel.getText()
+                            + "\",ylab=\"" + YValueLabel.getText() + "\" , pch=\"" + plotChar + "\", col=\""
+                            + String.format("#%02X%02X%02X", plotColor.getRed(), plotColor.getGreen(), plotColor.getBlue()) + "\")");
+                } else if (!XValueLabel.getText().equals("None") && !YValueLabel.getText().equals("None") && !ZValueLabel.getText().equals("None")) {
+                    writer.println("scatter3D(as.numeric(as.character( sub(\"" + "," + "\" , \"" + "." + "\" , sub$\"" + XValueLabel.getText()
+                            + "\"))),as.numeric(as.character( sub(\"" + "," + "\" , \"" + "." + "\" , sub$\"" + YValueLabel.getText()
+                            + "\"))),as.numeric(as.character( sub(\"" + "," + "\" , \"" + "." + "\" , sub$\"" + ZValueLabel.getText()
+                            + "\"))), xlab=\"" + XValueLabel.getText() + "\",ylab=\"" + YValueLabel.getText() + "\",zlab=\""
+                            + ZValueLabel.getText() + "\", col=NULL, NAcol=\"white\", colkey=NULL, panel.first=NULL, clim=NULL, clab=NULL, bty=\"b2\", pch=\"" + plotChar + "\", add=TRUE)");
+                } else {
                     writer.close();
                     return;
                 }
-                
+
                 writer.close();
 
                 String command = support.getPathToR() + File.separator + "bin" + File.separator + "Rscript rscript.r 2> errorFile.Rout";
@@ -582,35 +558,28 @@ Color plotColor = Color.black;
                 this.JButtonPlot.setEnabled(false);
             }
 
+        } catch (IOException e) {
         }
-        catch(IOException e)
-        {
-        }
-        
-        
-        
-        
-        
+
+
     }//GEN-LAST:event_JButtonPlotActionPerformed
 
     /**
-     * Will show the image file, specified in the global vars of this class or Error-Message in log
-     * This method is called by the native Thread as a callback after creating the image file
+     * Will show the image file, specified in the global vars of this class or
+     * Error-Message in log This method is called by the native Thread as a
+     * callback after creating the image file
      */
-    public void processEnded(){
-    support.log("Try to show image at:"+imageFilePath);
-        try
-        {
+    public void processEnded() {
+        support.log("Try to show image at:" + imageFilePath);
+        try {
             String userdir = System.getProperty("user.dir");
             File errorFile = new File(userdir + File.separator + "errorFile.Rout");
-            if(errorFile.exists())
-            {
+            if (errorFile.exists()) {
                 FileReader errorReader = new FileReader(errorFile);
                 BufferedReader bufferedErrorReader = new BufferedReader(errorReader);
-                String error = null;
+                String error;
 
-                while((error = bufferedErrorReader.readLine()) != null)
-                {
+                while ((error = bufferedErrorReader.readLine()) != null) {
                     support.log(error);
                 }
 
@@ -618,32 +587,30 @@ Color plotColor = Color.black;
                 errorReader.close();
                 errorFile.delete();
             }
+        } catch (Exception e) {
+            support.log("Error while reading the error file.");
         }
-        catch(Exception e){
-        support.log("Error while reading the error file.");
-        }
-    plotFrame.showImage(imageFilePath);
-    support.setStatusText("");
-    this.JButtonPlot.setEnabled(true);
+        plotFrame.showImage(imageFilePath);
+        support.setStatusText("");
+        this.JButtonPlot.setEnabled(true);
     }
 
-    
     /**
      * Set x axis column name.
-     **/
+     *
+     */
     private void SetXButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SetXButtonActionPerformed
-        if(!ColumnList.isSelectionEmpty())
-        {
+        if (!ColumnList.isSelectionEmpty()) {
             XValueLabel.setText(ColumnList.getSelectedValue().toString());
         }
     }//GEN-LAST:event_SetXButtonActionPerformed
 
     /**
      * Set z axis column name.
-     **/
+     *
+     */
     private void SetZButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SetZButtonActionPerformed
-        if(!ColumnList.isSelectionEmpty())
-        {
+        if (!ColumnList.isSelectionEmpty()) {
             ZValueLabel.setText(ColumnList.getSelectedValue().toString());
         }
     }//GEN-LAST:event_SetZButtonActionPerformed
@@ -651,14 +618,13 @@ Color plotColor = Color.black;
     /*Choose the plot color*/
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         Color chosen = JColorChooser.showDialog(null, "Plot Color Chooser", Color.yellow);
-        if(chosen != null)
-        {
+        if (chosen != null) {
             plotColor = chosen;
             jButton1.setBackground(chosen);
-            
+
             support.log("chosen color: " + String.format("#%02X%02X%02X", chosen.getRed(), chosen.getGreen(), chosen.getBlue()));
         }
-        
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
@@ -669,40 +635,6 @@ Color plotColor = Color.black;
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBoxPlotCharActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(PlotFrameController.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(PlotFrameController.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(PlotFrameController.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(PlotFrameController.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new PlotFrameController().setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel AxisSetupLabel;
@@ -733,6 +665,7 @@ Color plotColor = Color.black;
 
     /**
      * nativeProcessCallback interface method
+     * @param message Message to be sent to Mainframe and probably shown
      */
     public void errorOccured(String message) {
         this.JButtonPlot.setEnabled(true);
