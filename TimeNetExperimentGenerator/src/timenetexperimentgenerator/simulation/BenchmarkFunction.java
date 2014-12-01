@@ -9,6 +9,7 @@ package timenetexperimentgenerator.simulation;
 import java.util.ArrayList;
 import timenetexperimentgenerator.datamodel.SimulationType;
 import timenetexperimentgenerator.datamodel.parameter;
+import timenetexperimentgenerator.typedef;
 
 /**
  *
@@ -50,4 +51,12 @@ public interface BenchmarkFunction {
      * @return maximum measure value
      */
     public double getMaxValue();
+    
+    /**
+     * Return type of this benchmark function. (typeOfBenchmarkFunction)
+     * This makes it easier to check and compare in other parts of program
+     * 
+     * @return Type of this benchmarkfunction
+     */
+    public typedef.typeOfBenchmarkFunction getTypeOfBenchmarkFunction();
 }

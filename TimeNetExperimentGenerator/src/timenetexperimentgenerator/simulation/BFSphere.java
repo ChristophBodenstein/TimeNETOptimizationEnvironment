@@ -1,5 +1,5 @@
 /*
- * Matyas Benchmark function
+ * Sphere Benchmark function
  */
 package timenetexperimentgenerator.simulation;
 
@@ -14,10 +14,10 @@ import timenetexperimentgenerator.typedef;
  *
  * @author Christoph Bodenstein
  */
-public class BFMatya implements BenchmarkFunction {
+public class BFSphere implements BenchmarkFunction {
 
-    double limitUpper = support.DEFAULT_Matya_limitLower;
-    double limitLower = support.DEFAULT_Matya_limitupper;
+    double limitUpper = support.DEFAULT_Sphere_limitupper;
+    double limitLower = support.DEFAULT_Sphere_limitLower;
 
     public SimulationType getSimulationResult(ArrayList<parameter> parameterList) {
         ArrayList<parameter> tmpParameterList = (parameterList);
@@ -95,6 +95,6 @@ public class BFMatya implements BenchmarkFunction {
     }
 
     public typedef.typeOfBenchmarkFunction getTypeOfBenchmarkFunction() {
-        return typedef.typeOfBenchmarkFunction.Matya;
+        return typedef.typeOfBenchmarkFunction.Sphere;
     }
 }
