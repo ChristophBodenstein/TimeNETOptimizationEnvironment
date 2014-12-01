@@ -308,6 +308,28 @@ public class typedef {
          */
         Weighted
     };
+    
+    /**
+     * Tpye of crossover-operation for genetic-algorithm (Andy Seidel)
+     */
+    public enum typeOfGeneticCrossover {
+        
+        /**
+         * 
+         */
+        OnePoint,
+        
+        /**
+         * 
+         */
+        SBX,
+        
+        /**
+         * 
+         */
+        MPC
+    
+    };
 
     /**
      * Lsit of parameters to be ignored for some reasons when reading it in

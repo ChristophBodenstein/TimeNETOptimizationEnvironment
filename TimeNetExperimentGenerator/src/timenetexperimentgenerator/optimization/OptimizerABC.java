@@ -189,7 +189,7 @@ public class OptimizerABC extends OptimizerPopulationBased implements Runnable, 
                 support.waitForEndOfSimulator(mySimulator, optiCycleCounter, support.DEFAULT_TIMEOUT);
                 source = mySimulator.getListOfCompletedSimulationParsers();
                 population.set(i, source);
-                support.addLinesToLogFileFromListOfParser(simulationResults, logFileName);
+                support.addLinesToLogFileFromListOfParser(source, logFileName);
             }
                 
             population = sortAndFilterFoodSources(population);
