@@ -155,6 +155,9 @@ public class support {
 //List of Changable parameters for Multiphase-opi
     public static ArrayList<parameter> listOfChangableParametersMultiphase = null;
 
+    
+    private static ArrayList<MeasureType> Measures;
+    
     /**
      * @return the myOptimizerPreferences a Reference to the Preferences-Frame
      */
@@ -1694,5 +1697,19 @@ public class support {
      */
     public static void resetGlobalSimulationCounter() {
         globalSimulationCounter = 0;
+    }
+
+    /**
+     * @return the Measures
+     */
+    public static ArrayList<MeasureType> getMeasures() {
+        return Measures;
+    }
+
+    /**
+     * @param MeasuresT the Measures to set
+     */
+    public static void setMeasures(ArrayList<MeasureType> MeasuresT) {
+        Measures = MeasuresT;
     }
 }

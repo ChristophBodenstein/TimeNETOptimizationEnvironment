@@ -118,12 +118,12 @@ public class SimulationType {
     }
 
     /**
-     * Returns distance to target value coordinates in design space the distance
-     * is relative to the whole design space So Sum of all
+     * Returns distance to target simulation coordinates in design space the distance
+     * is relative to the whole design space, So Sum of all
      * parameter-value-ranges equals 100% It works only for few Benchmark
      * functions and for normal petri nets if theroetical optimum is given!
      *
-     * @return List of relative Distances to target Values
+     * @return Sum of relative Distances to target Values
      * @param targetSimulation SimulationType of target(i.e. optimum) Solution
      * to calculate the distance
      */
@@ -152,58 +152,58 @@ public class SimulationType {
      */
     public double getRelativeDistanceToTargetValueInValueRange(MeasureType targetMeasure) {
         //TODO implement this method!
-        double distance = this.getDistanceToTargetValue();
-        double range = 0.0;
-        int numberOfParameters = support.getListOfChangableParameters(parameterList).size();
+        double distance;
+        double range;
+        //int numberOfParameters = support.getListOfChangableParameters(parameterList).size();
         /*
          Get Simulator type from support or Prefs
          get min-max-values based on Simulator
          */
-        if (support.getChosenSimulatorType() == typedef.typeOfSimulator.Benchmark) {
+//        if (support.getChosenSimulatorType() == typedef.typeOfSimulator.Benchmark) {
+//
+//            switch (support.getChosenBenchmarkFunction()) {
+//                case Ackley:
+//                    //Optimum is in the middle of each parameter, its exact at 0,0
+//                    //TODO calculate value range fpr Ackley
+//                    break;
+//                case Sphere:
+//                    //Optimum is in the middle of each parameter, its exact at 0,0
+//                    range = Math.pow(5 * 5, numberOfParameters);
+//                    break;
+//                case Matya:
+//                    //Optimum is in the middle of each parameter, its exact at 0,0
+//                    double x0 = support.DEFAULT_Matya_limitLower;
+//                    double x1 = support.DEFAULT_Matya_limitupper;
+//                    range = 0.26 * (x0 * x0 + x1 * x1) - 0.48 * x0 * x1;
+//                    break;
+//                case Schwefel:
+//                    //TODO calculate value range for Schwefel
+//                    //Optimum is in the middle of each parameter, its exact at 0,0
+//                    break;
+//                case Rastrigin:
+//                    //TODO calculate value range for Rastrigin
+//                    //Optimum is in the middle of each parameter, its exact at 0,0
+//                    break;
+//
+//                default:
+//
+//                    break;
+//            }
+//
+//        } else {
+//            if (support.getChosenSimulatorType() == typedef.typeOfSimulator.Cache_Only) {
+//                //TODO add Cache-Local-Simulator
+        range = targetMeasure.getMaxValue() - targetMeasure.getMinValue();
+        //Get copy of actual optimization target (TargetMeasure is found by name)
+        MeasureType activeMeasure = new MeasureType(this.getMeasureByName(support.getOptimizationMeasure().getMeasureName()));
+        //set target Value of copied optimization target measure
+        activeMeasure.setTargetValue(targetMeasure.getMeanValue(), targetMeasure.getTargetTypeOf());
 
-            switch (support.getChosenBenchmarkFunction()) {
-                case Ackley:
-                    //Optimum is in the middle of each parameter, its exact at 0,0
-                    //TODO calculate value range fpr Ackley
-                    break;
-                case Sphere:
-                    //Optimum is in the middle of each parameter, its exact at 0,0
-                    range = Math.pow(5 * 5, numberOfParameters);
-                    break;
-                case Matya:
-                    //Optimum is in the middle of each parameter, its exact at 0,0
-                    double x0 = support.DEFAULT_Matya_limitLower;
-                    double x1 = support.DEFAULT_Matya_limitupper;
-                    range = 0.26 * (x0 * x0 + x1 * x1) - 0.48 * x0 * x1;
-                    break;
-                case Schwefel:
-                    //TODO calculate value range for Schwefel
-                    //Optimum is in the middle of each parameter, its exact at 0,0
-                    break;
-                case Rastrigin:
-                    //TODO calculate value range for Rastrigin
-                    //Optimum is in the middle of each parameter, its exact at 0,0
-                    break;
-
-                default:
-
-                    break;
-            }
-
-        } else {
-            if (support.getChosenSimulatorType() == typedef.typeOfSimulator.Cache_Only) {
-                //TODO add Cache-Local-Simulator
-                range = targetMeasure.getMaxValue() - targetMeasure.getMinValue();
-                //Get copy of actual optimization target (TargetMeasure is found by name)
-                MeasureType activeMeasure = new MeasureType(this.getMeasureByName(support.getOptimizationMeasure().getMeasureName()));
-                //set target Value of copied optimization target measure
-                activeMeasure.setTargetValue(targetMeasure.getMeanValue(), targetMeasure.getTargetTypeOf());
-
-                distance = activeMeasure.getDistanceFromTarget();
-                support.log("Absolute Distance to calculated Optimum (" + targetMeasure.getMeanValue() + ") is " + distance + " at a range of " + range + ".");
-            }
-            //TODO Get Min-Max, Opti-Values from somewhere else!
-        }
+        distance = activeMeasure.getDistanceFromTarget();
+        support.log("Absolute Distance to calculated Optimum (" + targetMeasure.getMeanValue() + ") is " + distance + " at a range of " + range + ".");
+//            }
+//            //TODO Get Min-Max, Opti-Values from somewhere else!
+//        }
 
         return (distance * 100 / range);
     }
