@@ -29,7 +29,7 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
     private int SBX_n = 2;
     private double MPC_cr = 0.5;
     
-    private int numOptiRuns = 10;
+    private int numOptiRuns = 50;
 
     /**
      * returnes the population size used for optimization
@@ -114,10 +114,12 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
     {
         ArrayList<SimulationType> optiResults = new ArrayList<SimulationType>();
         ArrayList<Integer> optiTotalSimualtions = new ArrayList<Integer>();
+        ArrayList<Integer> optiTotalCachedSimualtions = new ArrayList<Integer>();
         for (int i = 0; i< numOptiRuns; ++i)
         {
         int optiCycleCounter = 0;
         int totalSimulations  = 0;
+        int totalCachedSimualtions = 0;
         population = createRandomPopulation(populationSize, false);
         
         Simulator mySimulator = SimOptiFactory.getSimulator();       
@@ -125,6 +127,14 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
         support.waitForEndOfSimulator(mySimulator, optiCycleCounter, support.DEFAULT_TIMEOUT);
         
         ArrayList<SimulationType> simulationResults = mySimulator.getListOfCompletedSimulationParsers();
+        for (int r = 0;r<simulationResults.size();++r)
+        {
+            if (simulationResults.get(0).isIsFromCache())
+            {
+                ++totalCachedSimualtions;
+            }
+        }
+        
         totalSimulations += simulationResults.size();
         population = getPopulationFromSimulationResults(simulationResults);
         
@@ -157,7 +167,7 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
             simulationResults = mySimulator.getListOfCompletedSimulationParsers();
             totalSimulations += simulationResults.size();
             population = getPopulationFromSimulationResults(simulationResults);
-            support.addLinesToLogFileFromListOfParser(simulationResults, logFileName);
+            //support.addLinesToLogFileFromListOfParser(simulationResults, logFileName);
             
             //evaluation phase --------------------------------------------------------------------------
             population = cutPopulation(population);
@@ -168,14 +178,25 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
         }
         optiResults.add(topMeasure);
         optiTotalSimualtions.add(totalSimulations);
+        optiTotalCachedSimualtions.add(totalCachedSimualtions);
         topDistance = Double.POSITIVE_INFINITY;
         currentNumberOfOptiCyclesWithoutImprovement = 0;
         }
+        support.addLinesToLogFileFromListOfParser(optiResults, logFileName);
+        /*
+        String headline = "";
+        for (int i = 0; i<parameterBase.size();++i)
+        {
+            
+        }
+        */
         for (int i = 0;i<optiResults.size(); ++i)
         {
-            String logString = "Run" + i + ":\t" + optiResults.get(i).getDistanceToTargetValue() + "\t" + optiTotalSimualtions.get(i);
+            String logString = "" + optiTotalSimualtions.get(i) + " " + optiTotalCachedSimualtions.get(i);
             support.log(logString);
         }
+        
+        
     }
     
     /**
@@ -394,7 +415,7 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
             {
                 for (int i = 0; i<population.size(); i+=3)
                 {     
-                    if (randomGenerator.nextDouble() <= MPC_cr && population.size() < i+3)
+                    if (randomGenerator.nextDouble() <= MPC_cr && population.size() > i+2)
                     {
                         childs = MPCCrossOver(population.get(i).get(0), population.get(i+1).get(0), population.get(i+2).get(0));    
                     }

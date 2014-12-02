@@ -199,6 +199,7 @@ public class SimulatorWeb implements Runnable, Simulator {
                         //support.log("Response from server was negative. Will wait "+support.DEFAULT_SLEEPING_TIME+" ms.");
                         //Wait with full force
                         support.waitSingleThreaded(support.DEFAULT_SLEEPING_TIME);
+                        //Thread.sleep(support.DEFAULT_SLEEPING_TIME);
                     }
 
                 } catch (Exception ex) {

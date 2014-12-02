@@ -161,7 +161,7 @@ public class typedef {
          */
         ABC,
         /**
-         * MVO-Algorithm (Andy Seidel)
+         * MVMO-Algorithm (Andy Seidel)
          */
         MVMO,
         /**
@@ -249,18 +249,18 @@ public class typedef {
          * Sphere function
          */
         Sphere,
-        //        /**
-        //         * Ackley function
-        //         */
-        //        Ackley,
-        //        /**
-        //         * Matyas function
-        //         */
+        /**
+         * Ackley function
+         */
+        Ackley,
+        /**
+          * Matyas function
+          */
         Matya,
-        //        /**
-        //         * Schwefel function
-        //         */
-        //        Schwefel,
+        /**
+          * Schwefel function
+          */
+        Schwefel,
         //        /**
         //         * Rastrigins function
         //         */
