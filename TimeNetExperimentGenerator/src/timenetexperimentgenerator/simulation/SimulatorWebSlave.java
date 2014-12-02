@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.http.HttpResponse;
@@ -127,22 +128,25 @@ public class SimulatorWebSlave implements Runnable {
      */
     private void startLocalSimulation(String exportFileName) {
         try {
+            //Calculate timeout, give Maxtime * 2
+            int timeOut= Float.valueOf(support.getIntStringValueFromFileName(exportFileName, "MaxTime")).intValue()*2;
             // Execute command
             java.lang.ProcessBuilder processBuilder = new java.lang.ProcessBuilder("java", "-jar", "TimeNET.jar", exportFileName, "autostart=true", "autostop=true", "secmax=" + support.getIntStringValueFromFileName(exportFileName, "MaxTime"), "endtime=" + support.getIntStringValueFromFileName(exportFileName, "EndTime"), "seed=" + support.getIntStringValueFromFileName(exportFileName, "Seed"), "confidence=" + support.getIntStringValueFromFileName(exportFileName, "ConfidenceIntervall"), "epsmax=" + support.getValueFromFileName(exportFileName, "MaxRelError"));
             processBuilder.directory(new java.io.File(this.pathToTimeNet));
             support.log("Command is: " + processBuilder.command().toString());
-
+            
             // Start new process
             long timeStamp = Calendar.getInstance().getTimeInMillis();
 
             java.lang.Process p = processBuilder.start();
-
+            
             java.util.Scanner s = new java.util.Scanner(p.getInputStream()).useDelimiter("\\Z");//Scans output of process
             support.log(s.next());//prints output of process into System.out
             try {
-                p.waitFor();
+                //Wait for Process until timeout, then kill process
+                p.waitFor(timeOut, TimeUnit.SECONDS);
             } catch (InterruptedException ex) {
-                Logger.getLogger(SimulatorLocal.class.getName()).log(Level.SEVERE, null, ex);
+                support.log("Simulation took more than "+ timeOut +" seconds. So it was canceled.");
             }
             timeStamp = (Calendar.getInstance().getTimeInMillis() - timeStamp) / 1000;//Time for calculation in seconds
 
