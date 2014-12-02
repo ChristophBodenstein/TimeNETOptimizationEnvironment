@@ -42,13 +42,16 @@ public class BFSphere implements BenchmarkFunction {
             xNew = (value - p.getStartValue()) / (p.getEndValue() - p.getStartValue());
             x[c] = xNew * (limitUpper - limitLower) + limitLower;
         }
-        if (dimension != 2) {
-            support.log("Matya is only defined for 2 dimensions");
-            return null;
-        }
-        double x0 = x[0];
-        double x1 = x[1];
-        sum = 0.26 * (x0 * x0 + x1 * x1) - 0.48 * x0 * x1;
+        sum = 0.0;
+        for (int c = 0; c < dimension; c++) {
+            parameter p = tmpListOfChangableParameter.get(c);
+            value = p.getValue();
+            p = support.getParameterByName(support.getOriginalParameterBase(), p.getName());
+            //Check Range and align the value to map constraints
+            xNew = (value - p.getStartValue()) / (p.getEndValue() - p.getStartValue());
+            xNew = xNew * (limitUpper - limitLower) + limitLower;
+            sum += (xNew * xNew);
+        }//End of for-c-loop
 
         ArrayList<MeasureType> tmpListOfMeasurements = support.getMeasures();
         //All Measure will have the same result value
@@ -77,12 +80,18 @@ public class BFSphere implements BenchmarkFunction {
         ArrayList<parameter> optimumChangableParameterset = support.getListOfChangableParameters(optimumParameterlist);
 
         //Optimum is in the middle of each parameter, its exact at 0,0
-        for (int i = 0; i < optimumChangableParameterset.size(); i++) {
-            parameter p = optimumChangableParameterset.get(i);
+        for (parameter p : optimumChangableParameterset) {
             p.setValue(p.getEndValue() - ((p.getEndValue() - p.getStartValue()) / 2));
+            support.log("P-Value for optimal solution (" + p.getName() + "): " + p.getValue());
+        }
+        SimulationType tmpSimulation = this.getSimulationResult(optimumParameterlist);
+        support.log("Measurement-Values of optimal solution are:");
+
+        for (MeasureType m : tmpSimulation.getMeasures()) {
+            support.log(m.getMeasureName() + " has value: " + m.getMeanValue() + " with max: " + m.getMaxValue() + " and min: " + m.getMinValue());
         }
 
-        return this.getSimulationResult(optimumParameterlist);
+        return tmpSimulation;
 
     }
 
@@ -91,7 +100,11 @@ public class BFSphere implements BenchmarkFunction {
     }
 
     public double getMaxValue() {
-        return 0.26 * (support.DEFAULT_Matya_limitLower * support.DEFAULT_Matya_limitLower + support.DEFAULT_Matya_limitupper * support.DEFAULT_Matya_limitupper) - 0.48 * support.DEFAULT_Matya_limitLower * support.DEFAULT_Matya_limitupper;
+        ArrayList<parameter> tmpParameterList = support.getParameterBase();
+        ArrayList<parameter> tmpListOfChangableParameter = support.getListOfChangableParameters(tmpParameterList);
+
+        return Math.pow((limitUpper * limitUpper), (double) tmpListOfChangableParameter.size());
+
     }
 
     public typedef.typeOfBenchmarkFunction getTypeOfBenchmarkFunction() {

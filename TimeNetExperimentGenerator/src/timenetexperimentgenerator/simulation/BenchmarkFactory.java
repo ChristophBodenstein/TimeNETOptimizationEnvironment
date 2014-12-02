@@ -12,6 +12,7 @@ import timenetexperimentgenerator.support;
 public class BenchmarkFactory {
 
     private static final BenchmarkFunction myBFMatya = new BFMatya();
+    private static final BenchmarkFunction myBFSphere = new BFSphere();
 
     /**
      * Returns the chosen Benchmark-function instance TODO: Use Singleton
@@ -22,6 +23,8 @@ public class BenchmarkFactory {
         switch (support.getChosenBenchmarkFunction()) {
             case Matya:
                 return myBFMatya;
+            case Sphere:
+                return myBFSphere;
 
             default:
                 return myBFMatya;

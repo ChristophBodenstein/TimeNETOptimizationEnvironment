@@ -39,7 +39,7 @@ import timenetexperimentgenerator.typedef.typeOfProcessFeedback;
 public class support {
 
 //This Version of TimeNetExperimentGenerator
-    public static final String VERSION = "0.9.061114";
+    public static final String VERSION = "2014-12-02";
 
 //Define some program-wide default values
     public static final double DEFAULT_STEPPING = 1.0;
@@ -52,7 +52,7 @@ public class support {
     public static final typeOfNeighborhoodEnum DEFAULT_TYPE_OF_NEIGHBORHOOD = typeOfNeighborhoodEnum.StepForwardBackward;
     public static final typeOfSimulator DEFAULT_TYPE_OF_SIMULATOR = typeOfSimulator.Local;
     public static final typeOfOptimization DEFAULT_TYPE_OF_OPTIMIZER = typeOfOptimization.HillClimbing;
-    public static final typeOfBenchmarkFunction DEFAULT_TYPE_OF_BENCHMARKFUNCTION = typeOfBenchmarkFunction.Ackley;
+    public static final typeOfBenchmarkFunction DEFAULT_TYPE_OF_BENCHMARKFUNCTION = typeOfBenchmarkFunction.Sphere;
 
 //default values for distributed simulation
     public static final int DEFAULT_SLEEPING_TIME = 1000;

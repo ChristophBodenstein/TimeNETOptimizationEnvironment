@@ -249,22 +249,22 @@ public class typedef {
          * Sphere function
          */
         Sphere,
-        /**
-         * Ackley function
-         */
-        Ackley,
-        /**
-         * Matyas function
-         */
+        //        /**
+        //         * Ackley function
+        //         */
+        //        Ackley,
+        //        /**
+        //         * Matyas function
+        //         */
         Matya,
-        /**
-         * Schwefel function
-         */
-        Schwefel,
-        /**
-         * Rastrigins function
-         */
-        Rastrigin
+        //        /**
+        //         * Schwefel function
+        //         */
+        //        Schwefel,
+        //        /**
+        //         * Rastrigins function
+        //         */
+        //        Rastrigin
     };
 
     /**
@@ -308,27 +308,25 @@ public class typedef {
          */
         Weighted
     };
-    
+
     /**
      * Tpye of crossover-operation for genetic-algorithm (Andy Seidel)
      */
     public enum typeOfGeneticCrossover {
-        
+
         /**
-         * 
+         *
          */
         OnePoint,
-        
         /**
-         * 
+         *
          */
         SBX,
-        
         /**
-         * 
+         *
          */
         MPC
-    
+
     };
 
     /**

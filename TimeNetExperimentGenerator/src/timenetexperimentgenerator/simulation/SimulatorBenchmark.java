@@ -26,7 +26,7 @@ public class SimulatorBenchmark implements Simulator, Runnable {
     private ArrayList<SimulationType> myListOfSimulations = null;
 //private int simulationCounter=0;
     private String logFileName;
-    private typeOfBenchmarkFunction benchmarkFunction = typeOfBenchmarkFunction.Schwefel;
+    private typeOfBenchmarkFunction benchmarkFunction = typeOfBenchmarkFunction.Sphere;
     int status = 0;
     boolean log = true;
     ArrayList<ArrayList<parameter>> listOfParameterSetsTMP;
