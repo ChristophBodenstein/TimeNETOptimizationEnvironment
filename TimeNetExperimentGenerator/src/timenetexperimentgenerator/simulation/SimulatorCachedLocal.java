@@ -10,7 +10,6 @@ package timenetexperimentgenerator.simulation;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
-import timenetexperimentgenerator.datamodel.MeasureType;
 import timenetexperimentgenerator.datamodel.parameter;
 import timenetexperimentgenerator.datamodel.SimulationType;
 import timenetexperimentgenerator.support;
@@ -25,7 +24,6 @@ public class SimulatorCachedLocal extends SimulatorCached {
 
     private SimulationCache mySimulationCache = null;
     private ArrayList<SimulationType> myListOfSimulationParsers = null;
-//private int simulationCounter=0;
     private String logFileName;
     private int status;
 
@@ -47,7 +45,7 @@ public class SimulatorCachedLocal extends SimulatorCached {
      */
     @Override
     public void initSimulator(ArrayList< ArrayList<parameter>> listOfParameterSetsTMP, int simulationCounterTMP, boolean log) {
-        Simulator myLocalSimulator = null;
+        Simulator myLocalSimulator;
         this.myListOfSimulationParsers = null;
         ArrayList< ArrayList<parameter>> remainingParametersets = new ArrayList< ArrayList<parameter>>();
         status = 0;
@@ -55,7 +53,6 @@ public class SimulatorCachedLocal extends SimulatorCached {
 
         if (mySimulationCache != null) {
             this.myListOfSimulationParsers = mySimulationCache.getListOfCompletedSimulationParsers(listOfParameterSetsTMP, support.getGlobalSimulationCounter());
-            //this.simulationCounter=mySimulationCache.getLocalSimulationCounter();
         } else {
             support.log("No local Simulation file loaded. Will build my own cache from scratch.");
             this.mySimulationCache = support.getMySimulationCache();
@@ -84,7 +81,7 @@ public class SimulatorCachedLocal extends SimulatorCached {
             }
             support.log("Size of Remaining ParameterList is " + remainingParametersets.size());
             //Find simulations that are not already simulated
-            //if(myLocalSimulator==null){myLocalSimulator=new SimulatorLocal();}
+
             myLocalSimulator = getNoCacheSimulator();
             myLocalSimulator.initSimulator(remainingParametersets, support.getGlobalSimulationCounter(), false);
             support.waitForEndOfSimulator(myLocalSimulator, support.getGlobalSimulationCounter(), support.DEFAULT_TIMEOUT);
@@ -101,8 +98,7 @@ public class SimulatorCachedLocal extends SimulatorCached {
             support.log("Adding " + myListOfSimulationParsers.size() + " Results to logfile.");
             //Print out a log file
             support.addLinesToLogFileFromListOfParser(myListOfSimulationParsers, logFileName);
-            //Count up simulation-counter
-            //this.simulationCounter+=  myListOfSimulationParsers.size();
+            //Update global simulation counter
             support.setGlobalSimulationCounter(support.getGlobalSimulationCounter() + myListOfSimulationParsers.size());
             support.log("SimulationCounter is now: " + support.getGlobalSimulationCounter());
         }
@@ -114,6 +110,7 @@ public class SimulatorCachedLocal extends SimulatorCached {
      *
      * @return % of simulatiions that are finished
      */
+    @Override
     public int getStatus() {
         return status;
     }
@@ -133,6 +130,7 @@ public class SimulatorCachedLocal extends SimulatorCached {
      *
      * @return actual simulation counter
      */
+    @Override
     public int getSimulationCounter() {
         return support.getGlobalSimulationCounter();
     }
@@ -144,6 +142,7 @@ public class SimulatorCachedLocal extends SimulatorCached {
      * @return list of completed simulations (parsers) which contain all data
      * from the log-files
      */
+    @Override
     public ArrayList<SimulationType> getListOfCompletedSimulationParsers() {
         return this.myListOfSimulationParsers;
     }
@@ -153,6 +152,7 @@ public class SimulatorCachedLocal extends SimulatorCached {
      *
      * @return the mySimulationCache
      */
+    @Override
     public SimulationCache getMySimulationCache() {
         return mySimulationCache;
     }
@@ -162,6 +162,7 @@ public class SimulatorCachedLocal extends SimulatorCached {
      *
      * @param mySimulationCache the mySimulationCache to set
      */
+    @Override
     public void setMySimulationCache(SimulationCache mySimulationCache) {
         this.mySimulationCache = mySimulationCache;
     }

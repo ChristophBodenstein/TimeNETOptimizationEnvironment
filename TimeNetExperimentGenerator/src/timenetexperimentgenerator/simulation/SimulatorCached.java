@@ -23,7 +23,6 @@ public class SimulatorCached implements Simulator {
 
     private SimulationCache mySimulationCache = null;
     private ArrayList<SimulationType> myListOfSimulations = null;
-//private int simulationCounter=0;
     private String logFileName;
 
     /**

@@ -4,7 +4,6 @@
  * Christoph Bodenstein
  * TU-Ilmenau, FG SSE
  */
-
 package timenetexperimentgenerator.optimization;
 
 import java.io.File;
@@ -24,60 +23,59 @@ import timenetexperimentgenerator.typedef.*;
  *
  * @author Christoph Bodenstein
  */
-public class OptimizerPreferences extends javax.swing.JFrame {
-private Properties auto=new Properties();
+public final class OptimizerPreferences extends javax.swing.JFrame {
 
-private String pref_LogFileAddon="";
-private int pref_WrongSimulationsUntilBreak;
-private int pref_WrongSimulationsPerDirection;
-private typeOfStartValueEnum pref_StartValue;
-private typeOfNeighborhoodEnum pref_NeighborhoodType;
-private int pref_SizeOfNeighborhood;
-private typeOfAnnealing pref_Cooling;
-private double pref_TRatioScale;
-private double pref_TAnnealScale;
-private double pref_MaxTempParameter;//-->Distance for parameters (Stepwidth)
-private double pref_MaxTempCost;//-->Probability of acceptance of bad solutions
-private double pref_Epsilon;//Abort-Temperature for Simmulated Annealing
-private typeOfAnnealingParameterCalculation pref_CalculationOfNextParameterset;//Calc of next params for Sim Anealing
-private SpinnerNumberModel TRatioScaleSpinnerModel;
+    private final Properties auto = new Properties();
 
+    private String pref_LogFileAddon = "";
+    private int pref_WrongSimulationsUntilBreak;
+    private int pref_WrongSimulationsPerDirection;
+    private typeOfStartValueEnum pref_StartValue;
+    private typeOfNeighborhoodEnum pref_NeighborhoodType;
+    private int pref_SizeOfNeighborhood;
+    private typeOfAnnealing pref_Cooling;
+    private double pref_TRatioScale;
+    private double pref_TAnnealScale;
+    private double pref_MaxTempParameter;//-->Distance for parameters (Stepwidth)
+    private double pref_MaxTempCost;//-->Probability of acceptance of bad solutions
+    private double pref_Epsilon;//Abort-Temperature for Simmulated Annealing
+    private typeOfAnnealingParameterCalculation pref_CalculationOfNextParameterset;//Calc of next params for Sim Anealing
+    private final SpinnerNumberModel TRatioScaleSpinnerModel;
 
-private int pref_NumberOfPhases;
-private typeOfOptimization pref_typeOfUsedMultiPhaseOptimization;
-private int pref_ConfidenceIntervallStart;
-private int pref_ConfidenceIntervallEnd;
-private int pref_MaxRelErrorStart;
-private int pref_MaxRelErrorEnd;
-private int pref_InternalParameterStart;
-private int pref_InternalParameterEnd;
-private boolean pref_KeepDesignSpaceAndResolution;
+    private int pref_NumberOfPhases;
+    private typeOfOptimization pref_typeOfUsedMultiPhaseOptimization;
+    private int pref_ConfidenceIntervallStart;
+    private int pref_ConfidenceIntervallEnd;
+    private int pref_MaxRelErrorStart;
+    private int pref_MaxRelErrorEnd;
+    private int pref_InternalParameterStart;
+    private int pref_InternalParameterEnd;
+    private boolean pref_KeepDesignSpaceAndResolution;
 
 //parameters for genetic Optimization
-private int pref_GeneticPopulationSize;
-private double pref_GeneticMutationChance;
-private boolean pref_GeneticMutateTopSolution;
+    private int pref_GeneticPopulationSize;
+    private double pref_GeneticMutationChance;
+    private boolean pref_GeneticMutateTopSolution;
 
 //parameters for CSS Optimization
-private int pref_CSS_PopulationSize;
-private double pref_CSS_maxAttraction;
+    private int pref_CSS_PopulationSize;
+    private double pref_CSS_maxAttraction;
 
 //parameters for ABC Optiization
-private int pref_ABC_NumEmployedBees;
-private int pref_ABC_NumOnlookerBees;
-private int pref_ABC_NumScoutBees;
-private int pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement;
+    private int pref_ABC_NumEmployedBees;
+    private int pref_ABC_NumOnlookerBees;
+    private int pref_ABC_NumScoutBees;
+    private int pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement;
 
-private ArrayList<parameter> internalParameterList=null;
+    private ArrayList<parameter> internalParameterList = null;
 
-final String noParameterString="No parameter";
+    final String noParameterString = "No parameter";
 
     /**
      * Creates new form OptimizerHillPreferences
      */
     public OptimizerPreferences() {
         TRatioScaleSpinnerModel = new SpinnerNumberModel(0.00001, 0.0, 100.0, 0.00001);
-        
 
         initComponents();
         this.setPref_WrongSimulationsUntilBreak(support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW);
@@ -87,27 +85,25 @@ final String noParameterString="No parameter";
         this.setPref_CalculationOfNextParameterset(support.DEFAULT_CALC_NEXT_PARAMETER);
 
         this.jSpinnerSizeOfNeighborhoodInPercent.setModel(new SpinnerNumberModel(1, 1, 100, 1));
-        ((DefaultEditor)this.jSpinnerSizeOfNeighborhoodInPercent.getEditor()).getTextField().setEditable(false);
+        ((DefaultEditor) this.jSpinnerSizeOfNeighborhoodInPercent.getEditor()).getTextField().setEditable(false);
 
-        ((DefaultEditor)this.jSpinnerWrongSolutionsPerDirectionUntilBreak.getEditor()).getTextField().setEditable(false);
-        ((DefaultEditor)this.jSpinnerWrongSolutionsUntilBreak.getEditor()).getTextField().setEditable(false);
+        ((DefaultEditor) this.jSpinnerWrongSolutionsPerDirectionUntilBreak.getEditor()).getTextField().setEditable(false);
+        ((DefaultEditor) this.jSpinnerWrongSolutionsUntilBreak.getEditor()).getTextField().setEditable(false);
 
 
         /*DefaultListSelectionModel model = new DefaultListSelectionModel();
-        model.addSelectionInterval(0, 5);
+         model.addSelectionInterval(0, 5);
 
 
-        this.jComboBoxOptimizationType.setRenderer(new EnabledJComboBoxRenderer(model));
-        */
-
-        Vector tmpVector=new Vector(Arrays.asList(typedef.typeOfOptimization.values()));
-        tmpVector.remove((typeOfOptimization)typeOfOptimization.MultiPhase);
-        tmpVector.remove((typeOfOptimization)typeOfOptimization.TwoPhase);
-        this.jComboBoxOptimizationType.setModel(new DefaultComboBoxModel(tmpVector));
+         this.jComboBoxOptimizationType.setRenderer(new EnabledJComboBoxRenderer(model));
+         */
+        ArrayList tmpVector = new ArrayList(Arrays.asList(typedef.typeOfOptimization.values()));
+        tmpVector.remove((typeOfOptimization) typeOfOptimization.MultiPhase);
+        tmpVector.remove((typeOfOptimization) typeOfOptimization.TwoPhase);
+        this.jComboBoxOptimizationType.setModel(new DefaultComboBoxModel(tmpVector.toArray()));
 
         this.loadPreferences();
 
-        
     }
 
     /**
@@ -994,27 +990,27 @@ final String noParameterString="No parameter";
     }//GEN-LAST:event_jTextFieldLogFileAddonActionPerformed
 
     private void jComboBoxTypeOfStartValueVetoableChange(java.beans.PropertyChangeEvent evt)throws java.beans.PropertyVetoException {//GEN-FIRST:event_jComboBoxTypeOfStartValueVetoableChange
-    
+
     }//GEN-LAST:event_jComboBoxTypeOfStartValueVetoableChange
 
     private void jTextFieldLogFileAddonVetoableChange(java.beans.PropertyChangeEvent evt)throws java.beans.PropertyVetoException {//GEN-FIRST:event_jTextFieldLogFileAddonVetoableChange
-    
+
     }//GEN-LAST:event_jTextFieldLogFileAddonVetoableChange
 
     private void jComboBoxTypeOfStartValueItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxTypeOfStartValueItemStateChanged
-    
+
     }//GEN-LAST:event_jComboBoxTypeOfStartValueItemStateChanged
 
     private void jTextFieldLogFileAddonInputMethodTextChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_jTextFieldLogFileAddonInputMethodTextChanged
-    
+
     }//GEN-LAST:event_jTextFieldLogFileAddonInputMethodTextChanged
 
     private void jTextFieldLogFileAddonKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldLogFileAddonKeyReleased
-    
+
     }//GEN-LAST:event_jTextFieldLogFileAddonKeyReleased
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-    this.savePreferences();
+        this.savePreferences();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jSpinnerABCNumOnlookerBeesPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jSpinnerABCNumOnlookerBeesPropertyChange
@@ -1058,7 +1054,7 @@ final String noParameterString="No parameter";
     }//GEN-LAST:event_jComboBoxOptimizationTypeActionPerformed
 
     private void jComboBoxOptimizationTypeItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxOptimizationTypeItemStateChanged
-        support.setChosenOptimizerType((typedef.typeOfOptimization)this.jComboBoxOptimizationType.getSelectedItem());
+        support.setChosenOptimizerType((typedef.typeOfOptimization) this.jComboBoxOptimizationType.getSelectedItem());
     }//GEN-LAST:event_jComboBoxOptimizationTypeItemStateChanged
 
     private void jComboBoxTypeOfNeighborhoodVetoableChange(java.beans.PropertyChangeEvent evt)throws java.beans.PropertyVetoException {//GEN-FIRST:event_jComboBoxTypeOfNeighborhoodVetoableChange
@@ -1220,181 +1216,178 @@ final String noParameterString="No parameter";
     private timenetexperimentgenerator.MeasurementForm measurementForm1;
     // End of variables declaration//GEN-END:variables
 
-
     /**
      * Load Preferences from defined file
      */
-    public void loadPreferences(){
-    try {
-                FileInputStream in=new FileInputStream(support.NAME_OF_OPTIMIZER_PREFFERENCES_FILE);
-		auto.load(in);
-                in.close();
+    public void loadPreferences() {
+        try {
+            FileInputStream in = new FileInputStream(support.NAME_OF_OPTIMIZER_PREFFERENCES_FILE);
+            auto.load(in);
+            in.close();
 
-    this.setPref_WrongSimulationsUntilBreak(support.loadIntFromProperties("pref_WrongSimulationsUntilBreak", support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW, auto));
-    //support.log(Integer.toString(support.loadIntFromProperties("pref_WrongSimulationsUntilBreak", getPref_WrongSimulationsUntilBreak(), auto)));
-    support.log("Loaded pref_WrongSimulationsUntilBreak is "+getPref_WrongSimulationsUntilBreak());
+            this.setPref_WrongSimulationsUntilBreak(support.loadIntFromProperties("pref_WrongSimulationsUntilBreak", support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW, auto));
+            //support.log(Integer.toString(support.loadIntFromProperties("pref_WrongSimulationsUntilBreak", getPref_WrongSimulationsUntilBreak(), auto)));
+            support.log("Loaded pref_WrongSimulationsUntilBreak is " + getPref_WrongSimulationsUntilBreak());
 
-        this.setPref_WrongSimulationsPerDirection(support.loadIntFromProperties("pref_WrongSimulationsPerDirection", support.DEFAULT_WRONG_SOLUTION_PER_DIRECTION, auto));
-    support.log("Loaded pref_WrongSimulationsPerDirection is "+getPref_WrongSimulationsPerDirection());
+            this.setPref_WrongSimulationsPerDirection(support.loadIntFromProperties("pref_WrongSimulationsPerDirection", support.DEFAULT_WRONG_SOLUTION_PER_DIRECTION, auto));
+            support.log("Loaded pref_WrongSimulationsPerDirection is " + getPref_WrongSimulationsPerDirection());
 
-        this.setPref_SizeOfNeighborhood(support.loadIntFromProperties("pref_SizeOfNeighborhood", support.DEFAULT_SIZE_OF_NEIGHBORHOOD, auto));
-    support.log("Loaded Size of Neighborhood is "+getPref_SizeOfNeighborhood());
+            this.setPref_SizeOfNeighborhood(support.loadIntFromProperties("pref_SizeOfNeighborhood", support.DEFAULT_SIZE_OF_NEIGHBORHOOD, auto));
+            support.log("Loaded Size of Neighborhood is " + getPref_SizeOfNeighborhood());
 
-        this.setPref_StartValue(typeOfStartValueEnum.valueOf(auto.getProperty("pref_StartValue", support.DEFAULT_TYPE_OF_STARTVALUE.toString())));
-    support.log("Loaded StartValue is "+getPref_StartValue());
+            this.setPref_StartValue(typeOfStartValueEnum.valueOf(auto.getProperty("pref_StartValue", support.DEFAULT_TYPE_OF_STARTVALUE.toString())));
+            support.log("Loaded StartValue is " + getPref_StartValue());
 
-        this.setPref_NeighborhoodType(typeOfNeighborhoodEnum.valueOf(auto.getProperty("pref_NeighborhoodType", support.DEFAULT_TYPE_OF_NEIGHBORHOOD.toString())));
-    support.log("Loaded Neighborhoodtype is "+getPref_NeighborhoodType());
+            this.setPref_NeighborhoodType(typeOfNeighborhoodEnum.valueOf(auto.getProperty("pref_NeighborhoodType", support.DEFAULT_TYPE_OF_NEIGHBORHOOD.toString())));
+            support.log("Loaded Neighborhoodtype is " + getPref_NeighborhoodType());
 
-        this.setPref_Cooling(typeOfAnnealing.valueOf(auto.getProperty("pref_Cooling", support.DEFAULT_TYPE_OF_ANNEALING.toString())));
-    support.log("Loaded Annealing method is "+getPref_Cooling());
+            this.setPref_Cooling(typeOfAnnealing.valueOf(auto.getProperty("pref_Cooling", support.DEFAULT_TYPE_OF_ANNEALING.toString())));
+            support.log("Loaded Annealing method is " + getPref_Cooling());
 
-        this.setPref_TScaleRatio(support.loadDoubleFromProperties("pref_TScaleRatio", support.DEFAULT_T_RATIO_SCALE, auto));
-    support.log("Loaded TRatioScale is "+getPref_TRatioScale());
+            this.setPref_TScaleRatio(support.loadDoubleFromProperties("pref_TScaleRatio", support.DEFAULT_T_RATIO_SCALE, auto));
+            support.log("Loaded TRatioScale is " + getPref_TRatioScale());
 
-        this.setPref_TAnnealScale(support.loadDoubleFromProperties("pref_TAnnealScale", support.DEFAULT_T_ANNEAL_SCALE, auto));
-    support.log("Loaded TAnnealScale is "+getPref_TAnnealScale());
+            this.setPref_TAnnealScale(support.loadDoubleFromProperties("pref_TAnnealScale", support.DEFAULT_T_ANNEAL_SCALE, auto));
+            support.log("Loaded TAnnealScale is " + getPref_TAnnealScale());
 
-        this.setPref_MaxTempParameter(support.loadDoubleFromProperties("pref_MaxTempParameter", support.DEFAULT_MAXTEMP_PARAMETER, auto));
-    support.log("Loaded MaxTempParameter is "+getPref_MaxTempParameter());
+            this.setPref_MaxTempParameter(support.loadDoubleFromProperties("pref_MaxTempParameter", support.DEFAULT_MAXTEMP_PARAMETER, auto));
+            support.log("Loaded MaxTempParameter is " + getPref_MaxTempParameter());
 
-        this.setPref_MaxTempCost(support.loadDoubleFromProperties("pref_MaxTempCost", support.DEFAULT_MAXTEMP_COST, auto));
-    support.log("Loaded MaxTempCost is "+getPref_MaxTempCost());
+            this.setPref_MaxTempCost(support.loadDoubleFromProperties("pref_MaxTempCost", support.DEFAULT_MAXTEMP_COST, auto));
+            support.log("Loaded MaxTempCost is " + getPref_MaxTempCost());
 
-        this.setPref_Epsilon(support.loadDoubleFromProperties("pref_Epsilon", support.DEFAULT_EPSILON, auto));
-    support.log("Loaded Epsilon is "+getPref_Epsilon());
+            this.setPref_Epsilon(support.loadDoubleFromProperties("pref_Epsilon", support.DEFAULT_EPSILON, auto));
+            support.log("Loaded Epsilon is " + getPref_Epsilon());
 
-        this.setPref_CalculationOfNextParameterset(typeOfAnnealingParameterCalculation.valueOf(auto.getProperty("pref_CalculationOfNextParameterset", support.DEFAULT_CALC_NEXT_PARAMETER.toString())) );
-    support.log("Loaded Calculation of next Parameterset is "+this.getPref_CalculationOfNextParameterset().toString());
+            this.setPref_CalculationOfNextParameterset(typeOfAnnealingParameterCalculation.valueOf(auto.getProperty("pref_CalculationOfNextParameterset", support.DEFAULT_CALC_NEXT_PARAMETER.toString())));
+            support.log("Loaded Calculation of next Parameterset is " + this.getPref_CalculationOfNextParameterset().toString());
 
-        this.setPref_LogFileAddon(auto.getProperty("pref_LogFileAddon", ""));
-    support.log("Loaded Optimizer_Logfile-Addon is "+this.jTextFieldLogFileAddon.getText());
+            this.setPref_LogFileAddon(auto.getProperty("pref_LogFileAddon", ""));
+            support.log("Loaded Optimizer_Logfile-Addon is " + this.jTextFieldLogFileAddon.getText());
 
+            this.setPref_NumberOfPhases(support.loadIntFromProperties("pref_NumberOfPhases", support.DEFAULT_NumberOfPhases, auto));
+            support.log("Loaded pref_NumberOfPhases is " + this.getPref_NumberOfPhases());
+            this.setPref_ConfidenceIntervallStart(support.loadIntFromProperties("pref_ConfidenceIntervallStart", support.DEFAULT_ConfidenceIntervallStart, auto));
+            support.log("Loaded pref_ConfidenceIntervallStart is " + this.getPref_ConfidenceIntervallStart());
+            this.setPref_ConfidenceIntervallEnd(support.loadIntFromProperties("pref_ConfidenceIntervallEnd", support.DEFAULT_ConfidenceIntervallEnd, auto));
+            support.log("Loaded pref_ConfidenceIntervallEnd is " + this.getPref_ConfidenceIntervallEnd());
+            this.setPref_MaxRelErrorStart(support.loadIntFromProperties("pref_MaxRelErrorStart", support.DEFAULT_MaxRelErrorStart, auto));
+            support.log("Loaded pref_MaxRelErrorStart is " + this.getPref_MaxRelErrorStart());
+            this.setPref_MaxRelErrorEnd(support.loadIntFromProperties("pref_MaxRelErrorEnd", support.DEFAULT_MaxRelErrorEnd, auto));
+            support.log("Loaded pref_MaxRelErrorEnd is " + this.getPref_MaxRelErrorEnd());
+            this.setPref_InternalParameterStart(support.loadIntFromProperties("pref_InternalParameterStart", support.DEFAULT_InternalParameterStart, auto));
+            support.log("Loaded pref_InternalParameterStart is " + this.getPref_InternalParameterStart());
+            this.setPref_InternalParameterEnd(support.loadIntFromProperties("pref_InternalParameterEnd", support.DEFAULT_InternalParameterEnd, auto));
+            support.log("Loaded pref_InternalParameterEnd is " + this.getPref_InternalParameterEnd());
 
-        this.setPref_NumberOfPhases(support.loadIntFromProperties("pref_NumberOfPhases", support.DEFAULT_NumberOfPhases, auto));
-    support.log("Loaded pref_NumberOfPhases is "+this.getPref_NumberOfPhases());
-        this.setPref_ConfidenceIntervallStart(support.loadIntFromProperties("pref_ConfidenceIntervallStart", support.DEFAULT_ConfidenceIntervallStart, auto));
-    support.log("Loaded pref_ConfidenceIntervallStart is "+this.getPref_ConfidenceIntervallStart());
-        this.setPref_ConfidenceIntervallEnd(support.loadIntFromProperties("pref_ConfidenceIntervallEnd", support.DEFAULT_ConfidenceIntervallEnd, auto));
-    support.log("Loaded pref_ConfidenceIntervallEnd is "+this.getPref_ConfidenceIntervallEnd());
-        this.setPref_MaxRelErrorStart(support.loadIntFromProperties("pref_MaxRelErrorStart", support.DEFAULT_MaxRelErrorStart, auto));
-    support.log("Loaded pref_MaxRelErrorStart is "+this.getPref_MaxRelErrorStart());
-        this.setPref_MaxRelErrorEnd(support.loadIntFromProperties("pref_MaxRelErrorEnd", support.DEFAULT_MaxRelErrorEnd, auto));
-    support.log("Loaded pref_MaxRelErrorEnd is "+this.getPref_MaxRelErrorEnd());
-        this.setPref_InternalParameterStart(support.loadIntFromProperties("pref_InternalParameterStart", support.DEFAULT_InternalParameterStart, auto));
-    support.log("Loaded pref_InternalParameterStart is "+this.getPref_InternalParameterStart());
-        this.setPref_InternalParameterEnd(support.loadIntFromProperties("pref_InternalParameterEnd", support.DEFAULT_InternalParameterEnd, auto));
-    support.log("Loaded pref_InternalParameterEnd is "+this.getPref_InternalParameterEnd());
+            this.setPref_typeOfUsedMultiPhaseOptimization(typeOfOptimization.valueOf(auto.getProperty("pref_typeOfUsedMultiPhaseOptimization", support.DEFAULT_typeOfUsedMultiPhaseOptimization.toString())));
+            support.log("Loaded pref_typeOfUsedMultiPhaseOptimization is " + this.getPref_typeOfUsedMultiPhaseOptimization().toString());
+            this.setPref_KeepDesignSpaceAndResolution(Boolean.valueOf(auto.getProperty("pref_KeepDesignSpaceAndResolution", Boolean.toString(support.DEFAULT_KeepDesignSpaceAndResolution))));
+            support.log("Loaded pref_KeepDesignSpaceAndResolution is " + this.getPref_KeepDesignSpaceAndResolution());
 
-        this.setPref_typeOfUsedMultiPhaseOptimization(typeOfOptimization.valueOf(auto.getProperty("pref_typeOfUsedMultiPhaseOptimization", support.DEFAULT_typeOfUsedMultiPhaseOptimization.toString())));
-    support.log("Loaded pref_typeOfUsedMultiPhaseOptimization is "+this.getPref_typeOfUsedMultiPhaseOptimization().toString());
-        this.setPref_KeepDesignSpaceAndResolution(Boolean.valueOf(auto.getProperty("pref_KeepDesignSpaceAndResolution", Boolean.toString(support.DEFAULT_KeepDesignSpaceAndResolution))));
-    support.log("Loaded pref_KeepDesignSpaceAndResolution is "+this.getPref_KeepDesignSpaceAndResolution());
-    
-    //load settings for Genetic Optimization
-        this.setPref_GeneticPopulationSize(support.loadIntFromProperties("pref_GeneticPopulationSize", support.DEFAULT_GENETIC_POPULATION_SIZE, auto));
-    support.log("Loaded pref_GeneticPopulationSize is " +  this.getPref_GeneticPopulationSize());
-        this.setPref_GeneticMutationChance(support.loadDoubleFromProperties("pref_GeneticMutationChance", support.DEFAULT_GENETIC_MUTATION_CHANCE, auto));
-    support.log("Loaded pref_GeneticMutationChance is " + this.getPref_GeneticMutationChance());
-        this.setPref_GeneticMutateTopSolution(Boolean.valueOf(auto.getProperty("pref_GeneticMutateTopSolution",Boolean.toString(support.DEFAULT_GENETIC_MUTATE_TOP_SOLUTION))));
-    support.log("Loaded pref_GeneticMutateTopSolution is " + this.getPref_GeneticMutateTopSolution());
-    
-    //load settings for CSS Optimization
-        this.setPref_CSS_PopulationSize(support.loadIntFromProperties("pref_CSS_PopulationSize", support.DEFAULT_CSS_POPULATION_SIZE, auto));
-    support.log("Loaded pref_CSS_PopulationSize is " + this.getPref_CSS_PopulationSize());
-        this.setPref_CSS_MaxAttraction(support.loadDoubleFromProperties("pref_CSS_MaxAttraction", support.DEFAULT_CSS_MAX_ATTRACTION, auto));
-    support.log("Loaded pref_CSS_MaxAttraction is " + this.getPref_CSS_MaxAttraction());
-    
-    //load settings for ABC Optimization
-        this.setPref_ABC_NumEmployedBees(support.loadIntFromProperties("pref_ABC_NumEmployedBees", support.DEFAULT_ABC_NumEmployedBees, auto));
-    support.log("Loaded pref_ABC_NumEmployedBees is " + this.getPref_ABC_NumEmployedBees());    
-        this.setPref_ABC_NumOnlookerBees(support.loadIntFromProperties("pref_ABC_NumOnlookerBees", support.DEFAULT_ABC_NumOnlookerBees, auto));
-    support.log("Loaded pref_ABC_NumOnlookerBees is " + this.getPref_ABC_NumOnlookerBees());    
-        this.setPref_ABC_NumScoutBees(support.loadIntFromProperties("pref_ABC_NumScoutBees", support.DEFAULT_ABC_NumScoutBees, auto));
-    support.log("Loaded pref_ABC_NumScoutBees is " + this.getPref_ABC_NumScoutBees());    
-        this.setPref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement(support.loadIntFromProperties(
-                "pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement", support.DEFAULT_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement, auto));
-    support.log("Loaded pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement is " + this.getPref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement());
+            //load settings for Genetic Optimization
+            this.setPref_GeneticPopulationSize(support.loadIntFromProperties("pref_GeneticPopulationSize", support.DEFAULT_GENETIC_POPULATION_SIZE, auto));
+            support.log("Loaded pref_GeneticPopulationSize is " + this.getPref_GeneticPopulationSize());
+            this.setPref_GeneticMutationChance(support.loadDoubleFromProperties("pref_GeneticMutationChance", support.DEFAULT_GENETIC_MUTATION_CHANCE, auto));
+            support.log("Loaded pref_GeneticMutationChance is " + this.getPref_GeneticMutationChance());
+            this.setPref_GeneticMutateTopSolution(Boolean.valueOf(auto.getProperty("pref_GeneticMutateTopSolution", Boolean.toString(support.DEFAULT_GENETIC_MUTATE_TOP_SOLUTION))));
+            support.log("Loaded pref_GeneticMutateTopSolution is " + this.getPref_GeneticMutateTopSolution());
 
-	} catch (IOException e) {
-		// Exception bearbeiten
+            //load settings for CSS Optimization
+            this.setPref_CSS_PopulationSize(support.loadIntFromProperties("pref_CSS_PopulationSize", support.DEFAULT_CSS_POPULATION_SIZE, auto));
+            support.log("Loaded pref_CSS_PopulationSize is " + this.getPref_CSS_PopulationSize());
+            this.setPref_CSS_MaxAttraction(support.loadDoubleFromProperties("pref_CSS_MaxAttraction", support.DEFAULT_CSS_MAX_ATTRACTION, auto));
+            support.log("Loaded pref_CSS_MaxAttraction is " + this.getPref_CSS_MaxAttraction());
+
+            //load settings for ABC Optimization
+            this.setPref_ABC_NumEmployedBees(support.loadIntFromProperties("pref_ABC_NumEmployedBees", support.DEFAULT_ABC_NumEmployedBees, auto));
+            support.log("Loaded pref_ABC_NumEmployedBees is " + this.getPref_ABC_NumEmployedBees());
+            this.setPref_ABC_NumOnlookerBees(support.loadIntFromProperties("pref_ABC_NumOnlookerBees", support.DEFAULT_ABC_NumOnlookerBees, auto));
+            support.log("Loaded pref_ABC_NumOnlookerBees is " + this.getPref_ABC_NumOnlookerBees());
+            this.setPref_ABC_NumScoutBees(support.loadIntFromProperties("pref_ABC_NumScoutBees", support.DEFAULT_ABC_NumScoutBees, auto));
+            support.log("Loaded pref_ABC_NumScoutBees is " + this.getPref_ABC_NumScoutBees());
+            this.setPref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement(support.loadIntFromProperties(
+                    "pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement", support.DEFAULT_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement, auto));
+            support.log("Loaded pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement is " + this.getPref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement());
+
+        } catch (IOException e) {
+            // Exception bearbeiten
             support.log("Error while loading Optimizer-Properties.");
-	}
-    
+        }
+
     }
-    
+
     /**
      * Save Preferences to defined file
      */
-    public void savePreferences(){
-    support.log("Saving Properties of Optimization");
-        try{
-            
-        //Setting Parameters of HillClimbing
-        auto.setProperty("pref_WrongSimulationsUntilBreak", Integer.toString(getPref_WrongSimulationsUntilBreak()));
-        auto.setProperty("pref_WrongSimulationsPerDirection", Integer.toString(getPref_WrongSimulationsPerDirection()));
-        auto.setProperty("pref_SizeOfNeighborhood", Integer.toString(getPref_SizeOfNeighborhood()));
+    public void savePreferences() {
+        support.log("Saving Properties of Optimization");
+        try {
 
-        auto.setProperty("pref_StartValue", getPref_StartValue().toString());
-        auto.setProperty("pref_NeighborhoodType", getPref_NeighborhoodType().toString());
+            //Setting Parameters of HillClimbing
+            auto.setProperty("pref_WrongSimulationsUntilBreak", Integer.toString(getPref_WrongSimulationsUntilBreak()));
+            auto.setProperty("pref_WrongSimulationsPerDirection", Integer.toString(getPref_WrongSimulationsPerDirection()));
+            auto.setProperty("pref_SizeOfNeighborhood", Integer.toString(getPref_SizeOfNeighborhood()));
 
-        //Setting Parameters of Simulated Annealing
-        auto.setProperty("pref_Cooling", getPref_Cooling().toString());
-        auto.setProperty("pref_TScaleRatio", support.getString(this.getPref_TRatioScale()));
-        auto.setProperty("pref_TAnnealScale", support.getString(this.getPref_TAnnealScale()));
-        auto.setProperty("pref_MaxTempParameter", support.getString(this.getPref_MaxTempParameter()));
-        auto.setProperty("pref_MaxTempCost", support.getString(this.getPref_MaxTempCost()));
-        auto.setProperty("pref_Epsilon", Double.toString(getPref_Epsilon()) ) ;
+            auto.setProperty("pref_StartValue", getPref_StartValue().toString());
+            auto.setProperty("pref_NeighborhoodType", getPref_NeighborhoodType().toString());
 
+            //Setting Parameters of Simulated Annealing
+            auto.setProperty("pref_Cooling", getPref_Cooling().toString());
+            auto.setProperty("pref_TScaleRatio", support.getString(this.getPref_TRatioScale()));
+            auto.setProperty("pref_TAnnealScale", support.getString(this.getPref_TAnnealScale()));
+            auto.setProperty("pref_MaxTempParameter", support.getString(this.getPref_MaxTempParameter()));
+            auto.setProperty("pref_MaxTempCost", support.getString(this.getPref_MaxTempCost()));
+            auto.setProperty("pref_Epsilon", Double.toString(getPref_Epsilon()));
 
-        //Setting Parameters of MultiPhase Optimization
-        auto.setProperty("pref_NumberOfPhases", Integer.toString(this.getPref_NumberOfPhases()));
-        auto.setProperty("pref_ConfidenceIntervallStart", Integer.toString(this.getPref_ConfidenceIntervallStart()));
-        auto.setProperty("pref_ConfidenceIntervallEnd", Integer.toString(this.getPref_ConfidenceIntervallEnd()));
-        auto.setProperty("pref_MaxRelErrorStart", Integer.toString(this.getPref_MaxRelErrorStart()));
-        auto.setProperty("pref_MaxRelErrorEnd", Integer.toString(this.getPref_MaxRelErrorEnd()));
-        auto.setProperty("pref_InternalParameterStart", Integer.toString(this.getPref_InternalParameterStart()));
-        auto.setProperty("pref_InternalParameterEnd", Integer.toString(this.getPref_InternalParameterEnd()));
-        auto.setProperty("pref_typeOfUsedMultiPhaseOptimization", this.getPref_typeOfUsedMultiPhaseOptimization().toString());
-        auto.setProperty("pref_KeepDesignSpaceAndResolution", Boolean.toString(this.getPref_KeepDesignSpaceAndResolution()));
+            //Setting Parameters of MultiPhase Optimization
+            auto.setProperty("pref_NumberOfPhases", Integer.toString(this.getPref_NumberOfPhases()));
+            auto.setProperty("pref_ConfidenceIntervallStart", Integer.toString(this.getPref_ConfidenceIntervallStart()));
+            auto.setProperty("pref_ConfidenceIntervallEnd", Integer.toString(this.getPref_ConfidenceIntervallEnd()));
+            auto.setProperty("pref_MaxRelErrorStart", Integer.toString(this.getPref_MaxRelErrorStart()));
+            auto.setProperty("pref_MaxRelErrorEnd", Integer.toString(this.getPref_MaxRelErrorEnd()));
+            auto.setProperty("pref_InternalParameterStart", Integer.toString(this.getPref_InternalParameterStart()));
+            auto.setProperty("pref_InternalParameterEnd", Integer.toString(this.getPref_InternalParameterEnd()));
+            auto.setProperty("pref_typeOfUsedMultiPhaseOptimization", this.getPref_typeOfUsedMultiPhaseOptimization().toString());
+            auto.setProperty("pref_KeepDesignSpaceAndResolution", Boolean.toString(this.getPref_KeepDesignSpaceAndResolution()));
 
+            auto.setProperty("pref_LogFileAddon", this.jTextFieldLogFileAddon.getText());
+            auto.setProperty("pref_CalculationOfNextParameterset", this.getPref_CalculationOfNextParameterset().toString());
 
-        auto.setProperty("pref_LogFileAddon", this.jTextFieldLogFileAddon.getText());
-        auto.setProperty("pref_CalculationOfNextParameterset", this.getPref_CalculationOfNextParameterset().toString());
-        
-        //setting parameters for genetic optimization
-        auto.setProperty("pref_GeneticPopulationSize", Integer.toString(this.getPref_GeneticPopulationSize()));
-        auto.setProperty("pref_GeneticMutationChance", Double.toString(this.getPref_GeneticMutationChance()));
-        auto.setProperty("pref_GeneticMutateTopSolution", Boolean.toString(this.getPref_GeneticMutateTopSolution()));
-        
-        //setting parameters for CSS optimization
-        auto.setProperty("pref_CSS_PopulationSize", Integer.toString(this.getPref_CSS_PopulationSize()));
-        auto.setProperty("pref_CSS_MaxAttraction", Double.toString(this.getPref_CSS_MaxAttraction()));
-        
-        //setting parameters for ABC optimization
-        auto.setProperty("pref_ABC_NumEmployedBees", Integer.toString(this.getPref_ABC_NumEmployedBees()));
-        auto.setProperty("pref_ABC_NumOnlookerBees", Integer.toString(this.getPref_ABC_NumOnlookerBees()));
-        auto.setProperty("pref_ABC_NumScoutBees", Integer.toString(this.getPref_ABC_NumScoutBees()));
-        auto.setProperty("pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement", Integer.toString(this.getPref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement()));
-        
-        File parserprops =  new File(support.NAME_OF_OPTIMIZER_PREFFERENCES_FILE);
-        auto.store(new FileOutputStream(parserprops), "ExperimentGenerator-Properties");
-        }catch(IOException e){
-        support.log("Problem Saving the properties.");
+            //setting parameters for genetic optimization
+            auto.setProperty("pref_GeneticPopulationSize", Integer.toString(this.getPref_GeneticPopulationSize()));
+            auto.setProperty("pref_GeneticMutationChance", Double.toString(this.getPref_GeneticMutationChance()));
+            auto.setProperty("pref_GeneticMutateTopSolution", Boolean.toString(this.getPref_GeneticMutateTopSolution()));
+
+            //setting parameters for CSS optimization
+            auto.setProperty("pref_CSS_PopulationSize", Integer.toString(this.getPref_CSS_PopulationSize()));
+            auto.setProperty("pref_CSS_MaxAttraction", Double.toString(this.getPref_CSS_MaxAttraction()));
+
+            //setting parameters for ABC optimization
+            auto.setProperty("pref_ABC_NumEmployedBees", Integer.toString(this.getPref_ABC_NumEmployedBees()));
+            auto.setProperty("pref_ABC_NumOnlookerBees", Integer.toString(this.getPref_ABC_NumOnlookerBees()));
+            auto.setProperty("pref_ABC_NumScoutBees", Integer.toString(this.getPref_ABC_NumScoutBees()));
+            auto.setProperty("pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement", Integer.toString(this.getPref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement()));
+
+            File parserprops = new File(support.NAME_OF_OPTIMIZER_PREFFERENCES_FILE);
+            auto.store(new FileOutputStream(parserprops), "ExperimentGenerator-Properties");
+        } catch (IOException e) {
+            support.log("Problem Saving the properties.");
         }
-    
+
     }
 
     /**
      * @return the pref_WrongSimulationsUntilBreak
      */
     public int getPref_WrongSimulationsUntilBreak() {
-        pref_WrongSimulationsUntilBreak=(Integer)this.jSpinnerWrongSolutionsUntilBreak.getValue();
+        pref_WrongSimulationsUntilBreak = (Integer) this.jSpinnerWrongSolutionsUntilBreak.getValue();
         return pref_WrongSimulationsUntilBreak;
     }
 
     /**
-     * @param pref_WrongSimulationsUntilBreak the pref_WrongSimulationsUntilBreak to set
+     * @param pref_WrongSimulationsUntilBreak the
+     * pref_WrongSimulationsUntilBreak to set
      */
     public void setPref_WrongSimulationsUntilBreak(int pref_WrongSimulationsUntilBreak) {
         this.pref_WrongSimulationsUntilBreak = pref_WrongSimulationsUntilBreak;
@@ -1405,12 +1398,13 @@ final String noParameterString="No parameter";
      * @return the pref_WrongSimulationsPerDirection
      */
     public int getPref_WrongSimulationsPerDirection() {
-        pref_WrongSimulationsPerDirection=(Integer)this.jSpinnerWrongSolutionsPerDirectionUntilBreak.getValue();
+        pref_WrongSimulationsPerDirection = (Integer) this.jSpinnerWrongSolutionsPerDirectionUntilBreak.getValue();
         return pref_WrongSimulationsPerDirection;
     }
 
     /**
-     * @param pref_WrongSimulationsPerDirection the pref_WrongSimulationsPerDirection to set
+     * @param pref_WrongSimulationsPerDirection the
+     * pref_WrongSimulationsPerDirection to set
      */
     public void setPref_WrongSimulationsPerDirection(int pref_WrongSimulationsPerDirection) {
         this.pref_WrongSimulationsPerDirection = pref_WrongSimulationsPerDirection;
@@ -1421,27 +1415,29 @@ final String noParameterString="No parameter";
      * @return the pref_LogFileAddon
      */
     public String getPref_LogFileAddon() {
-    this.pref_LogFileAddon=this.jTextFieldLogFileAddon.getText();
-    String addonString=pref_LogFileAddon;
+        this.pref_LogFileAddon = this.jTextFieldLogFileAddon.getText();
+        String addonString = pref_LogFileAddon;
 
-        if(this.jCheckBoxAddPrefsToLogfilename.isSelected()){
+        if (this.jCheckBoxAddPrefsToLogfilename.isSelected()) {
 
-            switch(support.getChosenOptimizerType()){
+            switch (support.getChosenOptimizerType()) {
                 case HillClimbing:
-                    addonString+="_WSIMPERDIR_"+this.getPref_WrongSimulationsPerDirection()+"_WSIM_"+this.getPref_WrongSimulationsUntilBreak()+"_StartAt_"+this.jComboBoxTypeOfStartValue.getSelectedItem();
-                    addonString+="_TypOfNeighborhood_"+this.jComboBoxTypeOfNeighborhood.getSelectedItem();
-                    addonString+="_SizeOfNeighborhood_"+this.getPref_SizeOfNeighborhood();
+                    addonString += "_WSIMPERDIR_" + this.getPref_WrongSimulationsPerDirection() + "_WSIM_" + this.getPref_WrongSimulationsUntilBreak() + "_StartAt_" + this.jComboBoxTypeOfStartValue.getSelectedItem();
+                    addonString += "_TypOfNeighborhood_" + this.jComboBoxTypeOfNeighborhood.getSelectedItem();
+                    addonString += "_SizeOfNeighborhood_" + this.getPref_SizeOfNeighborhood();
                     break;
                 case SimAnnealing:
-                    addonString+="_StartAt_"+this.jComboBoxTypeOfStartValue.getSelectedItem();
-                    addonString+="_TAnnealScale_"+this.getPref_TAnnealScale();
-                    addonString+="_TRatioScale_"+this.getPref_TRatioScale();
-                    addonString+="_Epsilon_"+this.getPref_Epsilon();
-                    addonString+="_Cooling_"+this.getPref_Cooling();
-                    addonString+="_MaxTempPara_"+this.getPref_MaxTempParameter();
-                    addonString+="_MaxTempCost_"+this.getPref_MaxTempCost();
+                    addonString += "_StartAt_" + this.jComboBoxTypeOfStartValue.getSelectedItem();
+                    addonString += "_TAnnealScale_" + this.getPref_TAnnealScale();
+                    addonString += "_TRatioScale_" + this.getPref_TRatioScale();
+                    addonString += "_Epsilon_" + this.getPref_Epsilon();
+                    addonString += "_Cooling_" + this.getPref_Cooling();
+                    addonString += "_MaxTempPara_" + this.getPref_MaxTempParameter();
+                    addonString += "_MaxTempCost_" + this.getPref_MaxTempCost();
                     break;
                 case MultiPhase:
+                    addonString += "_ChosenAlg_" + this.jComboBoxOptimizationType.getSelectedItem();
+                    addonString += "_NumberOfPhases_" + this.jComboBoxNumberOfPhases.getSelectedItem();
                     break;
 
                 case TwoPhase:
@@ -1457,8 +1453,7 @@ final String noParameterString="No parameter";
                     //TODO Add Infos to this Algorithm here!
                     break;
             }
-            
-        
+
         }
         return addonString;
     }
@@ -1475,7 +1470,7 @@ final String noParameterString="No parameter";
      * @return the pref_StartValue
      */
     public typeOfStartValueEnum getPref_StartValue() {
-        pref_StartValue=(typeOfStartValueEnum)this.jComboBoxTypeOfStartValue.getSelectedItem();
+        pref_StartValue = (typeOfStartValueEnum) this.jComboBoxTypeOfStartValue.getSelectedItem();
         return pref_StartValue;
     }
 
@@ -1491,7 +1486,7 @@ final String noParameterString="No parameter";
      * @return the pref_NeighborhoodType
      */
     public typeOfNeighborhoodEnum getPref_NeighborhoodType() {
-        pref_NeighborhoodType=(typeOfNeighborhoodEnum)this.jComboBoxTypeOfNeighborhood.getSelectedItem();
+        pref_NeighborhoodType = (typeOfNeighborhoodEnum) this.jComboBoxTypeOfNeighborhood.getSelectedItem();
         return pref_NeighborhoodType;
     }
 
@@ -1507,7 +1502,7 @@ final String noParameterString="No parameter";
      * @return the pref_SizeOfNeighborhood
      */
     public int getPref_SizeOfNeighborhood() {
-        this.pref_SizeOfNeighborhood=(Integer)this.jSpinnerSizeOfNeighborhoodInPercent.getValue();
+        this.pref_SizeOfNeighborhood = (Integer) this.jSpinnerSizeOfNeighborhoodInPercent.getValue();
         return pref_SizeOfNeighborhood;
     }
 
@@ -1523,7 +1518,7 @@ final String noParameterString="No parameter";
      * @return the pref_Cooling, the Type of Annealing
      */
     public typeOfAnnealing getPref_Cooling() {
-        this.pref_Cooling=(typeOfAnnealing)this.jComboBoxCoolingMethod.getSelectedItem();
+        this.pref_Cooling = (typeOfAnnealing) this.jComboBoxCoolingMethod.getSelectedItem();
         return pref_Cooling;
     }
 
@@ -1539,12 +1534,12 @@ final String noParameterString="No parameter";
      * @return the pref_TRatioScale
      */
     public double getPref_TRatioScale() {
-        this.pref_TRatioScale=(Double)this.jSpinnerTRatioScale.getValue();
+        this.pref_TRatioScale = (Double) this.jSpinnerTRatioScale.getValue();
         return pref_TRatioScale;
     }
 
     /**
-     * @param pref_TRatioScale the pref_TRatioScale to set
+     * @param pref_TScaleRatio
      */
     public void setPref_TScaleRatio(double pref_TScaleRatio) {
         this.jSpinnerTRatioScale.setValue(pref_TScaleRatio);
@@ -1555,7 +1550,7 @@ final String noParameterString="No parameter";
      * @return the pref_TAnnealScale
      */
     public double getPref_TAnnealScale() {
-        this.pref_TAnnealScale=(Double)( this.jSpinnerTAnnealScale.getValue());
+        this.pref_TAnnealScale = (Double) (this.jSpinnerTAnnealScale.getValue());
         return pref_TAnnealScale;
     }
 
@@ -1571,7 +1566,7 @@ final String noParameterString="No parameter";
      * @return the pref_MaxTempParameter
      */
     public double getPref_MaxTempParameter() {
-        this.pref_MaxTempParameter=(Double)this.jSpinnerMaxTemperatureParameters.getValue();
+        this.pref_MaxTempParameter = (Double) this.jSpinnerMaxTemperatureParameters.getValue();
         return pref_MaxTempParameter;
     }
 
@@ -1587,7 +1582,7 @@ final String noParameterString="No parameter";
      * @return the pref_MaxTempCost
      */
     public double getPref_MaxTempCost() {
-        this.pref_MaxTempCost=(Double)jSpinnerMaxTemperatureCost.getValue();
+        this.pref_MaxTempCost = (Double) jSpinnerMaxTemperatureCost.getValue();
         return pref_MaxTempCost;
     }
 
@@ -1603,7 +1598,7 @@ final String noParameterString="No parameter";
      * @return the pref_Epsilon
      */
     public double getPref_Epsilon() {
-        this.pref_Epsilon = (Double)jSpinnerEpsilon.getValue();
+        this.pref_Epsilon = (Double) jSpinnerEpsilon.getValue();
         return pref_Epsilon;
     }
 
@@ -1619,12 +1614,13 @@ final String noParameterString="No parameter";
      * @return the pref_CalculationOfNextParameterset
      */
     public typeOfAnnealingParameterCalculation getPref_CalculationOfNextParameterset() {
-        pref_CalculationOfNextParameterset=(typeOfAnnealingParameterCalculation)this.jComboBoxCalculationOfNextParameterset.getSelectedItem();
+        pref_CalculationOfNextParameterset = (typeOfAnnealingParameterCalculation) this.jComboBoxCalculationOfNextParameterset.getSelectedItem();
         return pref_CalculationOfNextParameterset;
     }
 
     /**
-     * @param pref_CalculationOfNextParameterset the pref_CalculationOfNextParameterset to set
+     * @param pref_CalculationOfNextParameterset the
+     * pref_CalculationOfNextParameterset to set
      */
     public void setPref_CalculationOfNextParameterset(typeOfAnnealingParameterCalculation pref_CalculationOfNextParameterset) {
         this.jComboBoxCalculationOfNextParameterset.setSelectedItem(pref_CalculationOfNextParameterset);
@@ -1635,7 +1631,7 @@ final String noParameterString="No parameter";
      * @return the pref_NumberOfPhases
      */
     public int getPref_NumberOfPhases() {
-        this.pref_NumberOfPhases=Integer.valueOf(  (String)this.jComboBoxNumberOfPhases.getSelectedItem());
+        this.pref_NumberOfPhases = Integer.valueOf((String) this.jComboBoxNumberOfPhases.getSelectedItem());
         return pref_NumberOfPhases;
     }
 
@@ -1651,12 +1647,13 @@ final String noParameterString="No parameter";
      * @return the pref_typeOfUsedMultiPhaseOptimization
      */
     public typeOfOptimization getPref_typeOfUsedMultiPhaseOptimization() {
-        this.pref_typeOfUsedMultiPhaseOptimization=(typeOfOptimization)this.jComboBoxOptimizationType.getSelectedItem();
+        this.pref_typeOfUsedMultiPhaseOptimization = (typeOfOptimization) this.jComboBoxOptimizationType.getSelectedItem();
         return pref_typeOfUsedMultiPhaseOptimization;
     }
 
     /**
-     * @param pref_typeOfUsedMultiPhaseOptimization the pref_typeOfUsedMultiPhaseOptimization to set
+     * @param pref_typeOfUsedMultiPhaseOptimization the
+     * pref_typeOfUsedMultiPhaseOptimization to set
      */
     public void setPref_typeOfUsedMultiPhaseOptimization(typeOfOptimization pref_typeOfUsedMultiPhaseOptimization) {
         this.jComboBoxOptimizationType.setSelectedItem(pref_typeOfUsedMultiPhaseOptimization);
@@ -1667,12 +1664,13 @@ final String noParameterString="No parameter";
      * @return the pref_ConfidenceIntervallStart
      */
     public int getPref_ConfidenceIntervallStart() {
-        this.pref_ConfidenceIntervallStart=(Integer)jSpinnerConfidenceIntervallStart.getValue();
+        this.pref_ConfidenceIntervallStart = (Integer) jSpinnerConfidenceIntervallStart.getValue();
         return pref_ConfidenceIntervallStart;
     }
 
     /**
-     * @param pref_ConfidenceIntervallStart the pref_ConfidenceIntervallStart to set
+     * @param pref_ConfidenceIntervallStart the pref_ConfidenceIntervallStart to
+     * set
      */
     public void setPref_ConfidenceIntervallStart(int pref_ConfidenceIntervallStart) {
         this.jSpinnerConfidenceIntervallStart.setValue(pref_ConfidenceIntervallStart);
@@ -1683,7 +1681,7 @@ final String noParameterString="No parameter";
      * @return the pref_ConfidenceIntervallEnd
      */
     public int getPref_ConfidenceIntervallEnd() {
-        this.pref_ConfidenceIntervallEnd=(Integer)jSpinnerConfidenceIntervallEnd.getValue();
+        this.pref_ConfidenceIntervallEnd = (Integer) jSpinnerConfidenceIntervallEnd.getValue();
         return pref_ConfidenceIntervallEnd;
     }
 
@@ -1699,7 +1697,7 @@ final String noParameterString="No parameter";
      * @return the pref_MaxRelErrorStart
      */
     public int getPref_MaxRelErrorStart() {
-        this.pref_MaxRelErrorStart=(Integer)jSpinnerMaxRelErrorStart.getValue();
+        this.pref_MaxRelErrorStart = (Integer) jSpinnerMaxRelErrorStart.getValue();
         return pref_MaxRelErrorStart;
     }
 
@@ -1715,7 +1713,7 @@ final String noParameterString="No parameter";
      * @return the pref_MaxRelErrorEnd
      */
     public int getPref_MaxRelErrorEnd() {
-        this.pref_MaxRelErrorEnd=(Integer)jSpinnerMaxRelErrorEnd.getValue();
+        this.pref_MaxRelErrorEnd = (Integer) jSpinnerMaxRelErrorEnd.getValue();
         return pref_MaxRelErrorEnd;
     }
 
@@ -1731,7 +1729,7 @@ final String noParameterString="No parameter";
      * @return the pref_InternalParameterStart
      */
     public int getPref_InternalParameterStart() {
-        this.pref_InternalParameterStart=(Integer)jSpinnerInternalParameterStart.getValue();
+        this.pref_InternalParameterStart = (Integer) jSpinnerInternalParameterStart.getValue();
         return pref_InternalParameterStart;
     }
 
@@ -1747,7 +1745,7 @@ final String noParameterString="No parameter";
      * @return the pref_InternalParameterEnd
      */
     public int getPref_InternalParameterEnd() {
-        this.pref_InternalParameterEnd=(Integer)jSpinnerInternalParameterEnd.getValue();
+        this.pref_InternalParameterEnd = (Integer) jSpinnerInternalParameterEnd.getValue();
         return pref_InternalParameterEnd;
     }
 
@@ -1759,174 +1757,233 @@ final String noParameterString="No parameter";
         this.pref_InternalParameterEnd = pref_InternalParameterEnd;
     }
 
-
     /**
      * @return the pref_KeepDesignSpaceAndResolution
      */
     public boolean getPref_KeepDesignSpaceAndResolution() {
-        this.pref_KeepDesignSpaceAndResolution=jCheckBoxKeepDesignspaceAndResolution.isSelected();
+        this.pref_KeepDesignSpaceAndResolution = jCheckBoxKeepDesignspaceAndResolution.isSelected();
         return pref_KeepDesignSpaceAndResolution;
     }
 
     /**
-     * @param pref_KeepDesignSpaceAndResolution the pref_KeepDesignSpaceAndResolution to set
+     * @param pref_KeepDesignSpaceAndResolution the
+     * pref_KeepDesignSpaceAndResolution to set
      */
     public void setPref_KeepDesignSpaceAndResolution(boolean pref_KeepDesignSpaceAndResolution) {
         jCheckBoxKeepDesignspaceAndResolution.setSelected(pref_KeepDesignSpaceAndResolution);
         this.pref_KeepDesignSpaceAndResolution = pref_KeepDesignSpaceAndResolution;
     }
-    
-    public int getPref_CSS_PopulationSize()
-    {
-        this.pref_CSS_PopulationSize = (Integer)jSpinnerCSSPopulationSize.getValue();
+
+    /**
+     *
+     * @return
+     */
+    public int getPref_CSS_PopulationSize() {
+        this.pref_CSS_PopulationSize = (Integer) jSpinnerCSSPopulationSize.getValue();
         return this.pref_CSS_PopulationSize;
     }
-    
-    public void setPref_CSS_PopulationSize(int Pref_CSS_PopulationSize)
-    {
+
+    /**
+     *
+     * @param Pref_CSS_PopulationSize
+     */
+    public void setPref_CSS_PopulationSize(int Pref_CSS_PopulationSize) {
         jSpinnerCSSPopulationSize.setValue(Pref_CSS_PopulationSize);
         this.pref_CSS_PopulationSize = Pref_CSS_PopulationSize;
     }
-    
-    public double getPref_CSS_MaxAttraction()
-    {
+
+    /**
+     *
+     * @return
+     */
+    public double getPref_CSS_MaxAttraction() {
         this.pref_CSS_maxAttraction = new Double(jSpinnerCSSMaxAttraction.getValue().toString());
         return this.pref_CSS_maxAttraction;
     }
-    
-    public void setPref_CSS_MaxAttraction(double Pref_CSS_MaxAttraction)
-    {
+
+    /**
+     *
+     * @param Pref_CSS_MaxAttraction
+     */
+    public void setPref_CSS_MaxAttraction(double Pref_CSS_MaxAttraction) {
         jSpinnerCSSMaxAttraction.setValue(Pref_CSS_MaxAttraction);
         this.pref_CSS_maxAttraction = Pref_CSS_MaxAttraction;
     }
-    
-    public int getPref_GeneticPopulationSize()
-    {
-        this.pref_GeneticPopulationSize = (Integer)jSpinnerGeneticPopulationSize.getValue();
+
+    /**
+     *
+     * @return
+     */
+    public int getPref_GeneticPopulationSize() {
+        this.pref_GeneticPopulationSize = (Integer) jSpinnerGeneticPopulationSize.getValue();
         return this.pref_GeneticPopulationSize;
     }
-    
-    public void setPref_GeneticPopulationSize(int Pref_geneticPopulationSize)
-    {
+
+    /**
+     *
+     * @param Pref_geneticPopulationSize
+     */
+    public void setPref_GeneticPopulationSize(int Pref_geneticPopulationSize) {
         jSpinnerGeneticPopulationSize.setValue(Pref_geneticPopulationSize);
         this.pref_GeneticPopulationSize = Pref_geneticPopulationSize;
     }
-    
-    public double getPref_GeneticMutationChance()
-    {
-        this.pref_GeneticMutationChance = (Double)jSpinnerGeneticMutationChance.getValue();
+
+    /**
+     *
+     * @return
+     */
+    public double getPref_GeneticMutationChance() {
+        this.pref_GeneticMutationChance = (Double) jSpinnerGeneticMutationChance.getValue();
         return this.pref_GeneticMutationChance;
     }
-    
-    public void setPref_GeneticMutationChance(double Pref_geneticMutationChance)
-    {
+
+    /**
+     *
+     * @param Pref_geneticMutationChance
+     */
+    public void setPref_GeneticMutationChance(double Pref_geneticMutationChance) {
         jSpinnerGeneticMutationChance.setValue(Pref_geneticMutationChance);
         this.pref_GeneticMutationChance = Pref_geneticMutationChance;
     }
 
-    public boolean getPref_GeneticMutateTopSolution()
-    {
-        this.pref_GeneticMutateTopSolution = (boolean)jCheckBoxGeneticMutateTopSolution.isSelected();
+    /**
+     *
+     * @return
+     */
+    public boolean getPref_GeneticMutateTopSolution() {
+        this.pref_GeneticMutateTopSolution = (boolean) jCheckBoxGeneticMutateTopSolution.isSelected();
         return this.pref_GeneticMutateTopSolution;
     }
-    
-    public void setPref_GeneticMutateTopSolution(boolean pref_geneticMutateTopSolution)
-    {
+
+    /**
+     *
+     * @param pref_geneticMutateTopSolution
+     */
+    public void setPref_GeneticMutateTopSolution(boolean pref_geneticMutateTopSolution) {
         jCheckBoxGeneticMutateTopSolution.setSelected(pref_geneticMutateTopSolution);
         this.pref_GeneticMutateTopSolution = pref_geneticMutateTopSolution;
     }
-    
-    public int getPref_ABC_NumEmployedBees()
-    {
-        this.pref_ABC_NumEmployedBees = (Integer)jSpinnerABCNumEmployedBees.getValue();
+
+    /**
+     *
+     * @return
+     */
+    public int getPref_ABC_NumEmployedBees() {
+        this.pref_ABC_NumEmployedBees = (Integer) jSpinnerABCNumEmployedBees.getValue();
         return this.pref_ABC_NumEmployedBees;
     }
-    
-    public void setPref_ABC_NumEmployedBees(int Pref_ABC_NumEmployedBees)
-    {
+
+    /**
+     *
+     * @param Pref_ABC_NumEmployedBees
+     */
+    public void setPref_ABC_NumEmployedBees(int Pref_ABC_NumEmployedBees) {
         jSpinnerABCNumEmployedBees.setValue(Pref_ABC_NumEmployedBees);
         this.pref_ABC_NumEmployedBees = Pref_ABC_NumEmployedBees;
     }
-    
-    public int getPref_ABC_NumOnlookerBees()
-    {
-        this.pref_ABC_NumOnlookerBees = (Integer)jSpinnerABCNumOnlookerBees.getValue();
+
+    /**
+     *
+     * @return
+     */
+    public int getPref_ABC_NumOnlookerBees() {
+        this.pref_ABC_NumOnlookerBees = (Integer) jSpinnerABCNumOnlookerBees.getValue();
         return this.pref_ABC_NumOnlookerBees;
     }
-    
-    public void setPref_ABC_NumOnlookerBees(int Pref_ABC_NumOnlookerBees)
-    {
+
+    /**
+     *
+     * @param Pref_ABC_NumOnlookerBees
+     */
+    public void setPref_ABC_NumOnlookerBees(int Pref_ABC_NumOnlookerBees) {
         jSpinnerABCNumOnlookerBees.setValue(Pref_ABC_NumOnlookerBees);
         this.pref_ABC_NumOnlookerBees = Pref_ABC_NumOnlookerBees;
     }
-    
-    public int getPref_ABC_NumScoutBees()
-    {
-        this.pref_ABC_NumScoutBees = (Integer)jSpinnerABCNumScoutBees.getValue();
+
+    /**
+     *
+     * @return
+     */
+    public int getPref_ABC_NumScoutBees() {
+        this.pref_ABC_NumScoutBees = (Integer) jSpinnerABCNumScoutBees.getValue();
         return this.pref_ABC_NumScoutBees;
     }
-    
-    public void setPref_ABC_NumScoutBees(int Pref_ABC_NumScoutBees)
-    {
+
+    /**
+     *
+     * @param Pref_ABC_NumScoutBees
+     */
+    public void setPref_ABC_NumScoutBees(int Pref_ABC_NumScoutBees) {
         jSpinnerABCNumScoutBees.setValue(Pref_ABC_NumScoutBees);
         this.pref_ABC_NumScoutBees = Pref_ABC_NumScoutBees;
     }
-    
-    public int getPref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement()
-    {
-        this.pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement = (Integer)jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement.getValue();
+
+    /**
+     *
+     * @return
+     */
+    public int getPref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement() {
+        this.pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement = (Integer) jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement.getValue();
         return this.pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement;
     }
-    
-    public void setPref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement(int Pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement)
-    {
+
+    /**
+     *
+     * @param Pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement
+     */
+    public void setPref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement(int Pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement) {
         jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement.setValue(Pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement);
         this.pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement = Pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement;
     }
-    
+
     /**
      * Sets the list of possible parameter as precision parameter in multiphase
      * This method will modifiy the jCombobox of internal parameters
-     * @param pList ArrayList of parameters to show in JCombobox of internal parameters
+     *
+     * @param pList ArrayList of parameters to show in JCombobox of internal
+     * parameters
      */
-    public void setPossibleInternalParameters(ArrayList<parameter> pList){
-        
-        this.internalParameterList=pList;
+    public void setPossibleInternalParameters(ArrayList<parameter> pList) {
+
+        this.internalParameterList = pList;
         this.jComboBoxInternalParameterMultiphase.setEnabled(false);
         this.jComboBoxInternalParameterMultiphase.setModel(new DefaultComboBoxModel(new String[]{noParameterString}));
-        if(pList!=null){
-            if(pList.size()>0){
-            this.jComboBoxInternalParameterMultiphase.setEnabled(true);
-            ArrayList<String> tmpNameList=new ArrayList<String>();
-            tmpNameList.add(noParameterString);
-            for(int i=0;i<pList.size();i++){
-            tmpNameList.add(pList.get(i).getName());
-            }
-            this.jComboBoxInternalParameterMultiphase.setModel(new DefaultComboBoxModel(tmpNameList.toArray()));
+        if (pList != null) {
+            if (pList.size() > 0) {
+                this.jComboBoxInternalParameterMultiphase.setEnabled(true);
+                ArrayList<String> tmpNameList = new ArrayList<String>();
+                tmpNameList.add(noParameterString);
+                for (parameter p : pList) {
+                    tmpNameList.add(p.getName());
+                }
+                this.jComboBoxInternalParameterMultiphase.setModel(new DefaultComboBoxModel(tmpNameList.toArray()));
             }
         }
     }
-    
+
     /**
-     * Returns the chosen parameter for precision control in multiphase-optimization
-     * incl. min, max-Value. 
-     * Stepsize is defined by number of phases
+     * Returns the chosen parameter for precision control in
+     * multiphase-optimization incl. min, max-Value. Stepsize is defined by
+     * number of phases
+     *
      * @return chosen parameter for precision control
      */
-    public parameter getInternalParameterToIterateInMultiphase(){
-    parameter resultParameter=null;
-        if(internalParameterList!=null){
-        String nameOfChosenParameter=jComboBoxInternalParameterMultiphase.getSelectedItem().toString();
-        if(nameOfChosenParameter.equals(noParameterString)){return null;}
-            
-        for (parameter internalParameterList1 : internalParameterList) {
-            if (internalParameterList1.getName().equals(nameOfChosenParameter)) {
-                resultParameter = internalParameterList1;
+    public parameter getInternalParameterToIterateInMultiphase() {
+        parameter resultParameter = null;
+        if (internalParameterList != null) {
+            String nameOfChosenParameter = jComboBoxInternalParameterMultiphase.getSelectedItem().toString();
+            if (nameOfChosenParameter.equals(noParameterString)) {
+                return null;
             }
+
+            for (parameter internalParameterList1 : internalParameterList) {
+                if (internalParameterList1.getName().equals(nameOfChosenParameter)) {
+                    resultParameter = internalParameterList1;
+                }
+            }
+
         }
-        
-        }
-        
+
         return resultParameter;
     }
 }
