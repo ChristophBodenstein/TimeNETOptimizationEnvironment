@@ -86,7 +86,12 @@ public class SimulatorWebSlave implements Runnable {
 
                 }
                 //HttpClient client = new DefaultHttpClient() ;
-            } catch (IOException ex) {
+                //Verify response if any
+                if (response != null) {
+                    //System.out.println(response.getStatusLine().getStatusCode());
+                    EntityUtils.consume(response.getEntity());
+                }
+            } catch (Exception ex) {
                 support.log("IOException during HTTP-Request for simulations. Error msg: " + ex.getLocalizedMessage());
             }
             try {
