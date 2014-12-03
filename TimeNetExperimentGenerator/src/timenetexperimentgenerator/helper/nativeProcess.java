@@ -134,7 +134,7 @@ class realNativeProcess extends Thread {
      */
     public void killProcess() {
         if (p != null) {
-            p.destroyForcibly();
+            p.destroy();
             support.log("Process will be killed. Check for running simulation binaries and kill them manually!!!");
         }
     }

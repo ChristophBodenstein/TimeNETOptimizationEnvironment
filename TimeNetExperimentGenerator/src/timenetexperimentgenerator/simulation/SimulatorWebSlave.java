@@ -129,24 +129,33 @@ public class SimulatorWebSlave implements Runnable {
     private void startLocalSimulation(String exportFileName) {
         try {
             //Calculate timeout, give Maxtime * 2
-            int timeOut= Float.valueOf(support.getIntStringValueFromFileName(exportFileName, "MaxTime")).intValue()*2;
+            int timeOut = Float.valueOf(support.getIntStringValueFromFileName(exportFileName, "MaxTime")).intValue() * 2;
+            timeOut += Calendar.getInstance().getTimeInMillis() * 1000;//End time in Seconds
             // Execute command
             java.lang.ProcessBuilder processBuilder = new java.lang.ProcessBuilder("java", "-jar", "TimeNET.jar", exportFileName, "autostart=true", "autostop=true", "secmax=" + support.getIntStringValueFromFileName(exportFileName, "MaxTime"), "endtime=" + support.getIntStringValueFromFileName(exportFileName, "EndTime"), "seed=" + support.getIntStringValueFromFileName(exportFileName, "Seed"), "confidence=" + support.getIntStringValueFromFileName(exportFileName, "ConfidenceIntervall"), "epsmax=" + support.getValueFromFileName(exportFileName, "MaxRelError"));
             processBuilder.directory(new java.io.File(this.pathToTimeNet));
             support.log("Command is: " + processBuilder.command().toString());
-            
+
             // Start new process
             long timeStamp = Calendar.getInstance().getTimeInMillis();
 
             java.lang.Process p = processBuilder.start();
-            
+
             java.util.Scanner s = new java.util.Scanner(p.getInputStream()).useDelimiter("\\Z");//Scans output of process
             support.log(s.next());//prints output of process into System.out
-            try {
-                //Wait for Process until timeout, then kill process
-                p.waitFor(timeOut, TimeUnit.SECONDS);
-            } catch (InterruptedException ex) {
-                support.log("Simulation took more than "+ timeOut +" seconds. So it was canceled.");
+            boolean isRunning = true;
+            int exitValue = 1;
+            while (isRunning) {
+                try {
+                    if (p.exitValue() == 0) {
+                        isRunning = false;
+                    }
+                } catch (IllegalThreadStateException e) {
+                }
+                if (Calendar.getInstance().getTimeInMillis() * 1000 >= timeOut) {
+                    p.destroy();
+                    isRunning = false;
+                }
             }
             timeStamp = (Calendar.getInstance().getTimeInMillis() - timeStamp) / 1000;//Time for calculation in seconds
 
