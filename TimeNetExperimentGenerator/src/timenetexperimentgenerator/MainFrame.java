@@ -214,7 +214,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         
         this.jComboBoxOptimizationType.setSelectedItem(typeOfOptimization.valueOf(auto.getProperty("OptimizationType", support.DEFAULT_TYPE_OF_OPTIMIZER.toString())));
         
-        this.jComboBoxBenchmarkFunction.setSelectedItem(typeOfBenchmarkFunction.valueOf(auto.getProperty("BenchmarkType", support.DEFAULT_TYPE_OF_BENCHMARKFUNCTION.toString())));
+        
         
         savePropertiesEnabled = true;//Enable property saving after init of all components
 
