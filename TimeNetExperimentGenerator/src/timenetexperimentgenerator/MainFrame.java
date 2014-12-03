@@ -149,7 +149,12 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         
         this.pathToLastSimulationCache = auto.getProperty("pathToLastSimulationCache", "");
         
-        support.setChosenBenchmarkFunction(typeOfBenchmarkFunction.valueOf(auto.getProperty("BenchmarkType", typeOfBenchmarkFunction.Sphere.toString())));
+        try{
+        support.setChosenBenchmarkFunction(typeOfBenchmarkFunction.valueOf(auto.getProperty("BenchmarkType", support.DEFAULT_TYPE_OF_BENCHMARKFUNCTION.toString())));
+        }catch(Exception e){
+        support.log("Error loading Benchmark-Type. Maybe recently used benchmark is not longer available. Using Default.");
+        support.setChosenBenchmarkFunction(support.DEFAULT_TYPE_OF_BENCHMARKFUNCTION);
+        }
         this.jComboBoxBenchmarkFunction.setSelectedItem(support.getChosenBenchmarkFunction());
         
         support.setIsRunningAsSlave(Boolean.parseBoolean(auto.getProperty("isRunningAsSlave", "false")));
