@@ -37,7 +37,7 @@ import timenetexperimentgenerator.typedef.typeOfProcessFeedback;
 public class support {
 
 //This Version of TimeNetExperimentGenerator
-    public static final String VERSION = "2014-12-03";
+    public static final String VERSION = "2014-12-05";
 
 //Define some program-wide default values
     public static final double DEFAULT_STEPPING = 1.0;
@@ -643,6 +643,7 @@ public class support {
                     for (int i1 = 0; i1 < myParser.getMeasures().size(); i1++) {//Alle Measure schreiben
                         MeasureType exportMeasure = myParser.getMeasures().get(i1);
                         line = exportMeasure.getMeasureName() + ";" + support.getCommaFloat(exportMeasure.getMeanValue()) + ";" + support.getCommaFloat(exportMeasure.getVariance()) + ";" + support.getCommaFloat(exportMeasure.getConfidenceInterval()[0]) + ";" + support.getCommaFloat(exportMeasure.getConfidenceInterval()[1]) + ";" + support.getCommaFloat(exportMeasure.getEpsilon()) + ";" + support.getCommaFloat(exportMeasure.getSimulationTime());
+                        dummyParameterForCPUTime.setValue(exportMeasure.getCPUTime());
                         for (int c = 0; c < myParser.getListOfParameters().size(); c++) {
                             line = line + ";" + support.getCommaFloat(myParser.getListOfParameters().get(c).getValue());
                         }

@@ -324,16 +324,17 @@ public class SimulationType {
 
     /**
      * @param testString String to be converted to double value if not NaN
-     * @return the CPUTime
+     * @return the double value of goven testString
      */
-    public double getFloatString(String testString) {
+    /*public double getFloatString(String testString) {
         if (!testString.equalsIgnoreCase("nan")) {
             return Double.valueOf(testString);
         } else {
             return 0;
         }
     }
-
+    */
+    
     /**
      * @return the isFromCache
      */

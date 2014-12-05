@@ -129,7 +129,17 @@ public class SimulatorBenchmark implements Simulator, Runnable {
      * @param maxRelError given Maximum relative Error
      */
     public static double getCPUTime(double confidenceIntervall, double maxRelError) {
-        return 10;
+        double conf = confidenceIntervall / 84;
+        double max = 15 / maxRelError;
+        double constX2 = 4.1765277575;
+        double constX3 = -0.0019265913;
+        double constX4 = 89.0756210425;
+
+        double result=Math.pow(max + conf, 2) * constX2 + Math.pow(max + conf, 3) * constX3 + constX4;
+        //support.log("ConfInterval: "+confidenceIntervall + " MaxRelError: "+maxRelError + "CPUTime: "+result);
+        //=POTENZ((A2/84+15/B2);2)*$M$12+POTENZ((A2/84+15/B2);3)*$N$12+$O$12
+        return result;
+
     }
 
     /**
