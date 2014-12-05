@@ -96,7 +96,7 @@ public class support {
     public static final int DEFAULT_MINIMUM_DESIGNSPACE_SIZE_PER_PARAMETER = 10;//Minimum Steps per Parameter.
     public static final int DEFAULT_MINIMUM_DESIGNSPACE_FOR_OPTIMIZATION = 50;//If DS is smaller, no Optimization is possible
 
-    public static final String NAME_OF_PREF_DIR = System.getProperty("user.home") + File.separatorChar + ".TNGenerator" + File.separatorChar;//The dir in which all pref-files will be stored
+    public static final String NAME_OF_PREF_DIR = System.getProperty("user.home") + File.separatorChar + ".TOE" + File.separatorChar;//The dir in which all pref-files will be stored
     public static final String NAME_OF_LOGFILE = NAME_OF_PREF_DIR + "TimeNETLogFile.log";//the name of the program logfile, if logging to file is active
     public static final String NAME_OF_PREFERENCES_FILE = NAME_OF_PREF_DIR + "ApplicationPreferences.prop";//name of the pref-file for program-wide prefs
     public static final String NAME_OF_OPTIMIZER_PREFFERENCES_FILE = NAME_OF_PREF_DIR + "OptimizerPreferences.prop";//name of the pref file for optimization parameters
