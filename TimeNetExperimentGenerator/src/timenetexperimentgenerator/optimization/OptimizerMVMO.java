@@ -27,8 +27,8 @@ import timenetexperimentgenerator.typedef.typeOfMVMOParentSelection;
 
 public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable, Optimizer
 {
-    private int startPopulationSize = 2;//support.getOptimizerPreferences().getPref_GeneticPopulationSize(); //size of population after initialization
-    private int maxPopulationSize = 10;
+    private int startPopulationSize = 5;//support.getOptimizerPreferences().getPref_GeneticPopulationSize(); //size of population after initialization
+    private int maxPopulationSize = 75;
     
     private ArrayList<Double> parameterMeanValues;
     private ArrayList<Double> parameterVarianceValues;
@@ -37,6 +37,9 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
     private double asymmetryFactor = 3.0;
     
     private double sd = 75.0;
+    
+    private int numOptiRuns = 50;
+    private boolean doBatchRun = true;
 
     /**
      * returnes the population size used for optimization
@@ -110,6 +113,11 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
     
     public void run() 
     {
+        if (doBatchRun)
+        {
+            doBatchRun();
+            return;
+        }
         int optiCycleCounter = 0;
         population = createRandomPopulation(startPopulationSize, false);
         
@@ -159,15 +167,104 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
             simulationCounter = mySimulator.getSimulationCounter();
             
             simulationResults = mySimulator.getListOfCompletedSimulationParsers();
-            population = tryAddCandidate(population, simulationResults);
             support.addLinesToLogFileFromListOfParser(simulationResults, logFileName);
+            population = tryAddCandidate(population, simulationResults);
             
-            updateTopMeasure(); //TODO: not optimal for mvmo, because the first one is alway the best
-            printPopulationDistances();
+            if (population.size()==maxPopulationSize)
+            {
+                updateTopMeasure(); //TODO: not optimal for mvmo, because the first one is alway the best
+                printPopulationDistances();
+            }
             
             ++optiCycleCounter;
         }
 
+    }
+    
+    private void doBatchRun()
+    {
+     ArrayList<SimulationType> optiResults = new ArrayList<SimulationType>();
+     ArrayList<Integer> optiTotalSimualtions = new ArrayList<Integer>();
+     ArrayList<Integer> optiTotalCachedSimualtions = new ArrayList<Integer>();
+     for (int i = 0; i< numOptiRuns; ++i)
+     {
+        int totalSimulations  = 0;
+        int totalCachedSimualtions = 0;    
+        int optiCycleCounter = 0;
+        population = createRandomPopulation(startPopulationSize, false);
+        
+        Simulator mySimulator = SimOptiFactory.getSimulator();       
+        mySimulator.initSimulator(getNextParameterSetAsArrayList(), optiCycleCounter, false);
+        support.waitForEndOfSimulator(mySimulator, optiCycleCounter, support.DEFAULT_TIMEOUT);
+        
+        ArrayList<SimulationType> simulationResults = mySimulator.getListOfCompletedSimulationParsers(); 
+        population = getPopulationFromSimulationResults(simulationResults);
+        population = normalize(population);
+        
+        int simulationCounter = 0;
+        int lastGenSelected = 0;
+        int numGenesToSelect = 1;
+        while(optiCycleCounter < this.maxNumberOfOptiCycles)
+        {
+            if (currentNumberOfOptiCyclesWithoutImprovement >= maxNumberOfOptiCyclesWithoutImprovement)
+            {
+                support.log("Too many optimization cycles without improvement. Ending optimization.");
+                break;
+            }
+            
+            //modification phase -----------------------------------------------------------------------
+            population = sortPopulation(population); //sort them, so the best one is number one
+            parameterMeanValues = getMeanValues(population);
+            parameterVarianceValues = getVarianceValues(population);
+            SimulationType candidate = createCandidate(
+                    population,
+                    parameterMeanValues,
+                    parameterVarianceValues,
+                    typeOfMVMOParentSelection.Best,
+                    typeOfMVMOMutationSelection.Random,
+                    lastGenSelected, numGenesToSelect);
+            
+            
+            //simulation phase -----------------------------------------------------------------------
+            candidate = denormalize(candidate);
+            ArrayList< ArrayList<parameter> > parameterList = getNextParameterSetAsArrayList(candidate);
+            for (ArrayList<parameter> pArray : parameterList)
+            {
+                pArray =  roundToStepping(pArray);
+            }
+            
+            mySimulator = SimOptiFactory.getSimulator();
+            mySimulator.initSimulator(parameterList, simulationCounter, false);
+            support.waitForEndOfSimulator(mySimulator, simulationCounter, support.DEFAULT_TIMEOUT);
+            simulationCounter = mySimulator.getSimulationCounter();
+            
+            simulationResults = mySimulator.getListOfCompletedSimulationParsers();
+            totalSimulations+=simulationResults.size();
+            population = tryAddCandidate(population, simulationResults);
+            //support.addLinesToLogFileFromListOfParser(simulationResults, logFileName);
+            
+            if (population.size()==maxPopulationSize)
+            {
+                updateTopMeasure(); //TODO: not optimal for mvmo, because the first one is alway the best
+                //printPopulationDistances();
+            }
+            
+            ++optiCycleCounter;
+        }
+        optiResults.add(denormalize(topMeasure));
+        optiTotalSimualtions.add(totalSimulations);
+        optiTotalCachedSimualtions.add(totalCachedSimualtions);
+        topDistance = Double.POSITIVE_INFINITY;
+        currentNumberOfOptiCyclesWithoutImprovement = 0;
+        
+        }
+        support.addLinesToLogFileFromListOfSimulationBatchesIncludingNumRuns(optiResults, optiTotalSimualtions, optiTotalCachedSimualtions, logFileName);
+
+        for (int i = 0;i<optiResults.size(); ++i)
+        {
+            String logString = "" + optiTotalSimualtions.get(i) + " " + optiTotalCachedSimualtions.get(i);
+            support.log(logString);
+        }  
     }
     
     private ArrayList< ArrayList<SimulationType> > tryAddCandidate(ArrayList< ArrayList<SimulationType> > population, ArrayList<SimulationType> candidate)
@@ -180,6 +277,7 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
         }
         if (population.get(population.size()-1).get(0).getDistanceToTargetValue() >= candidate.get(0).getDistanceToTargetValue())
         {
+            support.log("Added new one to population");
             population.set(population.size()-1, candidate);
             population = sortPopulation(population);
         }        
@@ -284,7 +382,7 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
         double kd = 0.0505 / candidate.getListOfParameters().size() + 1;
         for (int i=0; i<genesToMutate.size(); ++i)
         {
-            support.log("Try to mutate gen nr: " + genesToMutate.get(i));
+            //support.log("Try to mutate gen nr: " + genesToMutate.get(i));
             parameter p = candidate.getListOfParameters().get(genesToMutate.get(i));
             if (p.isIteratableAndIntern())
             {
@@ -322,10 +420,10 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
             
 
                 double xTemp = randomGenerator.nextDouble();
-                support.log("Temp x: " + xTemp);
-                support.log("Mean: " + mean);
-                support.log("Variance " + variance);
-                support.log("Si: " + si);
+                //support.log("Temp x: " + xTemp);
+                //support.log("Mean: " + mean);
+                //support.log("Variance " + variance);
+                //support.log("Si: " + si);
                 double x = transform(mean, si1, si2, xTemp) +
                     (1 - transform(mean, si1, si2, 1) + transform(mean, si1, si2, 0)) * xTemp -
                     transform(mean, si1, si2, 0);
@@ -339,7 +437,7 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
                     x = 1;
                     support.log("Transformation value too high, forced to 1");
                 }                    
-                support.log("x: " + x);
+                //support.log("x: " + x);
                 p.setValue(x);  
             }            
         }
@@ -393,9 +491,9 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
         for (int paraNum = 0; paraNum < paraList.size(); ++paraNum)
         {
             parameter p = paraList.get(paraNum);
-            support.log("Normalizing: " + p.getValue() + "\tStart: " + p.getStartValue() + "\tEnd: " + p.getEndValue());
+            //support.log("Normalizing: " + p.getValue() + "\tStart: " + p.getStartValue() + "\tEnd: " + p.getEndValue());
             double newValue = (p.getValue() - p.getStartValue()) / (p.getEndValue() - p.getStartValue());
-            support.log("Normalised to " +  newValue);
+            //support.log("Normalised to " +  newValue);
             p.setValue(newValue);
         }
         return simulation;
@@ -418,9 +516,9 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
         for (int paraNum = 0; paraNum < paraList.size(); ++paraNum)
         {
             parameter p = paraList.get(paraNum);
-            support.log("Denormalizing: " + p.getValue() + "\tStart: " + p.getStartValue() + "\tEnd: " + p.getEndValue());
+            //support.log("Denormalizing: " + p.getValue() + "\tStart: " + p.getStartValue() + "\tEnd: " + p.getEndValue());
             double newValue = p.getValue() * (p.getEndValue() - p.getStartValue()) + p.getStartValue();
-            support.log("Denormalised to " +  newValue);
+            //support.log("Denormalised to " +  newValue);
             p.setValue(newValue);
         }
         return simulation;

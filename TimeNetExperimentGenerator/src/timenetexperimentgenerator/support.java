@@ -78,6 +78,15 @@ public class support {
     public static final int DEFAULT_ABC_NumOnlookerBees = 10;
     public static final int DEFAULT_ABC_NumScoutBees = 2;
     public static final int DEFAULT_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement = 3;
+    
+//default values for MVMO Optimization
+    public static final int DEFAULT_MVMO_STARTING_POPULATION = 5;
+    public static final int DEFAULT_MVMO_MAX_POPULATION = 50;
+    public static final double DEFAULT_MVMO_SCALING_FACTOR = 10.0;
+    public static final double DEFAULT_MVMO_ASYMMETRY_FACTOR = 3.0;
+    public static final double DEFAULT_MVMO_SD = 75.0;
+    public static final typeOfMVMOParentSelection DEFAULT_MVMO_PARENT_SELECTION = typeOfMVMOParentSelection.Best;
+    public static final typeOfMVMOMutationSelection DEFAULT_MVMO_MUTATION_STRATEGY = typeOfMVMOMutationSelection.Random;
 
     public static final int DEFAULT_CACHE_STUCK = 100;//Optimizer can ask 2 times for simulating the same parameterset in a row. Then optimization will be aborted!
     public static final int DEFAULT_LOCAL_SIMULATION_ATTEMPTS = 5;//Local simulation is tried so many times until break
@@ -647,6 +656,90 @@ public class support {
                         for (int c = 0; c < myParser.getListOfParameters().size(); c++) {
                             line = line + ";" + support.getCommaFloat(myParser.getListOfParameters().get(c).getValue());
                         }
+                        fw.write(line);
+                        fw.append(System.getProperty("line.separator"));
+                    }
+                } catch (IOException e) {
+                    support.log("IOException while appending lines to summary log-file.");
+                }
+
+            }
+
+            fw.close();
+        } catch (Exception e) {
+            support.log("Exception while writing things to summary log-file.");
+        }
+    }
+    
+    public static void addLinesToLogFileFromListOfSimulationBatchesIncludingNumRuns(
+            ArrayList<SimulationType> pList,
+            ArrayList<Integer> numRunList,
+            ArrayList<Integer> numCachedSimulations,
+            String logFileName) {
+        boolean writeHeader = false;
+        String line;
+
+        parameter dummyParameterForCPUTime = new parameter();
+        dummyParameterForCPUTime.setName("UsedCPUTIME");
+        dummyParameterForCPUTime.setValue(0.0);
+        dummyParameterForCPUTime.setStartValue(0.0);
+        dummyParameterForCPUTime.setEndValue(0.0);
+
+        try {
+        //support.log("Number of Simulationtypes to add is "+pList.size());
+
+            //Check if list is null, then exit
+            if (pList == null) {
+                support.log("List of Simulations to add to logfile is null. Exit");
+                return;
+            }
+
+            File f = new File(logFileName);
+            if (!f.exists()) {
+                writeHeader = true;
+            }
+            FileWriter fw = new FileWriter(logFileName, true);
+
+            if (writeHeader) {
+                //Write header of logfile
+
+                //Add empty CPU-Time-Parameter for compatibility
+                if (support.getParameterByName(pList.get(0).getListOfParameters(), "UsedCPUTIME") == null) {
+                    pList.get(0).getListOfParameters().add(dummyParameterForCPUTime);
+                }
+
+                MeasureType exportMeasure = pList.get(0).getMeasures().get(0);//First Measure will be used to determine the lsit of Parameters
+                line = "MeasureName;Mean Value; Variance; Conf.Interval-Min;Conf.Interval-Max;Epsilon;" + "Simulation Time";
+                for (int i1 = 0; i1 < pList.get(0).getListOfParameters().size(); i1++) {
+                    line = line + ";" + pList.get(0).getListOfParameters().get(i1).getName();
+                }
+                try {
+                    fw.write(line);
+                    fw.append(System.getProperty("line.separator"));
+                } catch (IOException ex) {
+                    support.log("Error writing Header to Summary-log-file.");
+                }
+            }
+
+            for (int i = 0; i < pList.size(); i++) {
+                //set indicator
+                setStatusText("Writing: " + (i + 1) + "/" + pList.size());
+                SimulationType myParser = pList.get(i);
+
+                //Add empty CPU-Time-Parameter for compatibility
+                if (support.getParameterByName(myParser.getListOfParameters(), "UsedCPUTIME") == null) {
+                    myParser.getListOfParameters().add(dummyParameterForCPUTime);
+                }
+
+                StatisticAggregator.addToStatistics(myParser, logFileName);
+                try {
+                    for (int i1 = 0; i1 < myParser.getMeasures().size(); i1++) {//Alle Measure schreiben
+                        MeasureType exportMeasure = myParser.getMeasures().get(i1);
+                        line = exportMeasure.getMeasureName() + ";" + support.getCommaFloat(exportMeasure.getMeanValue()) + ";" + support.getCommaFloat(exportMeasure.getVariance()) + ";" + support.getCommaFloat(exportMeasure.getConfidenceInterval()[0]) + ";" + support.getCommaFloat(exportMeasure.getConfidenceInterval()[1]) + ";" + support.getCommaFloat(exportMeasure.getEpsilon()) + ";" + support.getCommaFloat(exportMeasure.getSimulationTime());
+                        for (int c = 0; c < myParser.getListOfParameters().size(); c++) {
+                            line = line + ";" + support.getCommaFloat(myParser.getListOfParameters().get(c).getValue());
+                        }
+                        line = line + ";" + numRunList.get(i) + ";" +  numCachedSimulations.get(i);
                         fw.write(line);
                         fw.append(System.getProperty("line.separator"));
                     }

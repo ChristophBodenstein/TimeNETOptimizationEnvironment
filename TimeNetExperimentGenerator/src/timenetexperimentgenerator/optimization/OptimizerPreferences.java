@@ -66,6 +66,15 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     private int pref_ABC_NumOnlookerBees;
     private int pref_ABC_NumScoutBees;
     private int pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement;
+    
+//parameters for MVMO Optimization
+    private int pref_MVMO_StartingPop;
+    private int pref_MVMO_MaxPop;
+    private double pref_MVMO_ScalingFactor;
+    private double pref_MVMO_AsymmetryFactor;
+    private double pref_MVMO_sd;
+    private typeOfMVMOParentSelection pref_MVMO_parentSelection;
+    private typeOfMVMOMutationSelection pref_MVMO_mutationSelection;
 
     private ArrayList<parameter> internalParameterList = null;
 
@@ -208,16 +217,20 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         jLabelABCNumScoutBees = new javax.swing.JLabel();
         jLabelABCMaxNumberOfFoodUpdateCyclesWithoutImprovement = new javax.swing.JLabel();
         jPanel6 = new javax.swing.JPanel();
-        jSpinnerABCNumEmployedBees1 = new javax.swing.JSpinner();
+        jSpinnerMVMOStartingPop = new javax.swing.JSpinner();
         jLabelMVMOStartingPopulation = new javax.swing.JLabel();
         jLabelMVMOMaximumPopulation = new javax.swing.JLabel();
-        jSpinnerABCNumOnlookerBees1 = new javax.swing.JSpinner();
+        jSpinnerMVMOMaxPop = new javax.swing.JSpinner();
         jLabelMVMOScalingFactor = new javax.swing.JLabel();
-        jSpinnerABCNumScoutBees1 = new javax.swing.JSpinner();
-        jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement1 = new javax.swing.JSpinner();
+        jSpinnerMVMOScalingFactor = new javax.swing.JSpinner();
+        jSpinnerMVMOAsymmetryFactor = new javax.swing.JSpinner();
         jLabelMVMOAsymmetryFactor = new javax.swing.JLabel();
-        jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement2 = new javax.swing.JSpinner();
+        jSpinnerMVMOsd = new javax.swing.JSpinner();
         jLabelMVMOsd = new javax.swing.JLabel();
+        jLabelMVMOParentSelection = new javax.swing.JLabel();
+        jLabelMVMOMutationSelection = new javax.swing.JLabel();
+        jComboBoxTypeOfMVMOParentSelection = new javax.swing.JComboBox();
+        jComboBoxTypeOfMVMOMutationSelection = new javax.swing.JComboBox();
 
         jLabelStartvalueForParameters.setText("Startvalue for parameters");
 
@@ -840,10 +853,10 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Artifical Bee Colony", jPanel5);
 
-        jSpinnerABCNumEmployedBees1.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
-        jSpinnerABCNumEmployedBees1.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+        jSpinnerMVMOStartingPop.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
+        jSpinnerMVMOStartingPop.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                jSpinnerABCNumEmployedBees1PropertyChange(evt);
+                jSpinnerMVMOStartingPopPropertyChange(evt);
             }
         });
 
@@ -851,39 +864,67 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
         jLabelMVMOMaximumPopulation.setText("Maximum Population:");
 
-        jSpinnerABCNumOnlookerBees1.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
-        jSpinnerABCNumOnlookerBees1.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+        jSpinnerMVMOMaxPop.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
+        jSpinnerMVMOMaxPop.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                jSpinnerABCNumOnlookerBees1PropertyChange(evt);
+                jSpinnerMVMOMaxPopPropertyChange(evt);
             }
         });
 
         jLabelMVMOScalingFactor.setText("Scaling-Factor:");
 
-        jSpinnerABCNumScoutBees1.setModel(new javax.swing.SpinnerNumberModel(Double.valueOf(1.0d), Double.valueOf(0.0d), null, Double.valueOf(1.0d)));
-        jSpinnerABCNumScoutBees1.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+        jSpinnerMVMOScalingFactor.setModel(new javax.swing.SpinnerNumberModel(Double.valueOf(1.0d), Double.valueOf(0.0d), null, Double.valueOf(1.0d)));
+        jSpinnerMVMOScalingFactor.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                jSpinnerABCNumScoutBees1PropertyChange(evt);
+                jSpinnerMVMOScalingFactorPropertyChange(evt);
             }
         });
 
-        jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement1.setModel(new javax.swing.SpinnerNumberModel(Double.valueOf(1.0d), Double.valueOf(0.0d), null, Double.valueOf(1.0d)));
-        jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement1.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+        jSpinnerMVMOAsymmetryFactor.setModel(new javax.swing.SpinnerNumberModel(Double.valueOf(1.0d), Double.valueOf(0.0d), null, Double.valueOf(1.0d)));
+        jSpinnerMVMOAsymmetryFactor.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement1PropertyChange(evt);
+                jSpinnerMVMOAsymmetryFactorPropertyChange(evt);
             }
         });
 
         jLabelMVMOAsymmetryFactor.setText("Asymmetry-Factor:");
 
-        jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement2.setModel(new javax.swing.SpinnerNumberModel(Double.valueOf(75.0d), Double.valueOf(0.0d), null, Double.valueOf(1.0d)));
-        jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement2.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+        jSpinnerMVMOsd.setModel(new javax.swing.SpinnerNumberModel(Double.valueOf(75.0d), null, null, Double.valueOf(1.0d)));
+        jSpinnerMVMOsd.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement2PropertyChange(evt);
+                jSpinnerMVMOsdPropertyChange(evt);
             }
         });
 
         jLabelMVMOsd.setText("sd (standard si for zero-variance):");
+
+        jLabelMVMOParentSelection.setText("Parent-Selection:");
+
+        jLabelMVMOMutationSelection.setText("Mutation-Selection:");
+
+        jComboBoxTypeOfMVMOParentSelection.setModel(new DefaultComboBoxModel(typeOfMVMOParentSelection.values()));
+        jComboBoxTypeOfMVMOParentSelection.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jComboBoxTypeOfMVMOParentSelectionItemStateChanged(evt);
+            }
+        });
+        jComboBoxTypeOfMVMOParentSelection.addVetoableChangeListener(new java.beans.VetoableChangeListener() {
+            public void vetoableChange(java.beans.PropertyChangeEvent evt)throws java.beans.PropertyVetoException {
+                jComboBoxTypeOfMVMOParentSelectionVetoableChange(evt);
+            }
+        });
+
+        jComboBoxTypeOfMVMOMutationSelection.setModel(new DefaultComboBoxModel(typeOfMVMOMutationSelection.values()));
+        jComboBoxTypeOfMVMOMutationSelection.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jComboBoxTypeOfMVMOMutationSelectionItemStateChanged(evt);
+            }
+        });
+        jComboBoxTypeOfMVMOMutationSelection.addVetoableChangeListener(new java.beans.VetoableChangeListener() {
+            public void vetoableChange(java.beans.PropertyChangeEvent evt)throws java.beans.PropertyVetoException {
+                jComboBoxTypeOfMVMOMutationSelectionVetoableChange(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -901,15 +942,23 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
                             .addComponent(jLabelMVMOStartingPopulation))
                         .addGap(26, 26, 26)
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement1, javax.swing.GroupLayout.DEFAULT_SIZE, 71, Short.MAX_VALUE)
-                            .addComponent(jSpinnerABCNumScoutBees1)
-                            .addComponent(jSpinnerABCNumOnlookerBees1)
-                            .addComponent(jSpinnerABCNumEmployedBees1)))
+                            .addComponent(jSpinnerMVMOAsymmetryFactor, javax.swing.GroupLayout.DEFAULT_SIZE, 71, Short.MAX_VALUE)
+                            .addComponent(jSpinnerMVMOScalingFactor)
+                            .addComponent(jSpinnerMVMOMaxPop)
+                            .addComponent(jSpinnerMVMOStartingPop)))
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addComponent(jLabelMVMOsd)
                         .addGap(18, 18, 18)
-                        .addComponent(jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement2, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(0, 635, Short.MAX_VALUE))
+                        .addComponent(jSpinnerMVMOsd, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabelMVMOParentSelection, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabelMVMOMutationSelection, javax.swing.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jComboBoxTypeOfMVMOParentSelection, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jComboBoxTypeOfMVMOMutationSelection, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(0, 548, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -917,24 +966,32 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabelMVMOStartingPopulation)
-                    .addComponent(jSpinnerABCNumEmployedBees1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jSpinnerMVMOStartingPop, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabelMVMOMaximumPopulation)
-                    .addComponent(jSpinnerABCNumOnlookerBees1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jSpinnerMVMOMaxPop, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabelMVMOScalingFactor)
-                    .addComponent(jSpinnerABCNumScoutBees1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jSpinnerMVMOScalingFactor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabelMVMOAsymmetryFactor)
-                    .addComponent(jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jSpinnerMVMOAsymmetryFactor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabelMVMOsd, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement2))
-                .addContainerGap(155, Short.MAX_VALUE))
+                    .addComponent(jSpinnerMVMOsd))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabelMVMOParentSelection)
+                    .addComponent(jComboBoxTypeOfMVMOParentSelection, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabelMVMOMutationSelection)
+                    .addComponent(jComboBoxTypeOfMVMOMutationSelection, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(79, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("MVMO", jPanel6);
@@ -1081,25 +1138,25 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jSpinnerWrongSolutionsPerDirectionUntilBreakStateChanged
 
-    private void jSpinnerABCNumEmployedBees1PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jSpinnerABCNumEmployedBees1PropertyChange
+    private void jSpinnerMVMOStartingPopPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jSpinnerMVMOStartingPopPropertyChange
         // TODO add your handling code here:
-    }//GEN-LAST:event_jSpinnerABCNumEmployedBees1PropertyChange
+    }//GEN-LAST:event_jSpinnerMVMOStartingPopPropertyChange
 
-    private void jSpinnerABCNumOnlookerBees1PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jSpinnerABCNumOnlookerBees1PropertyChange
+    private void jSpinnerMVMOMaxPopPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jSpinnerMVMOMaxPopPropertyChange
         // TODO add your handling code here:
-    }//GEN-LAST:event_jSpinnerABCNumOnlookerBees1PropertyChange
+    }//GEN-LAST:event_jSpinnerMVMOMaxPopPropertyChange
 
-    private void jSpinnerABCNumScoutBees1PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jSpinnerABCNumScoutBees1PropertyChange
+    private void jSpinnerMVMOScalingFactorPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jSpinnerMVMOScalingFactorPropertyChange
         // TODO add your handling code here:
-    }//GEN-LAST:event_jSpinnerABCNumScoutBees1PropertyChange
+    }//GEN-LAST:event_jSpinnerMVMOScalingFactorPropertyChange
 
-    private void jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement1PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement1PropertyChange
+    private void jSpinnerMVMOAsymmetryFactorPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jSpinnerMVMOAsymmetryFactorPropertyChange
         // TODO add your handling code here:
-    }//GEN-LAST:event_jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement1PropertyChange
+    }//GEN-LAST:event_jSpinnerMVMOAsymmetryFactorPropertyChange
 
-    private void jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement2PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement2PropertyChange
+    private void jSpinnerMVMOsdPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jSpinnerMVMOsdPropertyChange
         // TODO add your handling code here:
-    }//GEN-LAST:event_jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement2PropertyChange
+    }//GEN-LAST:event_jSpinnerMVMOsdPropertyChange
 
     private void jComboBoxInternalParameterMultiphaseItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxInternalParameterMultiphaseItemStateChanged
         // TODO add your handling code here:
@@ -1108,6 +1165,22 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     private void jComboBoxInternalParameterMultiphaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxInternalParameterMultiphaseActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBoxInternalParameterMultiphaseActionPerformed
+
+    private void jComboBoxTypeOfMVMOParentSelectionVetoableChange(java.beans.PropertyChangeEvent evt)throws java.beans.PropertyVetoException {//GEN-FIRST:event_jComboBoxTypeOfMVMOParentSelectionVetoableChange
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBoxTypeOfMVMOParentSelectionVetoableChange
+
+    private void jComboBoxTypeOfMVMOParentSelectionItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxTypeOfMVMOParentSelectionItemStateChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBoxTypeOfMVMOParentSelectionItemStateChanged
+
+    private void jComboBoxTypeOfMVMOMutationSelectionItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxTypeOfMVMOMutationSelectionItemStateChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBoxTypeOfMVMOMutationSelectionItemStateChanged
+
+    private void jComboBoxTypeOfMVMOMutationSelectionVetoableChange(java.beans.PropertyChangeEvent evt)throws java.beans.PropertyVetoException {//GEN-FIRST:event_jComboBoxTypeOfMVMOMutationSelectionVetoableChange
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBoxTypeOfMVMOMutationSelectionVetoableChange
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1122,6 +1195,8 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     private javax.swing.JComboBox jComboBoxInternalParameterMultiphase;
     private javax.swing.JComboBox jComboBoxNumberOfPhases;
     private javax.swing.JComboBox jComboBoxOptimizationType;
+    public javax.swing.JComboBox jComboBoxTypeOfMVMOMutationSelection;
+    public javax.swing.JComboBox jComboBoxTypeOfMVMOParentSelection;
     public javax.swing.JComboBox jComboBoxTypeOfNeighborhood;
     public javax.swing.JComboBox jComboBoxTypeOfStartValue;
     private javax.swing.JLabel jLabel1;
@@ -1160,6 +1235,8 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     private javax.swing.JLabel jLabelGeneticPopulationSize;
     private javax.swing.JLabel jLabelMVMOAsymmetryFactor;
     private javax.swing.JLabel jLabelMVMOMaximumPopulation;
+    private javax.swing.JLabel jLabelMVMOMutationSelection;
+    private javax.swing.JLabel jLabelMVMOParentSelection;
     private javax.swing.JLabel jLabelMVMOScalingFactor;
     private javax.swing.JLabel jLabelMVMOStartingPopulation;
     private javax.swing.JLabel jLabelMVMOsd;
@@ -1180,14 +1257,9 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JSpinner jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement;
-    private javax.swing.JSpinner jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement1;
-    private javax.swing.JSpinner jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement2;
     private javax.swing.JSpinner jSpinnerABCNumEmployedBees;
-    private javax.swing.JSpinner jSpinnerABCNumEmployedBees1;
     private javax.swing.JSpinner jSpinnerABCNumOnlookerBees;
-    private javax.swing.JSpinner jSpinnerABCNumOnlookerBees1;
     private javax.swing.JSpinner jSpinnerABCNumScoutBees;
-    private javax.swing.JSpinner jSpinnerABCNumScoutBees1;
     private javax.swing.JSpinner jSpinnerCSSMaxAttraction;
     private javax.swing.JSpinner jSpinnerCSSPopulationSize;
     private javax.swing.JSpinner jSpinnerConfidenceIntervallEnd;
@@ -1198,6 +1270,11 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     private javax.swing.JSpinner jSpinnerGeneticPopulationSize;
     private javax.swing.JSpinner jSpinnerInternalParameterEnd;
     private javax.swing.JSpinner jSpinnerInternalParameterStart;
+    private javax.swing.JSpinner jSpinnerMVMOAsymmetryFactor;
+    private javax.swing.JSpinner jSpinnerMVMOMaxPop;
+    private javax.swing.JSpinner jSpinnerMVMOScalingFactor;
+    private javax.swing.JSpinner jSpinnerMVMOStartingPop;
+    private javax.swing.JSpinner jSpinnerMVMOsd;
     private javax.swing.JSpinner jSpinnerMaxRelErrorEnd;
     private javax.swing.JSpinner jSpinnerMaxRelErrorStart;
     private javax.swing.JSpinner jSpinnerMaxTemperatureCost;
@@ -1309,6 +1386,12 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             this.setPref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement(support.loadIntFromProperties(
                     "pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement", support.DEFAULT_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement, auto));
             support.log("Loaded pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement is " + this.getPref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement());
+            
+            //load settings for MVMO Optimization
+            this.setPref_MVMO_StartingPop(support.loadIntFromProperties("setPref_MVMO_StartingPop", support.DEFAULT_MVMO_STARTING_POPULATION, auto));
+            support.log("Loaded pref__MVMO_StartingPop is" + this.getPref_MVMO_StartingPop());
+            this.setPref_MVMO_MaxPop(support.loadIntFromProperties("setPref_MVMO_MaxPop", support.DEFAULT_MVMO_MAX_POPULATION, auto));
+            support.log("Loaded setPref_MVMO_MaxPop is" + this.getPref_MVMO_MaxPop());
 
         } catch (IOException e) {
             // Exception bearbeiten
@@ -1452,6 +1535,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
                 case ABC:
                     //TODO Add Infos to this Algorithm here!
                     break;
+                case MVMO:
             }
 
         }
@@ -1934,6 +2018,76 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     public void setPref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement(int Pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement) {
         jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement.setValue(Pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement);
         this.pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement = Pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement;
+    }
+    
+    public int getPref_MVMO_StartingPop() {
+        this.pref_MVMO_StartingPop = (Integer) jSpinnerMVMOStartingPop.getValue();
+        return pref_MVMO_StartingPop;
+    }
+    
+    public void setPref_MVMO_StartingPop(int Pref_MVMO_StartingPop) {
+        jSpinnerMVMOStartingPop.setValue(Pref_MVMO_StartingPop);
+        this.pref_MVMO_StartingPop = Pref_MVMO_StartingPop;
+    }
+    
+    public int getPref_MVMO_MaxPop() {
+        this.pref_MVMO_MaxPop = (Integer) jSpinnerMVMOMaxPop.getValue();
+        return pref_MVMO_MaxPop;
+    }
+    
+    private void setPref_MVMO_MaxPop(int Pref_MVMO_MaxPop) {
+        jSpinnerMVMOMaxPop.setValue(Pref_MVMO_MaxPop);
+        this.pref_MVMO_MaxPop = Pref_MVMO_MaxPop;
+    }
+    
+    private double getPref_MVMO_ScalingFactor() {
+        this.pref_MVMO_ScalingFactor = (Double) jSpinnerMVMOScalingFactor.getValue();
+        return pref_MVMO_ScalingFactor;
+    }
+    
+    private void setPref_MVMO_ScalingFactor(double Pref_MVMO_ScalingFactor) {
+        jSpinnerMVMOScalingFactor.setValue(Pref_MVMO_ScalingFactor);
+        this.pref_MVMO_ScalingFactor = Pref_MVMO_ScalingFactor;
+    }
+    
+    private double getPref_MVMO_AsymmetryFactor() {
+        this.pref_MVMO_AsymmetryFactor = (Double) jSpinnerMVMOAsymmetryFactor.getValue();
+        return pref_MVMO_AsymmetryFactor;
+    }
+    
+    private void setPref_MVMO_AsymmetryFactor(double Pref_MVMO_AsymmetryFactor) {
+        jSpinnerMVMOAsymmetryFactor.setValue(Pref_MVMO_AsymmetryFactor);
+        this.pref_MVMO_AsymmetryFactor = Pref_MVMO_AsymmetryFactor;
+    }
+    
+    private double getPref_MVMO_sd() {
+        this.pref_MVMO_sd = (Double) jSpinnerMVMOsd.getValue();
+        return this.pref_MVMO_sd;
+    }
+    
+    private void getPref_MVMO_sd(double Pref_MVMO_sd) {
+        jSpinnerMVMOsd.setValue(Pref_MVMO_sd);
+        this.pref_MVMO_sd = Pref_MVMO_sd;
+    }
+    
+    private typeOfMVMOParentSelection getPref_MVMO_parentSelection() {
+        this.pref_MVMO_parentSelection = (typeOfMVMOParentSelection)jComboBoxTypeOfMVMOParentSelection.getSelectedItem();
+        return this.pref_MVMO_parentSelection;
+    }
+    
+    private void setPrefMVMOParentSelection(typeOfMVMOParentSelection PrefMVMOParentSelection) {
+        jComboBoxTypeOfMVMOParentSelection.setSelectedItem(PrefMVMOParentSelection);
+        this.pref_MVMO_parentSelection = PrefMVMOParentSelection;
+    }
+        
+    private typeOfMVMOMutationSelection getPref_MVMO_mutationSelection() {
+        this.pref_MVMO_mutationSelection = (typeOfMVMOMutationSelection)jComboBoxTypeOfMVMOMutationSelection.getSelectedItem();
+        return this.pref_MVMO_mutationSelection;
+    }
+    
+    private void setPref_MVMO_mutationSelection(typeOfMVMOMutationSelection Pref_MVMO_mutationSelection) {
+        jComboBoxTypeOfMVMOMutationSelection.setSelectedItem(Pref_MVMO_mutationSelection);
+        this.pref_MVMO_mutationSelection = Pref_MVMO_mutationSelection;
     }
 
     /**

@@ -40,6 +40,9 @@ public class OptimizerABC extends OptimizerPopulationBased implements Runnable, 
     private int numScoutBees = support.getOptimizerPreferences().getPref_ABC_NumScoutBees();
     private int maxNumberOfFoodUpdateCyclesWithoutImprovement = support.getOptimizerPreferences().getPref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement();
     
+    private int numOptiRuns = 50;
+    private boolean doBatchRun = true;
+    
     //************************ Constructors ****************************************************************************************************
     public OptimizerABC()
     {
@@ -154,10 +157,15 @@ public class OptimizerABC extends OptimizerPopulationBased implements Runnable, 
     
     public void run()
     {
+        if (doBatchRun)
+        {
+            doBatchRun();
+            return;
+        }
         int optiCycleCounter=0;
         population = createRandomPopulation(numEmployedBees, false);
         //reset updateCycles without improvement for every foodSource
-        for (int i = 0; i<population.size(); ++i)
+        for (int fs = 0; fs<population.size(); ++fs)
         {
             updateCyclesWithoutImprovementList.add(0);
         }
@@ -182,13 +190,13 @@ public class OptimizerABC extends OptimizerPopulationBased implements Runnable, 
             population = onlookerBeePhase(population, numOnlookerBees, false);
             population = scoutBeePhase(population, numScoutBees, false);
             
-            for (int i=0; i<population.size(); ++i)
+            for (int fs=0; fs<population.size(); ++fs)
             {
-                ArrayList<SimulationType> source = population.get(i);
+                ArrayList<SimulationType> source = population.get(fs);
                 mySimulator.initSimulator(getNextParameterSetAsArrayList(source), optiCycleCounter, false);
                 support.waitForEndOfSimulator(mySimulator, optiCycleCounter, support.DEFAULT_TIMEOUT);
                 source = mySimulator.getListOfCompletedSimulationParsers();
-                population.set(i, source);
+                population.set(fs, source);
                 support.addLinesToLogFileFromListOfParser(source, logFileName);
             }
                 
@@ -196,7 +204,7 @@ public class OptimizerABC extends OptimizerPopulationBased implements Runnable, 
             
             //cut back num population, eliminates the bad solutions 
             int numFoodSourcesToCut = population.size() - numEmployedBees; 
-            for (int i = 0; i<numFoodSourcesToCut; ++i)
+            for (int fs = 0; fs<numFoodSourcesToCut; ++fs)
             {
                 population.remove(population.size()-1); //cuts the last one
             }
@@ -205,7 +213,84 @@ public class OptimizerABC extends OptimizerPopulationBased implements Runnable, 
             updateTopMeasure();
             ++optiCycleCounter;
             ++simulationCounter;
+        }           
+    }
+    
+    private void doBatchRun()
+    {
+        ArrayList<SimulationType> optiResults = new ArrayList<SimulationType>();
+        ArrayList<Integer> optiTotalSimualtions = new ArrayList<Integer>();
+        ArrayList<Integer> optiTotalCachedSimualtions = new ArrayList<Integer>();
+        for (int i = 0; i< numOptiRuns; ++i)
+        {
+        int optiCycleCounter=0;
+        int totalSimulations  = 0;
+        int totalCachedSimualtions = 0;
+        population = createRandomPopulation(numEmployedBees, false);
+        //reset updateCycles without improvement for every foodSource
+        for (int fs = 0; fs<population.size(); ++fs)
+        {
+            updateCyclesWithoutImprovementList.add(0);
         }
+        
+        Simulator mySimulator = SimOptiFactory.getSimulator();       
+        mySimulator.initSimulator(getNextParameterSetAsArrayList(), optiCycleCounter, false);
+        support.waitForEndOfSimulator(mySimulator, optiCycleCounter, support.DEFAULT_TIMEOUT);
+        int simulationCounter = 0;
+        
+        ArrayList<SimulationType> simulationResults = mySimulator.getListOfCompletedSimulationParsers();
+        population = getPopulationFromSimulationResults(simulationResults);
+        
+        while(optiCycleCounter < this.maxNumberOfOptiCycles)
+        {
+            if (currentNumberOfOptiCyclesWithoutImprovement >= maxNumberOfOptiCyclesWithoutImprovement)
+            {
+                support.log("Too many optimization cycles without improvement. Ending optimization.");
+                break;
+            }
+            
+            population = employedBeePhase(population, false);
+            population = onlookerBeePhase(population, numOnlookerBees, false);
+            population = scoutBeePhase(population, numScoutBees, false);
+            
+            for (int fs=0; fs<population.size(); ++fs)
+            {
+                ArrayList<SimulationType> source = population.get(fs);
+                mySimulator.initSimulator(getNextParameterSetAsArrayList(source), optiCycleCounter, false);
+                support.waitForEndOfSimulator(mySimulator, optiCycleCounter, support.DEFAULT_TIMEOUT);
+                source = mySimulator.getListOfCompletedSimulationParsers();
+                totalSimulations += source.size();
+                population.set(fs, source);
+                //support.addLinesToLogFileFromListOfParser(source, logFileName);
+            }
+                
+            population = sortAndFilterFoodSources(population);
+            
+            //cut back num population, eliminates the bad solutions 
+            int numFoodSourcesToCut = population.size() - numEmployedBees; 
+            for (int fs = 0; fs<numFoodSourcesToCut; ++fs)
+            {
+                population.remove(population.size()-1); //cuts the last one
+            }
+            
+            //printPopulationDistances();
+            updateTopMeasure();
+            ++optiCycleCounter;
+            ++simulationCounter;
+        }
+        optiResults.add(topMeasure);
+        optiTotalSimualtions.add(totalSimulations);
+        optiTotalCachedSimualtions.add(totalCachedSimualtions);
+        topDistance = Double.POSITIVE_INFINITY;
+        currentNumberOfOptiCyclesWithoutImprovement = 0;
+        }
+        support.addLinesToLogFileFromListOfSimulationBatchesIncludingNumRuns(optiResults, optiTotalSimualtions, optiTotalCachedSimualtions, logFileName);
+
+        for (int i = 0;i<optiResults.size(); ++i)
+        {
+            String logString = "" + optiTotalSimualtions.get(i) + " " + optiTotalCachedSimualtions.get(i);
+            support.log(logString);
+        }            
     }
     
     private SimulationType getNewFoodSource(SimulationType originalSource, boolean ignoreStepping) 
