@@ -867,6 +867,8 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         if (i == 0) {
             support.setCancelEverything(false);
             this.restartGenerator();
+        }else{
+        this.popUIState();
         }
     }//GEN-LAST:event_jButtonGenerateListOfExperimentsActionPerformed
 
