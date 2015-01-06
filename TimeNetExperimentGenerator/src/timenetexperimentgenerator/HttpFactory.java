@@ -73,5 +73,14 @@ public class HttpFactory {
         }
         return httpGet;
     }
+    
+    /**
+     * Reset all connection objects to be created newly
+     */
+    public static void resetConnections(){
+        httpGet=null;
+        postRequest=null;
+        client=null;
+    }
 
 }

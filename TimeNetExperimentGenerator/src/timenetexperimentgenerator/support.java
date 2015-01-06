@@ -79,7 +79,7 @@ public class support {
     public static final int DEFAULT_ABC_NumOnlookerBees = 10;
     public static final int DEFAULT_ABC_NumScoutBees = 2;
     public static final int DEFAULT_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement = 3;
-    
+
 //default values for MVMO Optimization
     public static final int DEFAULT_MVMO_STARTING_POPULATION = 5;
     public static final int DEFAULT_MVMO_MAX_POPULATION = 50;
@@ -163,9 +163,8 @@ public class support {
 //List of Changable parameters for Multiphase-opi
     public static ArrayList<parameter> listOfChangableParametersMultiphase = null;
 
-    
     private static ArrayList<MeasureType> Measures;
-    
+
     /**
      * @return the myOptimizerPreferences a Reference to the Preferences-Frame
      */
@@ -438,6 +437,10 @@ public class support {
      * @return float value of input String
      */
     public static double getDouble(String s) {
+        //TODO, checkk for nan!
+        if (s.toLowerCase().equals("nan")) {
+            return Double.MAX_VALUE;
+        }
         return Double.parseDouble(s.replace(',', '.'));
     }
 
@@ -671,7 +674,7 @@ public class support {
             support.log("Exception while writing things to summary log-file.");
         }
     }
-    
+
     public static void addLinesToLogFileFromListOfSimulationBatchesIncludingNumRuns(
             ArrayList<SimulationType> pList,
             ArrayList<Integer> numRunList,
@@ -740,7 +743,7 @@ public class support {
                         for (int c = 0; c < myParser.getListOfParameters().size(); c++) {
                             line = line + ";" + support.getCommaFloat(myParser.getListOfParameters().get(c).getValue());
                         }
-                        line = line + ";" + numRunList.get(i) + ";" +  numCachedSimulations.get(i);
+                        line = line + ";" + numRunList.get(i) + ";" + numCachedSimulations.get(i);
                         fw.write(line);
                         fw.append(System.getProperty("line.separator"));
                     }
@@ -873,7 +876,7 @@ public class support {
      */
     public static void setRemoteAddress(String address) throws IOException {
         remoteAddress = address;
-    //Check if address is correct.
+        //Check if address is correct.
         //distributedSimulationAvailable = checkRemoteAddress(address);
         //mainFrame.updateComboBoxSimulationType();        
         //If Address is correct, set distributedSimulationAvailable to TRUE!
@@ -1135,14 +1138,14 @@ public class support {
         setStatusText("Simulations started.");
         while (mySimulator.getStatus() < 100) {
             try {
-                        //TODO Timer verwenden statt sleep!
+                //TODO Timer verwenden statt sleep!
                 //Thread.sleep(1000);
                 support.waitSingleThreaded(1000);
             } catch (Exception ex) {
                 support.log("InterruptedException in main loop of optimization. Optimization aborted.");
                 statusLabel.setText("Aborted / Error");
             }
-                //setStatusText("Done "+ mySimulator.getStatus() +"% ");
+            //setStatusText("Done "+ mySimulator.getStatus() +"% ");
 
             timeoutCounter--;
             //Break if timeout is reached
@@ -1157,7 +1160,7 @@ public class support {
             }
         }
         simulationCounter = mySimulator.getSimulationCounter();
-                //getMainFrame().updateSimulationCounterLabel(simulationCounter);
+        //getMainFrame().updateSimulationCounterLabel(simulationCounter);
         //support.log("Simulation status:"+mySimulator.getStatus() +"%");
         support.log("Simulation Counter: " + simulationCounter);
         return true;
@@ -1400,7 +1403,7 @@ public class support {
      */
     public static ArrayList<parameter> getListOfChangableParameters(ArrayList<parameter> sourceList) {
 
-    //If Multiphase is used, return modified List of old Changaleb Parameters
+        //If Multiphase is used, return modified List of old Changaleb Parameters
         //take old list and modify Values by actual list
         if (listOfChangableParametersMultiphase != null) {
             //support.log("Multiphase is chosen. Return of Multiphase-list instead of new calculated list.");
@@ -1412,7 +1415,7 @@ public class support {
             return listOfChangableParametersMultiphase;
         }
 
-    //TODO If Internal Precision-Parameter is chosen and Multiphase is active, then dont put precisionparameter in list!
+        //TODO If Internal Precision-Parameter is chosen and Multiphase is active, then dont put precisionparameter in list!
         //ArrayList<parameter> parameterset = support.getCopyOfParameterSet(sourceList);
         ArrayList<parameter> listOfChangableParameters = new ArrayList<parameter>();
         //Count the number of changable parameters
@@ -1635,7 +1638,7 @@ public class support {
                 //support.log("Entering again waitForOptimizerTimer.");
                 if (myOptimizer.getOptimum() != null) {
 
-                    MeasureType myOptiMeasure=support.getOptimizationMeasure();
+                    MeasureType myOptiMeasure = support.getOptimizationMeasure();
                     StatisticAggregator.getStatisticByName(myOptimizer.getLogFileName()).addFoundOptimum(myOptimizer.getOptimum(), SimOptiFactory.getSimulator().getCalculatedOptimum(myOptiMeasure));
                     listener.operationSucessfull("The end.", typeOfProcessFeedback.OptimizationSuccessful);
                     this.cancel();

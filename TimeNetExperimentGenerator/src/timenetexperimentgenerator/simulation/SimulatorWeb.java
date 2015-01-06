@@ -142,7 +142,8 @@ public class SimulatorWeb implements Runnable, Simulator {
                 String responseString = null;
 
                 httpGet = HttpFactory.getGetRequest(support.getReMoteAddress() + "/rest/api/downloads/log/" + simid);
-                support.log("asking for results with address:" + support.getReMoteAddress() + "/rest/api/downloads/log/" + simid);
+                //support.log("asking for results with address:" + support.getReMoteAddress() + "/rest/api/downloads/log/" + simid);
+                client = HttpFactory.getHttpClient();
                 try {
 
                     response = client.execute(httpGet);
@@ -191,9 +192,11 @@ public class SimulatorWeb implements Runnable, Simulator {
                                 //Update status
                                 this.status = 100 * i / listOfParameterSets.size();
                                 support.log("Status of WebSimulator: " + this.status);
+                                this.deleteSimulationOnServer(filenameWithoutExtension);
                             } else {
                                 //TODO trigger simulation again (send request to server)
                                 support.log("The received file has been ignored because of problems parsing the result logfile " + filenameWithoutExtension);
+                                this.resetSimulation(filenameWithoutExtension);
                             }
                         }
 
@@ -206,7 +209,7 @@ public class SimulatorWeb implements Runnable, Simulator {
 
                 } catch (Exception ex) {
                     Logger.getLogger(SimulatorWebSlave.class.getName()).log(Level.SEVERE, null, ex);
-                    support.log("Problem connecting to server. please check your network preferences.");
+                    support.log("Problem connecting to server (asking for results). please check your network preferences.");
                 } finally {
                     //support.log("Trying to consume Response from upload.");
                     try {
@@ -215,6 +218,7 @@ public class SimulatorWeb implements Runnable, Simulator {
                                 EntityUtils.consume(response.getEntity());
                             } catch (final ConnectionClosedException ignore) {
                                 support.log("Connection-Closed-Exception while consuming http-response!");
+                                HttpFactory.resetConnections();
                             }
                         }
 
@@ -222,7 +226,7 @@ public class SimulatorWeb implements Runnable, Simulator {
                         Logger.getLogger(SimulatorWebSlave.class.getName()).log(Level.SEVERE, null, ex);
                         support.log("Error consuming the http-response while asking for results.");
                     }
-                    support.log("Try to cleanup after download.");
+                    //support.log("Try to cleanup after download.");
                     httpGet.releaseConnection();
                 }
 
@@ -239,6 +243,51 @@ public class SimulatorWeb implements Runnable, Simulator {
         }
         support.log("End of Thread reached, should end now.");
 
+    }
+
+    /**
+     * Reset the simulation. Send reset-request to server. This will delete the
+     * log-file and cause a new simulation
+     */
+    public void resetSimulation(String filename) {
+
+    }
+
+    /**
+     * Delete all related files for this simulation (log, xml)
+     */
+    public void deleteSimulationOnServer(String filename) {
+    client = HttpFactory.getHttpClient();
+        HttpPost postRequest = HttpFactory.getPostRequest(support.getReMoteAddress() + "/deleteSimulation");
+        try {
+            support.log("Try to connect " + postRequest.getURI().toString());
+
+            //Set various attributes 
+            MultipartEntity multiPartEntity = new MultipartEntity();
+            multiPartEntity.addPart("prefix", new StringBody(filename));
+            multiPartEntity.addPart("simid", new StringBody(simid));
+            //Set to request body
+            postRequest.setEntity(multiPartEntity);
+
+            BasicResponseHandler myTmpResponseHandler = new BasicResponseHandler();
+
+            //Send request
+            String result = client.execute(postRequest, myTmpResponseHandler);
+            support.log("Response of Upload was:" + result);
+            if (result.contains("false")) {
+                throw new Exception("Upload not successful. Server returned false!");
+            }
+            if (result.contains("true")) {
+                support.log("Deletion of file " + filename + " successful.");
+            }
+            multiPartEntity.consumeContent();
+            //EntityUtils.consume(response.getEntity());
+            postRequest.releaseConnection();
+            postRequest.reset();
+
+        } catch (Exception ex) {
+            support.log(ex.getLocalizedMessage());
+        }
     }
 
     /**
