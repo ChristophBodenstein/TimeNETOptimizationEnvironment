@@ -17,6 +17,7 @@
     "mongoskin": "*",
     "formidable": "*",
 	"mkdirp": "*",
-    "graceful-fs": "*"
+    "graceful-fs": "*",
+	"rimraf": "*"
   }
 }

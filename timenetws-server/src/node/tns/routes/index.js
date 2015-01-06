@@ -259,7 +259,7 @@ function checkForTimedOutSimulations(simlist, cb) {
                             if (localtimeout < DEFAULT_MINIMUM_TIMEOUT) {
                                 localtimeout = DEFAULT_MINIMUM_TIMEOUT;
                             }
-                            localtimeout = localtimeout * 1000;
+                            localtimeout = localtimeout * 1000 * 2;//2 times the normal timeout to be sure not to simulate double if not needed.
                             localtimeout = element.timestamp + localtimeout;
                             /*console.log("------------------");
                              console.log("ELM:" + element.timestamp);
@@ -397,11 +397,12 @@ router.get('/rest/api/downloads/log/:simid', function (req, res) {
                             console.log("Error updating" + result.name);
                         }
                         if (res) {
-                            console.log("Will delete file:" + fileName);
+                            /*console.log("Will delete file:" + fileName);
                             var fs = require('fs');
                             fs.unlink(fileName);
                             console.log("Will delete file:" + xmlPath);
                             fs.unlink(xmlPath);
+							*/
                         }
                     });
                 }
@@ -414,9 +415,78 @@ router.get('/rest/api/downloads/log/:simid', function (req, res) {
 
         //TODO ggf. Counter hochzählen
     });
-
-
 });
 
+router.post('/resetSimulation', function(req, res){
+console.log("Asked to reset simulation");
+var form = new formidable.IncomingForm();
+var db = req.db;
+var simlist = db.collection('simlist');
+var rimraf=require('rimraf');
+	var fileprefix=form.prefix;
+	var simid=form.simid;
+	console.log("Simulation to reset:"+fileprefix +" with simid:" +simid);
+	
+	
+});
+
+router.post('/deleteSimulation', function(req, res){
+console.log("Asked to reset simulation");
+var form = new formidable.IncomingForm();
+var db = req.db;
+var simlist = db.collection('simlist');
+var rimraf=require('rimraf');
+	var fileprefix=form.prefix;
+	var simid=form.simid;
+	console.log("Simulation to delete:"+fileprefix +" with simid:" +simid);
+	
+	
+});
+
+router.post('/timenetws-server/reset', function(req, res){
+console.log("RESET-POST received, will try to reset server.");
+	var form = new formidable.IncomingForm();
+    var db = req.db;
+    var simlist = db.collection('simlist');
+	var rimraf=require('rimraf');
+	console.log("Will try to parse the form.");
+	form.parse(req, function (err, fields){
+		if(err){
+		console.log("Error resetting the server");
+		}else{
+			var givenpwd=fields.masterpw;
+			console.log("Given pw is:"+givenpwd);
+			if(givenpwd==masterpw){
+			console.log("Password correct. Will try to reset server.");
+			simlist.drop(function(err){
+				if(!err){
+				console.log("Simlist dropped.");
+				rimraf("./uploads/", function(err){
+				if(!err){
+				console.log("Upload dir is now empty.");
+				res.status(200);
+                res.json({'success': true})
+				}else{
+				console.log("Could not empty upload dir.");
+				res.status(500);
+                            res.json({'success': false});
+				}
+				});
+				}
+				console.log("Simlist could not be dropped!");
+				res.status(500);
+                res.json({'success': false});
+				
+				
+			});
+			
+			}else{
+			console.log("Wrong password, cannot reset server!");
+			}
+		}
+	});
+	
+	
+});
 
 module.exports = router;

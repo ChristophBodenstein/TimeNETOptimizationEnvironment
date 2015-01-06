@@ -7,3 +7,8 @@ block content
   #clientcount
   clientcount 
   p #{clientcount} clients waiting for tasks.
+  
+  div
+    form(name="reset", action="/timenetws-server/reset", method="post")
+      input(type="password", name="password")
+      input(type="submit", value="Reset complete server!")
