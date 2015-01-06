@@ -1,6 +1,6 @@
 /*
  * Christoph Bodenstein
- * Model for Tabel of Parameters
+ * Model for Table of Parameters
 
  * Christoph Bodenstein
  * TU-Ilmenau, FG SSE
@@ -16,7 +16,7 @@ import timenetexperimentgenerator.support;
 
 /**
  *
- * @author sse
+ * @author Christoph Bodenstein
  */
 public class parameterTableModel extends AbstractTableModel {
 
@@ -50,9 +50,10 @@ public class parameterTableModel extends AbstractTableModel {
              }
              }
              */
-            parameterArray[i][1] = parameterList.item(i).getAttributes().getNamedItem("defaultValue").getNodeValue();
-            parameterArray[i][2] = parameterList.item(i).getAttributes().getNamedItem("defaultValue").getNodeValue();
-            parameterArray[i][3] = "1";
+            //Use double conversion to map all paramters to double (1.0)
+            parameterArray[i][1] = support.getString(support.getDouble(parameterList.item(i).getAttributes().getNamedItem("defaultValue").getNodeValue()));
+            parameterArray[i][2] = support.getString(support.getDouble(parameterList.item(i).getAttributes().getNamedItem("defaultValue").getNodeValue()));
+            parameterArray[i][3] = "1.0";
         }
         int i = parameterList.getLength();
         parameterArray[i][0] = "ConfidenceIntervall";
@@ -104,11 +105,25 @@ public class parameterTableModel extends AbstractTableModel {
     }
 
     public Object getValueAt(int row, int col) {
-        return parameterArray[row][col];
+        String result = Double.toString(support.DEFAULT_DOUBLE_VALUE);
+        try {
+            result = parameterArray[row][col];
+        } catch (Exception e) {
+            support.log("Problem reading String value from table.");
+            setValueAt(result, row, col);
+        }
+        return result;
     }
 
     public double getDoubleValueAt(int row, int col) {
-        return support.round(support.getDouble(parameterArray[row][col]));
+        double result = support.DEFAULT_DOUBLE_VALUE;
+        try {
+            result = support.round(support.getDouble(parameterArray[row][col]));
+        } catch (Exception e) {
+            support.log("Poblem reading float value from table.");
+            setValueAt(Double.toString(result), row, col);
+        }
+        return result;
     }
 
     @Override
@@ -133,7 +148,15 @@ public class parameterTableModel extends AbstractTableModel {
      */
     @Override
     public void setValueAt(Object value, int row, int col) {
-        parameterArray[row][col] = value.toString();
+        String stringValue = "1.0";
+        try {
+            //Double conversion to get double-Strings (1.0)
+            stringValue = support.getString(support.getDouble(value.toString()));
+        } catch (Exception e) {
+            support.log("Error setting value in table.");
+            stringValue = "1.0";
+        }
+        parameterArray[row][col] = stringValue;
         fireTableCellUpdated(row, col);
     }
 

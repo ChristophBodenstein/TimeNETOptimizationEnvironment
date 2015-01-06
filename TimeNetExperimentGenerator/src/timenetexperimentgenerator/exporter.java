@@ -206,8 +206,8 @@ boolean isRunning=false;
         //ListOfParameterAsFromTable.add(tmpParameter);
 
         double start,end,step,spaceCounter=1;
-        start=support.getDouble(tModel.getValueAt(i, 1).toString());
-        end=support.getDouble(tModel.getValueAt(i, 2).toString());
+        start=tModel.getDoubleValueAt(i, 1);
+        end=tModel.getDoubleValueAt(i, 2);
         
             //If start>end then exchange them
             if(start>end){
@@ -215,7 +215,7 @@ boolean isRunning=false;
             start=end;
             end=step;
             }
-        step=support.getDouble(tModel.getValueAt(i, 3).toString());
+        step=tModel.getDoubleValueAt(i, 3);
             if((end-start)>0 &&(step!=0) ){
                 spaceCounter=(end-start)/step +1;
             }

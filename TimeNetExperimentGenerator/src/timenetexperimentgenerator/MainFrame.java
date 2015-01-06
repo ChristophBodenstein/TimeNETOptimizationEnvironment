@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Properties;
+import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.JDialog;
@@ -28,6 +29,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.event.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.xml.parsers.DocumentBuilder;
@@ -174,11 +176,12 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
 
                 Component c = super.getTableCellRendererComponent(table, value,
                         isSelected, hasFocus, row, column);
-
                 try {
                     String rowName = (String) table.getValueAt(row, 0);
-                    //TODO: get List of external Parameters from Support-Class!!!
-                    if (rowName.equals("Seed") || rowName.equals("MaxTime") || rowName.equals("EndTime") || rowName.equals("ConfidenceIntervall") || rowName.equals("MaxRelError")) {
+                    //get List of external Parameters from Support-Class!!!
+                    parameter tmpParameter = new parameter();
+                    tmpParameter.setName(rowName);
+                    if (tmpParameter.isExternalParameter()) {
                         //if (row == colorRow && column == colorClm) {
                         setBackground(Color.LIGHT_GRAY);
                         setForeground(Color.BLACK);
@@ -191,7 +194,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                 return this;
             }
         });
-
+        
         support.setStatusLabel(jLabelExportStatus);
         support.setMeasureFormPane(jTabbedPaneOptiTargets);
         support.setPathToTimeNet(pathToTimeNet);
@@ -867,8 +870,8 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         if (i == 0) {
             support.setCancelEverything(false);
             this.restartGenerator();
-        }else{
-        this.popUIState();
+        } else {
+            this.popUIState();
         }
     }//GEN-LAST:event_jButtonGenerateListOfExperimentsActionPerformed
 
@@ -1444,7 +1447,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
             jTableParameterList.setModel(new parameterTableModel(parameterList, this));
             jTableParameterList.getModel().addTableModelListener(this);
 
-            //Measures auslesen
+            //Read measures
             NodeList MeasurenameList = doc.getElementsByTagName("measure");
             if (MeasurenameList.getLength() >= 1) {
                 ArrayList<MeasureType> Measures = new ArrayList();
@@ -1465,6 +1468,14 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
 
             }
 
+            //Set Editor for every Cell
+            DefaultCellEditor singleclick = new DefaultCellEditor(new JTextField());
+            singleclick.setClickCountToStart(1);
+            for (int i = 0; i < jTableParameterList.getColumnCount(); i++) {
+            jTableParameterList.setDefaultEditor(jTableParameterList.getColumnClass(i), singleclick);
+            }
+            
+            
             this.fileName = filename;//nach Erfolg, globalen filename setzen
             support.setOriginalFilename(filename);
             activateGenerateButtons();
