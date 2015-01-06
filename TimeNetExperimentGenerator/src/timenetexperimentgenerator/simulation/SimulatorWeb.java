@@ -13,6 +13,7 @@ package timenetexperimentgenerator.simulation;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.logging.Level;
@@ -23,6 +24,7 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import org.apache.http.ConnectionClosedException;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -209,9 +211,13 @@ public class SimulatorWeb implements Runnable, Simulator {
                     //support.log("Trying to consume Response from upload.");
                     try {
                         if (response != null) {
-                            EntityUtils.consume(response.getEntity());
-
+                            try {
+                                EntityUtils.consume(response.getEntity());
+                            } catch (final ConnectionClosedException ignore) {
+                                support.log("Connection-Closed-Exception while consuming http-response!");
+                            }
                         }
+
                     } catch (Exception ex) {
                         Logger.getLogger(SimulatorWebSlave.class.getName()).log(Level.SEVERE, null, ex);
                         support.log("Error consuming the http-response while asking for results.");
