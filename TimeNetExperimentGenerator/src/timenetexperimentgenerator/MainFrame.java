@@ -312,7 +312,15 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         jTextFieldSCPNFile = new javax.swing.JTextField();
         jButtonReload = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTableParameterList = new javax.swing.JTable();
+        jTableParameterList = new javax.swing.JTable()
+        {
+            public void changeSelection(final int row, final int column, boolean toggle, boolean extend)
+            {
+                super.changeSelection(row, column, toggle, extend);
+                this.editCellAt(row, column);
+                this.transferFocus();
+            }
+        };
         jButtonExport = new javax.swing.JButton();
         jButtonCancel = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JSeparator();
@@ -399,6 +407,8 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         jTableParameterList.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
         jTableParameterList.setMinimumSize(new java.awt.Dimension(20, 24));
         jTableParameterList.setPreferredSize(new java.awt.Dimension(469, 404));
+        jTableParameterList.setRowMargin(2);
+        jTableParameterList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane1.setViewportView(jTableParameterList);
 
         jButtonExport.setText("Export Experiments");
@@ -1473,6 +1483,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
             singleclick.setClickCountToStart(1);
             for (int i = 0; i < jTableParameterList.getColumnCount(); i++) {
             jTableParameterList.setDefaultEditor(jTableParameterList.getColumnClass(i), singleclick);
+            
             }
             
             

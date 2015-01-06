@@ -8,6 +8,8 @@
 package timenetexperimentgenerator.helper;
 
 import java.util.ArrayList;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 import org.w3c.dom.*;
 import timenetexperimentgenerator.MainFrame;
