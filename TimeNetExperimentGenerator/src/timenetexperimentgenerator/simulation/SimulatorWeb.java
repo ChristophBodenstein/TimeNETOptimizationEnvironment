@@ -194,7 +194,7 @@ public class SimulatorWeb implements Runnable, Simulator {
                                 support.log("Status of WebSimulator: " + this.status);
                                 this.deleteSimulationOnServer(filenameWithoutExtension);
                             } else {
-                                //TODO trigger simulation again (send request to server)
+                                //Trigger simulation again (send request to server)
                                 support.log("The received file has been ignored because of problems parsing the result logfile " + filenameWithoutExtension);
                                 this.resetSimulation(filenameWithoutExtension);
                             }
@@ -250,7 +250,37 @@ public class SimulatorWeb implements Runnable, Simulator {
      * log-file and cause a new simulation
      */
     public void resetSimulation(String filename) {
+        client = HttpFactory.getHttpClient();
+        HttpPost postRequest = HttpFactory.getPostRequest(support.getReMoteAddress() + "/resetSimulation");
+        try {
+            support.log("Try to connect " + postRequest.getURI().toString());
 
+            //Set various attributes 
+            MultipartEntity multiPartEntity = new MultipartEntity();
+            multiPartEntity.addPart("prefix", new StringBody(filename));
+            multiPartEntity.addPart("simid", new StringBody(simid));
+            //Set to request body
+            postRequest.setEntity(multiPartEntity);
+
+            BasicResponseHandler myTmpResponseHandler = new BasicResponseHandler();
+
+            //Send request
+            String result = client.execute(postRequest, myTmpResponseHandler);
+            support.log("Response of Upload was:" + result);
+            if (result.contains("false")) {
+                throw new Exception("Simulation-Reset not successful. Server returned false!");
+            }
+            if (result.contains("true")) {
+                support.log("Deletion of file " + filename + " successful.");
+            }
+            multiPartEntity.consumeContent();
+            //EntityUtils.consume(response.getEntity());
+            postRequest.releaseConnection();
+            postRequest.reset();
+
+        } catch (Exception ex) {
+            support.log(ex.getLocalizedMessage());
+        }
     }
 
     /**
@@ -275,7 +305,7 @@ public class SimulatorWeb implements Runnable, Simulator {
             String result = client.execute(postRequest, myTmpResponseHandler);
             support.log("Response of Upload was:" + result);
             if (result.contains("false")) {
-                throw new Exception("Upload not successful. Server returned false!");
+                throw new Exception("Deletion of file " + filename +" not successful. Server returned false!");
             }
             if (result.contains("true")) {
                 support.log("Deletion of file " + filename + " successful.");
