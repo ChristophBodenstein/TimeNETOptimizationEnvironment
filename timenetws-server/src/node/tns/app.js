@@ -7,7 +7,7 @@ var bodyParser = require('body-parser');
 var http = require('http');
 var formidable = require('formidable');
 var fs = require('fs');
-var masterpw="gulli";
+
 
 //Add database
 var mongo = require('mongoskin');

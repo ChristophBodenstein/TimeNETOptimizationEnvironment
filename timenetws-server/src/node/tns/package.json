@@ -18,6 +18,7 @@
     "formidable": "*",
 	"mkdirp": "*",
     "graceful-fs": "*",
-	"rimraf": "*"
+	"rimraf": "*",
+	"glob": "*"
   }
 }

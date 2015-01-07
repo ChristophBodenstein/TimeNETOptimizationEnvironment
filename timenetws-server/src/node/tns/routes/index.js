@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 var mkdirp = require('mkdirp');
 var path = require('path');
+var glob = require("glob");
+var masterpw="gulli";
 
 
 // Required modules for form handling
@@ -413,7 +415,7 @@ router.get('/rest/api/downloads/log/:simid', function (req, res) {
             res.json({'success': false});
         }
 
-        //TODO ggf. Counter hochzählen
+        //TODO increase Counter...
     });
 });
 
@@ -423,70 +425,130 @@ var form = new formidable.IncomingForm();
 var db = req.db;
 var simlist = db.collection('simlist');
 var rimraf=require('rimraf');
-	var fileprefix=form.prefix;
-	var simid=form.simid;
-	console.log("Simulation to reset:"+fileprefix +" with simid:" +simid);
+form.parse(req, function (err, fields, files) {
+	var fileprefix=fields.prefix;
+	var simid=fields.simid;
+	console.log("Simulation to delete:"+fileprefix +" with simid:" +simid);
+	var searchpath="./uploads/"+simid+"/"+fileprefix+"*.log";
+		console.log("searching:"+searchpath);
+		glob(searchpath, function(err, files){
+			console.log(files);
+			if(files!=null){
+				files.forEach(function(item){
+					fs.unlink(item, function(err){
+						if(err){
+						console.log("Error deleting file:"+item);
+						}	else{
+							console.log("Deleted file:"+item);
+							}
+					});
+				});
+			}
+		});
+	
+	searchpath=fileprefix+".xml";
+	console.log("searching in db for:"+searchpath);
+	simlist.find({name: searchpath, simid:simid }, function (err, result) {
+        if (err) {
+            console.log("Error finding simulation in db to reset.");
+        } 	else {
+				if (result != null) {
+					console.log(result);
+					result.each(function (err, element) {
+					
+						if (element != null) {
+						console.log("will modify:"+element);
+							//set it to undistributed
+							simlist.findAndModify(
+							{_id: element._id},
+							[],
+							{$set: {distributed: false, simulated: false, logdownloaded: false, logname:"",timestamp: Date.now()}},
+							false,
+							true,
+								function (err, result) {
+                                if (err){
+                                console.log("Error resetting to undistributed.");
+                                cb(err);
+                                }
+							});
+						}
+					});
+				}
+            }
+    });
 	
 	
+	
+	
+	});
+	//Answer with success-code, no matter what happended
+	res.status(200);
+	res.json({'success': true});	
 });
 
 router.post('/deleteSimulation', function(req, res){
-console.log("Asked to reset simulation");
+//console.log("Asked to delete simulation");
 var form = new formidable.IncomingForm();
 var db = req.db;
 var simlist = db.collection('simlist');
 var rimraf=require('rimraf');
-	var fileprefix=form.prefix;
-	var simid=form.simid;
+
+form.parse(req, function (err, fields, files) {
+	var fileprefix=fields.prefix;
+	var simid=fields.simid;
+
 	console.log("Simulation to delete:"+fileprefix +" with simid:" +simid);
-	
+	//TODO: delete log-file and xml-file
+	    var searchpath="./uploads/"+simid+"/"+fileprefix+"*.*";
+		//console.log("searching:"+searchpath);
+		glob(searchpath, function(err, files){
+			console.log(files);
+			if(files!=null){
+				files.forEach(function(item){
+					fs.unlink(item, function(err){
+						if(err){
+						console.log("Error deleting file:"+item);
+						}	else{
+							//console.log("Deleted file:"+item);
+							}
+					});
+				});
+			}
+		});
+	});
+	//Answer with success-code, no matter what happended
+	res.status(200);
+	res.json({'success': true});
 	
 });
 
-router.post('/timenetws-server/reset', function(req, res){
+router.post('/reset', function(req, res){
+
 console.log("RESET-POST received, will try to reset server.");
-	var form = new formidable.IncomingForm();
     var db = req.db;
     var simlist = db.collection('simlist');
 	var rimraf=require('rimraf');
-	console.log("Will try to parse the form.");
-	form.parse(req, function (err, fields){
-		if(err){
-		console.log("Error resetting the server");
-		}else{
-			var givenpwd=fields.masterpw;
-			console.log("Given pw is:"+givenpwd);
-			if(givenpwd==masterpw){
-			console.log("Password correct. Will try to reset server.");
-			simlist.drop(function(err){
-				if(!err){
-				console.log("Simlist dropped.");
-				rimraf("./uploads/", function(err){
-				if(!err){
-				console.log("Upload dir is now empty.");
-				res.status(200);
-                res.json({'success': true})
-				}else{
-				console.log("Could not empty upload dir.");
-				res.status(500);
-                            res.json({'success': false});
-				}
-				});
-				}
-				console.log("Simlist could not be dropped!");
-				res.status(500);
-                res.json({'success': false});
-				
-				
+		var givenpw=req.body.password;
+		//console.log("Given pw is:"+givenpw);
+		if(givenpw==masterpw){
+		console.log("Password correct, will delete upload folder and drop simlist.");
+		simlist.drop(function(err){
+			if(!err){
+			console.log("dropping simlist successful.");
+			}
+			
+			rimraf("./uploads", function(err){
+			if(!err){
+			console.log("Successful deleted upload-files.");
+			}
 			});
 			
-			}else{
-			console.log("Wrong password, cannot reset server!");
-			}
+			});
+		}else{
+		console.log("Wrong password, will not reset server.");
+		
 		}
-	});
-	
-	
+res.render('index', {title: 'TimeNET distribution server', clientcount: Math.round(global.clientcount)});
 });
 
 module.exports = router;
