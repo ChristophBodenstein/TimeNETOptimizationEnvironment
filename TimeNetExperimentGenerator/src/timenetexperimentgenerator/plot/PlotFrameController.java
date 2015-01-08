@@ -1,6 +1,6 @@
 /**
  * This frame is used to setup the R Plots, create the R script and run it.
-*
+ *
  */
 package timenetexperimentgenerator.plot;
 
@@ -25,6 +25,14 @@ import timenetexperimentgenerator.support;
 import java.awt.ComponentOrientation;
 import javax.swing.JColorChooser;
 import java.io.FileOutputStream;
+import java.lang.reflect.Array;
+import java.lang.reflect.Field;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.JSlider;
+import javax.swing.JSpinner;
+import javax.swing.colorchooser.AbstractColorChooserPanel;
 
 /**
  *
@@ -617,7 +625,22 @@ public class PlotFrameController extends javax.swing.JFrame implements nativePro
 
     /*Choose the plot color*/
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        Color chosen = JColorChooser.showDialog(null, "Plot Color Chooser", Color.yellow);
+        JColorChooser jc = new JColorChooser();
+        try {
+            AbstractColorChooserPanel[] panels = jc.getChooserPanels();
+            for (AbstractColorChooserPanel accp : panels) {
+                String name = accp.getDisplayName();
+                System.out.println("Name:" + name);
+                if (name.equals("Swatches")) {
+                    JOptionPane.showMessageDialog(null, accp);
+                }
+            }
+
+        } catch (Exception ex) {
+            Logger.getLogger(PlotFrameController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        jc.setVisible(true);
+        Color chosen = jc.getColor();
         if (chosen != null) {
             plotColor = chosen;
             jButton1.setBackground(chosen);
@@ -665,6 +688,7 @@ public class PlotFrameController extends javax.swing.JFrame implements nativePro
 
     /**
      * nativeProcessCallback interface method
+     *
      * @param message Message to be sent to Mainframe and probably shown
      */
     public void errorOccured(String message) {
