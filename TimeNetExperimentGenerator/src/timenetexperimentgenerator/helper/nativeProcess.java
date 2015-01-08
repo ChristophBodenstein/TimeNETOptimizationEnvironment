@@ -24,6 +24,7 @@ public class nativeProcess extends Thread {
     JLabel statusLabel = null;
     private boolean running = true;
     private nativeProcessCallbacks pfc = null;
+    private boolean killProcess = false;
 
     /**
      * Contructor
@@ -52,12 +53,13 @@ public class nativeProcess extends Thread {
             try {
                 Thread.sleep(100);
                 support.spinInLabel();
-                if (support.isCancelEverything()) {
+                if (support.isCancelEverything() || killProcess) {
                     //Kill native Thread and set Running to false
                     support.log("Try to kill the started process.");
                     myNativeProcess.killProcess();
                     this.setRunning(false);
                     this.pfc.errorOccured("Plot canceled.");
+                    killProcess = false;
                     return;
                 }
 
@@ -100,6 +102,15 @@ public class nativeProcess extends Thread {
      */
     public void setMyProcessBuilder(ProcessBuilder myProcessBuilder) {
         this.myProcessBuilder = myProcessBuilder;
+    }
+
+    /**
+     * If set to true, native process is killed in next thread-loop
+     *
+     * @param killProcess the killProcess to set
+     */
+    public void setKillProcess(boolean killProcess) {
+        this.killProcess = killProcess;
     }
 }
 

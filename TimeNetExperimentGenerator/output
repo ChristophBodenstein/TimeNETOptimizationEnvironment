@@ -1,0 +1,43 @@
+
+R version 3.1.2 (2014-10-31) -- "Pumpkin Helmet"
+Copyright (C) 2014 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+
+R ist freie Software und kommt OHNE JEGLICHE GARANTIE.
+Sie sind eingeladen, es unter bestimmten Bedingungen weiter zu verbreiten.
+Tippen Sie 'license()' or 'licence()' für Details dazu.
+
+R ist ein Gemeinschaftsprojekt mit vielen Beitragenden.
+Tippen Sie 'contributors()' für mehr Information und 'citation()',
+um zu erfahren, wie R oder R packages in Publikationen zitiert werden können.
+
+Tippen Sie 'demo()' für einige Demos, 'help()' für on-line Hilfe, oder
+'help.start()' für eine HTML Browserschnittstelle zur Hilfe.
+Tippen Sie 'q()', um R zu verlassen.
+
+> library(plot3D)
+> base<-read.csv("C:/tmp/SimLog_Benchmark_Sphere_1420749638056.csv", sep=";", dec=",",check.names=FALSE)
+> sub<-subset(base,  base$MeasureName ==  "MeasureP")
+> setwd("C:/Users/bode/Documents/NetBeansProjects/TimeNetExperimentGenerator")
+> library(rgl)
+> x<-as.numeric(sub("," , ".", sub$"Tdrain" )) 
+> y<-as.numeric(sub("," , ".", sub$"Tsource" )) 
+> z<-as.numeric(sub("," , ".", sub$"Mean Value" )) 
+> x1<-unique(x)
+> y1<-unique(y)
+> x1<-sort(x1)
+> y1<-sort(y1)
+> #Create 2D-Array for z-values
+> my.array<-array(dim=c(length(x1),length(y1)))
+> for( ix in 1:length(x1)){
++ for ( iy in 1:length(y1)){
++ subtemp<-subset(sub, sub$"Tdrain"==x1[ix])
++ subtemp<-subset(subtemp, subtemp$"Tsource"==y1[iy])
++ if(dim(subtemp)[1]==1){
++ my.array[ix,iy]<-subtemp$"Mean Value" 
++ } } }
+> col=c("lightblue")
+> persp3d(x1, y1, my.array, col = col,xlab="Tdrain",ylab="Tsource",zlab="Mean Value")
+> cat('Solution to everything? > ')
+Solution to everything? > > b <- scan("stdin", character(), n=1)
+> 

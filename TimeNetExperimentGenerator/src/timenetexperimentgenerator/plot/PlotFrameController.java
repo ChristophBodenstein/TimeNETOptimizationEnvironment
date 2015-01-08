@@ -530,9 +530,9 @@ public class PlotFrameController extends javax.swing.JFrame implements nativePro
                             break;
                         case Perspective:
                             writer.println("library(rgl)");
-                            writer.println("x<-as.numeric(sub(\"" + "," + "\" , \"" + "." + "\", sub$\"" + XValueLabel.getText()+"\" )) ");
-                            writer.println("y<-as.numeric(sub(\"" + "," + "\" , \"" + "." + "\", sub$\"" + YValueLabel.getText()+"\" )) ");
-                            writer.println("z<-as.numeric(sub(\"" + "," + "\" , \"" + "." + "\", sub$\"" + ZValueLabel.getText()+"\" )) ");
+                            writer.println("x<-as.numeric(sub(\"" + "," + "\" , \"" + "." + "\", sub$\"" + XValueLabel.getText() + "\" )) ");
+                            writer.println("y<-as.numeric(sub(\"" + "," + "\" , \"" + "." + "\", sub$\"" + YValueLabel.getText() + "\" )) ");
+                            writer.println("z<-as.numeric(sub(\"" + "," + "\" , \"" + "." + "\", sub$\"" + ZValueLabel.getText() + "\" )) ");
                             writer.println("x1<-unique(x)");
                             writer.println("y1<-unique(y)");
                             writer.println("x1<-sort(x1)");
@@ -542,10 +542,10 @@ public class PlotFrameController extends javax.swing.JFrame implements nativePro
 
                             writer.println("for( ix in 1:length(x1)){");
                             writer.println("for ( iy in 1:length(y1)){");
-                            writer.println("subtemp<-subset(sub, sub$\"" + XValueLabel.getText()+"\"==x1[ix])");
-                            writer.println("subtemp<-subset(subtemp, subtemp$\"" + YValueLabel.getText()+"\"==y1[iy])");
+                            writer.println("subtemp<-subset(sub, sub$\"" + XValueLabel.getText() + "\"==x1[ix])");
+                            writer.println("subtemp<-subset(subtemp, subtemp$\"" + YValueLabel.getText() + "\"==y1[iy])");
                             writer.println("if(dim(subtemp)[1]==1){");
-                            writer.println("my.array[ix,iy]<-subtemp$\"" + ZValueLabel.getText()+"\" ");
+                            writer.println("my.array[ix,iy]<-subtemp$\"" + ZValueLabel.getText() + "\" ");
                             writer.println("} } }");
 
                             //writer.println("zlim <- range(my.array)");
@@ -553,13 +553,17 @@ public class PlotFrameController extends javax.swing.JFrame implements nativePro
                             //writer.println("colorlut <- terrain.colors(zlen) # height color lookup table");
                             //writer.println("col <- colorlut[ my.array-zlim[1]+1 ] # assign colors to heights for each point");
                             writer.println("col=c(\"lightblue\")");
-                            
+
                             writer.println("persp3d(x1, y1, my.array, col = col,xlab=\"" + XValueLabel.getText() + "\",ylab=\"" + YValueLabel.getText() + "\",zlab=\""
                                     + ZValueLabel.getText() + "\")");
                             //Open Browser with webgl
-                            //browseURL(paste("file:\\\\", writeWebGL(dir=file.path("C:\\Temp", "webGL"), width=1024), sep="\\"))
-
-                            writer.println("while(TRUE){}");
+                            writer.println("browseURL(paste(\"file://\", writeWebGL(dir=file.path(\"c:\", \"tmp\",\"webgl\"), \n"
+                                    + "          width=1024), sep=\"\"))"
+                                    + "");
+                            /*String tmpPathURI=new File(support.getTmpPath()).getAbsoluteFile().toURI().toString();
+                            writer.println("browseURL(paste(\"file://\", writeWebGL(dir=file.path(\"" + tmpPathURI +  "\",\"webgl\"), \n"
+                                    + "          width=1024), sep=\"\"))"
+                                    + "");*/
                             break;
 
                         default:
@@ -620,7 +624,11 @@ public class PlotFrameController extends javax.swing.JFrame implements nativePro
         } catch (Exception e) {
             support.log("Error while reading the error file.");
         }
-        plotFrame.showImage(imageFilePath);
+        if (this.possiblePlot == typedef.typeOfPossiblePlot.Plot3D && typedef.typeOf3DPlot.valueOf(jComboBoxTypeOf3DPlot.getSelectedItem().toString()) == typedef.typeOf3DPlot.Perspective) {
+            //3d-Plot was rendered to webgl
+        } else {
+            plotFrame.showImage(imageFilePath);
+        }
         support.setStatusText("");
         this.JButtonPlot.setEnabled(true);
     }
