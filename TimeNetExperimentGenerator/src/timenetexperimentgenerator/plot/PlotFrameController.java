@@ -25,14 +25,11 @@ import timenetexperimentgenerator.support;
 import java.awt.ComponentOrientation;
 import javax.swing.JColorChooser;
 import java.io.FileOutputStream;
-import java.lang.reflect.Array;
-import java.lang.reflect.Field;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import javax.swing.JSlider;
-import javax.swing.JSpinner;
 import javax.swing.colorchooser.AbstractColorChooserPanel;
+import timenetexperimentgenerator.typedef;
 
 /**
  *
@@ -43,6 +40,8 @@ public class PlotFrameController extends javax.swing.JFrame implements nativePro
     private final String imageFilePath = System.getProperty("user.dir") + File.separator + "rplot.png";
     private final String rScriptFilePath = System.getProperty("user.dir") + File.separator + "rscript.r";
     Color plotColor = Color.black;
+    private final String noneString = "None";
+    private typedef.typeOfPossiblePlot possiblePlot = typedef.typeOfPossiblePlot.NoPlot;
 
     private final PlotFrame plotFrame;
 
@@ -53,6 +52,7 @@ public class PlotFrameController extends javax.swing.JFrame implements nativePro
         initComponents();
 
         CachedFilesList.addMouseListener(new MouseAdapter() {
+            @Override
             public void mouseClicked(MouseEvent evt) {
 
                 if (evt.getClickCount() == 2 && !CachedFilesList.isSelectionEmpty()) {
@@ -66,13 +66,14 @@ public class PlotFrameController extends javax.swing.JFrame implements nativePro
         plotFrame = new PlotFrame();
         setResizable(false);
 
-        jButton1.setBackground(Color.black);
+        jButtonOpenColorChooser.setBackground(Color.black);
         jCheckBox1.setEnabled(false);
 
         //jlist alignment
         CachedFilesList.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
         final int maximum = jScrollPane1.getHorizontalScrollBar().getMaximum();
         jScrollPane1.getHorizontalScrollBar().setValue(maximum);
+        checkIfColorChosingIsPossible();
     }
 
     /**
@@ -94,7 +95,7 @@ public class PlotFrameController extends javax.swing.JFrame implements nativePro
 
             String[] parts = header.split(";");
             DefaultListModel model = new DefaultListModel();
-            model.addElement("None");
+            model.addElement(getNoneString());
 
             for (int i = 0; i < parts.length; i++) {
                 parts[i] = parts[i].trim();
@@ -120,9 +121,9 @@ public class PlotFrameController extends javax.swing.JFrame implements nativePro
 
         }
 
-        XValueLabel.setText("None");
-        YValueLabel.setText("None");
-        ZValueLabel.setText("None");
+        XValueLabel.setText(getNoneString());
+        YValueLabel.setText(getNoneString());
+        ZValueLabel.setText(getNoneString());
     }
 
     /**
@@ -134,8 +135,8 @@ public class PlotFrameController extends javax.swing.JFrame implements nativePro
         ArrayList<Statistic> cachedListOfStatistics;
         cachedListOfStatistics = StatisticAggregator.getListOfStatistics();
 
-        for (int i = 0; i < cachedListOfStatistics.size(); i++) {
-            cachedFilesListModel.addElement(cachedListOfStatistics.get(i).getName());
+        for (Statistic cachedListOfStatistic : cachedListOfStatistics) {
+            cachedFilesListModel.addElement(cachedListOfStatistic.getName());
         }
 
         CachedFilesList.setModel(cachedFilesListModel);
@@ -175,8 +176,9 @@ public class PlotFrameController extends javax.swing.JFrame implements nativePro
         ZValueLabel = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         jComboBoxPlotChar = new javax.swing.JComboBox();
-        jButton1 = new javax.swing.JButton();
+        jButtonOpenColorChooser = new javax.swing.JButton();
         jCheckBox1 = new javax.swing.JCheckBox();
+        jComboBoxTypeOf3DPlot = new javax.swing.JComboBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -254,11 +256,11 @@ public class PlotFrameController extends javax.swing.JFrame implements nativePro
             }
         });
 
-        XValueLabel.setText("None");
+        XValueLabel.setText(getNoneString());
 
-        YValueLabel.setText("None");
+        YValueLabel.setText(getNoneString());
 
-        ZValueLabel.setText("None");
+        ZValueLabel.setText(getNoneString());
 
         jLabel1.setText("Plot-Char:");
 
@@ -270,19 +272,21 @@ public class PlotFrameController extends javax.swing.JFrame implements nativePro
             }
         });
 
-        jButton1.setText("Plot-Color");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        jButtonOpenColorChooser.setText("Plot-Color");
+        jButtonOpenColorChooser.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                jButtonOpenColorChooserActionPerformed(evt);
             }
         });
 
-        jCheckBox1.setText("Hold");
+        jCheckBox1.setText("Add to last plot");
         jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jCheckBox1ActionPerformed(evt);
             }
         });
+
+        jComboBoxTypeOf3DPlot.setModel(new DefaultComboBoxModel(typedef.typeOf3DPlot.values()));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -331,18 +335,19 @@ public class PlotFrameController extends javax.swing.JFrame implements nativePro
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(MeasureLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(1, 1, 1)))
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(jComboBoxPlotChar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jButton1))
-                                    .addComponent(MeasureComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jCheckBox1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(JButtonPlot, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(2, 2, 2))
+                                        .addComponent(jButtonOpenColorChooser)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jComboBoxTypeOf3DPlot, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(MeasureComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addComponent(jCheckBox1)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(JButtonPlot, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(2, 2, 2))))))
                     .addGroup(layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(AxisSetupLabel))))
@@ -387,12 +392,13 @@ public class PlotFrameController extends javax.swing.JFrame implements nativePro
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel1)
                             .addComponent(jComboBoxPlotChar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton1))))
+                            .addComponent(jButtonOpenColorChooser)
+                            .addComponent(jComboBoxTypeOf3DPlot, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(LoadButton)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(JButtonPlot)
-                        .addComponent(jCheckBox1)))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(LoadButton)
+                        .addComponent(JButtonPlot, javax.swing.GroupLayout.Alignment.TRAILING))
+                    .addComponent(jCheckBox1))
                 .addContainerGap())
             .addComponent(jSeparator1)
         );
@@ -456,7 +462,7 @@ public class PlotFrameController extends javax.swing.JFrame implements nativePro
         if (!ColumnList.isSelectionEmpty()) {
             YValueLabel.setText(ColumnList.getSelectedValue().toString());
         }
-
+        checkIfColorChosingIsPossible();
     }//GEN-LAST:event_SetYButtonActionPerformed
 
     private void MeasureComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MeasureComboBoxActionPerformed
@@ -470,103 +476,118 @@ public class PlotFrameController extends javax.swing.JFrame implements nativePro
      */
     private void JButtonPlotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JButtonPlotActionPerformed
         char plotChar = support.DEFAULT_PLOT_CHAR;
+        PrintWriter writer;
 
         try {
             plotChar = this.jComboBoxPlotChar.getSelectedItem().toString().charAt(0);
         } catch (Exception e) {
         }
 
+        //Always delete image file first
+        support.del(new File(imageFilePath));
         try {
             if (!jCheckBox1.isSelected()) //create new script
             {
-                //Delete old script file and old image file
-                support.del(new File(imageFilePath));
                 support.del(new File(rScriptFilePath));
-
-                PrintWriter writer = new PrintWriter("rscript.r", "UTF-8");
-                String userdir = System.getProperty("user.dir");
-                userdir = userdir.replace("\\", "/");
-
+                writer = new PrintWriter("rscript.r", "UTF-8");
                 writer.println("library(plot3D)");
-                writer.println("base<-read.csv(\"" + OpenFileTextField.getText().replace("\\", "/") + "\", sep=\";\", dec=\",\",check.names=FALSE)");
+            } else {
+                //append to existing script (hold is checked)
+                writer = new PrintWriter(new FileOutputStream(new File("rscript.r"), true));
+            }
+            String userdir = System.getProperty("user.dir");
+            userdir = userdir.replace("\\", "/");
 
-                if (MeasureComboBox.getSelectedItem() != null) {
-                    writer.println("sub<-subset(base,  base$MeasureName ==  \"" + MeasureComboBox.getSelectedItem().toString() + "\")");
-                } else {
-                    writer.println("sub<-base");
-                }
+            writer.println("base<-read.csv(\"" + OpenFileTextField.getText().replace("\\", "/") + "\", sep=\";\", dec=\",\",check.names=FALSE)");
+            if (MeasureComboBox.getSelectedItem() != null) {
+                writer.println("sub<-subset(base,  base$MeasureName ==  \"" + MeasureComboBox.getSelectedItem().toString() + "\")");
+            } else {
+                writer.println("sub<-base");
+            }
 
-                writer.println("setwd(\"" + userdir + "\")");
-                writer.println("png(filename=\"rplot.png\")");
+            writer.println("setwd(\"" + userdir + "\")");
 
-                if (!XValueLabel.getText().equals("None") && !YValueLabel.getText().equals("None") && ZValueLabel.getText().equals("None")) {
+            switch (this.possiblePlot) {
+                case Plot2D:
+                    writer.println("png(filename=\"rplot.png\")");
                     writer.println("plot(as.numeric(as.character( sub(\"" + "," + "\" , \"" + "."
                             + "\" , sub$\"" + XValueLabel.getText() + "\"))),as.numeric(as.character( sub(\"" + "," + "\" , \"" + "."
                             + "\" , sub$\"" + YValueLabel.getText() + "\"))), xlab=\"" + XValueLabel.getText()
                             + "\",ylab=\"" + YValueLabel.getText() + "\" , pch=\"" + plotChar + "\", col=\""
                             + String.format("#%02X%02X%02X", plotColor.getRed(), plotColor.getGreen(), plotColor.getBlue()) + "\")");
-                } else if (!XValueLabel.getText().equals("None") && !YValueLabel.getText().equals("None") && !ZValueLabel.getText().equals("None")) {
-                    writer.println("scatter3D(as.numeric(as.character( sub(\"" + "," + "\" , \"" + "." + "\" , sub$\"" + XValueLabel.getText()
-                            + "\"))),as.numeric(as.character( sub(\"" + "," + "\" , \"" + "." + "\" , sub$\"" + YValueLabel.getText()
-                            + "\"))),as.numeric(as.character( sub(\"" + "," + "\" , \"" + "." + "\" , sub$\"" + ZValueLabel.getText()
-                            + "\"))), xlab=\"" + XValueLabel.getText() + "\",ylab=\"" + YValueLabel.getText() + "\",zlab=\""
-                            + ZValueLabel.getText() + "\", phi=15, theta=120, col=NULL, NAcol=\"white\", colkey=NULL, panel.first=NULL, clim=NULL, clab=NULL, bty=\"b2\", pch=\"" + plotChar + "\", add=FALSE)");
-                } else {
-                    writer.close();
-                    return;
-                }
+                    jCheckBox1.setEnabled(true);
+                    break;
+                case Plot3D:
 
-                writer.close();
+                    switch (typedef.typeOf3DPlot.valueOf(jComboBoxTypeOf3DPlot.getSelectedItem().toString())) {
+                        case ScatterPlot:
+                            writer.println("png(filename=\"rplot.png\")");
+                            writer.println("scatter3D(as.numeric(as.character( sub(\"" + "," + "\" , \"" + "." + "\" , sub$\"" + XValueLabel.getText()
+                                    + "\"))),as.numeric(as.character( sub(\"" + "," + "\" , \"" + "." + "\" , sub$\"" + YValueLabel.getText()
+                                    + "\"))),as.numeric(as.character( sub(\"" + "," + "\" , \"" + "." + "\" , sub$\"" + ZValueLabel.getText()
+                                    + "\"))), xlab=\"" + XValueLabel.getText() + "\",ylab=\"" + YValueLabel.getText() + "\",zlab=\""
+                                    + ZValueLabel.getText() + "\", phi=15, theta=120, col=NULL, NAcol=\"white\", colkey=NULL, panel.first=NULL, clim=NULL, clab=NULL, bty=\"b2\", pch=\"" + plotChar + "\", add=FALSE)");
+                            break;
+                        case Perspective:
+                            writer.println("library(rgl)");
+                            writer.println("x<-as.numeric(sub(\"" + "," + "\" , \"" + "." + "\", sub$\"" + XValueLabel.getText()+"\" )) ");
+                            writer.println("y<-as.numeric(sub(\"" + "," + "\" , \"" + "." + "\", sub$\"" + YValueLabel.getText()+"\" )) ");
+                            writer.println("z<-as.numeric(sub(\"" + "," + "\" , \"" + "." + "\", sub$\"" + ZValueLabel.getText()+"\" )) ");
+                            writer.println("x1<-unique(x)");
+                            writer.println("y1<-unique(y)");
+                            writer.println("x1<-sort(x1)");
+                            writer.println("y1<-sort(y1)");
+                            writer.println("#Create 2D-Array for z-values");
+                            writer.println("my.array<-array(dim=c(length(x1),length(y1)))");
 
-                String command = support.getPathToR() + File.separator + "bin" + File.separator + "Rscript rscript.r 2> errorFile.Rout";
-                support.log("executing command: " + command);
+                            writer.println("for( ix in 1:length(x1)){");
+                            writer.println("for ( iy in 1:length(y1)){");
+                            writer.println("subtemp<-subset(sub, sub$\"" + XValueLabel.getText()+"\"==x1[ix])");
+                            writer.println("subtemp<-subset(subtemp, subtemp$\"" + YValueLabel.getText()+"\"==y1[iy])");
+                            writer.println("if(dim(subtemp)[1]==1){");
+                            writer.println("my.array[ix,iy]<-subtemp$\"" + ZValueLabel.getText()+"\" ");
+                            writer.println("} } }");
 
-                java.lang.ProcessBuilder processBuilder = new java.lang.ProcessBuilder(support.getPathToR() + File.separator + "bin" + File.separator + "Rscript", "rscript.r", "2>", "errorFile.Rout");
+                            //writer.println("zlim <- range(my.array)");
+                            //writer.println("zlen <- zlim[2] - zlim[1] + 1");
+                            //writer.println("colorlut <- terrain.colors(zlen) # height color lookup table");
+                            //writer.println("col <- colorlut[ my.array-zlim[1]+1 ] # assign colors to heights for each point");
+                            writer.println("col=c(\"lightblue\")");
+                            
+                            writer.println("persp3d(x1, y1, my.array, col = col,xlab=\"" + XValueLabel.getText() + "\",ylab=\"" + YValueLabel.getText() + "\",zlab=\""
+                                    + ZValueLabel.getText() + "\")");
+                            //Open Browser with webgl
+                            //browseURL(paste("file:\\\\", writeWebGL(dir=file.path("C:\\Temp", "webGL"), width=1024), sep="\\"))
 
-                nativeProcess myNativeProcess = new nativeProcess(processBuilder, this);
+                            writer.println("while(TRUE){}");
+                            break;
 
-                this.JButtonPlot.setEnabled(false);
-                jCheckBox1.setEnabled(true);
-            } else {
-                //append to existing script (hold is checked)
-                PrintWriter writer = new PrintWriter(new FileOutputStream(new File("rscript.r"), true));
+                        default:
+                            support.log("No 3DPlot-Type chosen. Plot not possible.");
+                            break;
 
-                if (MeasureComboBox.getSelectedItem() != null) {
-                    writer.println("sub<-subset(base,  base$MeasureName ==  \"" + MeasureComboBox.getSelectedItem().toString() + "\")");
-                } else {
-                    writer.println("sub<-base");
-                }
+                    }
 
-                if (!XValueLabel.getText().equals("None") && !YValueLabel.getText().equals("None") && ZValueLabel.getText().equals("None")) {
-                    writer.println("points(as.numeric(as.character( sub(\"" + "," + "\" , \"" + "."
-                            + "\" , sub$\"" + XValueLabel.getText() + "\"))),as.numeric(as.character( sub(\"" + "," + "\" , \"" + "."
-                            + "\" , sub$\"" + YValueLabel.getText() + "\"))), xlab=\"" + XValueLabel.getText()
-                            + "\",ylab=\"" + YValueLabel.getText() + "\" , pch=\"" + plotChar + "\", col=\""
-                            + String.format("#%02X%02X%02X", plotColor.getRed(), plotColor.getGreen(), plotColor.getBlue()) + "\")");
-                } else if (!XValueLabel.getText().equals("None") && !YValueLabel.getText().equals("None") && !ZValueLabel.getText().equals("None")) {
-                    writer.println("scatter3D(as.numeric(as.character( sub(\"" + "," + "\" , \"" + "." + "\" , sub$\"" + XValueLabel.getText()
-                            + "\"))),as.numeric(as.character( sub(\"" + "," + "\" , \"" + "." + "\" , sub$\"" + YValueLabel.getText()
-                            + "\"))),as.numeric(as.character( sub(\"" + "," + "\" , \"" + "." + "\" , sub$\"" + ZValueLabel.getText()
-                            + "\"))), xlab=\"" + XValueLabel.getText() + "\",ylab=\"" + YValueLabel.getText() + "\",zlab=\""
-                            + ZValueLabel.getText() + "\", col=NULL, NAcol=\"white\", colkey=NULL, panel.first=NULL, clim=NULL, clab=NULL, bty=\"b2\", pch=\"" + plotChar + "\", add=TRUE)");
-                } else {
-                    writer.close();
-                    return;
-                }
+                    jCheckBox1.setEnabled(true);
+                    break;
 
-                writer.close();
-
-                String command = support.getPathToR() + File.separator + "bin" + File.separator + "Rscript rscript.r 2> errorFile.Rout";
-                support.log("executing command: " + command);
-
-                java.lang.ProcessBuilder processBuilder = new java.lang.ProcessBuilder(support.getPathToR() + File.separator + "bin" + File.separator + "Rscript", "rscript.r", "2>", "errorFile.Rout");
-
-                nativeProcess myNativeProcess = new nativeProcess(processBuilder, this);
-
-                this.JButtonPlot.setEnabled(false);
+                default:
+                    support.log("No Plot possible");
+                    break;
             }
+            writer.close();
 
-        } catch (IOException e) {
+            String command = support.getPathToR() + File.separator + "bin" + File.separator + "Rscript rscript.r 2> errorFile.Rout";
+            support.log("executing command: " + command);
+
+            java.lang.ProcessBuilder processBuilder = new java.lang.ProcessBuilder(support.getPathToR() + File.separator + "bin" + File.separator + "Rscript", "rscript.r", "2>", "errorFile.Rout");
+
+            nativeProcess myNativeProcess = new nativeProcess(processBuilder, this);
+
+            this.JButtonPlot.setEnabled(false);
+            jCheckBox1.setEnabled(true);
+
+        } catch (Exception e) {
         }
 
 
@@ -577,6 +598,7 @@ public class PlotFrameController extends javax.swing.JFrame implements nativePro
      * Error-Message in log This method is called by the native Thread as a
      * callback after creating the image file
      */
+    @Override
     public void processEnded() {
         support.log("Try to show image at:" + imageFilePath);
         try {
@@ -611,6 +633,7 @@ public class PlotFrameController extends javax.swing.JFrame implements nativePro
         if (!ColumnList.isSelectionEmpty()) {
             XValueLabel.setText(ColumnList.getSelectedValue().toString());
         }
+        checkIfColorChosingIsPossible();
     }//GEN-LAST:event_SetXButtonActionPerformed
 
     /**
@@ -621,10 +644,36 @@ public class PlotFrameController extends javax.swing.JFrame implements nativePro
         if (!ColumnList.isSelectionEmpty()) {
             ZValueLabel.setText(ColumnList.getSelectedValue().toString());
         }
+        checkIfColorChosingIsPossible();
     }//GEN-LAST:event_SetZButtonActionPerformed
 
+    /**
+     * Color chosing is only possible for x-y-Graphs. Else deactivate the
+     * color-chose-button
+     */
+    private void checkIfColorChosingIsPossible() {
+
+        if (!XValueLabel.getText().equals(noneString) && !YValueLabel.getText().equals(noneString) && ZValueLabel.getText().equals(noneString)) {
+            this.jButtonOpenColorChooser.setEnabled(true);
+            this.JButtonPlot.setEnabled(true);
+            possiblePlot = typedef.typeOfPossiblePlot.Plot2D;
+            this.jComboBoxTypeOf3DPlot.setEnabled(false);
+        } else {
+            this.jButtonOpenColorChooser.setEnabled(false);
+            if (!XValueLabel.getText().equals(noneString) && !YValueLabel.getText().equals(noneString) && !ZValueLabel.getText().equals(noneString)) {
+                possiblePlot = typedef.typeOfPossiblePlot.Plot3D;
+                this.JButtonPlot.setEnabled(true);
+                this.jComboBoxTypeOf3DPlot.setEnabled(true);
+            } else {
+                this.JButtonPlot.setEnabled(false);
+                this.jComboBoxTypeOf3DPlot.setEnabled(false);
+                possiblePlot = typedef.typeOfPossiblePlot.NoPlot;
+            }
+        }
+    }
+
     /*Choose the plot color*/
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void jButtonOpenColorChooserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonOpenColorChooserActionPerformed
         JColorChooser jc = new JColorChooser();
         try {
             AbstractColorChooserPanel[] panels = jc.getChooserPanels();
@@ -633,22 +682,24 @@ public class PlotFrameController extends javax.swing.JFrame implements nativePro
                 System.out.println("Name:" + name);
                 if (name.equals("Swatches")) {
                     JOptionPane.showMessageDialog(null, accp);
+
                 }
             }
 
         } catch (Exception ex) {
-            Logger.getLogger(PlotFrameController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PlotFrameController.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
         jc.setVisible(true);
         Color chosen = jc.getColor();
         if (chosen != null) {
             plotColor = chosen;
-            jButton1.setBackground(chosen);
+            jButtonOpenColorChooser.setBackground(chosen);
 
             support.log("chosen color: " + String.format("#%02X%02X%02X", chosen.getRed(), chosen.getGreen(), chosen.getBlue()));
         }
 
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_jButtonOpenColorChooserActionPerformed
 
     private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
         // TODO add your handling code here:
@@ -677,9 +728,10 @@ public class PlotFrameController extends javax.swing.JFrame implements nativePro
     private javax.swing.JLabel XValueLabel;
     private javax.swing.JLabel YValueLabel;
     private javax.swing.JLabel ZValueLabel;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButtonOpenColorChooser;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JComboBox jComboBoxPlotChar;
+    private javax.swing.JComboBox jComboBoxTypeOf3DPlot;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
@@ -696,5 +748,12 @@ public class PlotFrameController extends javax.swing.JFrame implements nativePro
         support.log("Error occured durin Plot.");
         support.setStatusText("Plot Error!");
         this.JButtonPlot.setEnabled(true);
+    }
+
+    /**
+     * @return the noneString
+     */
+    public String getNoneString() {
+        return noneString;
     }
 }

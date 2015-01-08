@@ -254,12 +254,12 @@ public class typedef {
          */
         Ackley,
         /**
-          * Matyas function
-          */
+         * Matyas function
+         */
         Matya,
         /**
-          * Schwefel function
-          */
+         * Schwefel function
+         */
         Schwefel,
         //        /**
         //         * Rastrigins function
@@ -411,4 +411,41 @@ public class typedef {
         SomethingSuccessful
     };
 
+    /**
+     * Type of possible plots (no plot possible, 2D-Plot, 3D-Plot)
+     */
+    public enum typeOfPossiblePlot {
+
+        /**
+         * No Plot is possible, may no Axes are configured
+         */
+        NoPlot,
+
+        /**
+         * 2D-Plot is possble and colorchooser is active
+         */
+        Plot2D,
+
+        /**
+         * 3D-Plot is possible, also the interactive plot
+         */
+        Plot3D
+    };
+    
+    /**
+     * Type of 3D-Plot to export Script
+     */
+    public enum typeOf3DPlot{
+
+        /**
+         *Standard Scatterplot3D with lib plot3D
+         */
+        ScatterPlot,
+
+        /**
+         * interactive opengl with lib rgl
+         */
+        Perspective,
+    }
+    
 }
