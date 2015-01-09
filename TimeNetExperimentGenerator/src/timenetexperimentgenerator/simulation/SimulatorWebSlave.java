@@ -58,6 +58,7 @@ public class SimulatorWebSlave implements Runnable {
      * uploading results
      */
     public void run() {
+        support.setLogToWindow(false);//stop window-logging. this is not saved in properties
         while (!shouldEnd) {
             this.pathToTimeNet = support.getPathToTimeNet();//  pathToTimeNetTMP;
             //Request the server Api to get the Status Code and response body.
@@ -109,6 +110,7 @@ public class SimulatorWebSlave implements Runnable {
                 support.setStatusText("");
             }
         }
+        support.setLogToWindow(true);//start window-logging. this is not saved in properties
     }
 
     /**
@@ -149,7 +151,6 @@ public class SimulatorWebSlave implements Runnable {
             java.util.Scanner s = new java.util.Scanner(p.getInputStream()).useDelimiter("\\Z");//Scans output of process
             support.log(s.next());//prints output of process into System.out
             boolean isRunning = true;
-            int exitValue = 1;
             while (isRunning) {
                 try {
                     if (p.exitValue() == 0) {
@@ -183,6 +184,10 @@ public class SimulatorWebSlave implements Runnable {
 
             support.log("Delete Path to tmp files: " + path);
             support.del(new File(path));
+            support.log("Delete local log-file.");
+            support.del(new File(sinkFile));
+            support.log("Delete local xml-file.");
+            support.del(new File(exportFileName));
         } catch (IOException e) {
             e.printStackTrace();
         } catch (Exception ex) {
