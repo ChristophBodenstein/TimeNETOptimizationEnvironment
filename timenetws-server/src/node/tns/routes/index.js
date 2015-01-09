@@ -548,7 +548,7 @@ console.log("RESET-POST received, will try to reset server.");
 		console.log("Wrong password, will not reset server.");
 		
 		}
-res.render('index', {title: 'TimeNET distribution server', clientcount: Math.round(global.clientcount)});
+res.redirect('/');
 });
 
 module.exports = router;
