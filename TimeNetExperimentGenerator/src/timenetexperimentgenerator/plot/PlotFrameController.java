@@ -27,6 +27,7 @@ import javax.swing.JColorChooser;
 import java.io.FileOutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 import javax.swing.colorchooser.AbstractColorChooserPanel;
 import timenetexperimentgenerator.typedef;
@@ -41,6 +42,7 @@ public class PlotFrameController extends javax.swing.JFrame implements nativePro
     private final String rScriptFilePath = System.getProperty("user.dir") + File.separator + "rscript.r";
     Color plotColor = Color.black;
     private final String noneString = "None";
+    private final String errorFilename = "errorFile.Rout";
     private typedef.typeOfPossiblePlot possiblePlot = typedef.typeOfPossiblePlot.NoPlot;
 
     private final PlotFrame plotFrame;
@@ -433,7 +435,8 @@ public class PlotFrameController extends javax.swing.JFrame implements nativePro
             support.log("chosen .csv file: " + filePath);
             OpenFileTextField.setText(filePath);
             loadCSV(filePath);
-
+            
+            ((DefaultListModel)CachedFilesList.getModel()).addElement(filePath);
         } else {
             support.log("No .csv file selected.");
         }
@@ -485,11 +488,15 @@ public class PlotFrameController extends javax.swing.JFrame implements nativePro
 
         //Always delete image file first
         support.del(new File(imageFilePath));
+
+        //Delete Error-File
+        support.del(new File(errorFilename));
         try {
             if (!jCheckBox1.isSelected()) //create new script
             {
                 support.del(new File(rScriptFilePath));
                 writer = new PrintWriter("rscript.r", "UTF-8");
+                writer.println("options(warn=-1)");
                 writer.println("library(plot3D)");
             } else {
                 //append to existing script (hold is checked)
@@ -548,24 +555,66 @@ public class PlotFrameController extends javax.swing.JFrame implements nativePro
                             writer.println("my.array[ix,iy]<-subtemp$\"" + ZValueLabel.getText() + "\" ");
                             writer.println("} } }");
 
-                            //writer.println("zlim <- range(my.array)");
-                            //writer.println("zlen <- zlim[2] - zlim[1] + 1");
-                            //writer.println("colorlut <- terrain.colors(zlen) # height color lookup table");
-                            //writer.println("col <- colorlut[ my.array-zlim[1]+1 ] # assign colors to heights for each point");
+                            writer.println("col <- tryCatch({");
+                            writer.println("zlim <- range(my.array)");
+                            writer.println("zlen <- zlim[2] - zlim[1] + 1");
+                            writer.println("colorlut <- terrain.colors(zlen) # height color lookup table");
+                            writer.println("col <- colorlut[ my.array-zlim[1]+1 ] # assign colors to heights for each point");
+                            writer.println("}, error=function(cond) {");
                             writer.println("col=c(\"lightblue\")");
+                            writer.println("},warning=function(cond) {");
+                            writer.println("col=c(\"lightblue\")");
+                            writer.println("},finally={})");
 
                             writer.println("persp3d(x1, y1, my.array, col = col,xlab=\"" + XValueLabel.getText() + "\",ylab=\"" + YValueLabel.getText() + "\",zlab=\""
                                     + ZValueLabel.getText() + "\")");
+                            writer.println("grid3d(c(\"x\", \"y+\", \"z\"))");
                             //Open Browser with webgl
-                            writer.println("browseURL(paste(\"file://\", writeWebGL(dir=file.path(\"c:\", \"tmp\",\"webgl\"), \n"
+                            writer.println("browseURL(paste(\"file://\", writeWebGL(dir=file.path(" + getRCompatiblePathFromStandardPath(support.getTmpPath() + File.separator + "webgl") + "), \n"
                                     + "          width=1024), sep=\"\"))"
                                     + "");
                             /*String tmpPathURI=new File(support.getTmpPath()).getAbsoluteFile().toURI().toString();
-                            writer.println("browseURL(paste(\"file://\", writeWebGL(dir=file.path(\"" + tmpPathURI +  "\",\"webgl\"), \n"
-                                    + "          width=1024), sep=\"\"))"
-                                    + "");*/
+                             writer.println("browseURL(paste(\"file://\", writeWebGL(dir=file.path(\"" + tmpPathURI +  "\",\"webgl\"), \n"
+                             + "          width=1024), sep=\"\"))"
+                             + "");*/
                             break;
 
+                        case Heatmap:
+                            writer.println("library(rgl)");
+                            writer.println("x<-as.numeric(sub(\"" + "," + "\" , \"" + "." + "\", sub$\"" + XValueLabel.getText() + "\" )) ");
+                            writer.println("y<-as.numeric(sub(\"" + "," + "\" , \"" + "." + "\", sub$\"" + YValueLabel.getText() + "\" )) ");
+                            writer.println("z<-as.numeric(sub(\"" + "," + "\" , \"" + "." + "\", sub$\"" + ZValueLabel.getText() + "\" )) ");
+                            writer.println("x1<-unique(x)");
+                            writer.println("y1<-unique(y)");
+                            writer.println("x1<-sort(x1)");
+                            writer.println("y1<-sort(y1)");
+                            writer.println("#Create 2D-Array for z-values");
+                            writer.println("my.array<-array(dim=c(length(x1),length(y1)))");
+
+                            writer.println("for( ix in 1:length(x1)){");
+                            writer.println("for ( iy in 1:length(y1)){");
+                            writer.println("subtemp<-subset(sub, sub$\"" + XValueLabel.getText() + "\"==x1[ix])");
+                            writer.println("subtemp<-subset(subtemp, subtemp$\"" + YValueLabel.getText() + "\"==y1[iy])");
+                            writer.println("if(dim(subtemp)[1]==1){");
+                            writer.println("my.array[ix,iy]<-subtemp$\"" + ZValueLabel.getText() + "\" ");
+                            writer.println("} } }");
+
+                            writer.println("col <- tryCatch({");
+                            writer.println("zlim <- range(my.array)");
+                            writer.println("zlen <- zlim[2] - zlim[1] + 1");
+                            writer.println("colorlut <- terrain.colors(zlen) # height color lookup table");
+                            writer.println("col <- colorlut[ my.array-zlim[1]+1 ] # assign colors to heights for each point");
+                            writer.println("}, error=function(cond) {");
+                            writer.println("col=c(\"lightblue\")");
+                            writer.println("},warning=function(cond) {");
+                            writer.println("col=c(\"lightblue\")");
+                            writer.println("},finally={})");
+                            writer.println("png(filename=\"rplot.png\")");
+                            writer.println("image2D(z = my.array,x=x1,y=y1,xlab=\"" + XValueLabel.getText() + "\",ylab=\"" + YValueLabel.getText() + "\",clab=\""
+                                    + ZValueLabel.getText() + "\",rasterImage = TRUE,colkey = list(length = 0.5, shift = 0.0, width = 1.0, cex.axis=0.5))");
+
+                            //image2D(z = my.array,x=x1,y=y1,xlab = "X-Name", ylab = "Y-Name",rasterImage = TRUE, colkey = list(length = 0.5, shift = 0.0, width = 1.0, cex.axis=0.5))
+                            break;
                         default:
                             support.log("No 3DPlot-Type chosen. Plot not possible.");
                             break;
@@ -581,7 +630,7 @@ public class PlotFrameController extends javax.swing.JFrame implements nativePro
             }
             writer.close();
 
-            String command = support.getPathToR() + File.separator + "bin" + File.separator + "Rscript rscript.r 2> errorFile.Rout";
+            String command = support.getPathToR() + File.separator + "bin" + File.separator + "Rscript rscript.r > " + errorFilename;
             support.log("executing command: " + command);
 
             java.lang.ProcessBuilder processBuilder = new java.lang.ProcessBuilder(support.getPathToR() + File.separator + "bin" + File.separator + "Rscript", "rscript.r", "2>", "errorFile.Rout");
@@ -598,28 +647,49 @@ public class PlotFrameController extends javax.swing.JFrame implements nativePro
     }//GEN-LAST:event_JButtonPlotActionPerformed
 
     /**
+     * Converts a path to a String which is compatible with R-paths in scripts
+     */
+    public String getRCompatiblePathFromStandardPath(String standardPath) {
+        String pattern = Pattern.quote(System.getProperty("file.separator"));
+        String tmpString[] = standardPath.split(pattern);
+        String resultString = "";
+        for (int i = 0; i < tmpString.length; i++) {
+
+            resultString = resultString + "\"" + tmpString[i] + "\" ";
+            if (i < tmpString.length - 1) {
+                resultString = resultString + ",";
+            }
+        }
+        return resultString;
+    }
+
+    /**
      * Will show the image file, specified in the global vars of this class or
      * Error-Message in log This method is called by the native Thread as a
      * callback after creating the image file
      */
     @Override
     public void processEnded() {
+        boolean error = false;
         support.log("Try to show image at:" + imageFilePath);
         try {
-            String userdir = System.getProperty("user.dir");
-            File errorFile = new File(userdir + File.separator + "errorFile.Rout");
+            File errorFile = new File(errorFilename);
             if (errorFile.exists()) {
-                FileReader errorReader = new FileReader(errorFile);
-                BufferedReader bufferedErrorReader = new BufferedReader(errorReader);
-                String error;
 
-                while ((error = bufferedErrorReader.readLine()) != null) {
-                    support.log(error);
+                if (errorFile.length() >= 2) {
+                    error=true;
+                    FileReader errorReader = new FileReader(errorFile);
+                    BufferedReader bufferedErrorReader = new BufferedReader(errorReader);
+                    String eLine;
+                    while ((eLine = bufferedErrorReader.readLine()) != null) {
+                        support.log(eLine);
+                    }
+
+                    bufferedErrorReader.close();
+                    errorReader.close();
+                    JOptionPane.showMessageDialog(null, "There were Errors running R-Script for plot. See Log for details.");
+                    errorFile.delete();
                 }
-
-                bufferedErrorReader.close();
-                errorReader.close();
-                errorFile.delete();
             }
         } catch (Exception e) {
             support.log("Error while reading the error file.");
@@ -627,7 +697,9 @@ public class PlotFrameController extends javax.swing.JFrame implements nativePro
         if (this.possiblePlot == typedef.typeOfPossiblePlot.Plot3D && typedef.typeOf3DPlot.valueOf(jComboBoxTypeOf3DPlot.getSelectedItem().toString()) == typedef.typeOf3DPlot.Perspective) {
             //3d-Plot was rendered to webgl
         } else {
-            plotFrame.showImage(imageFilePath);
+            if (!error) {
+                plotFrame.showImage(imageFilePath);
+            }
         }
         support.setStatusText("");
         this.JButtonPlot.setEnabled(true);

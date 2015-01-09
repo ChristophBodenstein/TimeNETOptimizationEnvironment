@@ -446,6 +446,11 @@ public class typedef {
          * interactive opengl with lib rgl
          */
         Perspective,
+        
+        /**
+         * Draws a 2D-Heatmap
+         */
+        Heatmap
     }
     
 }
