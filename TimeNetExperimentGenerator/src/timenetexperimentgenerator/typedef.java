@@ -453,4 +453,18 @@ public class typedef {
         Heatmap
     }
     
+    /**
+     * Type of distance calculation in definition space for found optima
+     */
+    public enum typeOfRelativeDistanceCalculation{ 
+
+        /**
+         * Use standard relative distance
+         */
+        STANDARD, 
+
+        /**
+         * use EULID Distance and calc relative value
+         */
+        EUKLID}
 }

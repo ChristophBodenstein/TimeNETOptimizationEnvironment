@@ -37,7 +37,7 @@ import timenetexperimentgenerator.typedef.typeOfProcessFeedback;
 public class support {
 
 //This Version of TimeNetExperimentGenerator
-    public static final String VERSION = "2015-01-09";
+    public static final String VERSION = "2015-01-29";
 
 //Define some program-wide default values
     public static final double DEFAULT_STEPPING = 1.0;
@@ -118,6 +118,8 @@ public class support {
 
     public static final int DEFAULT_MEMORYPRINT_INTERVALL = 1;//in seconds. Default Interval between updating the memory-usage-progressbar
 
+    public static final typeOfRelativeDistanceCalculation DEFAULT_TYPE_OF_RELATIVE_DISTANCE_CALCULATION = typeOfRelativeDistanceCalculation.EUKLID;//Distance calculation for opti-results
+    
 //End of program-wide default value definition
     private static JLabel statusLabel = null;//The label for showing status information
     private static String originalFilename = null;//The original SCPN source file to fork for every simulation
@@ -133,14 +135,15 @@ public class support {
     private static String remoteAddress = null;
     private static typedef.typeOfOptimization chosenOptimizerType = DEFAULT_TYPE_OF_OPTIMIZER;//0=Greedy, 1=?, 2=?
     private static typeOfSimulator chosenSimulatorType = DEFAULT_TYPE_OF_SIMULATOR;//0=local, 1=cached, 2=distributed
-    private static LogFrame myLogFrame = new LogFrame();
+    private static LogFrame myLogFrame = new LogFrame();//Frame for log-output
     private static ArrayList<parameter> parameterBase = null;//Base set of parameters, start/end-value, stepping, etc.
     private static ArrayList<parameter> originalParameterBase = null;//Base set of parameters, This will remain unchanged even in Multistage-Mode
 
     private static boolean cancelEverything = false;//If set to true, everything is cancelled
     private static typeOfBenchmarkFunction chosenBenchmarkFunction = DEFAULT_TYPE_OF_BENCHMARKFUNCTION;
     private static long lastTimeOfSpinning = 0;
-
+    
+    private static typeOfRelativeDistanceCalculation chosenTypeOfRelativeDistanceCalculation=DEFAULT_TYPE_OF_RELATIVE_DISTANCE_CALCULATION;
     private static int numberOfOptiRunsToGo = 1;//multiple-Optimization-run-number
 
 //Defaults for Benchmark-Funktions
@@ -157,7 +160,7 @@ public class support {
 
 //Defaults for Opti-Statistics
     public static final int DEFAULT_NUMBER_OF_OPTI_PROB_CLASSES = 100;
-
+    
     private static int globalSimulationCounter = 0;
 
 //List of Changable parameters for Multiphase-opi
@@ -1807,5 +1810,19 @@ public class support {
      */
     public static void setMeasures(ArrayList<MeasureType> MeasuresT) {
         Measures = MeasuresT;
+    }
+
+    /**
+     * @return the chosenTypeOfRelativeDistanceCalculation
+     */
+    public static typeOfRelativeDistanceCalculation getChosenTypeOfRelativeDistanceCalculation() {
+        return chosenTypeOfRelativeDistanceCalculation;
+    }
+
+    /**
+     * @param aChosenTypeOfRelativeDistanceCalculation the chosenTypeOfRelativeDistanceCalculation to set
+     */
+    public static void setChosenTypeOfRelativeDistanceCalculation(typeOfRelativeDistanceCalculation aChosenTypeOfRelativeDistanceCalculation) {
+        chosenTypeOfRelativeDistanceCalculation = aChosenTypeOfRelativeDistanceCalculation;
     }
 }

@@ -118,8 +118,8 @@ public class SimulationType {
     }
 
     /**
-     * Returns distance to target simulation coordinates in design space the distance
-     * is relative to the whole design space, So Sum of all
+     * Returns distance to target simulation coordinates in design space the
+     * distance is relative to the whole design space, So Sum of all
      * parameter-value-ranges equals 100% It works only for few Benchmark
      * functions and for normal petri nets if theroetical optimum is given!
      *
@@ -130,15 +130,35 @@ public class SimulationType {
     public double getRelativeDistanceInDefinitionRange(SimulationType targetSimulation) {
         double rangeSum = 0.0;
         double distanceSum = 0.0;
-        for (int i = 0; i < targetSimulation.getListOfParameters().size(); i++) {
-            parameter pOptimumCalculated = targetSimulation.getListOfParameters().get(i);
-            if (pOptimumCalculated.isIteratableAndIntern()) {
-                parameter pOptimumFound = support.getParameterByName(this.parameterList, pOptimumCalculated.getName());
-                rangeSum = rangeSum + Math.abs(pOptimumCalculated.getEndValue() - pOptimumCalculated.getStartValue());
-                distanceSum = distanceSum + Math.abs(pOptimumCalculated.getValue() - pOptimumFound.getValue());
-            }
+
+        switch (support.getChosenTypeOfRelativeDistanceCalculation()) {
+            case STANDARD:
+                for (int i = 0; i < targetSimulation.getListOfParameters().size(); i++) {
+                    parameter pOptimumCalculated = targetSimulation.getListOfParameters().get(i);
+                    if (pOptimumCalculated.isIteratableAndIntern()) {
+                        parameter pOptimumFound = support.getParameterByName(this.parameterList, pOptimumCalculated.getName());
+                        rangeSum = rangeSum + Math.abs(pOptimumCalculated.getEndValue() - pOptimumCalculated.getStartValue());
+                        distanceSum = distanceSum + Math.abs(pOptimumCalculated.getValue() - pOptimumFound.getValue());
+                    }
+                }
+                distanceSum = (distanceSum * 100.0 / rangeSum);
+                break;
+            case EUKLID:
+                for (int i = 0; i < targetSimulation.getListOfParameters().size(); i++) {
+                    parameter pOptimumCalculated = targetSimulation.getListOfParameters().get(i);
+                    if (pOptimumCalculated.isIteratableAndIntern()) {
+                        parameter pOptimumFound = support.getParameterByName(this.parameterList, pOptimumCalculated.getName());
+                        rangeSum = rangeSum + Math.pow(pOptimumCalculated.getEndValue() - pOptimumCalculated.getStartValue(),2);
+                        distanceSum = distanceSum + Math.pow(pOptimumCalculated.getValue() - pOptimumFound.getValue(),2);
+                    }
+                }
+                distanceSum=Math.sqrt(distanceSum);
+                rangeSum=Math.sqrt(rangeSum);
+                distanceSum = (distanceSum * 100.0 / rangeSum);
+                break;
         }
-        return (distanceSum * 100.0 / rangeSum);
+
+        return distanceSum;
     }
 
     /**
@@ -327,14 +347,13 @@ public class SimulationType {
      * @return the double value of goven testString
      */
     /*public double getFloatString(String testString) {
-        if (!testString.equalsIgnoreCase("nan")) {
-            return Double.valueOf(testString);
-        } else {
-            return 0;
-        }
-    }
-    */
-    
+     if (!testString.equalsIgnoreCase("nan")) {
+     return Double.valueOf(testString);
+     } else {
+     return 0;
+     }
+     }
+     */
     /**
      * @return the isFromCache
      */
