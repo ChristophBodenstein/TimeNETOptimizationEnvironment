@@ -145,6 +145,7 @@ public class PlotFrameController extends javax.swing.JFrame implements nativePro
 
         final int maximum = jScrollPane1.getHorizontalScrollBar().getMaximum();
         jScrollPane1.getHorizontalScrollBar().setValue(maximum);
+        this.JButtonPlot.setEnabled(true);
     }
 
     /**
