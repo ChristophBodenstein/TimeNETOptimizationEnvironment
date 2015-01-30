@@ -227,7 +227,7 @@ public class StatisticAggregator {
 
             if (tmpRelativeDistanceInValueRange < 101) {
                 support.log("Average relative distance to calculated optimum in value range: " + averageDistanceToOptimumInValueRange + " %");
-                support.log("Average relative distance to calculated optimum in definition range " + averageDistanceToOptimumInDefinitionRange + " %");
+                support.log("Average relative ("+support.getChosenTypeOfRelativeDistanceCalculation().toString()+") distance to calculated optimum in definition range " + averageDistanceToOptimumInDefinitionRange + " %");
                 String tmpOutHead = "Radius:    ";
                 String tmpOutValue = "Values:    ";
                 String tmpOutDSValue = "DS-Values: ";
