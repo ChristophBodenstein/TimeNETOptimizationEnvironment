@@ -34,12 +34,11 @@ public class LogFrame extends javax.swing.JFrame {
         jMenuItemClearLogWindow = new javax.swing.JMenuItem();
 
         setTitle("Log Viewer");
-        setAutoRequestFocus(false);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         setMaximumSize(java.awt.Toolkit.getDefaultToolkit().getScreenSize());
         setMinimumSize(new java.awt.Dimension(650, 300));
+        setName("LogFrame"); // NOI18N
         setPreferredSize(new java.awt.Dimension(650, 300));
-        setType(java.awt.Window.Type.UTILITY);
 
         jTextAreaLog.setEditable(false);
         jTextAreaLog.setColumns(50);
