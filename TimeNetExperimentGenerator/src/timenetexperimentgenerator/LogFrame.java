@@ -29,11 +29,13 @@ public class LogFrame extends javax.swing.JFrame {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextAreaLog = new javax.swing.JTextArea();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu2 = new javax.swing.JMenu();
+        jMenuItemClearLogWindow = new javax.swing.JMenuItem();
 
         setTitle("Log Viewer");
         setAutoRequestFocus(false);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        setLocation(java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode().getWidth()/2 - 325,java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode().getHeight()/2  - this.getHeight()/2);
         setMaximumSize(java.awt.Toolkit.getDefaultToolkit().getScreenSize());
         setMinimumSize(new java.awt.Dimension(650, 300));
         setPreferredSize(new java.awt.Dimension(650, 300));
@@ -48,13 +50,34 @@ public class LogFrame extends javax.swing.JFrame {
 
         getContentPane().add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
+        jMenu2.setText("Edit");
+
+        jMenuItemClearLogWindow.setText("Clear");
+        jMenuItemClearLogWindow.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemClearLogWindowActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jMenuItemClearLogWindow);
+
+        jMenuBar1.add(jMenu2);
+
+        setJMenuBar(jMenuBar1);
+
         getAccessibleContext().setAccessibleParent(jTextAreaLog);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jMenuItemClearLogWindowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemClearLogWindowActionPerformed
+        this.clearText();
+    }//GEN-LAST:event_jMenuItemClearLogWindowActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItemClearLogWindow;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextAreaLog;
     // End of variables declaration//GEN-END:variables
