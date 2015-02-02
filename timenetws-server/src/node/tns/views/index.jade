@@ -5,8 +5,10 @@ block content
   
   p
   #clientcount
-  clientcount 
-  p #{clientcount} clients waiting for tasks.
+    p #{clientcount} clients waiting for tasks.
+
+  #clientsrunning
+    p #{clientsrunning} simulations distributed for and not yet ended.
   
   div
     form(name="reset", action="/reset", method="post")
