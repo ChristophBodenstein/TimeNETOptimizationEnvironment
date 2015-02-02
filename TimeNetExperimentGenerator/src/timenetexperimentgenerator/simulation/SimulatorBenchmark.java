@@ -437,4 +437,9 @@ public class SimulatorBenchmark implements Simulator, Runnable {
 //
 //        return myOptimumSimulation;
     }
+
+    @Override
+    public int cancelAllSimulations() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

@@ -58,4 +58,9 @@ public interface Simulator {
      * can be calculated (only useful for benchmark, Cache-* simulations)
      */
     public SimulationType getCalculatedOptimum(MeasureType targetMeasure);
+    
+    /**
+     * Cancel all running simulations (called on program exit)
+     */
+    public int cancelAllSimulations();
 }

@@ -179,6 +179,9 @@ public class support {
 
     private static boolean logToWindow = DEFAULT_LOG_TO_WINDOW;
     private static boolean logToFile = DEFAULT_LOG_TO_FILE;
+    
+    //Secret for storing sims on server and deleting them if cancelled
+    private static String serverSecret="";
 
     /**
      * Translates Parameternames from logfile to internal used Strings because
@@ -1824,5 +1827,21 @@ public class support {
      */
     public static void setChosenTypeOfRelativeDistanceCalculation(typeOfRelativeDistanceCalculation aChosenTypeOfRelativeDistanceCalculation) {
         chosenTypeOfRelativeDistanceCalculation = aChosenTypeOfRelativeDistanceCalculation;
+    }
+
+    /**
+     * Get server-secret. Needed to delete sims that are uploaded from this client
+     * @return the serverSecret
+     */
+    public static String getServerSecret() {
+        return serverSecret;
+    }
+
+    /**
+     * Set the server-secret. This is needed to delete sims that are uploaded from this client
+     * @param aServerSecret the serverSecret to set
+     */
+    public static void setServerSecret(String aServerSecret) {
+        serverSecret = aServerSecret;
     }
 }

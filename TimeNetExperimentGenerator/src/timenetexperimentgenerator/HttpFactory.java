@@ -10,6 +10,9 @@ import java.net.URISyntaxException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 
 /**
  *
@@ -29,7 +32,9 @@ public class HttpFactory {
      */
     public static DefaultHttpClient getHttpClient() {
         if (client == null) {
-            client = new DefaultHttpClient();
+            final HttpParams httpParams = new BasicHttpParams();
+            HttpConnectionParams.setConnectionTimeout(httpParams, 2000);
+            client = new DefaultHttpClient(httpParams); 
         }
         return client;
     }

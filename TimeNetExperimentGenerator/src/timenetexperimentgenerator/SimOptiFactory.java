@@ -6,6 +6,7 @@
  */
 package timenetexperimentgenerator;
 
+import java.util.ArrayList;
 import timenetexperimentgenerator.optimization.*;
 import timenetexperimentgenerator.simulation.*;
 
@@ -15,7 +16,7 @@ import timenetexperimentgenerator.simulation.*;
  */
 public class SimOptiFactory {
 //private static SimulationCache singleTonSimulationCache=new SimulationCache();
-
+private static ArrayList<Simulator> listOfCreatedSimulators = new ArrayList<Simulator>();//Lis of Simulators to end on program exit. First we use only remote simulators
     public static Simulator getSimulator() {
 
         switch (support.getChosenSimulatorType()) {
@@ -41,11 +42,14 @@ public class SimOptiFactory {
             //no break;
             case Distributed:
                 //Return distributed simulator
-                return new SimulatorWeb();
+                Simulator resultSim=new SimulatorWeb();
+                listOfCreatedSimulators.add(resultSim);
+                return resultSim;
             case Cached_Distributed:
                 //Return Cache&Distributed Simulator
                 SimulatorCachedDistributed returnSimulatorDistributed = new SimulatorCachedDistributed();
                 returnSimulatorDistributed.setMySimulationCache(support.getMySimulationCache());
+                listOfCreatedSimulators.add(returnSimulatorDistributed);
                 return returnSimulatorDistributed;
 
             case Benchmark:
@@ -56,6 +60,18 @@ public class SimOptiFactory {
         }
     }
 
+    /**
+     * End all remote Simulations if possible
+     */
+    public static int endAllRemoteSimulations(){
+    for (Simulator CreatedSimulator : listOfCreatedSimulators) {
+        if(CreatedSimulator!=null){
+        CreatedSimulator.cancelAllSimulations();
+        }
+    }
+    return 0;
+    }
+    
     /**
      * Returns a new Optimizer, based on chosen Optimizertype in MainFrame
      * (support.getChosenOptimization())

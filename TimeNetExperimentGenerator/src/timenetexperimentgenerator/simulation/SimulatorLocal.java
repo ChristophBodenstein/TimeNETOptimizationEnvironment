@@ -342,4 +342,9 @@ public class SimulatorLocal implements Runnable, Simulator, nativeProcessCallbac
         support.log("SimulatorLocal: Getting absolute optimum simulation from Cache. Will return null.");
         return null;
     }
+
+    @Override
+    public int cancelAllSimulations() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

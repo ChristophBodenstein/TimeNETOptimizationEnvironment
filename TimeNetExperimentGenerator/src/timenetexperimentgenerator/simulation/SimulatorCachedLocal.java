@@ -26,6 +26,7 @@ public class SimulatorCachedLocal extends SimulatorCached {
     private ArrayList<SimulationType> myListOfSimulationParsers = null;
     private String logFileName;
     private int status;
+    private Simulator myLocalSimulator = getNoCacheSimulator();
 
     /**
      * Constructor
@@ -45,7 +46,7 @@ public class SimulatorCachedLocal extends SimulatorCached {
      */
     @Override
     public void initSimulator(ArrayList< ArrayList<parameter>> listOfParameterSetsTMP, int simulationCounterTMP, boolean log) {
-        Simulator myLocalSimulator;
+        
         this.myListOfSimulationParsers = null;
         ArrayList< ArrayList<parameter>> remainingParametersets = new ArrayList< ArrayList<parameter>>();
         status = 0;
@@ -82,7 +83,7 @@ public class SimulatorCachedLocal extends SimulatorCached {
             support.log("Size of Remaining ParameterList is " + remainingParametersets.size());
             //Find simulations that are not already simulated
 
-            myLocalSimulator = getNoCacheSimulator();
+            
             myLocalSimulator.initSimulator(remainingParametersets, support.getGlobalSimulationCounter(), false);
             support.waitForEndOfSimulator(myLocalSimulator, support.getGlobalSimulationCounter(), support.DEFAULT_TIMEOUT);
 
@@ -165,6 +166,12 @@ public class SimulatorCachedLocal extends SimulatorCached {
     @Override
     public void setMySimulationCache(SimulationCache mySimulationCache) {
         this.mySimulationCache = mySimulationCache;
+    }
+    
+    @Override
+    public int cancelAllSimulations() {
+        this.myLocalSimulator.cancelAllSimulations();
+        return 0;
     }
 
 }

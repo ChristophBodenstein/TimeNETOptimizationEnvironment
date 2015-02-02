@@ -13,7 +13,6 @@ package timenetexperimentgenerator.simulation;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.logging.Level;
@@ -77,6 +76,7 @@ public class SimulatorWeb implements Runnable, Simulator {
     /**
      * Run-method of this thread, to be called by Thread.start()
      */
+    @Override
     public void run() {
         client = HttpFactory.getHttpClient();
         boolean uploadSuccessful;//To handle upload errors
@@ -108,7 +108,7 @@ public class SimulatorWeb implements Runnable, Simulator {
                             support.log("Trying to upload the same simulation " + count + " time. ThreadID:" + Thread.currentThread().toString());
                             try {
                                 //Upload the file
-                                executeMultiPartRequest(support.getReMoteAddress() + "/rest/file/upload", file, file.getName(), "File Uploaded :: WORDS", simid);
+                                uploadSimulationFile(support.getReMoteAddress() + "/rest/file/upload", file, file.getName(), "File Uploaded :: WORDS");
                                 uploadSuccessful = true;
                                 support.log("Upload successful. Will wait for results. Try: " + count);
                             } catch (Exception ex) {
@@ -139,7 +139,7 @@ public class SimulatorWeb implements Runnable, Simulator {
                 support.setStatusText("Waiting for results.(" + i + "/" + listOfParameterSets.size() + ")");
                 support.spinInLabel();
                 HttpResponse response = null;
-                String responseString = null;
+                String responseString;
 
                 httpGet = HttpFactory.getGetRequest(support.getReMoteAddress() + "/rest/api/downloads/log/" + simid);
                 //support.log("asking for results with address:" + support.getReMoteAddress() + "/rest/api/downloads/log/" + simid);
@@ -157,7 +157,7 @@ public class SimulatorWeb implements Runnable, Simulator {
                         //Check wether we already got the same file before if yes discard it else process it 
                         if (listOfUnproccessedFilesNames.contains(filenameWithoutExtension)) {
 
-                            FileWriter fileWriter = null;
+                            FileWriter fileWriter;
 
                             support.log("Downloading filename=======" + filename);
                             String exportFileName = tmpFilePath + File.separator + filename;
@@ -231,7 +231,12 @@ public class SimulatorWeb implements Runnable, Simulator {
                 }
 
             }
-            support.log("All Simulation results collected from server. Simulator will end.");
+            if (support.isCancelEverything()) {
+                support.log("Distributed Simulation canceled. Will send command to delete all simulations on server.");
+                deleteAllSimulationsFromServer();
+            } else {
+                support.log("All Simulation results collected from server. Simulator will end.");
+            }
 
             /*try {
              Thread.currentThread().join();
@@ -287,7 +292,7 @@ public class SimulatorWeb implements Runnable, Simulator {
      * Delete all related files for this simulation (log, xml)
      */
     public void deleteSimulationOnServer(String filename) {
-    client = HttpFactory.getHttpClient();
+        client = HttpFactory.getHttpClient();
         HttpPost postRequest = HttpFactory.getPostRequest(support.getReMoteAddress() + "/deleteSimulation");
         try {
             support.log("Try to connect " + postRequest.getURI().toString());
@@ -296,6 +301,7 @@ public class SimulatorWeb implements Runnable, Simulator {
             MultipartEntity multiPartEntity = new MultipartEntity();
             multiPartEntity.addPart("prefix", new StringBody(filename));
             multiPartEntity.addPart("simid", new StringBody(simid));
+            multiPartEntity.addPart("serversecret", new StringBody(support.getServerSecret()));
             //Set to request body
             postRequest.setEntity(multiPartEntity);
 
@@ -303,12 +309,49 @@ public class SimulatorWeb implements Runnable, Simulator {
 
             //Send request
             String result = client.execute(postRequest, myTmpResponseHandler);
-            support.log("Response of Upload was:" + result);
+            //support.log("Response of delete-request was:" + result);
             if (result.contains("false")) {
-                throw new Exception("Deletion of file " + filename +" not successful. Server returned false!");
+                throw new Exception("Deletion of file " + filename + " not successful. Server returned false!");
             }
             if (result.contains("true")) {
-                support.log("Deletion of file " + filename + " successful.");
+                //support.log("Deletion of file " + filename + " successful.");
+            }
+            multiPartEntity.consumeContent();
+            //EntityUtils.consume(response.getEntity());
+            postRequest.releaseConnection();
+            postRequest.reset();
+
+        } catch (Exception ex) {
+            support.log(ex.getLocalizedMessage());
+        }
+    }
+
+    /**
+     * Will delete ALL Simulations, uploaded by this client! Useful when
+     * simulation runs are canceled
+     */
+    public void deleteAllSimulationsFromServer() {
+        client = HttpFactory.getHttpClient();
+        HttpPost postRequest = HttpFactory.getPostRequest(support.getReMoteAddress() + "/deleteAllSimulations");
+        try {
+            support.log("Try to connect " + postRequest.getURI().toString());
+
+            //Set various attributes 
+            MultipartEntity multiPartEntity = new MultipartEntity();
+            multiPartEntity.addPart("simid", new StringBody(this.simid));
+            multiPartEntity.addPart("serversecret", new StringBody(support.getServerSecret()));
+            //Set to request body
+            postRequest.setEntity(multiPartEntity);
+            BasicResponseHandler myTmpResponseHandler = new BasicResponseHandler();
+
+            //Send request
+            String result = client.execute(postRequest, myTmpResponseHandler);
+            support.log("Response of Upload was:" + result);
+            if (result.contains("false")) {
+                throw new Exception("Deletion of all Simulations not successful. Server returned false!");
+            }
+            if (result.contains("true")) {
+                support.log("Deletion of all Simulations successful.");
             }
             multiPartEntity.consumeContent();
             //EntityUtils.consume(response.getEntity());
@@ -453,11 +496,9 @@ public class SimulatorWeb implements Runnable, Simulator {
      * @param fileName Filename to be used in multipart-text-field fileName
      * @param fileDescription fileDescription to be used in multipart-text-field
      * fileDescription
-     * @param simid simid to be used in multipart-text-field simid, identifies
-     * th starting simulator
      * @throws java.lang.Exception
      */
-    public void executeMultiPartRequest(String urlString, File file, String fileName, String fileDescription, String simid) throws Exception {
+    public void uploadSimulationFile(String urlString, File file, String fileName, String fileDescription) throws Exception {
         client = HttpFactory.getHttpClient();
         HttpPost postRequest = HttpFactory.getPostRequest(urlString);
         try {
@@ -467,7 +508,8 @@ public class SimulatorWeb implements Runnable, Simulator {
             MultipartEntity multiPartEntity = new MultipartEntity();
             multiPartEntity.addPart("fileDescription", new StringBody(fileDescription != null ? fileDescription : ""));
             multiPartEntity.addPart("fileName", new StringBody(fileName != null ? fileName : file.getName()));
-            multiPartEntity.addPart("simid", new StringBody(simid));
+            multiPartEntity.addPart("simid", new StringBody(this.simid));
+            multiPartEntity.addPart("serversecret", new StringBody(support.getServerSecret()));
 
             //FileBody fileBody = new FileBody(file, "application/octect-stream") ;
             FileBody fileBody = new FileBody(file, "multipart/form-data");
@@ -511,6 +553,12 @@ public class SimulatorWeb implements Runnable, Simulator {
     public SimulationType getCalculatedOptimum(MeasureType targetMeasure) {
         //support.log("SimulatorWeb: Getting absolute optimum simulation from Cache. Will return null.");
         return null;
+    }
+
+    @Override
+    public int cancelAllSimulations() {
+        this.deleteAllSimulationsFromServer();
+        return 0;
     }
 
 }

@@ -176,4 +176,9 @@ public class SimulatorCached implements Simulator {
 
         return mySimulationList.get(numberOfOptimalSimulation);
     }
+
+    @Override
+    public int cancelAllSimulations() {
+    return 0;   
+    }
 }

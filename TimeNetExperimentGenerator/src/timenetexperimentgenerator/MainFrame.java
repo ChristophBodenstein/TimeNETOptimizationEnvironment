@@ -17,6 +17,9 @@ import java.awt.Dialog.ModalityType;
 import java.io.*;
 import java.io.File;
 import java.io.IOException;
+import static java.lang.Math.random;
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Properties;
@@ -112,19 +115,13 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
 
         this.jTextFieldSCPNFile.setText(auto.getProperty("file"));
         //this.jTextFieldPathToTimeNet.setText(auto.getProperty("timenetpath"));
-        this.setPathToTimeNet(auto.getProperty("timenetpath"));
+        this.setPathToTimeNet(auto.getProperty("timenetpath", ""));
         //support.log("Read Path to TimeNet:"+auto.getProperty("timenetpath"));
-        this.setPathToR(auto.getProperty("rpath"));
+        this.setPathToR(auto.getProperty("rpath", ""));
         //Read tmp path from properties, needed for client-mode-start
         support.setTmpPath(auto.getProperty("tmppath"));
 
-        //set null strings to empty strings, avoids a crash when saving the configuration
-        if (this.getPathToR() == null) {
-            this.setPathToR("");
-        }
-        if (this.getPathToTimeNet() == null) {
-            this.setPathToTimeNet("");
-        }
+        support.setServerSecret(auto.getProperty("serversecret", new BigInteger(70, new SecureRandom()).toString(32)));
 
         //init r plugin
         rplugin = new RPlugin();
@@ -194,7 +191,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                 return this;
             }
         });
-        
+
         support.setStatusLabel(jLabelExportStatus);
         support.setMeasureFormPane(jTabbedPaneOptiTargets);
         support.setPathToTimeNet(pathToTimeNet);
@@ -249,6 +246,16 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         if (support.isIsRunningAsSlave()) {
             this.switchUIState(uiState.clientState);
         }
+
+        this.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                JOptionPane.showMessageDialog(windowEvent.getWindow(),
+                "Will try to shut down remote simulations...");
+                SimOptiFactory.endAllRemoteSimulations();
+                System.exit(0);
+            }
+        });
     }
 
     /**
@@ -346,6 +353,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         jLabelMemoryUsage = new javax.swing.JLabel();
         jLabelSpinning = new javax.swing.JLabel();
         jSpinnerNumberOfOptimizationRuns = new javax.swing.JSpinner();
+        jButton1 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jSeparator4 = new javax.swing.JPopupMenu.Separator();
@@ -555,6 +563,13 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
 
         jSpinnerNumberOfOptimizationRuns.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
 
+        jButton1.setText("Secret");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         jMenu1.setText("File");
         jMenu1.add(jSeparator4);
         jMenu1.add(jSeparator5);
@@ -661,7 +676,10 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                                     .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 373, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                                     .add(jButtonPathToTimeNet, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 192, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                                     .add(jCheckBoxSlaveSimulator, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 198, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                    .add(jButtonEnterURLToSimServer, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 192, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                                    .add(layout.createSequentialGroup()
+                                        .add(jButtonEnterURLToSimServer, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 192, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                        .add(18, 18, 18)
+                                        .add(jButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 100, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
                                 .add(0, 0, Short.MAX_VALUE)))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -758,9 +776,11 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                     .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                         .add(jButtonPathToR, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 20, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .add(jButtonPlotR, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 20, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                .add(2, 2, 2)
-                .add(jButtonEnterURLToSimServer, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 20, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(1, 1, 1)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(jButtonEnterURLToSimServer, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 20, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 22, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .add(12, 12, 12)
                 .add(jCheckBoxSlaveSimulator)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -1281,6 +1301,14 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
 
     }//GEN-LAST:event_jCheckBoxSlaveSimulatorActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        String newServerSecret = JOptionPane.showInputDialog(this, "Please enter a secred word/number to secure your simulations on server.", support.getServerSecret());
+        if (newServerSecret != null) {
+            support.setServerSecret(newServerSecret);
+            this.saveProperties();
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     /**
      * Calculates the design space, number of all permutations of parameters
      * with respect to the stepping sizes
@@ -1381,6 +1409,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButtonCancel;
     private javax.swing.JButton jButtonEnterURLToSimServer;
     private javax.swing.JButton jButtonExport;
@@ -1482,11 +1511,10 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
             DefaultCellEditor singleclick = new DefaultCellEditor(new JTextField());
             singleclick.setClickCountToStart(1);
             for (int i = 0; i < jTableParameterList.getColumnCount(); i++) {
-            jTableParameterList.setDefaultEditor(jTableParameterList.getColumnClass(i), singleclick);
-            
+                jTableParameterList.setDefaultEditor(jTableParameterList.getColumnClass(i), singleclick);
+
             }
-            
-            
+
             this.fileName = filename;//nach Erfolg, globalen filename setzen
             support.setOriginalFilename(filename);
             activateGenerateButtons();
@@ -1780,11 +1808,11 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         }
         support.log("Saving Properties.");
         try {
-            //support.log("rpath = " + this.getPathToR());
-            //support.log("timenetpath = " + this.getPathToTimeNet());
 
             auto.setProperty("timenetpath", this.getPathToTimeNet());
             auto.setProperty("file", this.jTextFieldSCPNFile.getText());
+
+            auto.setProperty("serversecret", support.getServerSecret());
 
             auto.setProperty("rpath", this.getPathToR());
 
