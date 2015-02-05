@@ -46,7 +46,7 @@ import timenetexperimentgenerator.support;
  *
  * @author Christoph Bodenstein & ...
  */
-public class SimulatorWeb implements Runnable, Simulator {
+public class SimulatorDistributed implements Runnable, Simulator {
 
     String logFileName = "";
     ArrayList< ArrayList<parameter>> listOfParameterSets;
@@ -67,7 +67,7 @@ public class SimulatorWeb implements Runnable, Simulator {
     /**
      * Constructor
      */
-    public SimulatorWeb() {
+    public SimulatorDistributed() {
         logFileName = support.getTmpPath() + File.separator + "SimLog_DistributedSimulation" + Calendar.getInstance().getTimeInMillis() + ".csv";
         listOfUnproccessedFilesNames = new ArrayList<String>();
         simid = Long.toString(Calendar.getInstance().getTimeInMillis());
@@ -551,7 +551,7 @@ public class SimulatorWeb implements Runnable, Simulator {
      * @return caluclated optimum. Not possible in Web-Simulator so returns null
      */
     public SimulationType getCalculatedOptimum(MeasureType targetMeasure) {
-        //support.log("SimulatorWeb: Getting absolute optimum simulation from Cache. Will return null.");
+        //support.log("SimulatorDistributed: Getting absolute optimum simulation from Cache. Will return null.");
         return null;
     }
 

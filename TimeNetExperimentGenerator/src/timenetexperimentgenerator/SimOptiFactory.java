@@ -42,7 +42,7 @@ private static ArrayList<Simulator> listOfCreatedSimulators = new ArrayList<Simu
             //no break;
             case Distributed:
                 //Return distributed simulator
-                Simulator resultSim=new SimulatorWeb();
+                Simulator resultSim=new SimulatorDistributed();
                 listOfCreatedSimulators.add(resultSim);
                 return resultSim;
             case Cached_Distributed:

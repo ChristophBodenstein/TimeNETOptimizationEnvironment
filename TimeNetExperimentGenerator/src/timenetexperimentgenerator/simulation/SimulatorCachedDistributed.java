@@ -21,6 +21,6 @@ public class SimulatorCachedDistributed extends SimulatorCachedLocal {
      */
     @Override
     public Simulator getNoCacheSimulator() {
-        return new SimulatorWeb();
+        return new SimulatorDistributed();
     }
 }
