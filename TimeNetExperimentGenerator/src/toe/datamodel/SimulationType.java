@@ -220,7 +220,7 @@ public class SimulationType {
         activeMeasure.setTargetValue(targetMeasure.getMeanValue(), targetMeasure.getTargetTypeOf());
 
         distance = activeMeasure.getDistanceFromTarget();
-        support.log("Absolute Distance to calculated Optimum (" + targetMeasure.getMeanValue() + ") is " + distance + " at a range of " + range + ".");
+//        support.log("Absolute Distance to calculated Optimum (" + targetMeasure.getMeanValue() + ") is " + distance + " at a range of " + range + ".");
 //            }
 //            //TODO Get Min-Max, Opti-Values from somewhere else!
 //        }
