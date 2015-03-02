@@ -20,7 +20,7 @@ import toe.datamodel.SimulationType;
 import toe.simulation.Simulator;
 import toe.support;
 import toe.simulation.SimulationCache;
-import toe.typedef.*;
+import toe.typedef;
 
 /**
  *
@@ -383,7 +383,7 @@ public class OptimizerHill implements Runnable, Optimizer {
                     wrongSolutionPerDirectionCounter = myPreferences.getPref_WrongSimulationsPerDirection();
 
                     support.log(myPreferences.getPref_WrongSimulationsPerDirection() + " wrong solutions in one direction.");
-                    if (this.directionOfOptimization && myPreferences.getPref_NeighborhoodType() == typeOfNeighborhoodEnum.StepForwardBackward) {
+                    if (this.directionOfOptimization && myPreferences.getPref_NeighborhoodType() == typedef.typeOfNeighborhoodEnum.StepForwardBackRandom) {
                         //Switch direction of Optimization but change the same old parameter
                         //This only applies if StepForwardBackward
 
@@ -560,13 +560,13 @@ public class OptimizerHill implements Runnable, Optimizer {
             MeasureType activeMeasure = p.getMeasureByName(listOfMeasures.get(measureCount).getMeasureName());
             MeasureType activeMeasureFromInterface = listOfMeasures.get(measureCount);//Contains Optimization targets
             activeMeasure.setTargetValue(activeMeasureFromInterface.getTargetValue(), activeMeasureFromInterface.getTargetTypeOf());
-            if (activeMeasure.getTargetTypeOf().equals("value")) {
+            if (activeMeasure.getTargetTypeOf().equals(typedef.typeOfTarget.value)) {
                 distance = activeMeasure.getDistanceFromTarget();
             } else {
-                if (activeMeasure.getTargetTypeOf().equals("min")) {
+                if (activeMeasure.getTargetTypeOf().equals(typedef.typeOfTarget.min)) {
                     distance = activeMeasure.getMeanValue();
                 } else {
-                    if (activeMeasure.getTargetTypeOf().equals("max")) {
+                    if (activeMeasure.getTargetTypeOf().equals(typedef.typeOfTarget.max)) {
                         distance = 0 - activeMeasure.getMeanValue();
                     }
                 }

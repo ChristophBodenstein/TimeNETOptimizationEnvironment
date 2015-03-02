@@ -1202,13 +1202,13 @@ public class support {
             MeasureType activeMeasure = p.getMeasureByName(measureList.get(measureCount).getMeasureName());
             MeasureType activeMeasureFromInterface = measureList.get(measureCount);//Contains Optimization targets
             activeMeasure.setTargetValue(activeMeasureFromInterface.getTargetValue(), activeMeasureFromInterface.getTargetTypeOf());
-            if (activeMeasure.getTargetTypeOf().equals("value")) {
+            if (activeMeasure.getTargetTypeOf().equals(typedef.typeOfTarget.value)) {
                 distance = activeMeasure.getDistanceFromTarget();
             } else {
-                if (activeMeasure.getTargetTypeOf().equals("min")) {
+                if (activeMeasure.getTargetTypeOf().equals(typedef.typeOfTarget.min)) {
                     distance = activeMeasure.getMeanValue();
                 } else {
-                    if (activeMeasure.getTargetTypeOf().equals("max")) {
+                    if (activeMeasure.getTargetTypeOf().equals(typedef.typeOfTarget.max)) {
                         distance = 0 - activeMeasure.getMeanValue();
                     }
                 }

@@ -243,6 +243,9 @@ public class StatisticAggregator {
                 support.log(tmpOutValue);
                 support.log(tmpOutDSValue);
             }
+            //Latex-Friendly output
+            support.log("Sim#, Distance, DistancsDS, CPU-Time");
+            support.log("&"+averageNumberOfSimulations+"    &"+averageDistanceToOptimumInValueRange+"\\%  &"+averageDistanceToOptimumInDefinitionRange+"\\% &"+averageCPUTimeTotal);
             support.log("++++ End of Optimization Statistics ++++");
         }
         support.setLogToWindow(logToWindow);//Set Window-logging to original value
