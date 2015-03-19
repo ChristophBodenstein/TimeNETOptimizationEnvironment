@@ -247,7 +247,12 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         listOfUIComponents.add(this.jSpinnerNumberOfOptimizationRuns);
 
         //Reload the last File
+        try{
         this.readSCPNFile(jTextFieldSCPNFile.getText());
+        }catch(Exception e){
+        support.log("Could not read SCPN-file!");
+        JOptionPane.showMessageDialog(null, "Please choose a correct SCPN file!");
+        }
 
         this.switchUIState(uiState.defaultState);
         if (support.isIsRunningAsSlave()) {
