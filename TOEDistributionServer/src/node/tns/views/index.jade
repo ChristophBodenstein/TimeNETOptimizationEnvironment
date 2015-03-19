@@ -1,0 +1,16 @@
+extends layout
+
+block content
+  h1= title
+  
+  p
+  #clientcount
+    p #{clientcount} clients waiting for tasks.
+
+  #clientsrunning
+    p #{clientsrunning} simulations distributed for simulation and not yet ended.
+  
+  div
+    form(name="reset", action="/reset", method="post")
+      input(type="password", name="password")
+      input(type="submit", value="Reset complete server!")
