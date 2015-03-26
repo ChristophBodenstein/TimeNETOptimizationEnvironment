@@ -149,7 +149,11 @@
                                       <Component id="jButtonPlotR" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <Component id="jScrollPane1" min="-2" pref="373" max="-2" attributes="0"/>
-                                  <Component id="jButtonPathToTimeNet" alignment="0" min="-2" pref="192" max="-2" attributes="0"/>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="jButtonPathToTimeNet" min="-2" pref="192" max="-2" attributes="0"/>
+                                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                                      <Component id="jCheckBoxDeleteTmpFiles" min="-2" max="-2" attributes="0"/>
+                                  </Group>
                                   <Component id="jCheckBoxSlaveSimulator" alignment="0" min="-2" pref="198" max="-2" attributes="0"/>
                                   <Group type="102" alignment="0" attributes="0">
                                       <Component id="jButtonEnterURLToSimServer" min="-2" pref="192" max="-2" attributes="0"/>
@@ -274,6 +278,7 @@
                   <Component id="jButtonStartOptimization" alignment="3" min="-2" pref="32" max="-2" attributes="0"/>
                   <Component id="jSpinnerNumberOfOptimizationRuns" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jButtonPathToTimeNet" alignment="3" min="-2" pref="20" max="-2" attributes="0"/>
+                  <Component id="jCheckBoxDeleteTmpFiles" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
@@ -594,6 +599,15 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="jCheckBoxDeleteTmpFiles">
+      <Properties>
+        <Property name="selected" type="boolean" value="true"/>
+        <Property name="text" type="java.lang.String" value="Del. tmp-files"/>
+      </Properties>
+      <Events>
+        <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="jCheckBoxDeleteTmpFilesItemStateChanged"/>
       </Events>
     </Component>
   </SubComponents>

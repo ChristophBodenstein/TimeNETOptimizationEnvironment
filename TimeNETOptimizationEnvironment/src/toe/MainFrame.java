@@ -155,6 +155,8 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
 
         this.pathToLastSimulationCache = auto.getProperty("pathToLastSimulationCache", "");
 
+        this.jCheckBoxDeleteTmpFiles.setSelected(new Boolean(auto.getProperty("deleteTmpFile", "True")));
+        support.setDeleteTmpSimulationFiles(jCheckBoxDeleteTmpFiles.isSelected());
         try {
             support.setChosenBenchmarkFunction(typeOfBenchmarkFunction.valueOf(auto.getProperty("BenchmarkType", support.DEFAULT_TYPE_OF_BENCHMARKFUNCTION.toString())));
         } catch (Exception e) {
@@ -247,11 +249,11 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         listOfUIComponents.add(this.jSpinnerNumberOfOptimizationRuns);
 
         //Reload the last File
-        try{
-        this.readSCPNFile(jTextFieldSCPNFile.getText());
-        }catch(Exception e){
-        support.log("Could not read SCPN-file!");
-        JOptionPane.showMessageDialog(null, "Please choose a correct SCPN file!");
+        try {
+            this.readSCPNFile(jTextFieldSCPNFile.getText());
+        } catch (Exception e) {
+            support.log("Could not read SCPN-file!");
+            JOptionPane.showMessageDialog(null, "Please choose a correct SCPN file!");
         }
 
         this.switchUIState(uiState.defaultState);
@@ -369,6 +371,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         jLabelSpinning = new javax.swing.JLabel();
         jSpinnerNumberOfOptimizationRuns = new javax.swing.JSpinner();
         jButton1 = new javax.swing.JButton();
+        jCheckBoxDeleteTmpFiles = new javax.swing.JCheckBox();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jSeparator4 = new javax.swing.JPopupMenu.Separator();
@@ -585,6 +588,14 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
             }
         });
 
+        jCheckBoxDeleteTmpFiles.setSelected(true);
+        jCheckBoxDeleteTmpFiles.setText("Del. tmp-files");
+        jCheckBoxDeleteTmpFiles.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jCheckBoxDeleteTmpFilesItemStateChanged(evt);
+            }
+        });
+
         jMenu1.setText("File");
         jMenu1.add(jSeparator4);
         jMenu1.add(jSeparator5);
@@ -689,7 +700,10 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                                         .add(18, 18, 18)
                                         .add(jButtonPlotR))
                                     .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 373, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                    .add(jButtonPathToTimeNet, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 192, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                    .add(layout.createSequentialGroup()
+                                        .add(jButtonPathToTimeNet, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 192, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                        .add(18, 18, 18)
+                                        .add(jCheckBoxDeleteTmpFiles))
                                     .add(jCheckBoxSlaveSimulator, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 198, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                                     .add(layout.createSequentialGroup()
                                         .add(jButtonEnterURLToSimServer, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 192, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
@@ -784,7 +798,8 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jButtonStartOptimization, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 32, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(jSpinnerNumberOfOptimizationRuns, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jButtonPathToTimeNet, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 20, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(jButtonPathToTimeNet, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 20, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jCheckBoxDeleteTmpFiles))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(jLabelExportStatus, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 29, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
@@ -1324,6 +1339,11 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void jCheckBoxDeleteTmpFilesItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBoxDeleteTmpFilesItemStateChanged
+        support.setDeleteTmpSimulationFiles(jCheckBoxDeleteTmpFiles.isSelected());
+        this.saveProperties();
+    }//GEN-LAST:event_jCheckBoxDeleteTmpFilesItemStateChanged
+
     /**
      * Calculates the design space, number of all permutations of parameters
      * with respect to the stepping sizes
@@ -1438,6 +1458,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
     private javax.swing.JButton jButtonReload;
     private javax.swing.JButton jButtonStartBatchSimulation;
     private javax.swing.JButton jButtonStartOptimization;
+    private javax.swing.JCheckBox jCheckBoxDeleteTmpFiles;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemLogToFile;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemLogToWindow;
     private javax.swing.JCheckBox jCheckBoxSlaveSimulator;
@@ -1859,6 +1880,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
             auto.setProperty("isRunningAsSlave", Boolean.toString(support.isIsRunningAsSlave()));
 
             auto.setProperty("RemoteAddress", support.getReMoteAddress());
+            auto.setProperty("deleteTmpFile", new Boolean(jCheckBoxDeleteTmpFiles.isSelected()).toString());
 
             if (support.getTmpPath() != null) {
                 auto.setProperty("tmppath", support.getTmpPath());

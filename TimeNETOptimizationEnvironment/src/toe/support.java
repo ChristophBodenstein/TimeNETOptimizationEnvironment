@@ -39,7 +39,7 @@ import toe.typedef.typeOfProcessFeedback;
 public class support {
 
 //This Version of TimeNetExperimentGenerator
-    public static final String VERSION = "2015-03-19";
+    public static final String VERSION = "2015-03-26";
 
 //Define some program-wide default values
     public static final double DEFAULT_STEPPING = 1.0;
@@ -53,7 +53,7 @@ public class support {
     public static final typeOfSimulator DEFAULT_TYPE_OF_SIMULATOR = typeOfSimulator.Local;
     public static final typeOfOptimization DEFAULT_TYPE_OF_OPTIMIZER = typeOfOptimization.HillClimbing;
     public static final typeOfBenchmarkFunction DEFAULT_TYPE_OF_BENCHMARKFUNCTION = typeOfBenchmarkFunction.Sphere;
-    public static final double DEFAULT_DOUBLE_VALUE=1.0;
+    public static final double DEFAULT_DOUBLE_VALUE = 1.0;
 
 //default values for distributed simulation
     public static final int DEFAULT_SLEEPING_TIME = 1000;
@@ -121,7 +121,7 @@ public class support {
     public static final int DEFAULT_MEMORYPRINT_INTERVALL = 1;//in seconds. Default Interval between updating the memory-usage-progressbar
 
     public static final typeOfRelativeDistanceCalculation DEFAULT_TYPE_OF_RELATIVE_DISTANCE_CALCULATION = typeOfRelativeDistanceCalculation.EUKLID;//Distance calculation for opti-results
-    
+
 //End of program-wide default value definition
     private static JLabel statusLabel = null;//The label for showing status information
     private static String originalFilename = null;//The original SCPN source file to fork for every simulation
@@ -144,9 +144,11 @@ public class support {
     private static boolean cancelEverything = false;//If set to true, everything is cancelled
     private static typeOfBenchmarkFunction chosenBenchmarkFunction = DEFAULT_TYPE_OF_BENCHMARKFUNCTION;
     private static long lastTimeOfSpinning = 0;
-    
-    private static typeOfRelativeDistanceCalculation chosenTypeOfRelativeDistanceCalculation=DEFAULT_TYPE_OF_RELATIVE_DISTANCE_CALCULATION;
+
+    private static typeOfRelativeDistanceCalculation chosenTypeOfRelativeDistanceCalculation = DEFAULT_TYPE_OF_RELATIVE_DISTANCE_CALCULATION;
     private static int numberOfOptiRunsToGo = 1;//multiple-Optimization-run-number
+
+    private static boolean deleteTmpSimulationFiles = true;
 
 //Defaults for Benchmark-Funktions
     public static final double DEFAULT_ACKLEY_limitLower = -5;
@@ -162,7 +164,7 @@ public class support {
 
 //Defaults for Opti-Statistics
     public static final int DEFAULT_NUMBER_OF_OPTI_PROB_CLASSES = 100;
-    
+
     private static int globalSimulationCounter = 0;
 
 //List of Changable parameters for Multiphase-opi
@@ -181,9 +183,9 @@ public class support {
 
     private static boolean logToWindow = DEFAULT_LOG_TO_WINDOW;
     private static boolean logToFile = DEFAULT_LOG_TO_FILE;
-    
+
     //Secret for storing sims on server and deleting them if cancelled
-    private static String serverSecret="";
+    private static String serverSecret = "";
 
     /**
      * Translates Parameternames from logfile to internal used Strings because
@@ -1825,14 +1827,17 @@ public class support {
     }
 
     /**
-     * @param aChosenTypeOfRelativeDistanceCalculation the chosenTypeOfRelativeDistanceCalculation to set
+     * @param aChosenTypeOfRelativeDistanceCalculation the
+     * chosenTypeOfRelativeDistanceCalculation to set
      */
     public static void setChosenTypeOfRelativeDistanceCalculation(typeOfRelativeDistanceCalculation aChosenTypeOfRelativeDistanceCalculation) {
         chosenTypeOfRelativeDistanceCalculation = aChosenTypeOfRelativeDistanceCalculation;
     }
 
     /**
-     * Get server-secret. Needed to delete sims that are uploaded from this client
+     * Get server-secret. Needed to delete sims that are uploaded from this
+     * client
+     *
      * @return the serverSecret
      */
     public static String getServerSecret() {
@@ -1840,10 +1845,30 @@ public class support {
     }
 
     /**
-     * Set the server-secret. This is needed to delete sims that are uploaded from this client
+     * Set the server-secret. This is needed to delete sims that are uploaded
+     * from this client
+     *
      * @param aServerSecret the serverSecret to set
      */
     public static void setServerSecret(String aServerSecret) {
         serverSecret = aServerSecret;
+    }
+
+    /**
+     * If true, all tmp c-files will be delted after every local simulation
+     *
+     * @return the deleteTmpSimulationFiles
+     */
+    public static boolean isDeleteTmpSimulationFiles() {
+        return deleteTmpSimulationFiles;
+    }
+
+    /**
+     * If true, all tmp c-files will be delted after every local simulation
+     *
+     * @param aDeleteTmpSimulationFiles the deleteTmpSimulationFiles to set
+     */
+    public static void setDeleteTmpSimulationFiles(boolean aDeleteTmpSimulationFiles) {
+        deleteTmpSimulationFiles = aDeleteTmpSimulationFiles;
     }
 }

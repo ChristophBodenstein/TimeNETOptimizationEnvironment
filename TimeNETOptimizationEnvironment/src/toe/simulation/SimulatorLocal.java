@@ -240,6 +240,14 @@ public class SimulatorLocal implements Runnable, Simulator, nativeProcessCallbac
      */
     private void startLocalSimulation(String exportFileName) {
         try {
+            File file = new File(exportFileName);
+            String tmpPath = file.getAbsolutePath().substring(0, file.getAbsolutePath().lastIndexOf(File.separator)) + File.separator + nameOfTempDirectory;
+
+            if (support.isDeleteTmpSimulationFiles()) {
+                //Clean up before simulation, in case an old sim used the same dir
+                support.log("Delete Path to tmp files: " + tmpPath);
+                support.del(new File(tmpPath));
+            }
             // Execute command
             java.lang.ProcessBuilder processBuilder = new java.lang.ProcessBuilder("java", "-jar", "TimeNET.jar", exportFileName, "autostart=true", "autostop=true", "secmax=" + support.getIntStringValueFromFileName(exportFileName, "MaxTime"), "endtime=" + support.getIntStringValueFromFileName(exportFileName, "EndTime"), "seed=" + support.getIntStringValueFromFileName(exportFileName, "Seed"), "confidence=" + support.getIntStringValueFromFileName(exportFileName, "ConfidenceIntervall"), "epsmax=" + support.getValueFromFileName(exportFileName, "MaxRelError"));
             processBuilder.directory(new java.io.File(this.pathToTimeNet));
@@ -269,11 +277,12 @@ public class SimulatorLocal implements Runnable, Simulator, nativeProcessCallbac
                 support.log("Deleted original Log-file and directory.");
                 this.actualSimulationLogFile = sinkFile;
             }
-            File file = new File(exportFileName);
-            String path = file.getAbsolutePath().substring(0, file.getAbsolutePath().lastIndexOf(File.separator)) + File.separator + nameOfTempDirectory;
 
-            support.log("Delete Path to tmp files: " + path);
-            support.del(new File(path));
+            if (support.isDeleteTmpSimulationFiles()) {
+                //Clean up after simulation
+                support.log("Delete Path to tmp files: " + tmpPath);
+                support.del(new File(tmpPath));
+            }
         } catch (Exception e) {
             support.log("Problem simulating local.");
         }
