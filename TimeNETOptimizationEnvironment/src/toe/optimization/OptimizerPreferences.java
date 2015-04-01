@@ -202,6 +202,10 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         jSpinnerGeneticPopulationSize = new javax.swing.JSpinner();
         jSpinnerGeneticMutationChance = new javax.swing.JSpinner();
         jCheckBoxGeneticMutateTopSolution = new javax.swing.JCheckBox();
+        jSpinnerMaxOptiRunsWithoutImprovement = new javax.swing.JSpinner();
+        jLabel27 = new javax.swing.JLabel();
+        jComboBoxTypeOfGeneticCrossing = new javax.swing.JComboBox();
+        jLabel30 = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         jSpinnerCSSPopulationSize = new javax.swing.JSpinner();
         jLabelCSSPopulationSize = new javax.swing.JLabel();
@@ -227,10 +231,10 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         jLabelMVMOAsymmetryFactor = new javax.swing.JLabel();
         jSpinnerMVMOsd = new javax.swing.JSpinner();
         jLabelMVMOsd = new javax.swing.JLabel();
-        jLabelMVMOParentSelection = new javax.swing.JLabel();
-        jLabelMVMOMutationSelection = new javax.swing.JLabel();
-        jComboBoxTypeOfMVMOParentSelection = new javax.swing.JComboBox();
         jComboBoxTypeOfMVMOMutationSelection = new javax.swing.JComboBox();
+        jLabel28 = new javax.swing.JLabel();
+        jComboBoxTypeOfParentSelection = new javax.swing.JComboBox();
+        jLabel29 = new javax.swing.JLabel();
 
         jLabelStartvalueForParameters.setText("Startvalue for parameters");
 
@@ -682,6 +686,24 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             }
         });
 
+        jSpinnerMaxOptiRunsWithoutImprovement.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
+
+        jLabel27.setText("Maximum Optiruns without improvment");
+
+        jComboBoxTypeOfGeneticCrossing.setModel(new DefaultComboBoxModel(typeOfGeneticCrossover.values()));
+        jComboBoxTypeOfGeneticCrossing.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jComboBoxTypeOfGeneticCrossingItemStateChanged(evt);
+            }
+        });
+        jComboBoxTypeOfGeneticCrossing.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBoxTypeOfGeneticCrossingActionPerformed(evt);
+            }
+        });
+
+        jLabel30.setText("Kind of crossing");
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -701,7 +723,15 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
                             .addComponent(jLabelGeneticMutationChance)
                             .addGap(22, 22, 22)
                             .addComponent(jSpinnerGeneticMutationChance))))
-                .addGap(653, 653, 653))
+                .addGap(46, 46, 46)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel27)
+                    .addComponent(jLabel30))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jSpinnerMaxOptiRunsWithoutImprovement, javax.swing.GroupLayout.DEFAULT_SIZE, 65, Short.MAX_VALUE)
+                    .addComponent(jComboBoxTypeOfGeneticCrossing, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(492, 492, 492))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -709,14 +739,18 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabelGeneticPopulationSize)
-                    .addComponent(jSpinnerGeneticPopulationSize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jSpinnerGeneticPopulationSize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jSpinnerMaxOptiRunsWithoutImprovement, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel27))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabelGeneticMutationChance)
-                    .addComponent(jSpinnerGeneticMutationChance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jSpinnerGeneticMutationChance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jComboBoxTypeOfGeneticCrossing, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel30))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jCheckBoxGeneticMutateTopSolution)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(232, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Genetic", jPanel3);
@@ -751,7 +785,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
                 .addGap(64, 64, 64)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jSpinnerCSSMaxAttraction)
-                    .addComponent(jSpinnerCSSPopulationSize, javax.swing.GroupLayout.DEFAULT_SIZE, 86, Short.MAX_VALUE))
+                    .addComponent(jSpinnerCSSPopulationSize, javax.swing.GroupLayout.DEFAULT_SIZE, 222, Short.MAX_VALUE))
                 .addGap(649, 649, 649))
         );
         jPanel4Layout.setVerticalGroup(
@@ -824,7 +858,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
                             .addComponent(jLabelABCNumOnlookerBees, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(26, 26, 26)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jSpinnerABCNumOnlookerBees, javax.swing.GroupLayout.DEFAULT_SIZE, 87, Short.MAX_VALUE)
+                            .addComponent(jSpinnerABCNumOnlookerBees, javax.swing.GroupLayout.DEFAULT_SIZE, 204, Short.MAX_VALUE)
                             .addComponent(jSpinnerABCNumScoutBees)
                             .addComponent(jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement))))
                 .addGap(649, 649, 649))
@@ -889,7 +923,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
         jLabelMVMOAsymmetryFactor.setText("Asymmetry-Factor:");
 
-        jSpinnerMVMOsd.setModel(new javax.swing.SpinnerNumberModel(Double.valueOf(75.0d), null, null, Double.valueOf(1.0d)));
+        jSpinnerMVMOsd.setModel(new javax.swing.SpinnerNumberModel(Double.valueOf(75.0d), Double.valueOf(0.0d), null, Double.valueOf(1.0d)));
         jSpinnerMVMOsd.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 jSpinnerMVMOsdPropertyChange(evt);
@@ -898,33 +932,33 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
         jLabelMVMOsd.setText("sd (standard si for zero-variance):");
 
-        jLabelMVMOParentSelection.setText("Parent-Selection:");
-
-        jLabelMVMOMutationSelection.setText("Mutation-Selection:");
-
-        jComboBoxTypeOfMVMOParentSelection.setModel(new DefaultComboBoxModel(typeOfMVMOParentSelection.values()));
-        jComboBoxTypeOfMVMOParentSelection.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                jComboBoxTypeOfMVMOParentSelectionItemStateChanged(evt);
-            }
-        });
-        jComboBoxTypeOfMVMOParentSelection.addVetoableChangeListener(new java.beans.VetoableChangeListener() {
-            public void vetoableChange(java.beans.PropertyChangeEvent evt)throws java.beans.PropertyVetoException {
-                jComboBoxTypeOfMVMOParentSelectionVetoableChange(evt);
-            }
-        });
-
         jComboBoxTypeOfMVMOMutationSelection.setModel(new DefaultComboBoxModel(typeOfMVMOMutationSelection.values()));
         jComboBoxTypeOfMVMOMutationSelection.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 jComboBoxTypeOfMVMOMutationSelectionItemStateChanged(evt);
             }
         });
-        jComboBoxTypeOfMVMOMutationSelection.addVetoableChangeListener(new java.beans.VetoableChangeListener() {
-            public void vetoableChange(java.beans.PropertyChangeEvent evt)throws java.beans.PropertyVetoException {
-                jComboBoxTypeOfMVMOMutationSelectionVetoableChange(evt);
+        jComboBoxTypeOfMVMOMutationSelection.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBoxTypeOfMVMOMutationSelectionActionPerformed(evt);
             }
         });
+
+        jLabel28.setText("Type of MVMO mutation selection");
+
+        jComboBoxTypeOfParentSelection.setModel(new DefaultComboBoxModel(typeOfMVMOParentSelection.values()));
+        jComboBoxTypeOfParentSelection.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jComboBoxTypeOfParentSelectionItemStateChanged(evt);
+            }
+        });
+        jComboBoxTypeOfParentSelection.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBoxTypeOfParentSelectionActionPerformed(evt);
+            }
+        });
+
+        jLabel29.setText("Type of Parent selection");
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -932,33 +966,34 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jLabel29)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jComboBoxTypeOfParentSelection, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel6Layout.createSequentialGroup()
+                            .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jLabelMVMOAsymmetryFactor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jLabelMVMOScalingFactor, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jLabelMVMOMaximumPopulation, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jLabelMVMOStartingPopulation))
+                            .addGap(26, 26, 26)
                             .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jLabelMVMOAsymmetryFactor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabelMVMOScalingFactor, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabelMVMOMaximumPopulation, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabelMVMOStartingPopulation))
-                        .addGap(26, 26, 26)
-                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jSpinnerMVMOAsymmetryFactor, javax.swing.GroupLayout.DEFAULT_SIZE, 71, Short.MAX_VALUE)
-                            .addComponent(jSpinnerMVMOScalingFactor)
-                            .addComponent(jSpinnerMVMOMaxPop)
-                            .addComponent(jSpinnerMVMOStartingPop)))
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addComponent(jLabelMVMOsd)
-                        .addGap(18, 18, 18)
-                        .addComponent(jSpinnerMVMOsd, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabelMVMOParentSelection, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabelMVMOMutationSelection, javax.swing.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jComboBoxTypeOfMVMOParentSelection, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jComboBoxTypeOfMVMOMutationSelection, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(0, 548, Short.MAX_VALUE))
+                                .addComponent(jSpinnerMVMOAsymmetryFactor, javax.swing.GroupLayout.DEFAULT_SIZE, 71, Short.MAX_VALUE)
+                                .addComponent(jSpinnerMVMOScalingFactor)
+                                .addComponent(jSpinnerMVMOMaxPop)
+                                .addComponent(jSpinnerMVMOStartingPop)))
+                        .addGroup(jPanel6Layout.createSequentialGroup()
+                            .addComponent(jLabelMVMOsd)
+                            .addGap(18, 18, 18)
+                            .addComponent(jSpinnerMVMOsd, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel6Layout.createSequentialGroup()
+                            .addComponent(jLabel28)
+                            .addGap(35, 35, 35)
+                            .addComponent(jComboBoxTypeOfMVMOMutationSelection, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(0, 651, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -983,15 +1018,15 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabelMVMOsd, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jSpinnerMVMOsd))
+                .addGap(29, 29, 29)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jComboBoxTypeOfMVMOMutationSelection, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel28))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabelMVMOParentSelection)
-                    .addComponent(jComboBoxTypeOfMVMOParentSelection, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabelMVMOMutationSelection)
-                    .addComponent(jComboBoxTypeOfMVMOMutationSelection, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(79, Short.MAX_VALUE))
+                    .addComponent(jComboBoxTypeOfParentSelection, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel29))
+                .addContainerGap(68, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("MVMO", jPanel6);
@@ -1017,7 +1052,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
                             .addGap(36, 36, 36)
                             .addComponent(jButton1))
                         .addComponent(jCheckBoxAddPrefsToLogfilename)))
-                .addGap(292, 292, 292))
+                .addGap(238, 238, 238))
             .addComponent(jTabbedPane1, javax.swing.GroupLayout.Alignment.TRAILING)
         );
         layout.setVerticalGroup(
@@ -1170,17 +1205,37 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBoxTypeOfMVMOParentSelectionVetoableChange
 
-    private void jComboBoxTypeOfMVMOParentSelectionItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxTypeOfMVMOParentSelectionItemStateChanged
+    private void jComboBoxTypeOfMVMOMutationSelectionItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxTypeOfMVMOParentSelectionItemStateChanged
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBoxTypeOfMVMOParentSelectionItemStateChanged
-
-    private void jComboBoxTypeOfMVMOMutationSelectionItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxTypeOfMVMOMutationSelectionItemStateChanged
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBoxTypeOfMVMOMutationSelectionItemStateChanged
 
     private void jComboBoxTypeOfMVMOMutationSelectionVetoableChange(java.beans.PropertyChangeEvent evt)throws java.beans.PropertyVetoException {//GEN-FIRST:event_jComboBoxTypeOfMVMOMutationSelectionVetoableChange
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBoxTypeOfMVMOMutationSelectionVetoableChange
+
+    private void jComboBoxTypeOfMVMOParentSelectionItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxOptimizationType1ItemStateChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBoxOptimizationType1ItemStateChanged
+
+    private void jComboBoxTypeOfMVMOMutationSelectionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxTypeOfMVMOMutationSelectionActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBoxTypeOfMVMOMutationSelectionActionPerformed
+
+    private void jComboBoxTypeOfParentSelectionItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxTypeOfParentSelectionItemStateChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBoxTypeOfParentSelectionItemStateChanged
+
+    private void jComboBoxTypeOfParentSelectionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxTypeOfParentSelectionActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBoxTypeOfParentSelectionActionPerformed
+
+    private void jComboBoxTypeOfGeneticCrossingItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxTypeOfGeneticCrossingItemStateChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBoxTypeOfGeneticCrossingItemStateChanged
+
+    private void jComboBoxTypeOfGeneticCrossingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxTypeOfGeneticCrossingActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBoxTypeOfGeneticCrossingActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1195,9 +1250,10 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     private javax.swing.JComboBox jComboBoxInternalParameterMultiphase;
     private javax.swing.JComboBox jComboBoxNumberOfPhases;
     private javax.swing.JComboBox jComboBoxOptimizationType;
-    public javax.swing.JComboBox jComboBoxTypeOfMVMOMutationSelection;
-    public javax.swing.JComboBox jComboBoxTypeOfMVMOParentSelection;
+    private javax.swing.JComboBox jComboBoxTypeOfGeneticCrossing;
+    private javax.swing.JComboBox jComboBoxTypeOfMVMOMutationSelection;
     public javax.swing.JComboBox jComboBoxTypeOfNeighborhood;
+    private javax.swing.JComboBox jComboBoxTypeOfParentSelection;
     public javax.swing.JComboBox jComboBoxTypeOfStartValue;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -1218,7 +1274,11 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel25;
     private javax.swing.JLabel jLabel26;
+    private javax.swing.JLabel jLabel27;
+    private javax.swing.JLabel jLabel28;
+    private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel30;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
@@ -1235,8 +1295,6 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     private javax.swing.JLabel jLabelGeneticPopulationSize;
     private javax.swing.JLabel jLabelMVMOAsymmetryFactor;
     private javax.swing.JLabel jLabelMVMOMaximumPopulation;
-    private javax.swing.JLabel jLabelMVMOMutationSelection;
-    private javax.swing.JLabel jLabelMVMOParentSelection;
     private javax.swing.JLabel jLabelMVMOScalingFactor;
     private javax.swing.JLabel jLabelMVMOStartingPopulation;
     private javax.swing.JLabel jLabelMVMOsd;
@@ -1275,6 +1333,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     private javax.swing.JSpinner jSpinnerMVMOScalingFactor;
     private javax.swing.JSpinner jSpinnerMVMOStartingPop;
     private javax.swing.JSpinner jSpinnerMVMOsd;
+    private javax.swing.JSpinner jSpinnerMaxOptiRunsWithoutImprovement;
     private javax.swing.JSpinner jSpinnerMaxRelErrorEnd;
     private javax.swing.JSpinner jSpinnerMaxRelErrorStart;
     private javax.swing.JSpinner jSpinnerMaxTemperatureCost;
@@ -2071,12 +2130,12 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     }
     
     private typeOfMVMOParentSelection getPref_MVMO_parentSelection() {
-        this.pref_MVMO_parentSelection = (typeOfMVMOParentSelection)jComboBoxTypeOfMVMOParentSelection.getSelectedItem();
+        this.pref_MVMO_parentSelection = (typeOfMVMOParentSelection)jComboBoxTypeOfParentSelection.getSelectedItem();
         return this.pref_MVMO_parentSelection;
     }
     
     private void setPrefMVMOParentSelection(typeOfMVMOParentSelection PrefMVMOParentSelection) {
-        jComboBoxTypeOfMVMOParentSelection.setSelectedItem(PrefMVMOParentSelection);
+        jComboBoxTypeOfMVMOMutationSelection.setSelectedItem(PrefMVMOParentSelection);
         this.pref_MVMO_parentSelection = PrefMVMOParentSelection;
     }
         

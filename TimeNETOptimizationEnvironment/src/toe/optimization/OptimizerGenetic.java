@@ -78,22 +78,23 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
      * gets maximum number of optimization cycles without improvement, before breaking optimization loop.
      * @return the maximum number of optimization cycles without improvemet
      */
-    public int getMaxNumberOfOptiCyclesWithoutImprovement()
-    {
-        return this.maxNumberOfOptiCyclesWithoutImprovement;
-    }
+    //public int getMaxNumberOfOptiCyclesWithoutImprovement()
+    //{
+    //    return this.maxNumberOfOptiCyclesWithoutImprovement;
+    //}
     
     /**
      * sets maximum number of optimization cycles without improvement. Has to be at least 1, otherwise it is ignored.
      * @param newMaxNumberOfOptiCyclesWithoutImprovement the new maximum number of optimization cycles without improvement
      */
-    public void setMaxNumberOfOptiCyclesWithoutImprovement(int newMaxNumberOfOptiCyclesWithoutImprovement)
+    /*public void setMaxNumberOfOptiCyclesWithoutImprovement(int newMaxNumberOfOptiCyclesWithoutImprovement)
     {
         if (newMaxNumberOfOptiCyclesWithoutImprovement > 0)
         {
             this.maxNumberOfOptiCyclesWithoutImprovement = newMaxNumberOfOptiCyclesWithoutImprovement;
         }
     }
+    */
     
     public double getMutatuionChance()
     {

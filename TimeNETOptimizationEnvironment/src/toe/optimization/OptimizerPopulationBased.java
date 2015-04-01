@@ -47,7 +47,7 @@ public abstract class OptimizerPopulationBased implements Runnable, Optimizer
     protected double topDistance = Double.POSITIVE_INFINITY;//temp top distance
     
     protected int maxNumberOfOptiCycles = 100; //maximum number of cycles, before optimization terminates
-    protected int maxNumberOfOptiCyclesWithoutImprovement = 10; //how many cycles without improvement until break optimization loop
+    protected int maxNumberOfOptiCyclesWithoutImprovement = 10;//support.getOptimizerPreferences().get; //how many cycles without improvement until break optimization loop
     protected int currentNumberOfOptiCyclesWithoutImprovement = 0;
     
     public OptimizerPopulationBased()
