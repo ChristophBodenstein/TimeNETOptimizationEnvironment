@@ -6,8 +6,11 @@
 package toe.optimization;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import toe.SimOptiFactory;
 import toe.datamodel.SimulationType;
 import toe.datamodel.parameter;
@@ -30,7 +33,7 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
     private double MPC_cr = 0.5;
     
     private int numOptiRuns = 50;
-    private boolean doBatchRun = true;
+    private boolean doBatchRun = false;
 
     /**
      * returnes the population size used for optimization
@@ -123,26 +126,35 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
         int optiCycleCounter = 0;
         population = createRandomPopulation(populationSize, false);
         
-        Simulator mySimulator = SimOptiFactory.getSimulator();       
+        Simulator mySimulator = SimOptiFactory.getSimulator();
         mySimulator.initSimulator(getNextParameterSetAsArrayList(), optiCycleCounter, false);
-        support.waitForEndOfSimulator(mySimulator, optiCycleCounter, support.DEFAULT_TIMEOUT);
+        support.waitForEndOfSimulator(mySimulator, support.getGlobalSimulationCounter(), support.DEFAULT_TIMEOUT);
         
         ArrayList<SimulationType> simulationResults = mySimulator.getListOfCompletedSimulationParsers();
 
         population = getPopulationFromSimulationResults(simulationResults);
-        
-        int simulationCounter = 0;
+        support.log("Population size is: "+ population.size());
+        support.log("maxNumberOfOptiCyclesWithoutImprovement: "+maxNumberOfOptiCyclesWithoutImprovement);
+        support.log("maxNumberOfOptiCycles: "+maxNumberOfOptiCycles);
         while(optiCycleCounter < this.maxNumberOfOptiCycles)
         {
+            support.log("currentNumberOfOptiCyclesWithoutImprovement: "+currentNumberOfOptiCyclesWithoutImprovement);
             if (currentNumberOfOptiCyclesWithoutImprovement >= maxNumberOfOptiCyclesWithoutImprovement)
             {
                 support.log("Too many optimization cycles without improvement. Ending optimization.");
                 break;
             }
+            if(support.isCancelEverything()){
+                support.log("Operation Canceled (Genetic Optimization).");
+                break;
+            }
             
             //modification phase -----------------------------------------------------------------------
             population = crossPopulation(population, populationSize); //doubles population
+            support.log("New Population size after Crossing is: "+ population.size());
             population = mutatePopulation(population, mutationChance); //
+            support.log("New Population size after mutation is: "+ population.size());
+            support.log("currentNumberOfOptiCyclesWithoutImprovement: "+currentNumberOfOptiCyclesWithoutImprovement);
             
             
             //simulation phase -----------------------------------------------------------------------
@@ -152,17 +164,22 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
                 pArray =  roundToStepping(pArray);
             }
             
-            mySimulator = SimOptiFactory.getSimulator();
-            mySimulator.initSimulator(parameterList, simulationCounter, false);
-            support.waitForEndOfSimulator(mySimulator, simulationCounter, support.DEFAULT_TIMEOUT);
-            simulationCounter = mySimulator.getSimulationCounter();
+            mySimulator.initSimulator(parameterList, support.getGlobalSimulationCounter(), false);
+            support.waitForEndOfSimulator(mySimulator, support.getGlobalSimulationCounter(), support.DEFAULT_TIMEOUT);
             
             simulationResults = mySimulator.getListOfCompletedSimulationParsers();
             population = getPopulationFromSimulationResults(simulationResults);
-            //support.addLinesToLogFileFromListOfParser(simulationResults, logFileName);
-            
+            support.addLinesToLogFileFromListOfParser(simulationResults, logFileName);
+            try {
+                support.log("optiCycleCounter: "+optiCycleCounter);
+                System.out.println("Wait for enter...");
+                System.in.read();
+            } catch (IOException ex) {
+                Logger.getLogger(OptimizerGenetic.class.getName()).log(Level.SEVERE, null, ex);
+            }
             //evaluation phase --------------------------------------------------------------------------
             population = cutPopulation(population);
+            support.log("New Population size after cutting is: "+ population.size());
             updateTopMeasure();
             printPopulationDistances();
             
@@ -535,12 +552,12 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
         
         newPopulation = sortPopulation(newPopulation);
         
-        int oldPopulationSize = oldPopulation.size();
         
-        for (int i = 0; i < (oldPopulationSize - populationSize); ++i)
-        {
-            newPopulation.remove(populationSize); //keep removing first entry over population maximum
+        ArrayList< ArrayList<SimulationType>> tmpPopulation=new ArrayList();
+        for(int i=0;i<populationSize;i++){
+        tmpPopulation.add(newPopulation.get(i));
         }
+        newPopulation=tmpPopulation;
                
         return newPopulation; 
     } 

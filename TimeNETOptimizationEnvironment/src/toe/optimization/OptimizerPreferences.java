@@ -56,6 +56,8 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     private int pref_GeneticPopulationSize;
     private double pref_GeneticMutationChance;
     private boolean pref_GeneticMutateTopSolution;
+    private int pref_GeneticMaximumOptirunsWithoutSolution;
+    private typeOfGeneticCrossover pref_GeneticTypeOfCrossover;
 
 //parameters for CSS Optimization
     private int pref_CSS_PopulationSize;
@@ -202,9 +204,9 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         jSpinnerGeneticPopulationSize = new javax.swing.JSpinner();
         jSpinnerGeneticMutationChance = new javax.swing.JSpinner();
         jCheckBoxGeneticMutateTopSolution = new javax.swing.JCheckBox();
-        jSpinnerMaxOptiRunsWithoutImprovement = new javax.swing.JSpinner();
+        jSpinnerGeneticMaxOptiRunsWithoutImprovement = new javax.swing.JSpinner();
         jLabel27 = new javax.swing.JLabel();
-        jComboBoxTypeOfGeneticCrossing = new javax.swing.JComboBox();
+        jComboBoxGeneticTypeOfGeneticCrossing = new javax.swing.JComboBox();
         jLabel30 = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         jSpinnerCSSPopulationSize = new javax.swing.JSpinner();
@@ -257,10 +259,10 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             }
         });
         jTextFieldLogFileAddon.addInputMethodListener(new java.awt.event.InputMethodListener() {
-            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
-            }
             public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
                 jTextFieldLogFileAddonInputMethodTextChanged(evt);
+            }
+            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
             }
         });
         jTextFieldLogFileAddon.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -382,65 +384,65 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
         jLabel2.setText("Calculation of next Parameterset");
         jPanelSimAnnealing.add(jLabel2);
-        jLabel2.setBounds(20, 60, 220, 14);
+        jLabel2.setBounds(20, 60, 220, 16);
 
         jComboBoxCalculationOfNextParameterset.setModel(new DefaultComboBoxModel(typeOfAnnealingParameterCalculation.values()));
         jPanelSimAnnealing.add(jComboBoxCalculationOfNextParameterset);
-        jComboBoxCalculationOfNextParameterset.setBounds(240, 60, 190, 20);
+        jComboBoxCalculationOfNextParameterset.setBounds(240, 60, 190, 27);
 
         jLabel3.setText("Max. Temp. for Parameters(T-0-par)");
         jPanelSimAnnealing.add(jLabel3);
-        jLabel3.setBounds(20, 110, 230, 14);
+        jLabel3.setBounds(20, 110, 230, 16);
 
         jSpinnerMaxTemperatureParameters.setModel(new javax.swing.SpinnerNumberModel(1.0d, 0.0d, 1.0d, 0.01d));
         jSpinnerMaxTemperatureParameters.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerMaxTemperatureParameters, "#.##"));
         jPanelSimAnnealing.add(jSpinnerMaxTemperatureParameters);
-        jSpinnerMaxTemperatureParameters.setBounds(260, 110, 90, 20);
+        jSpinnerMaxTemperatureParameters.setBounds(260, 110, 90, 28);
 
         jSpinnerMaxTemperatureCost.setModel(new javax.swing.SpinnerNumberModel(1.0d, 0.0d, 1.0d, 0.01d));
         jSpinnerMaxTemperatureCost.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerMaxTemperatureCost, "#.##"));
         jPanelSimAnnealing.add(jSpinnerMaxTemperatureCost);
-        jSpinnerMaxTemperatureCost.setBounds(260, 140, 90, 20);
+        jSpinnerMaxTemperatureCost.setBounds(260, 140, 90, 28);
 
         jLabel6.setText("Max. Temp. for Cost(T-0-cost)");
         jPanelSimAnnealing.add(jLabel6);
-        jLabel6.setBounds(20, 140, 200, 14);
+        jLabel6.setBounds(20, 140, 200, 16);
 
         jLabel7.setText("TRatioScale");
         jPanelSimAnnealing.add(jLabel7);
-        jLabel7.setBounds(480, 30, 80, 14);
+        jLabel7.setBounds(480, 30, 80, 16);
 
         jLabel8.setText("TAnnealScale");
         jPanelSimAnnealing.add(jLabel8);
-        jLabel8.setBounds(480, 60, 100, 14);
+        jLabel8.setBounds(480, 60, 100, 16);
 
         jSpinnerTRatioScale.setModel(TRatioScaleSpinnerModel);
         jSpinnerTRatioScale.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerTRatioScale, "#.#####"));
         jSpinnerTRatioScale.setValue(0.00001);
         jPanelSimAnnealing.add(jSpinnerTRatioScale);
-        jSpinnerTRatioScale.setBounds(580, 20, 100, 20);
+        jSpinnerTRatioScale.setBounds(580, 20, 100, 28);
 
         jSpinnerTAnnealScale.setModel(new javax.swing.SpinnerNumberModel(100.0d, 0.0d, 10000.0d, 1.0d));
         jPanelSimAnnealing.add(jSpinnerTAnnealScale);
-        jSpinnerTAnnealScale.setBounds(580, 60, 100, 20);
+        jSpinnerTAnnealScale.setBounds(580, 60, 100, 28);
 
         jLabel5.setText("Epsilon (Abort-Temperature)");
         jPanelSimAnnealing.add(jLabel5);
-        jLabel5.setBounds(20, 180, 210, 14);
+        jLabel5.setBounds(20, 180, 210, 16);
 
         jSpinnerEpsilon.setModel(new javax.swing.SpinnerNumberModel(0.01d, 0.0d, 1.0d, 0.01d));
         jSpinnerEpsilon.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerEpsilon, "#.##"));
         jSpinnerEpsilon.setValue(0.01);
         jPanelSimAnnealing.add(jSpinnerEpsilon);
-        jSpinnerEpsilon.setBounds(260, 180, 90, 20);
+        jSpinnerEpsilon.setBounds(260, 180, 90, 28);
 
         jLabel9.setText("Cooling Method");
         jPanelSimAnnealing.add(jLabel9);
-        jLabel9.setBounds(20, 20, 74, 14);
+        jLabel9.setBounds(20, 20, 100, 16);
 
         jComboBoxCoolingMethod.setModel(new DefaultComboBoxModel(typeOfAnnealing.values()));
         jPanelSimAnnealing.add(jComboBoxCoolingMethod);
-        jComboBoxCoolingMethod.setBounds(200, 20, 230, 20);
+        jComboBoxCoolingMethod.setBounds(200, 20, 230, 27);
 
         jTabbedPane1.addTab("Simulated Annealing", jPanelSimAnnealing);
 
@@ -448,70 +450,70 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
         jLabel10.setText("Cooling Method");
         jPanel1.add(jLabel10);
-        jLabel10.setBounds(20, 60, 74, 14);
+        jLabel10.setBounds(20, 60, 100, 16);
 
         jComboBoxCoolingMethod1.setModel(new DefaultComboBoxModel(typeOfAnnealing.values()));
         jPanel1.add(jComboBoxCoolingMethod1);
-        jComboBoxCoolingMethod1.setBounds(230, 60, 200, 20);
+        jComboBoxCoolingMethod1.setBounds(230, 60, 200, 27);
 
         jSpinnerTRatioScale1.setModel(TRatioScaleSpinnerModel);
         jSpinnerTRatioScale1.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerTRatioScale1, "#.#####"));
         jSpinnerTRatioScale1.setValue(0.00001);
         jPanel1.add(jSpinnerTRatioScale1);
-        jSpinnerTRatioScale1.setBounds(580, 60, 100, 20);
+        jSpinnerTRatioScale1.setBounds(580, 60, 100, 28);
 
         jLabel11.setText("TRatioScale");
         jPanel1.add(jLabel11);
-        jLabel11.setBounds(480, 70, 80, 14);
+        jLabel11.setBounds(480, 70, 80, 16);
 
         jSpinnerTAnnealScale1.setModel(new javax.swing.SpinnerNumberModel(100.0d, 0.0d, 10000.0d, 1.0d));
         jPanel1.add(jSpinnerTAnnealScale1);
-        jSpinnerTAnnealScale1.setBounds(580, 100, 100, 20);
+        jSpinnerTAnnealScale1.setBounds(580, 100, 100, 28);
 
         jLabel12.setText("TAnnealScale");
         jPanel1.add(jLabel12);
-        jLabel12.setBounds(480, 100, 100, 14);
+        jLabel12.setBounds(480, 100, 100, 16);
 
         jComboBoxCalculationOfNextParameterset1.setModel(new DefaultComboBoxModel(typeOfAnnealingParameterCalculation.values()));
         jPanel1.add(jComboBoxCalculationOfNextParameterset1);
-        jComboBoxCalculationOfNextParameterset1.setBounds(230, 100, 200, 20);
+        jComboBoxCalculationOfNextParameterset1.setBounds(230, 100, 200, 27);
 
         jLabel13.setText("Calculation of next Parameterset");
         jPanel1.add(jLabel13);
-        jLabel13.setBounds(20, 100, 220, 14);
+        jLabel13.setBounds(20, 100, 220, 16);
 
         jLabel14.setText("Max. Temp. for Parameters(T-0-par)");
         jPanel1.add(jLabel14);
-        jLabel14.setBounds(20, 150, 230, 14);
+        jLabel14.setBounds(20, 150, 230, 16);
 
         jSpinnerMaxTemperatureParameters1.setModel(new javax.swing.SpinnerNumberModel(1.0d, 0.0d, 1.0d, 0.01d));
         jSpinnerMaxTemperatureParameters1.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerMaxTemperatureParameters1, "#.##"));
         jPanel1.add(jSpinnerMaxTemperatureParameters1);
-        jSpinnerMaxTemperatureParameters1.setBounds(260, 150, 90, 20);
+        jSpinnerMaxTemperatureParameters1.setBounds(260, 150, 90, 28);
 
         jLabel15.setText("Max. Temp. for Cost(T-0-cost)");
         jPanel1.add(jLabel15);
-        jLabel15.setBounds(20, 180, 200, 14);
+        jLabel15.setBounds(20, 180, 200, 16);
 
         jSpinnerMaxTemperatureCost1.setModel(new javax.swing.SpinnerNumberModel(1.0d, 0.0d, 1.0d, 0.01d));
         jSpinnerMaxTemperatureCost1.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerMaxTemperatureCost1, "#.##"));
         jPanel1.add(jSpinnerMaxTemperatureCost1);
-        jSpinnerMaxTemperatureCost1.setBounds(260, 180, 90, 20);
+        jSpinnerMaxTemperatureCost1.setBounds(260, 180, 90, 28);
 
         jLabel16.setText("Epsilon (Abort-Temperature)");
         jPanel1.add(jLabel16);
-        jLabel16.setBounds(20, 220, 210, 14);
+        jLabel16.setBounds(20, 220, 210, 16);
 
         jSpinnerEpsilon1.setModel(new javax.swing.SpinnerNumberModel(0.01d, 0.0d, 1.0d, 0.01d));
         jSpinnerEpsilon1.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerEpsilon1, "#.##"));
         jSpinnerEpsilon1.setValue(0.01);
         jPanel1.add(jSpinnerEpsilon1);
-        jSpinnerEpsilon1.setBounds(260, 220, 90, 20);
+        jSpinnerEpsilon1.setBounds(260, 220, 90, 28);
 
         jLabel17.setFont(new java.awt.Font("Lucida Grande", 1, 16)); // NOI18N
         jLabel17.setText("Parameters for second Phase are taken from Standard-Panel (Simulated Annealing)!!!");
         jPanel1.add(jLabel17);
-        jLabel17.setBounds(20, 28, 787, 21);
+        jLabel17.setBounds(20, 28, 787, 20);
 
         jTabbedPane1.addTab("Two-Phase", jPanel1);
 
@@ -519,31 +521,31 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
         jLabel18.setText("Used Optimization Algorithm");
         jPanel2.add(jLabel18);
-        jLabel18.setBounds(30, 70, 220, 14);
+        jLabel18.setBounds(30, 70, 220, 16);
 
         jComboBoxNumberOfPhases.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "2", "3", "4", "5", "6", "7", "8", "9", "10" }));
         jPanel2.add(jComboBoxNumberOfPhases);
-        jComboBoxNumberOfPhases.setBounds(260, 30, 90, 20);
+        jComboBoxNumberOfPhases.setBounds(260, 30, 90, 27);
 
         jLabel19.setText("Number of Optimization-Phases");
         jPanel2.add(jLabel19);
-        jLabel19.setBounds(28, 37, 220, 14);
+        jLabel19.setBounds(28, 37, 220, 16);
 
         jLabel20.setText("Confidence-Intervall Start");
         jPanel2.add(jLabel20);
-        jLabel20.setBounds(30, 110, 210, 14);
+        jLabel20.setBounds(30, 110, 210, 16);
 
         jLabel22.setText("Confidence-Intervall End");
         jPanel2.add(jLabel22);
-        jLabel22.setBounds(30, 140, 170, 14);
+        jLabel22.setBounds(30, 140, 170, 16);
 
         jLabel23.setText("Maximum Rel. Error Start");
         jPanel2.add(jLabel23);
-        jLabel23.setBounds(30, 190, 170, 14);
+        jLabel23.setBounds(30, 190, 170, 16);
 
         jLabel24.setText("Maximum Rel. Error End");
         jPanel2.add(jLabel24);
-        jLabel24.setBounds(30, 220, 170, 14);
+        jLabel24.setBounds(30, 220, 170, 16);
         jPanel2.add(jSeparator1);
         jSeparator1.setBounds(30, 100, 400, 10);
         jPanel2.add(jSeparator2);
@@ -553,19 +555,19 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
         jSpinnerConfidenceIntervallStart.setModel(new javax.swing.SpinnerNumberModel(85, 85, 99, 1));
         jPanel2.add(jSpinnerConfidenceIntervallStart);
-        jSpinnerConfidenceIntervallStart.setBounds(260, 110, 70, 20);
+        jSpinnerConfidenceIntervallStart.setBounds(260, 110, 70, 28);
 
         jSpinnerConfidenceIntervallEnd.setModel(new javax.swing.SpinnerNumberModel(99, 85, 99, 1));
         jPanel2.add(jSpinnerConfidenceIntervallEnd);
-        jSpinnerConfidenceIntervallEnd.setBounds(260, 140, 70, 20);
+        jSpinnerConfidenceIntervallEnd.setBounds(260, 140, 70, 28);
 
         jSpinnerMaxRelErrorEnd.setModel(new javax.swing.SpinnerNumberModel(1, 1, 15, 1));
         jPanel2.add(jSpinnerMaxRelErrorEnd);
-        jSpinnerMaxRelErrorEnd.setBounds(260, 210, 70, 20);
+        jSpinnerMaxRelErrorEnd.setBounds(260, 210, 70, 28);
 
         jSpinnerMaxRelErrorStart.setModel(new javax.swing.SpinnerNumberModel(5, 1, 15, 1));
         jPanel2.add(jSpinnerMaxRelErrorStart);
-        jSpinnerMaxRelErrorStart.setBounds(260, 180, 70, 20);
+        jSpinnerMaxRelErrorStart.setBounds(260, 180, 70, 28);
 
         jCheckBoxKeepDesignspaceAndResolution.setText("Keep Designspace and Resolution");
         jPanel2.add(jCheckBoxKeepDesignspaceAndResolution);
@@ -657,7 +659,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             }
         });
         jPanel2.add(jComboBoxOptimizationType);
-        jComboBoxOptimizationType.setBounds(250, 70, 160, 20);
+        jComboBoxOptimizationType.setBounds(250, 70, 160, 27);
 
         jTabbedPane1.addTab("Multi-Phase", jPanel2);
 
@@ -686,19 +688,19 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             }
         });
 
-        jSpinnerMaxOptiRunsWithoutImprovement.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
+        jSpinnerGeneticMaxOptiRunsWithoutImprovement.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
 
         jLabel27.setText("Maximum Optiruns without improvment");
 
-        jComboBoxTypeOfGeneticCrossing.setModel(new DefaultComboBoxModel(typeOfGeneticCrossover.values()));
-        jComboBoxTypeOfGeneticCrossing.addItemListener(new java.awt.event.ItemListener() {
+        jComboBoxGeneticTypeOfGeneticCrossing.setModel(new DefaultComboBoxModel(typeOfGeneticCrossover.values()));
+        jComboBoxGeneticTypeOfGeneticCrossing.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                jComboBoxTypeOfGeneticCrossingItemStateChanged(evt);
+                jComboBoxGeneticTypeOfGeneticCrossingItemStateChanged(evt);
             }
         });
-        jComboBoxTypeOfGeneticCrossing.addActionListener(new java.awt.event.ActionListener() {
+        jComboBoxGeneticTypeOfGeneticCrossing.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBoxTypeOfGeneticCrossingActionPerformed(evt);
+                jComboBoxGeneticTypeOfGeneticCrossingActionPerformed(evt);
             }
         });
 
@@ -729,8 +731,8 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
                     .addComponent(jLabel30))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jSpinnerMaxOptiRunsWithoutImprovement, javax.swing.GroupLayout.DEFAULT_SIZE, 65, Short.MAX_VALUE)
-                    .addComponent(jComboBoxTypeOfGeneticCrossing, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jSpinnerGeneticMaxOptiRunsWithoutImprovement, javax.swing.GroupLayout.DEFAULT_SIZE, 65, Short.MAX_VALUE)
+                    .addComponent(jComboBoxGeneticTypeOfGeneticCrossing, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(492, 492, 492))
         );
         jPanel3Layout.setVerticalGroup(
@@ -740,13 +742,13 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabelGeneticPopulationSize)
                     .addComponent(jSpinnerGeneticPopulationSize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jSpinnerMaxOptiRunsWithoutImprovement, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jSpinnerGeneticMaxOptiRunsWithoutImprovement, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel27))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabelGeneticMutationChance)
                     .addComponent(jSpinnerGeneticMutationChance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBoxTypeOfGeneticCrossing, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jComboBoxGeneticTypeOfGeneticCrossing, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel30))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jCheckBoxGeneticMutateTopSolution)
@@ -1229,13 +1231,13 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBoxTypeOfParentSelectionActionPerformed
 
-    private void jComboBoxTypeOfGeneticCrossingItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxTypeOfGeneticCrossingItemStateChanged
+    private void jComboBoxGeneticTypeOfGeneticCrossingItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxGeneticTypeOfGeneticCrossingItemStateChanged
         // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBoxTypeOfGeneticCrossingItemStateChanged
+    }//GEN-LAST:event_jComboBoxGeneticTypeOfGeneticCrossingItemStateChanged
 
-    private void jComboBoxTypeOfGeneticCrossingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxTypeOfGeneticCrossingActionPerformed
+    private void jComboBoxGeneticTypeOfGeneticCrossingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxGeneticTypeOfGeneticCrossingActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBoxTypeOfGeneticCrossingActionPerformed
+    }//GEN-LAST:event_jComboBoxGeneticTypeOfGeneticCrossingActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1247,10 +1249,10 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     private javax.swing.JComboBox jComboBoxCalculationOfNextParameterset1;
     private javax.swing.JComboBox jComboBoxCoolingMethod;
     private javax.swing.JComboBox jComboBoxCoolingMethod1;
+    private javax.swing.JComboBox jComboBoxGeneticTypeOfGeneticCrossing;
     private javax.swing.JComboBox jComboBoxInternalParameterMultiphase;
     private javax.swing.JComboBox jComboBoxNumberOfPhases;
     private javax.swing.JComboBox jComboBoxOptimizationType;
-    private javax.swing.JComboBox jComboBoxTypeOfGeneticCrossing;
     private javax.swing.JComboBox jComboBoxTypeOfMVMOMutationSelection;
     public javax.swing.JComboBox jComboBoxTypeOfNeighborhood;
     private javax.swing.JComboBox jComboBoxTypeOfParentSelection;
@@ -1324,6 +1326,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     private javax.swing.JSpinner jSpinnerConfidenceIntervallStart;
     private javax.swing.JSpinner jSpinnerEpsilon;
     private javax.swing.JSpinner jSpinnerEpsilon1;
+    private javax.swing.JSpinner jSpinnerGeneticMaxOptiRunsWithoutImprovement;
     private javax.swing.JSpinner jSpinnerGeneticMutationChance;
     private javax.swing.JSpinner jSpinnerGeneticPopulationSize;
     private javax.swing.JSpinner jSpinnerInternalParameterEnd;
@@ -1333,7 +1336,6 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     private javax.swing.JSpinner jSpinnerMVMOScalingFactor;
     private javax.swing.JSpinner jSpinnerMVMOStartingPop;
     private javax.swing.JSpinner jSpinnerMVMOsd;
-    private javax.swing.JSpinner jSpinnerMaxOptiRunsWithoutImprovement;
     private javax.swing.JSpinner jSpinnerMaxRelErrorEnd;
     private javax.swing.JSpinner jSpinnerMaxRelErrorStart;
     private javax.swing.JSpinner jSpinnerMaxTemperatureCost;
@@ -1429,6 +1431,11 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             this.setPref_GeneticMutateTopSolution(Boolean.valueOf(auto.getProperty("pref_GeneticMutateTopSolution", Boolean.toString(support.DEFAULT_GENETIC_MUTATE_TOP_SOLUTION))));
             support.log("Loaded pref_GeneticMutateTopSolution is " + this.getPref_GeneticMutateTopSolution());
 
+            this.setPref_GeneticMaximumOptirunsWithoutSolution(support.loadIntFromProperties("pref_GeneticMaxOptiRunsWithoutSolution", support.DEFAULT_GENETIC_MAXWRONGOPTIRUNS, auto));
+            support.log("Loaded pref_GeneticMaxOptiRunsWithoutSolution is "+ this.getPref_GeneticMaximumOptirunsWithoutSolution());
+            this.setPref_GeneticTypeOfCrossover(typeOfGeneticCrossover.valueOf(auto.getProperty("pref_GeneticTypeOfCrossover", support.DEFAULT_GENETIC_CROSSOVER.toString())));
+            support.log("Loaded pref_GeneticTypeOfCrossover is "+ this.getPref_GeneticTypeOfCrossover().toString());
+            
             //load settings for CSS Optimization
             this.setPref_CSS_PopulationSize(support.loadIntFromProperties("pref_CSS_PopulationSize", support.DEFAULT_CSS_POPULATION_SIZE, auto));
             support.log("Loaded pref_CSS_PopulationSize is " + this.getPref_CSS_PopulationSize());
@@ -1500,7 +1507,9 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             auto.setProperty("pref_GeneticPopulationSize", Integer.toString(this.getPref_GeneticPopulationSize()));
             auto.setProperty("pref_GeneticMutationChance", Double.toString(this.getPref_GeneticMutationChance()));
             auto.setProperty("pref_GeneticMutateTopSolution", Boolean.toString(this.getPref_GeneticMutateTopSolution()));
-
+            auto.setProperty("pref_GeneticMaxOptiRunsWithoutSolution", Integer.toString(this.getPref_GeneticMaximumOptirunsWithoutSolution()));
+            auto.setProperty("pref_GeneticTypeOfCrossover", this.getPref_GeneticTypeOfCrossover().toString());
+            
             //setting parameters for CSS optimization
             auto.setProperty("pref_CSS_PopulationSize", Integer.toString(this.getPref_CSS_PopulationSize()));
             auto.setProperty("pref_CSS_MaxAttraction", Double.toString(this.getPref_CSS_MaxAttraction()));
@@ -1578,15 +1587,19 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
                     addonString += "_MaxTempCost_" + this.getPref_MaxTempCost();
                     break;
                 case MultiPhase:
-                    addonString += "_ChosenAlg_" + this.jComboBoxOptimizationType.getSelectedItem();
-                    addonString += "_NumberOfPhases_" + this.jComboBoxNumberOfPhases.getSelectedItem();
+                    addonString += "_ChosenAlg_" + this.getPref_typeOfUsedMultiPhaseOptimization();
+                    addonString += "_NumberOfPhases_" + this.getPref_NumberOfPhases();
                     break;
 
                 case TwoPhase:
                     break;
 
                 case Genetic:
-                    //TODO Add Infos to this Algorithm here!
+                    addonString += "_Popsize_"+this.getPref_GeneticPopulationSize();
+                    addonString += "_MutationChance_"+this.getPref_GeneticMutationChance();
+                    addonString += "_MutateTop_"+this.getPref_GeneticMutateTopSolution();
+                    addonString += "_MaxWrongOptiruns_"+this.getPref_GeneticMaximumOptirunsWithoutSolution();
+                    addonString += "_Crossover_"+this.getPref_GeneticTypeOfCrossover();
                     break;
                 case ChargedSystemSearch:
                     //TODO Add Infos to this Algorithm here!
@@ -2198,5 +2211,37 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         }
 
         return resultParameter;
+    }
+
+    /**
+     * @return the pref_GeneticMaximumOptirunsWithoutSolution
+     */
+    public int getPref_GeneticMaximumOptirunsWithoutSolution() {
+        this.pref_GeneticMaximumOptirunsWithoutSolution=(Integer)jSpinnerGeneticMaxOptiRunsWithoutImprovement.getValue();
+        return pref_GeneticMaximumOptirunsWithoutSolution;
+    }
+
+    /**
+     * @param pref_GeneticMaximumOptirunsWithoutSolution the pref_GeneticMaximumOptirunsWithoutSolution to set
+     */
+    public void setPref_GeneticMaximumOptirunsWithoutSolution(int pref_GeneticMaximumOptirunsWithoutSolution) {
+        this.jSpinnerGeneticMaxOptiRunsWithoutImprovement.setValue(pref_GeneticMaximumOptirunsWithoutSolution);
+        this.pref_GeneticMaximumOptirunsWithoutSolution = pref_GeneticMaximumOptirunsWithoutSolution;
+    }
+
+    /**
+     * @return the pref_GeneticTypeOfCrossover
+     */
+    public typeOfGeneticCrossover getPref_GeneticTypeOfCrossover() {
+        this.pref_GeneticTypeOfCrossover=(typeOfGeneticCrossover)this.jComboBoxGeneticTypeOfGeneticCrossing.getSelectedItem();
+        return pref_GeneticTypeOfCrossover;
+    }
+
+    /**
+     * @param pref_GeneticTypeOfCrossover the pref_GeneticTypeOfCrossover to set
+     */
+    public void setPref_GeneticTypeOfCrossover(typeOfGeneticCrossover pref_GeneticTypeOfCrossover) {
+        this.jComboBoxGeneticTypeOfGeneticCrossing.setSelectedItem(pref_GeneticTypeOfCrossover);
+        this.pref_GeneticTypeOfCrossover = pref_GeneticTypeOfCrossover;
     }
 }

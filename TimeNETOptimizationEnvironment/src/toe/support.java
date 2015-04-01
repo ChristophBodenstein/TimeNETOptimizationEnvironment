@@ -71,6 +71,8 @@ public class support {
     public static final int DEFAULT_GENETIC_POPULATION_SIZE = 10;
     public static final double DEFAULT_GENETIC_MUTATION_CHANCE = 20;
     public static final boolean DEFAULT_GENETIC_MUTATE_TOP_SOLUTION = false;
+    public static final int DEFAULT_GENETIC_MAXWRONGOPTIRUNS=5;
+    public static final typeOfGeneticCrossover DEFAULT_GENETIC_CROSSOVER=typeOfGeneticCrossover.SBX;
 
 //default values for CSS Optimization
     public static final int DEFAULT_CSS_POPULATION_SIZE = 10;
@@ -793,6 +795,7 @@ public class support {
 
         if (isLogToWindow()) {
             myLogFrame.addText(s);
+            System.out.println(s);
         }
 
         if (isLogToFile()) {

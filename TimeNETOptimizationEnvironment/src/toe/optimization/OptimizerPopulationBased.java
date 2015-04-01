@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Random;
-import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 import toe.MainFrame;
 import toe.datamodel.MeasureType;
@@ -19,7 +18,7 @@ import toe.support;
 
 /**
  *
- * @author Andy
+ * @author Andy Seidel
  */
 public abstract class OptimizerPopulationBased implements Runnable, Optimizer
 {
@@ -30,7 +29,6 @@ public abstract class OptimizerPopulationBased implements Runnable, Optimizer
     private JTabbedPane MeasureFormPane;
     protected ArrayList<MeasureType> listOfMeasures = new ArrayList<MeasureType>();//Liste aller Measures, abfragen von MeasureFormPane
     protected ArrayList<parameter> parameterBase;//Base set of parameters, start/end-value, stepping, etc.
-    private JLabel infoLabel;
     private double simulationTimeSum = 0;
     private double cpuTimeSum = 0;
     
@@ -84,6 +82,11 @@ public abstract class OptimizerPopulationBased implements Runnable, Optimizer
         new Thread(this).start();        
     }
     
+    /**
+     *
+     * @return found optimum
+     */
+    @Override
     public SimulationType getOptimum()
     {
         return topMeasure;

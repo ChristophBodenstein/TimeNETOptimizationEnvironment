@@ -984,8 +984,8 @@
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="jSpinnerMaxOptiRunsWithoutImprovement" pref="65" max="32767" attributes="0"/>
-                          <Component id="jComboBoxTypeOfGeneticCrossing" max="32767" attributes="0"/>
+                          <Component id="jSpinnerGeneticMaxOptiRunsWithoutImprovement" pref="65" max="32767" attributes="0"/>
+                          <Component id="jComboBoxGeneticTypeOfGeneticCrossing" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="492" max="-2" attributes="0"/>
                   </Group>
@@ -998,14 +998,14 @@
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jLabelGeneticPopulationSize" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jSpinnerGeneticPopulationSize" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jSpinnerMaxOptiRunsWithoutImprovement" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jSpinnerGeneticMaxOptiRunsWithoutImprovement" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jLabel27" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jLabelGeneticMutationChance" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jSpinnerGeneticMutationChance" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jComboBoxTypeOfGeneticCrossing" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jComboBoxGeneticTypeOfGeneticCrossing" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jLabel30" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
@@ -1054,7 +1054,7 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jCheckBoxGeneticMutateTopSolutionActionPerformed"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JSpinner" name="jSpinnerMaxOptiRunsWithoutImprovement">
+            <Component class="javax.swing.JSpinner" name="jSpinnerGeneticMaxOptiRunsWithoutImprovement">
               <Properties>
                 <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
                   <SpinnerModel initial="1" minimum="1" numberType="java.lang.Integer" stepSize="1" type="number"/>
@@ -1066,15 +1066,15 @@
                 <Property name="text" type="java.lang.String" value="Maximum Optiruns without improvment"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JComboBox" name="jComboBoxTypeOfGeneticCrossing">
+            <Component class="javax.swing.JComboBox" name="jComboBoxGeneticTypeOfGeneticCrossing">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                   <Connection code="new DefaultComboBoxModel(typeOfGeneticCrossover.values())" type="code"/>
                 </Property>
               </Properties>
               <Events>
-                <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="jComboBoxTypeOfGeneticCrossingItemStateChanged"/>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jComboBoxTypeOfGeneticCrossingActionPerformed"/>
+                <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="jComboBoxGeneticTypeOfGeneticCrossingItemStateChanged"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jComboBoxGeneticTypeOfGeneticCrossingActionPerformed"/>
               </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel30">
