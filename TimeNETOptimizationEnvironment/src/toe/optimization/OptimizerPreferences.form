@@ -25,29 +25,34 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
-              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="77" max="-2" attributes="0"/>
-                      <Component id="jLabelStartvalueForParameters" max="32767" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="87" max="-2" attributes="0"/>
+                      <Component id="jLabelStartvalueForParameters" min="-2" pref="178" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="jComboBoxTypeOfStartValue" min="-2" pref="217" max="-2" attributes="1"/>
-                      <EmptySpace min="-2" pref="71" max="-2" attributes="0"/>
                   </Group>
-                  <Group type="103" alignment="1" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="0" attributes="0">
-                          <Component id="jLabel4" min="-2" pref="239" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jTextFieldLogFileAddon" min="-2" pref="189" max="-2" attributes="1"/>
-                          <EmptySpace min="-2" pref="36" max="-2" attributes="0"/>
-                          <Component id="jButton1" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <Component id="jCheckBoxAddPrefsToLogfilename" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="jCheckBoxAddPrefsToLogfilename" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace min="-2" pref="167" max="-2" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
           </Group>
-          <Component id="jTabbedPane1" alignment="1" max="32767" attributes="0"/>
+          <Group type="102" alignment="0" attributes="0">
+              <Group type="103" groupAlignment="1" attributes="0">
+                  <Group type="102" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="jLabel4" min="-2" pref="239" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="jTextFieldLogFileAddon" min="-2" pref="207" max="-2" attributes="1"/>
+                      <EmptySpace min="-2" pref="454" max="-2" attributes="0"/>
+                      <Component id="jButton1" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <Component id="jTabbedPane1" min="-2" pref="987" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+          </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
@@ -60,9 +65,9 @@
               </Group>
               <EmptySpace min="-2" pref="13" max="-2" attributes="0"/>
               <Component id="jTabbedPane1" max="32767" attributes="0"/>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Component id="jCheckBoxAddPrefsToLogfilename" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
+              <Component id="jCheckBoxAddPrefsToLogfilename" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jTextFieldLogFileAddon" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -1107,7 +1112,7 @@
                           <Component id="jSpinnerCSSPopulationSize" max="32767" attributes="0"/>
                           <Component id="jSpinnerCSSMaxAttraction" pref="149" max="32767" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="807" max="32767" attributes="0"/>
+                      <EmptySpace pref="654" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -1205,7 +1210,7 @@
                               </Group>
                           </Group>
                       </Group>
-                      <EmptySpace min="649" pref="823" max="32767" attributes="0"/>
+                      <EmptySpace min="649" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -1350,7 +1355,7 @@
                               </Group>
                           </Group>
                       </Group>
-                      <EmptySpace min="0" pref="651" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="552" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -1401,7 +1406,7 @@
             <Component class="javax.swing.JSpinner" name="jSpinnerMVMOStartingPop">
               <Properties>
                 <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-                  <SpinnerModel initial="1" minimum="1" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                  <SpinnerModel initial="2" minimum="1" numberType="java.lang.Integer" stepSize="1" type="number"/>
                 </Property>
               </Properties>
               <Events>
@@ -1421,7 +1426,7 @@
             <Component class="javax.swing.JSpinner" name="jSpinnerMVMOMaxPop">
               <Properties>
                 <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-                  <SpinnerModel initial="1" minimum="1" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                  <SpinnerModel initial="70" minimum="1" numberType="java.lang.Integer" stepSize="1" type="number"/>
                 </Property>
               </Properties>
               <Events>
