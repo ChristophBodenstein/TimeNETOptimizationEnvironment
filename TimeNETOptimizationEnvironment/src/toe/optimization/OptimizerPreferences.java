@@ -58,6 +58,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     private boolean pref_GeneticMutateTopSolution;
     private int pref_GeneticMaximumOptirunsWithoutSolution;
     private typeOfGeneticCrossover pref_GeneticTypeOfCrossover;
+    private int pref_GeneticNumberOfCrossings;
 
 //parameters for CSS Optimization
     private int pref_CSS_PopulationSize;
@@ -208,6 +209,8 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         jLabel27 = new javax.swing.JLabel();
         jComboBoxGeneticTypeOfGeneticCrossing = new javax.swing.JComboBox();
         jLabel30 = new javax.swing.JLabel();
+        jSpinnerGeneticMaxNumberOfCrossings = new javax.swing.JSpinner();
+        jLabel31 = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         jSpinnerCSSPopulationSize = new javax.swing.JSpinner();
         jLabelCSSPopulationSize = new javax.swing.JLabel();
@@ -706,6 +709,10 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
         jLabel30.setText("Kind of crossing");
 
+        jSpinnerGeneticMaxNumberOfCrossings.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
+
+        jLabel31.setText("Number of crossings per generation");
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -727,12 +734,14 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
                             .addComponent(jSpinnerGeneticMutationChance))))
                 .addGap(46, 46, 46)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel31)
                     .addComponent(jLabel27)
                     .addComponent(jLabel30))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jSpinnerGeneticMaxOptiRunsWithoutImprovement, javax.swing.GroupLayout.DEFAULT_SIZE, 65, Short.MAX_VALUE)
-                    .addComponent(jComboBoxGeneticTypeOfGeneticCrossing, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jComboBoxGeneticTypeOfGeneticCrossing, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jSpinnerGeneticMaxNumberOfCrossings, javax.swing.GroupLayout.DEFAULT_SIZE, 65, Short.MAX_VALUE))
                 .addGap(492, 492, 492))
         );
         jPanel3Layout.setVerticalGroup(
@@ -751,8 +760,11 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
                     .addComponent(jComboBoxGeneticTypeOfGeneticCrossing, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel30))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jCheckBoxGeneticMutateTopSolution)
-                .addContainerGap(232, Short.MAX_VALUE))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jCheckBoxGeneticMutateTopSolution)
+                    .addComponent(jSpinnerGeneticMaxNumberOfCrossings, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel31))
+                .addContainerGap(260, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Genetic", jPanel3);
@@ -1289,6 +1301,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel30;
+    private javax.swing.JLabel jLabel31;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
@@ -1334,6 +1347,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     private javax.swing.JSpinner jSpinnerConfidenceIntervallStart;
     private javax.swing.JSpinner jSpinnerEpsilon;
     private javax.swing.JSpinner jSpinnerEpsilon1;
+    private javax.swing.JSpinner jSpinnerGeneticMaxNumberOfCrossings;
     private javax.swing.JSpinner jSpinnerGeneticMaxOptiRunsWithoutImprovement;
     private javax.swing.JSpinner jSpinnerGeneticMutationChance;
     private javax.swing.JSpinner jSpinnerGeneticPopulationSize;
@@ -1438,7 +1452,8 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             support.log("Loaded pref_GeneticMutationChance is " + this.getPref_GeneticMutationChance());
             this.setPref_GeneticMutateTopSolution(Boolean.valueOf(auto.getProperty("pref_GeneticMutateTopSolution", Boolean.toString(support.DEFAULT_GENETIC_MUTATE_TOP_SOLUTION))));
             support.log("Loaded pref_GeneticMutateTopSolution is " + this.getPref_GeneticMutateTopSolution());
-
+            this.setPref_GeneticNumberOfCrossings(support.loadIntFromProperties("pref_GeneticNumberOfCrossings", support.DEFAULT_GENETIC_NUMBEROFCROSSINGS, auto));
+            
             this.setPref_GeneticMaximumOptirunsWithoutSolution(support.loadIntFromProperties("pref_GeneticMaxOptiRunsWithoutSolution", support.DEFAULT_GENETIC_MAXWRONGOPTIRUNS, auto));
             support.log("Loaded pref_GeneticMaxOptiRunsWithoutSolution is "+ this.getPref_GeneticMaximumOptirunsWithoutSolution());
             this.setPref_GeneticTypeOfCrossover(typeOfGeneticCrossover.valueOf(auto.getProperty("pref_GeneticTypeOfCrossover", support.DEFAULT_GENETIC_CROSSOVER.toString())));
@@ -1517,6 +1532,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             auto.setProperty("pref_GeneticMutateTopSolution", Boolean.toString(this.getPref_GeneticMutateTopSolution()));
             auto.setProperty("pref_GeneticMaxOptiRunsWithoutSolution", Integer.toString(this.getPref_GeneticMaximumOptirunsWithoutSolution()));
             auto.setProperty("pref_GeneticTypeOfCrossover", this.getPref_GeneticTypeOfCrossover().toString());
+            auto.setProperty("pref_GeneticNumberOfCrossings", Integer.toString(this.getPref_GeneticNumberOfCrossings()));
             
             //setting parameters for CSS optimization
             auto.setProperty("pref_CSS_PopulationSize", Integer.toString(this.getPref_CSS_PopulationSize()));
@@ -2251,5 +2267,21 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     public void setPref_GeneticTypeOfCrossover(typeOfGeneticCrossover pref_GeneticTypeOfCrossover) {
         this.jComboBoxGeneticTypeOfGeneticCrossing.setSelectedItem(pref_GeneticTypeOfCrossover);
         this.pref_GeneticTypeOfCrossover = pref_GeneticTypeOfCrossover;
+    }
+
+    /**
+     * @return the pref_GeneticNumberOfCrossings
+     */
+    public int getPref_GeneticNumberOfCrossings() {
+        pref_GeneticNumberOfCrossings=(Integer)jSpinnerGeneticMaxNumberOfCrossings.getValue();
+        return pref_GeneticNumberOfCrossings;
+    }
+
+    /**
+     * @param pref_GeneticNumberOfCrossings the pref_GeneticNumberOfCrossings to set
+     */
+    public void setPref_GeneticNumberOfCrossings(int pref_GeneticNumberOfCrossings) {
+        jSpinnerGeneticMaxNumberOfCrossings.setValue(pref_GeneticNumberOfCrossings);
+        this.pref_GeneticNumberOfCrossings = pref_GeneticNumberOfCrossings;
     }
 }

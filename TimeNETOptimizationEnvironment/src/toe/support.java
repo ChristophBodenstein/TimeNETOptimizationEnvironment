@@ -73,6 +73,7 @@ public class support {
     public static final boolean DEFAULT_GENETIC_MUTATE_TOP_SOLUTION = false;
     public static final int DEFAULT_GENETIC_MAXWRONGOPTIRUNS=5;
     public static final typeOfGeneticCrossover DEFAULT_GENETIC_CROSSOVER=typeOfGeneticCrossover.SBX;
+    public static final int DEFAULT_GENETIC_NUMBEROFCROSSINGS=2;
 
 //default values for CSS Optimization
     public static final int DEFAULT_CSS_POPULATION_SIZE = 10;

@@ -24,6 +24,7 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
     private double mutationChance = support.getOptimizerPreferences().getPref_GeneticMutationChance(); // chance of genes to Mutate
     private final boolean mutateTopMeasure = support.getOptimizerPreferences().getPref_GeneticMutateTopSolution();
     private final typeOfGeneticCrossover crossOverStrategy = typeOfGeneticCrossover.OnePoint;
+    private final int numberOfCrossovers = support.getOptimizerPreferences().getPref_GeneticNumberOfCrossings();
     private final int SBX_n = 2;
     private final double MPC_cr = 0.5;
 
@@ -74,7 +75,7 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
      *
      * @return Chance of mutation
      */
-    public double getMutatuionChance() {
+    public double getMutationChance() {
         return this.mutationChance;
     }
 
@@ -124,9 +125,9 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
             }
 
             //modification phase -----------------------------------------------------------------------
-            population = crossPopulation(population, populationSize); //doubles population
+            population = crossPopulation(population, numberOfCrossovers); 
             support.log("New Population size after Crossing is: " + population.size());
-            population = mutatePopulation(population, mutationChance); //
+            population = mutatePopulation(population, mutationChance); 
             support.log("New Population size after mutation is: " + population.size());
 
             //simulation phase -----------------------------------------------------------------------
@@ -149,7 +150,9 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
             printPopulationDistances();
 
             ++optiCycleCounter;
-            if(topMeasure.getDistanceToTargetValue()<=0)break;
+            if (topMeasure.getDistanceToTargetValue() <= 0) {
+                break;
+            }
         }
         optimized = true;
     }
@@ -160,7 +163,7 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
      *
      * @param father the father for the genetic parameter mix process
      * @param mother the mother for the genetic parameter mix process
-     * @return the resulting list of children
+     * @return the resulting list of 2 children
      */
     private ArrayList<SimulationType> onePointCrossOver(SimulationType father, SimulationType mother) {
         if (father == null || mother == null) {
@@ -210,7 +213,7 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
      *
      * @param father the father for the genetic parameter mix process
      * @param mother the mother for the genetic parameter mix process
-     * @return the resulting list of children
+     * @return the resulting list of 2 children
      */
     private ArrayList<SimulationType> SBXCrossOver(SimulationType father, SimulationType mother) {
         if (father == null || mother == null) {
@@ -271,7 +274,7 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
      *
      * @param father the father for the genetic parameter mix process
      * @param mother the mother for the genetic parameter mix process
-     * @return the resulting list of children
+     * @return the resulting list of 3 children
      */
     private ArrayList<SimulationType> MPCCrossOver(SimulationType parent1, SimulationType parent2, SimulationType parent3) {
         if (parent1 == null || parent2 == null || parent3 == null) {
@@ -332,32 +335,47 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
         return childList;
     }
 
-    private ArrayList< ArrayList<SimulationType>> crossPopulation(ArrayList< ArrayList<SimulationType>> population, int numNewChildren) {
+    /**
+     * @param numOfCrossing how often a random pair of parents create new
+     * children SBX and OPC -> 2 children per crossing MPC -> always 3 children
+     * and only one crossing
+     */
+    private ArrayList< ArrayList<SimulationType>> crossPopulation(ArrayList< ArrayList<SimulationType>> population, int numOfCrossing) {
         ArrayList<SimulationType> children = new ArrayList<>();
-        if (this.crossOverStrategy == typeOfGeneticCrossover.OnePoint) {
-            for (int i = 0; i < numNewChildren; ++i) {
-                int indexOfFather = randomGenerator.nextInt(populationSize);
-                int indexOfMother = randomGenerator.nextInt(populationSize);
 
-                children = onePointCrossOver(population.get(indexOfFather).get(0), population.get(indexOfMother).get(0));
-            }
-        } else if (this.crossOverStrategy == typeOfGeneticCrossover.SBX) {
-            for (int i = 0; i < numNewChildren; ++i) {
-                int indexOfFather = randomGenerator.nextInt(populationSize);
-                int indexOfMother = randomGenerator.nextInt(populationSize);
-
-                children = SBXCrossOver(population.get(indexOfFather).get(0), population.get(indexOfMother).get(0));
-            }
-        } else if (this.crossOverStrategy == typeOfGeneticCrossover.MPC) {
-            for (int i = 0; i < population.size(); i += 3) {
-                if (randomGenerator.nextDouble() <= MPC_cr && population.size() > i + 2) {
-                    children = MPCCrossOver(population.get(i).get(0), population.get(i + 1).get(0), population.get(i + 2).get(0));
+        switch (this.crossOverStrategy) {
+            default: //will use OnePoint as default because no break here
+            case OnePoint:
+                for (int i = 0; i < numOfCrossing; ++i) {
+                    int indexOfFather = randomGenerator.nextInt(populationSize);
+                    int indexOfMother = randomGenerator.nextInt(populationSize);
+                    ArrayList<SimulationType> tmpList = onePointCrossOver(population.get(indexOfFather).get(0), population.get(indexOfMother).get(0));
+                    for (int c = 0; c < tmpList.size(); c++) {
+                        children.add(tmpList.get(c));
+                    }
                 }
-            }
-        } else {
-            //TODO default handling
+                break;
+            case SBX:
+                for (int i = 0; i < numOfCrossing; ++i) {
+                    int indexOfFather = randomGenerator.nextInt(populationSize);
+                    int indexOfMother = randomGenerator.nextInt(populationSize);
+
+                    ArrayList<SimulationType> tmpList = SBXCrossOver(population.get(indexOfFather).get(0), population.get(indexOfMother).get(0));
+                    for (int c = 0; c < tmpList.size(); c++) {
+                        children.add(tmpList.get(c));
+                    }
+                }
+                break;
+            case MPC:
+                for (int i = 0; i < population.size(); i += 3) {
+                    if (randomGenerator.nextDouble() <= MPC_cr && population.size() > i + 2) {
+                        children = MPCCrossOver(population.get(i).get(0), population.get(i + 1).get(0), population.get(i + 2).get(0));
+                    }
+                }
+                break;
         }
 
+        support.log("Number of new children: " + children.size());
         for (SimulationType child : children) {
             ArrayList<SimulationType> childList = new ArrayList<>();
             childList.add(child);

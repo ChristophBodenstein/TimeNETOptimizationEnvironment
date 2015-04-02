@@ -984,13 +984,15 @@
                       </Group>
                       <EmptySpace min="-2" pref="46" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="jLabel31" min="-2" max="-2" attributes="0"/>
                           <Component id="jLabel27" min="-2" max="-2" attributes="0"/>
                           <Component id="jLabel30" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Component id="jSpinnerGeneticMaxOptiRunsWithoutImprovement" pref="65" max="32767" attributes="0"/>
                           <Component id="jComboBoxGeneticTypeOfGeneticCrossing" max="32767" attributes="0"/>
+                          <Component id="jSpinnerGeneticMaxNumberOfCrossings" alignment="0" pref="65" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="492" max="-2" attributes="0"/>
                   </Group>
@@ -1014,8 +1016,12 @@
                           <Component id="jLabel30" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="jCheckBoxGeneticMutateTopSolution" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="232" max="32767" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="jCheckBoxGeneticMutateTopSolution" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jSpinnerGeneticMaxNumberOfCrossings" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabel31" alignment="0" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace pref="260" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -1085,6 +1091,18 @@
             <Component class="javax.swing.JLabel" name="jLabel30">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Kind of crossing"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JSpinner" name="jSpinnerGeneticMaxNumberOfCrossings">
+              <Properties>
+                <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+                  <SpinnerModel initial="1" minimum="1" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                </Property>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="jLabel31">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Number of crossings per generation"/>
               </Properties>
             </Component>
           </SubComponents>
