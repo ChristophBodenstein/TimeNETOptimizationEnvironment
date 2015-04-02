@@ -319,23 +319,26 @@ public abstract class OptimizerPopulationBased implements Runnable, Optimizer {
 
     @Override
     public abstract void run();
-        /**
-     * Set the logfilename
-     * this is useful for multi-optimization or if you like specific names for your logfiles
+
+    /**
+     * Set the logfilename this is useful for multi-optimization or if you like
+     * specific names for your logfiles
+     *
      * @param name Name (path) of logfile
      */
-    
-    
+
     @Override
-    public void setLogFileName(String name){
-    this.logFileName=name;
+    public void setLogFileName(String name) {
+        this.logFileName = name;
     }
+
     /**
      * Returns the used logfileName
+     *
      * @return name of logfile
      */
     @Override
     public String getLogFileName() {
-    return this.logFileName;
+        return this.logFileName;
     }
 }
