@@ -32,9 +32,6 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
     private int SBX_n = 2;
     private double MPC_cr = 0.5;
     
-    private int numOptiRuns = 50;
-    private boolean doBatchRun = false;
-
     /**
      * returnes the population size used for optimization
      * @return the population size
@@ -77,27 +74,6 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
         }
     }
     
-    /**
-     * gets maximum number of optimization cycles without improvement, before breaking optimization loop.
-     * @return the maximum number of optimization cycles without improvemet
-     */
-    //public int getMaxNumberOfOptiCyclesWithoutImprovement()
-    //{
-    //    return this.maxNumberOfOptiCyclesWithoutImprovement;
-    //}
-    
-    /**
-     * sets maximum number of optimization cycles without improvement. Has to be at least 1, otherwise it is ignored.
-     * @param newMaxNumberOfOptiCyclesWithoutImprovement the new maximum number of optimization cycles without improvement
-     */
-    /*public void setMaxNumberOfOptiCyclesWithoutImprovement(int newMaxNumberOfOptiCyclesWithoutImprovement)
-    {
-        if (newMaxNumberOfOptiCyclesWithoutImprovement > 0)
-        {
-            this.maxNumberOfOptiCyclesWithoutImprovement = newMaxNumberOfOptiCyclesWithoutImprovement;
-        }
-    }
-    */
     
     public double getMutatuionChance()
     {
@@ -117,12 +93,9 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
     
     public void run() 
     {
-        if (doBatchRun)
-        {
-            doBatchRun();
-            return;
-        }
-
+        
+        maxNumberOfOptiCyclesWithoutImprovement=support.getOptimizerPreferences().getPref_GeneticMaximumOptirunsWithoutSolution();
+        optimized=false;
         int optiCycleCounter = 0;
         population = createRandomPopulation(populationSize, false);
         
@@ -154,7 +127,6 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
             support.log("New Population size after Crossing is: "+ population.size());
             population = mutatePopulation(population, mutationChance); //
             support.log("New Population size after mutation is: "+ population.size());
-            support.log("currentNumberOfOptiCyclesWithoutImprovement: "+currentNumberOfOptiCyclesWithoutImprovement);
             
             
             //simulation phase -----------------------------------------------------------------------
@@ -170,13 +142,7 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
             simulationResults = mySimulator.getListOfCompletedSimulationParsers();
             population = getPopulationFromSimulationResults(simulationResults);
             support.addLinesToLogFileFromListOfParser(simulationResults, logFileName);
-            try {
-                support.log("optiCycleCounter: "+optiCycleCounter);
-                System.out.println("Wait for enter...");
-                System.in.read();
-            } catch (IOException ex) {
-                Logger.getLogger(OptimizerGenetic.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            
             //evaluation phase --------------------------------------------------------------------------
             population = cutPopulation(population);
             support.log("New Population size after cutting is: "+ population.size());
@@ -184,95 +150,16 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
             printPopulationDistances();
             
             ++optiCycleCounter;
-        } 
+        }
+        optimized=true;
     }
     
-    private void doBatchRun()
-    {
-        ArrayList<SimulationType> optiResults = new ArrayList<SimulationType>();
-        ArrayList<Integer> optiTotalSimualtions = new ArrayList<Integer>();
-        ArrayList<Integer> optiTotalCachedSimualtions = new ArrayList<Integer>();
-        for (int i = 0; i< numOptiRuns; ++i)
-        {
-        int optiCycleCounter = 0;
-        int totalSimulations  = 0;
-        int totalCachedSimualtions = 0;
-        population = createRandomPopulation(populationSize, false);
-        
-        Simulator mySimulator = SimOptiFactory.getSimulator();       
-        mySimulator.initSimulator(getNextParameterSetAsArrayList(), optiCycleCounter, false);
-        support.waitForEndOfSimulator(mySimulator, optiCycleCounter, support.DEFAULT_TIMEOUT);
-        
-        ArrayList<SimulationType> simulationResults = mySimulator.getListOfCompletedSimulationParsers();
-        for (int r = 0;r<simulationResults.size();++r)
-        {
-            if (simulationResults.get(0).isIsFromCache())
-            {
-                ++totalCachedSimualtions;
-            }
-        }
-        
-        totalSimulations += simulationResults.size();
-        population = getPopulationFromSimulationResults(simulationResults);
-        
-        int simulationCounter = 0;
-        while(optiCycleCounter < this.maxNumberOfOptiCycles)
-        {
-            if (currentNumberOfOptiCyclesWithoutImprovement >= maxNumberOfOptiCyclesWithoutImprovement)
-            {
-                support.log("Too many optimization cycles without improvement. Ending optimization.");
-                break;
-            }
-            
-            //modification phase -----------------------------------------------------------------------
-            population = crossPopulation(population, populationSize); //doubles population
-            population = mutatePopulation(population, mutationChance); //
-            
-            
-            //simulation phase -----------------------------------------------------------------------
-            ArrayList< ArrayList<parameter> > parameterList = getNextParameterSetAsArrayList();
-            for (ArrayList<parameter> pArray : parameterList)
-            {
-                pArray =  roundToStepping(pArray);
-            }
-            
-            mySimulator = SimOptiFactory.getSimulator();
-            mySimulator.initSimulator(parameterList, simulationCounter, false);
-            support.waitForEndOfSimulator(mySimulator, simulationCounter, support.DEFAULT_TIMEOUT);
-            simulationCounter = mySimulator.getSimulationCounter();
-            
-            simulationResults = mySimulator.getListOfCompletedSimulationParsers();
-            totalSimulations += simulationResults.size();
-            population = getPopulationFromSimulationResults(simulationResults);
-            //support.addLinesToLogFileFromListOfParser(simulationResults, logFileName);
-            
-            //evaluation phase --------------------------------------------------------------------------
-            population = cutPopulation(population);
-            updateTopMeasure();
-            printPopulationDistances();
-            
-            ++optiCycleCounter;
-        }
-        optiResults.add(topMeasure);
-        optiTotalSimualtions.add(totalSimulations);
-        optiTotalCachedSimualtions.add(totalCachedSimualtions);
-        topDistance = Double.POSITIVE_INFINITY;
-        currentNumberOfOptiCyclesWithoutImprovement = 0;
-        }
-        support.addLinesToLogFileFromListOfSimulationBatchesIncludingNumRuns(optiResults, optiTotalSimualtions, optiTotalCachedSimualtions, logFileName);
-
-        for (int i = 0;i<optiResults.size(); ++i)
-        {
-            String logString = "" + optiTotalSimualtions.get(i) + " " + optiTotalCachedSimualtions.get(i);
-            support.log(logString);
-        }   
-    }        
     
     /**
      * creates genetic crossover of mothers and fathers paramter[] to create new child1
      * @param father the father for the genetic parameter mix process
      * @param mother the mother for the genetic parameter mix process
-     * @return the resulting child1
+     * @return the resulting list of children
      */
     private ArrayList<SimulationType> onePointCrossOver(SimulationType father, SimulationType mother)
     {
@@ -324,6 +211,12 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
         return childList;
     }
         
+    /**
+     * Creates genetic crossover by simulated binary crossover
+     * @param father the father for the genetic parameter mix process
+     * @param mother the mother for the genetic parameter mix process
+     * @return the resulting list of children
+     */
     private ArrayList<SimulationType> SBXCrossOver(SimulationType father, SimulationType mother)
     {
         if (father == null || mother == null)
@@ -389,6 +282,12 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
         return childList;
     }
     
+    /**
+     * Creates genetic crossover by multipoint binary crossover
+     * @param father the father for the genetic parameter mix process
+     * @param mother the mother for the genetic parameter mix process
+     * @return the resulting list of children
+     */
     private ArrayList<SimulationType> MPCCrossOver(SimulationType parent1, SimulationType parent2, SimulationType parent3)
     {
         if (parent1 == null || parent2 == null || parent3 == null)
@@ -539,7 +438,7 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
     }
        
     /**
-     * cuts back population to population-size. It will dismiss all parsers with higher distance than the one in position of population size
+     * Cuts back population to population-size. It will dismiss all parsers with higher distance than the one in position of population size
      * @param oldPopulation the old population to cut
      * @return the new population, which is cutted to max population size 
      */
@@ -566,6 +465,7 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
      * this is useful for multi-optimization or if you like specific names for your logfiles
      * @param name Name (path) of logfile
      */
+    @Override
     public void setLogFileName(String name){
     this.logFileName=name;
     }
@@ -573,6 +473,7 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
      * Returns the used logfileName
      * @return name of logfile
      */
+    @Override
     public String getLogFileName() {
     return this.logFileName;
     }
