@@ -35,7 +35,6 @@ public class LogFrame extends javax.swing.JFrame {
 
         setTitle("Log Viewer");
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        setMaximumSize(java.awt.Toolkit.getDefaultToolkit().getScreenSize());
         setMinimumSize(new java.awt.Dimension(650, 300));
         setName("LogFrame"); // NOI18N
         setPreferredSize(new java.awt.Dimension(650, 300));
