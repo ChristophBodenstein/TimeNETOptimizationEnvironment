@@ -333,32 +333,32 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
     }
 
     private ArrayList< ArrayList<SimulationType>> crossPopulation(ArrayList< ArrayList<SimulationType>> population, int numNewChildren) {
-        ArrayList<SimulationType> childs = new ArrayList<>();
+        ArrayList<SimulationType> children = new ArrayList<>();
         if (this.crossOverStrategy == typeOfGeneticCrossover.OnePoint) {
             for (int i = 0; i < numNewChildren; ++i) {
                 int indexOfFather = randomGenerator.nextInt(populationSize);
                 int indexOfMother = randomGenerator.nextInt(populationSize);
 
-                childs = onePointCrossOver(population.get(indexOfFather).get(0), population.get(indexOfMother).get(0));
+                children = onePointCrossOver(population.get(indexOfFather).get(0), population.get(indexOfMother).get(0));
             }
         } else if (this.crossOverStrategy == typeOfGeneticCrossover.SBX) {
             for (int i = 0; i < numNewChildren; ++i) {
                 int indexOfFather = randomGenerator.nextInt(populationSize);
                 int indexOfMother = randomGenerator.nextInt(populationSize);
 
-                childs = SBXCrossOver(population.get(indexOfFather).get(0), population.get(indexOfMother).get(0));
+                children = SBXCrossOver(population.get(indexOfFather).get(0), population.get(indexOfMother).get(0));
             }
         } else if (this.crossOverStrategy == typeOfGeneticCrossover.MPC) {
             for (int i = 0; i < population.size(); i += 3) {
                 if (randomGenerator.nextDouble() <= MPC_cr && population.size() > i + 2) {
-                    childs = MPCCrossOver(population.get(i).get(0), population.get(i + 1).get(0), population.get(i + 2).get(0));
+                    children = MPCCrossOver(population.get(i).get(0), population.get(i + 1).get(0), population.get(i + 2).get(0));
                 }
             }
         } else {
             //TODO default handling
         }
 
-        for (SimulationType child : childs) {
+        for (SimulationType child : children) {
             ArrayList<SimulationType> childList = new ArrayList<>();
             childList.add(child);
             population.add(childList);
