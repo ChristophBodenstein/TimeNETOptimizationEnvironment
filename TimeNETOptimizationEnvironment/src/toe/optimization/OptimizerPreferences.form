@@ -45,7 +45,7 @@
                       <Component id="jCheckBoxAddPrefsToLogfilename" alignment="0" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace min="-2" pref="238" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="167" max="-2" attributes="0"/>
           </Group>
           <Component id="jTabbedPane1" alignment="1" max="32767" attributes="0"/>
       </Group>
@@ -1098,16 +1098,16 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                          <Component id="jLabelCSSPopulationSize" alignment="0" pref="0" max="32767" attributes="0"/>
-                          <Component id="jLabelCSSMaxAttraction" alignment="0" max="32767" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="jLabelCSSMaxAttraction" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabelCSSPopulationSize" min="-2" pref="117" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace min="-2" pref="64" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="jSpinnerCSSMaxAttraction" max="32767" attributes="0"/>
-                          <Component id="jSpinnerCSSPopulationSize" pref="222" max="32767" attributes="0"/>
+                      <EmptySpace min="-2" pref="40" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="jSpinnerCSSPopulationSize" max="32767" attributes="0"/>
+                          <Component id="jSpinnerCSSMaxAttraction" pref="149" max="32767" attributes="0"/>
                       </Group>
-                      <EmptySpace min="-2" pref="649" max="-2" attributes="0"/>
+                      <EmptySpace pref="807" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -1176,27 +1176,36 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="jLabelABCNumEmployedBees" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="81" max="-2" attributes="0"/>
                               <Component id="jSpinnerABCNumEmployedBees" max="32767" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
-                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="jLabelABCMaxNumberOfFoodUpdateCyclesWithoutImprovement" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="jLabelABCNumScoutBees" alignment="1" max="32767" attributes="0"/>
-                                  <Component id="jLabelABCNumOnlookerBees" alignment="1" min="-2" pref="127" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace min="26" pref="26" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="jSpinnerABCNumOnlookerBees" alignment="0" pref="204" max="32767" attributes="0"/>
-                                  <Component id="jSpinnerABCNumScoutBees" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement" alignment="0" max="32767" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                      <Component id="jLabelABCMaxNumberOfFoodUpdateCyclesWithoutImprovement" alignment="0" max="32767" attributes="0"/>
+                                      <Component id="jLabelABCNumScoutBees" alignment="1" max="32767" attributes="0"/>
+                                  </Group>
+                                  <Component id="jLabelABCNumOnlookerBees" alignment="0" min="-2" pref="127" max="-2" attributes="0"/>
+                              </Group>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="102" attributes="0">
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                          <Component id="jSpinnerABCNumScoutBees" pref="117" max="32767" attributes="0"/>
+                                          <Component id="jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement" max="32767" attributes="0"/>
+                                      </Group>
+                                  </Group>
+                                  <Group type="102" alignment="1" attributes="0">
+                                      <EmptySpace min="-2" pref="7" max="-2" attributes="0"/>
+                                      <Component id="jSpinnerABCNumOnlookerBees" min="-2" pref="116" max="-2" attributes="0"/>
+                                  </Group>
                               </Group>
                           </Group>
                       </Group>
-                      <EmptySpace min="649" pref="649" max="-2" attributes="0"/>
+                      <EmptySpace min="649" pref="823" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -1223,7 +1232,7 @@
                           <Component id="jLabelABCMaxNumberOfFoodUpdateCyclesWithoutImprovement" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="193" max="32767" attributes="0"/>
+                      <EmptySpace pref="215" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
