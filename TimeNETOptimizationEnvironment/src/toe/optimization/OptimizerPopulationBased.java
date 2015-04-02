@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Random;
-import javax.swing.JTabbedPane;
 import toe.MainFrame;
 import toe.datamodel.MeasureType;
 import toe.datamodel.SimulationType;
@@ -21,51 +20,34 @@ import toe.support;
  */
 public abstract class OptimizerPopulationBased implements Runnable, Optimizer {
 
-    private String tmpPath = "";
-    private String filename = "";//Original filename
-    private String pathToTimeNet = "";
     private MainFrame parent = null;
-    private JTabbedPane MeasureFormPane;
-    protected ArrayList<MeasureType> listOfMeasures = new ArrayList<MeasureType>();//Liste aller Measures, abfragen von MeasureFormPane
+    protected ArrayList<MeasureType> listOfMeasures = new ArrayList<>();//Liste aller Measures, abfragen von MeasureFormPane
     protected ArrayList<parameter> parameterBase;//Base set of parameters, start/end-value, stepping, etc.
-    private double simulationTimeSum = 0;
-    private double cpuTimeSum = 0;
-
     protected String logFileName = "";
-
     protected Random randomGenerator;
-
-    protected ArrayList<Integer> parametersToModify = new ArrayList<Integer>();
-
+    protected ArrayList<Integer> parametersToModify = new ArrayList<>();
     //ArrayList of ArrayList used, to make sublists (for ABC...) possible
-    protected ArrayList<ArrayList<SimulationType>> population = new ArrayList<ArrayList<SimulationType>>();
-
+    protected ArrayList<ArrayList<SimulationType>> population = new ArrayList<>();
     protected SimulationType topMeasure;//temp top measure before implementing top-List
     protected double topDistance = Double.POSITIVE_INFINITY;//temp top distance
-
-    protected int maxNumberOfOptiCycles = 100; //maximum number of cycles, before optimization terminates
-    protected int maxNumberOfOptiCyclesWithoutImprovement = 10;//support.getOptimizerPreferences().get; //how many cycles without improvement until break optimization loop
+    protected int maxNumberOfOptiCycles = 100; //maximum number of cycles, before optimization terminates, even if better solutions are found
+    protected int maxNumberOfOptiCyclesWithoutImprovement = support.DEFAULT_GENETIC_MAXWRONGOPTIRUNS;//how many cycles without improvement until break optimization loop
     protected int currentNumberOfOptiCyclesWithoutImprovement = 0;
 
     protected boolean optimized = false;//Will be set to true, if optimization has finished
 
+    /**
+     * Constructor, does nothing special at the moment
+     */
     public OptimizerPopulationBased() {
-
     }
 
     @Override
     public void initOptimizer() {
-        this.pathToTimeNet = support.getPathToTimeNet();// pathToTimeNetTMP;
-        this.MeasureFormPane = support.getMeasureFormPane();//MeasureFormPaneTMP;
         this.parent = support.getMainFrame();// parentTMP;
         this.parameterBase = parent.getParameterBase();
         this.listOfMeasures = parent.getListOfActiveMeasureMentsToOptimize(); //((MeasurementForm)MeasureFormPane.getComponent(0)).getListOfMeasurements();
         support.log("# of Measures to be optimized: " + this.listOfMeasures.size());
-
-        this.filename = support.getOriginalFilename();// originalFilename;
-
-        //Ask for Tmp-Path
-        this.tmpPath = support.getTmpPath();
 
         randomGenerator = new Random();
 
@@ -95,7 +77,7 @@ public abstract class OptimizerPopulationBased implements Runnable, Optimizer {
     }
 
     protected ArrayList<ArrayList<SimulationType>> createRandomPopulation(int populationSize, boolean ignoreStepping) {
-        ArrayList<ArrayList<SimulationType>> newPopulation = new ArrayList<ArrayList<SimulationType>>();
+        ArrayList<ArrayList<SimulationType>> newPopulation = new ArrayList<>();
 
         for (int i = 0; i < populationSize; ++i) {
             newPopulation.add(new ArrayList<SimulationType>());
@@ -119,8 +101,8 @@ public abstract class OptimizerPopulationBased implements Runnable, Optimizer {
     }
 
     protected void setMeasureTargets(ArrayList<SimulationType> pList) {
-        MeasureType activeMeasure = null;
-        MeasureType activeMeasureFromInterface = null;
+        MeasureType activeMeasure;
+        MeasureType activeMeasureFromInterface;
         for (int measureCount = 0; measureCount < listOfMeasures.size(); measureCount++) {
             for (int populationCount = 0; populationCount < pList.size(); populationCount++) {
                 activeMeasure = pList.get(populationCount).getMeasureByName(listOfMeasures.get(measureCount).getMeasureName());
@@ -131,7 +113,7 @@ public abstract class OptimizerPopulationBased implements Runnable, Optimizer {
     }
 
     protected ArrayList< ArrayList<parameter>> getNextParameterSetAsArrayList() {
-        ArrayList< ArrayList<parameter>> myParametersetList = new ArrayList< ArrayList<parameter>>();
+        ArrayList< ArrayList<parameter>> myParametersetList = new ArrayList< >();
         for (ArrayList<SimulationType> p : population) {
             ArrayList<parameter> pArray = p.get(0).getListOfParameters();
             myParametersetList.add(pArray);
@@ -140,7 +122,7 @@ public abstract class OptimizerPopulationBased implements Runnable, Optimizer {
     }
 
     protected ArrayList< ArrayList<parameter>> getNextParameterSetAsArrayList(ArrayList<SimulationType> simulationData) {
-        ArrayList< ArrayList<parameter>> myParametersetList = new ArrayList< ArrayList<parameter>>();
+        ArrayList< ArrayList<parameter>> myParametersetList = new ArrayList< >();
         for (SimulationType simulation : simulationData) {
             ArrayList<parameter> pArray = simulation.getListOfParameters();
             myParametersetList.add(pArray);
@@ -149,17 +131,17 @@ public abstract class OptimizerPopulationBased implements Runnable, Optimizer {
     }
 
     protected ArrayList< ArrayList<parameter>> getNextParameterSetAsArrayList(SimulationType simulation) {
-        ArrayList< ArrayList<parameter>> myParametersetList = new ArrayList< ArrayList<parameter>>();
+        ArrayList< ArrayList<parameter>> myParametersetList = new ArrayList< >();
         ArrayList<parameter> pArray = simulation.getListOfParameters();
         myParametersetList.add(pArray);
         return myParametersetList;
     }
 
     protected ArrayList< ArrayList<SimulationType>> getPopulationFromSimulationResults(ArrayList<SimulationType> results) {
-        ArrayList< ArrayList<SimulationType>> newPopulation = new ArrayList<ArrayList<SimulationType>>();
+        ArrayList< ArrayList<SimulationType>> newPopulation = new ArrayList<>();
 
         for (SimulationType result : results) {
-            ArrayList<SimulationType> newIndividual = new ArrayList<SimulationType>();
+            ArrayList<SimulationType> newIndividual = new ArrayList<>();
             newIndividual.add(result);
             newPopulation.add(newIndividual);
         }
@@ -172,8 +154,8 @@ public abstract class OptimizerPopulationBased implements Runnable, Optimizer {
      * @return
      */
     protected ArrayList<parameter> roundToStepping(ArrayList<parameter> p) {
-        double currentValue = 0;
-        double currentStepping = 0;
+        double currentValue;
+        double currentStepping;
         for (int i = 0; i < p.size(); ++i) {
             currentValue = p.get(i).getValue();
             currentStepping = p.get(i).getStepping();
@@ -207,6 +189,9 @@ public abstract class OptimizerPopulationBased implements Runnable, Optimizer {
         return population;
     }
 
+    /**
+     * Prints distance to target of every population member
+     */
     public void printPopulationDistances() {
         for (int i = 0; i < population.size(); ++i) {
             String logString = "Distance " + i + " \t: " + population.get(i).get(0).getDistanceToTargetValue();
@@ -230,5 +215,6 @@ public abstract class OptimizerPopulationBased implements Runnable, Optimizer {
         }
     }
 
+    @Override
     public abstract void run();
 }
