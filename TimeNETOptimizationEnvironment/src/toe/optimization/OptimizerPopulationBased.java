@@ -21,19 +21,69 @@ import toe.support;
 public abstract class OptimizerPopulationBased implements Runnable, Optimizer {
 
     private MainFrame parent = null;
-    protected ArrayList<MeasureType> listOfMeasures = new ArrayList<>();//Liste aller Measures, abfragen von MeasureFormPane
-    protected ArrayList<parameter> parameterBase;//Base set of parameters, start/end-value, stepping, etc.
+
+    /**
+     * List of all measres to be optimized
+     */
+    protected ArrayList<MeasureType> listOfMeasures = new ArrayList<>();
+
+    /**
+     * Base set of parameters, start/end-value, stepping, etc.
+     */
+    protected ArrayList<parameter> parameterBase;
+
+    /**
+     * Name of logfile for Optimization
+     */
     protected String logFileName = "";
+
+    /**
+     * RandomGenerator object to be used for rnd
+     */
     protected Random randomGenerator;
+
+    /**
+     * List of parameters which can be modified by opti algo
+     */
     protected ArrayList<Integer> parametersToModify = new ArrayList<>();
     //ArrayList of ArrayList used, to make sublists (for ABC...) possible
+
+    /**
+     * actual population, a list of Simulations (incl. result and parametersets)
+     */
     protected ArrayList<ArrayList<SimulationType>> population = new ArrayList<>();
-    protected SimulationType topMeasure;//temp top measure before implementing top-List
-    protected double topDistance = Double.POSITIVE_INFINITY;//temp top distance
-    protected int maxNumberOfOptiCycles = 100; //maximum number of cycles, before optimization terminates, even if better solutions are found
-    protected int maxNumberOfOptiCyclesWithoutImprovement = support.DEFAULT_GENETIC_MAXWRONGOPTIRUNS;//how many cycles without improvement until break optimization loop
+
+    /**
+     * temp top measure before implementing top-List If Optimization has ended
+     * this is the result (found optimum)
+     */
+    protected SimulationType topMeasure;
+
+    /**
+     * distance of top measure to target
+     */
+    protected double topDistance = Double.POSITIVE_INFINITY;
+
+    /**
+     * maximum number of cycles, before optimization terminates, even if better
+     * solutions are found
+     */
+    protected int maxNumberOfOptiCycles = 100;
+
+    /**
+     * How many cycles without improvement until optimization is aborted
+     */
+    protected int maxNumberOfOptiCyclesWithoutImprovement = support.DEFAULT_GENETIC_MAXWRONGOPTIRUNS;
+
+    /**
+     * Counter fo opti cycles without improvement
+     */
     protected int currentNumberOfOptiCyclesWithoutImprovement = 0;
 
+    /**
+     * If this is set to true, the last topMeasure can be accessed via
+     * getOptimum
+     */
     protected boolean optimized = false;//Will be set to true, if optimization has finished
 
     /**
@@ -42,6 +92,11 @@ public abstract class OptimizerPopulationBased implements Runnable, Optimizer {
     public OptimizerPopulationBased() {
     }
 
+    /**
+     * Init the optimization, loads the default values and targets from
+     * support-class and starts optimization
+     *
+     */
     @Override
     public void initOptimizer() {
         this.parent = support.getMainFrame();// parentTMP;
@@ -76,6 +131,15 @@ public abstract class OptimizerPopulationBased implements Runnable, Optimizer {
         }
     }
 
+    /**
+     * Create random poulation (list of simulationtypes) at start of
+     * optimization
+     *
+     * @param populationSize Size of population to create
+     * @param ignoreStepping false -> parameters use given stepping, true ->
+     * parameters can have every real value in range
+     * @return list of SimulationTypeLists (start population)
+     */
     protected ArrayList<ArrayList<SimulationType>> createRandomPopulation(int populationSize, boolean ignoreStepping) {
         ArrayList<ArrayList<SimulationType>> newPopulation = new ArrayList<>();
 
@@ -100,20 +164,31 @@ public abstract class OptimizerPopulationBased implements Runnable, Optimizer {
         return newPopulation;
     }
 
+    /**
+     * Within a list of SimulationTypes it will set the optimization target
+     * values to every measure. So the remaining distance can be calculated.
+     *
+     * @param pList ArrayList of SimulationTypes
+     */
     protected void setMeasureTargets(ArrayList<SimulationType> pList) {
         MeasureType activeMeasure;
         MeasureType activeMeasureFromInterface;
-        for (int measureCount = 0; measureCount < listOfMeasures.size(); measureCount++) {
-            for (int populationCount = 0; populationCount < pList.size(); populationCount++) {
-                activeMeasure = pList.get(populationCount).getMeasureByName(listOfMeasures.get(measureCount).getMeasureName());
-                activeMeasureFromInterface = listOfMeasures.get(measureCount);//Contains Optimization targets
+        for (MeasureType listOfMeasure : listOfMeasures) {
+            for (SimulationType pList1 : pList) {
+                activeMeasure = pList1.getMeasureByName(listOfMeasure.getMeasureName());
+                activeMeasureFromInterface = listOfMeasure; //Contains Optimization targets
                 activeMeasure.setTargetValue(activeMeasureFromInterface.getTargetValue(), activeMeasureFromInterface.getTargetTypeOf());
             }
         }
     }
 
+    /**
+     * Returns created population as ArrayList of Parametersets
+     *
+     * @return ArrayList of ArrayList of parameters
+     */
     protected ArrayList< ArrayList<parameter>> getNextParameterSetAsArrayList() {
-        ArrayList< ArrayList<parameter>> myParametersetList = new ArrayList< >();
+        ArrayList< ArrayList<parameter>> myParametersetList = new ArrayList<>();
         for (ArrayList<SimulationType> p : population) {
             ArrayList<parameter> pArray = p.get(0).getListOfParameters();
             myParametersetList.add(pArray);
@@ -121,8 +196,15 @@ public abstract class OptimizerPopulationBased implements Runnable, Optimizer {
         return myParametersetList;
     }
 
+    /**
+     * Transoforms List of SimulationTypes to ArrayList of Parametersets
+     *
+     * @param simulationData ArrayList of SimulationTypes to be tranformed into
+     * ArrayList of ParameterLists
+     * @return ArrayList of ArrayList of parameters
+     */
     protected ArrayList< ArrayList<parameter>> getNextParameterSetAsArrayList(ArrayList<SimulationType> simulationData) {
-        ArrayList< ArrayList<parameter>> myParametersetList = new ArrayList< >();
+        ArrayList< ArrayList<parameter>> myParametersetList = new ArrayList<>();
         for (SimulationType simulation : simulationData) {
             ArrayList<parameter> pArray = simulation.getListOfParameters();
             myParametersetList.add(pArray);
@@ -130,13 +212,29 @@ public abstract class OptimizerPopulationBased implements Runnable, Optimizer {
         return myParametersetList;
     }
 
+    /**
+     * Transoforms one SimulationType object to ArrayList of Parametersets (wth
+     * one member)
+     *
+     * @param simulation SimulationType object to be returned as the one member
+     * of ArrayList of Parametersets
+     * @return ArrayList of ArrayList of parameters
+     */
     protected ArrayList< ArrayList<parameter>> getNextParameterSetAsArrayList(SimulationType simulation) {
-        ArrayList< ArrayList<parameter>> myParametersetList = new ArrayList< >();
+        ArrayList< ArrayList<parameter>> myParametersetList = new ArrayList<>();
         ArrayList<parameter> pArray = simulation.getListOfParameters();
         myParametersetList.add(pArray);
         return myParametersetList;
     }
 
+    /**
+     * Converts a List of SimulationTypes into an ArrayList of
+     * SimulationTypeLists
+     *
+     * @param results List of Simulationtypes
+     * @return List of SimulationTypeLists
+     *
+     */
     protected ArrayList< ArrayList<SimulationType>> getPopulationFromSimulationResults(ArrayList<SimulationType> results) {
         ArrayList< ArrayList<SimulationType>> newPopulation = new ArrayList<>();
 
@@ -199,6 +297,10 @@ public abstract class OptimizerPopulationBased implements Runnable, Optimizer {
         }
     }
 
+    /**
+     * Checks if a new Top Measure exists in population if yes, topMeasure
+     * member variable is set new.
+     */
     protected void updateTopMeasure() {
         boolean newTopMeasurefound = false;
         for (int i = 0; i < population.size(); ++i) {
