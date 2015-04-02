@@ -795,7 +795,6 @@ public class support {
 
         if (isLogToWindow()) {
             myLogFrame.addText(s);
-            System.out.println(s);
         }
 
         if (isLogToFile()) {
