@@ -12,7 +12,7 @@ var express = require('express'),
     formidable = require('formidable'),
     fs = require('graceful-fs'),
     path = require('path');
-var DEFAULT_SLEEPING_TIME = 1900;// in ms
+var DEFAULT_SLEEPING_TIME = 3000;// in ms
 var DEFAULT_MINIMUM_TIMEOUT = 500;//in sec
 
 /* GET home page. */
@@ -175,7 +175,8 @@ router.get('/rest/api/downloads/ND', function (req, res) {
     var db = req.db;
     var simlist = db.collection('simlist');
     var activeclients = db.collection('activeclients');
-    //console.log("Will remove old clients from list and answer the simulation request...");
+	var clientID=req.param('ID');
+	var clientSkills=req.param('SKILLS');
     removeOldClientsFromList(db, function (error) {
         //Nothing to do here...
     });
@@ -217,13 +218,15 @@ router.get('/rest/api/downloads/ND', function (req, res) {
                     res.json({'success': false});
 
                     //Mark Request in DB for Statistics, count the clients waiting for tasks.
-                    activeclients.remove({ip: req.connection.remoteAddress}, function (err) {
+                    activeclients.remove({ip: req.connection.remoteAddress, id:clientID}, function (err) {
                         if (err) {
                             console.log("Error removing client from list.");
                         }
 
                         activeclients.insert({
                             ip: req.connection.remoteAddress,
+							id: clientID,
+							skills: clientSkills,
                             timestamp: Date.now()
                         }, function (err, result) {
                             if (err) {
