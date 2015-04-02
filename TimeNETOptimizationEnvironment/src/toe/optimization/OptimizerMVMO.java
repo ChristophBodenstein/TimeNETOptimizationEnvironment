@@ -142,6 +142,7 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
             }
 
             ++optiCycleCounter;
+            if(topMeasure.getDistanceToTargetValue()<=0)break;
         }
         this.optimized = true;
 

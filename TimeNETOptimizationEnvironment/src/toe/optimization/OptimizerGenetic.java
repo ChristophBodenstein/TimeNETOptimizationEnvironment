@@ -149,6 +149,7 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
             printPopulationDistances();
 
             ++optiCycleCounter;
+            if(topMeasure.getDistanceToTargetValue()<=0)break;
         }
         optimized = true;
     }

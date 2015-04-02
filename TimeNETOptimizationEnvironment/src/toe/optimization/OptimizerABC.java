@@ -12,16 +12,10 @@ package toe.optimization;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Random;
-import javax.swing.JLabel;
-import javax.swing.JTabbedPane;
-import toe.MainFrame;
 import toe.SimOptiFactory;
-import toe.datamodel.MeasureType;
 import toe.datamodel.SimulationType;
 import toe.datamodel.parameter;
 import toe.simulation.Simulator;
@@ -33,15 +27,13 @@ import toe.support;
  */
 public class OptimizerABC extends OptimizerPopulationBased implements Runnable, Optimizer
 {
-    private ArrayList<Integer> updateCyclesWithoutImprovementList = new ArrayList<Integer>(); //to abandom individual food sources
+    private ArrayList<Integer> updateCyclesWithoutImprovementList = new ArrayList<>(); //to abandom individual food sources
     
     private int numEmployedBees = support.getOptimizerPreferences().getPref_ABC_NumEmployedBees();
     private int numOnlookerBees = support.getOptimizerPreferences().getPref_ABC_NumOnlookerBees();
     private int numScoutBees = support.getOptimizerPreferences().getPref_ABC_NumScoutBees();
     private int maxNumberOfFoodUpdateCyclesWithoutImprovement = support.getOptimizerPreferences().getPref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement();
     
-    private int numOptiRuns = 50;
-    private boolean doBatchRun = true;
     
     //************************ Constructors ****************************************************************************************************
     public OptimizerABC()
@@ -104,7 +96,7 @@ public class OptimizerABC extends OptimizerPopulationBased implements Runnable, 
         return foodSources;
     }
     
-    //TODO: fill    
+    //TODO: fill, should do nearly the same like in start phase  
     /**
      * in this phase the scouts fly to random solutions in the design space end explore their quality
      * @param foodSources the used foodsources so far
@@ -155,13 +147,9 @@ public class OptimizerABC extends OptimizerPopulationBased implements Runnable, 
         return newFoodList;
     }
     
+    @Override
     public void run()
     {
-        if (doBatchRun)
-        {
-            doBatchRun();
-            return;
-        }
         int optiCycleCounter=0;
         population = createRandomPopulation(numEmployedBees, false);
         //reset updateCycles without improvement for every foodSource
@@ -213,10 +201,13 @@ public class OptimizerABC extends OptimizerPopulationBased implements Runnable, 
             updateTopMeasure();
             ++optiCycleCounter;
             ++simulationCounter;
-        }           
+            if(topMeasure.getDistanceToTargetValue()<=0)break;
+            
+        } 
+        optimized=true;
     }
     
-    private void doBatchRun()
+    /*private void doBatchRun()
     {
         ArrayList<SimulationType> optiResults = new ArrayList<SimulationType>();
         ArrayList<Integer> optiTotalSimualtions = new ArrayList<Integer>();
@@ -291,7 +282,7 @@ public class OptimizerABC extends OptimizerPopulationBased implements Runnable, 
             String logString = "" + optiTotalSimualtions.get(i) + " " + optiTotalCachedSimualtions.get(i);
             support.log(logString);
         }            
-    }
+    }*/
     
     private SimulationType getNewFoodSource(SimulationType originalSource, boolean ignoreStepping) 
     {       
