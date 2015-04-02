@@ -79,7 +79,10 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
             this.maxNumberOfOptiCyclesWithoutImprovement = newMaxNumberOfOptiCyclesWithoutImprovement;
         }
     }
-
+    
+    /**
+     * Contructor
+     */
     public OptimizerMVMO() {
         logFileName = support.getTmpPath() + File.separator + "Optimizing_with_Genetic_Algorithm_" + Calendar.getInstance().getTimeInMillis() + "_ALL" + ".csv";
     }
