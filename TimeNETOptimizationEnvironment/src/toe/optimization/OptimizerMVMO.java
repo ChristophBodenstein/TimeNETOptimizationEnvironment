@@ -16,7 +16,6 @@ import toe.datamodel.SimulationType;
 import toe.datamodel.parameter;
 import toe.simulation.Simulator;
 import toe.support;
-import toe.typedef;
 import toe.typedef.typeOfMVMOMutationSelection;
 import toe.typedef.typeOfMVMOParentSelection;
 
@@ -27,40 +26,16 @@ import toe.typedef.typeOfMVMOParentSelection;
 
 public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable, Optimizer
 {
-    private int startPopulationSize = 5;//support.getOptimizerPreferences().getPref_GeneticPopulationSize(); //size of population after initialization
-    private int maxPopulationSize = 75;
+    private final int startPopulationSize = support.getOptimizerPreferences().getPref_MVMO_StartingPop(); //size of population after initialization
+    private final int maxPopulationSize = support.getOptimizerPreferences().getPref_MVMO_MaxPop(); //maximum Population size
     
     private ArrayList<Double> parameterMeanValues;
     private ArrayList<Double> parameterVarianceValues;
     
-    private double scalingFactor = 10.0;
-    private double asymmetryFactor = 3.0;
+    private final double scalingFactor = 10.0;
+    private final double asymmetryFactor = 3.0;
     
     private double sd = 75.0;
-    
-    private int numOptiRuns = 50;
-    private boolean doBatchRun = true;
-
-    /**
-     * returnes the population size used for optimization
-     * @return the population size
-     */
-    public int getPopulationSize()
-    {
-        return this.startPopulationSize;
-    }
-    
-    /**
-     * sets the population size, if its a least one. zero or negative values are ignored
-     * @param newPopulationSize the new number of charges
-     */
-    public void setPopulationSize(int newPopulationSize)
-    {
-        if (newPopulationSize > 0)
-        {
-            this.startPopulationSize = newPopulationSize;
-        }
-    }
     
     /**
      * return maximum number of optimization cycles before breaking up
@@ -111,13 +86,9 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
         logFileName=support.getTmpPath()+File.separator+"Optimizing_with_Genetic_Algorithm_"+Calendar.getInstance().getTimeInMillis()+"_ALL"+".csv";
     }
     
+    @Override
     public void run() 
-    {
-        if (doBatchRun)
-        {
-            doBatchRun();
-            return;
-        }
+    {   
         int optiCycleCounter = 0;
         population = createRandomPopulation(startPopulationSize, false);
         
@@ -161,7 +132,6 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
                 pArray =  roundToStepping(pArray);
             }
             
-            mySimulator = SimOptiFactory.getSimulator();
             mySimulator.initSimulator(parameterList, simulationCounter, false);
             support.waitForEndOfSimulator(mySimulator, simulationCounter, support.DEFAULT_TIMEOUT);
             simulationCounter = mySimulator.getSimulationCounter();
@@ -178,94 +148,10 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
             
             ++optiCycleCounter;
         }
+        this.optimized=true;
 
     }
     
-    private void doBatchRun()
-    {
-     ArrayList<SimulationType> optiResults = new ArrayList<SimulationType>();
-     ArrayList<Integer> optiTotalSimualtions = new ArrayList<Integer>();
-     ArrayList<Integer> optiTotalCachedSimualtions = new ArrayList<Integer>();
-     for (int i = 0; i< numOptiRuns; ++i)
-     {
-        int totalSimulations  = 0;
-        int totalCachedSimualtions = 0;    
-        int optiCycleCounter = 0;
-        population = createRandomPopulation(startPopulationSize, false);
-        
-        Simulator mySimulator = SimOptiFactory.getSimulator();       
-        mySimulator.initSimulator(getNextParameterSetAsArrayList(), optiCycleCounter, false);
-        support.waitForEndOfSimulator(mySimulator, optiCycleCounter, support.DEFAULT_TIMEOUT);
-        
-        ArrayList<SimulationType> simulationResults = mySimulator.getListOfCompletedSimulationParsers(); 
-        population = getPopulationFromSimulationResults(simulationResults);
-        population = normalize(population);
-        
-        int simulationCounter = 0;
-        int lastGenSelected = 0;
-        int numGenesToSelect = 1;
-        while(optiCycleCounter < this.maxNumberOfOptiCycles)
-        {
-            if (currentNumberOfOptiCyclesWithoutImprovement >= maxNumberOfOptiCyclesWithoutImprovement)
-            {
-                support.log("Too many optimization cycles without improvement. Ending optimization.");
-                break;
-            }
-            
-            //modification phase -----------------------------------------------------------------------
-            population = sortPopulation(population); //sort them, so the best one is number one
-            parameterMeanValues = getMeanValues(population);
-            parameterVarianceValues = getVarianceValues(population);
-            SimulationType candidate = createCandidate(
-                    population,
-                    parameterMeanValues,
-                    parameterVarianceValues,
-                    typeOfMVMOParentSelection.Best,
-                    typeOfMVMOMutationSelection.Random,
-                    lastGenSelected, numGenesToSelect);
-            
-            
-            //simulation phase -----------------------------------------------------------------------
-            candidate = denormalize(candidate);
-            ArrayList< ArrayList<parameter> > parameterList = getNextParameterSetAsArrayList(candidate);
-            for (ArrayList<parameter> pArray : parameterList)
-            {
-                pArray =  roundToStepping(pArray);
-            }
-            
-            mySimulator = SimOptiFactory.getSimulator();
-            mySimulator.initSimulator(parameterList, simulationCounter, false);
-            support.waitForEndOfSimulator(mySimulator, simulationCounter, support.DEFAULT_TIMEOUT);
-            simulationCounter = mySimulator.getSimulationCounter();
-            
-            simulationResults = mySimulator.getListOfCompletedSimulationParsers();
-            totalSimulations+=simulationResults.size();
-            population = tryAddCandidate(population, simulationResults);
-            //support.addLinesToLogFileFromListOfParser(simulationResults, logFileName);
-            
-            if (population.size()==maxPopulationSize)
-            {
-                updateTopMeasure(); //TODO: not optimal for mvmo, because the first one is alway the best
-                //printPopulationDistances();
-            }
-            
-            ++optiCycleCounter;
-        }
-        optiResults.add(denormalize(topMeasure));
-        optiTotalSimualtions.add(totalSimulations);
-        optiTotalCachedSimualtions.add(totalCachedSimualtions);
-        topDistance = Double.POSITIVE_INFINITY;
-        currentNumberOfOptiCyclesWithoutImprovement = 0;
-        
-        }
-        support.addLinesToLogFileFromListOfSimulationBatchesIncludingNumRuns(optiResults, optiTotalSimualtions, optiTotalCachedSimualtions, logFileName);
-
-        for (int i = 0;i<optiResults.size(); ++i)
-        {
-            String logString = "" + optiTotalSimualtions.get(i) + " " + optiTotalCachedSimualtions.get(i);
-            support.log(logString);
-        }  
-    }
     
     private ArrayList< ArrayList<SimulationType> > tryAddCandidate(ArrayList< ArrayList<SimulationType> > population, ArrayList<SimulationType> candidate)
     {
@@ -287,9 +173,8 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
     
     private ArrayList<Double> getMeanValues(ArrayList<ArrayList<SimulationType>> population)
     {
-        ArrayList<Double> meanValues = new ArrayList<Double>();
+        ArrayList<Double> meanValues = new ArrayList<>();
         int numParameters = population.get(0).get(0).getListOfParameters().size();
-        int sizePar = population.get(0).get(0).getListOfParameters().size();
 
         for (int parameterIndex = 0; parameterIndex<numParameters; ++parameterIndex)
         {
@@ -312,7 +197,7 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
     
     private ArrayList<Double> getVarianceValues(ArrayList<ArrayList<SimulationType>> population)
     {
-        ArrayList<Double> varianceValues = new ArrayList<Double>();
+        ArrayList<Double> varianceValues = new ArrayList<>();
                 int numParameters = population.get(0).get(0).getListOfParameters().size();
         for (int parameterIndex = 0; parameterIndex<numParameters; ++parameterIndex)
         {
@@ -354,7 +239,7 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
         }
         
         //select genes to mutate
-        ArrayList<Integer> genesToMutate = new ArrayList<Integer>();
+        ArrayList<Integer> genesToMutate = new ArrayList<>();
         if (mutationSelection == typeOfMVMOMutationSelection.Random)
         {
             genesToMutate = fillWithRandomIndices(genesToMutate, numGenesToMutate, candidate.getListOfParameters());
@@ -374,11 +259,11 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
         }
         
         //mutation
-        double si = 0;
-        double si1 = 0;
-        double si2 = 0;
-        double mean = 0;
-        double variance = 0;
+        double si;
+        double si1;
+        double si2;
+        double mean;
+        double variance;
         double kd = 0.0505 / candidate.getListOfParameters().size() + 1;
         for (int i=0; i<genesToMutate.size(); ++i)
         {
@@ -446,7 +331,7 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
     
     private double transform(double x_mean, double si1, double si2, double ui)
     {
-        double r = 0;
+        double r;
         r = x_mean * (1 - Math.exp(-1.0 * si1 * ui)) + (1 - x_mean) * Math.exp((1 - ui) * si2 * (-1));
         return r;
     }
@@ -454,7 +339,7 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
     private ArrayList<Integer> fillWithRandomIndices(
         ArrayList<Integer> list, int targetSize, ArrayList<parameter> parameters)
     {
-        ArrayList<Integer> possibleGens = new ArrayList<Integer>();
+        ArrayList<Integer> possibleGens = new ArrayList<>();
         for (int i = 0; i<parameters.size(); ++i)
         {
             if (parameters.get(i).isIteratableAndIntern() && !list.contains(i))
@@ -523,19 +408,5 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
         }
         return simulation;
     }
-    /**
-     * Set the logfilename
-     * this is useful for multi-optimization or if you like specific names for your logfiles
-     * @param name Name (path) of logfile
-     */
-    public void setLogFileName(String name){
-    this.logFileName=name;
-    }
-    /**
-     * Returns the used logfileName
-     * @return name of logfile
-     */
-    public String getLogFileName() {
-    return this.logFileName;
-    }
+
 }
