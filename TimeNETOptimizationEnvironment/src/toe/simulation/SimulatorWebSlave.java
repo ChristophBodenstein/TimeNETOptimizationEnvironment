@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,6 +30,7 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.util.EntityUtils;
 import toe.HttpFactory;
 import toe.support;
+import toe.typedef;
 
 /**
  *
@@ -44,6 +46,8 @@ public class SimulatorWebSlave implements Runnable {
     HttpClient client;
     HttpGet httpGet;
     HttpPost postRequest;
+    String clientID;//ID of this client to be marked in server to append to download request
+    String clientSkills;//Skills of Client in one String to append to download request
 
     /**
      * Constructor
@@ -57,14 +61,23 @@ public class SimulatorWebSlave implements Runnable {
      * from server, checking for next files, starting loacal simulations and
      * uploading results
      */
+    @Override
     public void run() {
         support.setLogToWindow(false);//stop window-logging. this is not saved in properties
-        while (!shouldEnd) {
-            this.pathToTimeNet = support.getPathToTimeNet();//  pathToTimeNetTMP;
+        this.pathToTimeNet = support.getPathToTimeNet();//  pathToTimeNetTMP;
+        clientID=String.valueOf(Math.random())+Long.toString(Calendar.getInstance().getTimeInMillis());
+        clientID=String.valueOf(Math.abs(clientID.hashCode()));
+        //TODO set skill-string correctly!
+        clientSkills="";
+        if(support.checkTimeNetPath()){
+        clientSkills+="_"+typedef.typeOfClientSkills.TIMENET.toString()+"_";
+        }
+        
+        while (!shouldEnd) { 
             //Request the server Api to get the Status Code and response body.
             // Getting the status code.
             client = HttpFactory.getHttpClient();
-            httpGet = HttpFactory.getGetRequest(support.getReMoteAddress() + "/rest/api/downloads/ND");
+            httpGet = HttpFactory.getGetRequest(support.getReMoteAddress() + "/rest/api/downloads/ND?ID="+clientID+"&SKILLS="+clientSkills);
             HttpResponse response;
             String responseString;
             try {

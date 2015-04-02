@@ -467,4 +467,26 @@ public class typedef {
          * use EULID Distance and calc relative value
          */
         EUKLID}
+    
+    /**
+     * Skills of Client to be mentioned for distributed simulation
+     * TimeNET, MLDesigner, Matlab ???
+     */
+    public enum typeOfClientSkills{
+    
+        /**
+         * client can simulate SCPNs (with TimeNET)
+         */
+        TIMENET,
+
+        /**
+         * client can simulate MLD-Models
+         */
+        MLDESIGNER,
+
+        /**
+         * client can simulate Matlab models
+         */
+        MATLAB
+    }
 }
