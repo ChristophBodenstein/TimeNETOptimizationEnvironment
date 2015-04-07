@@ -22,6 +22,7 @@ import toe.optimization.OptimizerMVMO;
 import toe.optimization.OptimizerSimAnnealing;
 import toe.optimization.OptimizerHill;
 import java.util.ArrayList;
+import toe.simulation.SimulatorCachedBenchmark;
 
 /**
  *
@@ -68,6 +69,9 @@ private static ArrayList<Simulator> listOfCreatedSimulators = new ArrayList<Simu
             case Benchmark:
                 //Return Simulator for Benchmark-Functions
                 return new SimulatorBenchmark();
+            case Cached_Benchmark:
+                //Return the Benchmark-Simulator with cache-support
+                return new SimulatorCachedBenchmark();
             default:
                 return new SimulatorLocal();
         }

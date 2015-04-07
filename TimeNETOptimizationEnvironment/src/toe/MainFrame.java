@@ -284,7 +284,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         DefaultListSelectionModel model = new DefaultListSelectionModel();
         model.addSelectionInterval(0, 0);
         model.addSelectionInterval(2, 2);
-        model.addSelectionInterval(5, 5);
+        model.addSelectionInterval(5, 6);
         if (support.isCachedSimulationAvailable()) {
             model.addSelectionInterval(1, 1);
         }
