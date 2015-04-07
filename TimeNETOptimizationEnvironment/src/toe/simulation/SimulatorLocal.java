@@ -58,6 +58,7 @@ public class SimulatorLocal implements Runnable, Simulator, nativeProcessCallbac
      * @param listOfParameterSetsTMP List of Parameter-sets to be simulated
      * @param simulationCounterTMP start value of simulation counter
      */
+    @Override
     public void initSimulator(ArrayList< ArrayList<parameter>> listOfParameterSetsTMP, int simulationCounterTMP, boolean log) {
         this.status = 0;
         this.listOfParameterSets = listOfParameterSetsTMP;
@@ -78,9 +79,10 @@ public class SimulatorLocal implements Runnable, Simulator, nativeProcessCallbac
      * Run Method to start simulations and collect the data simulats the SCPNs,
      * main routine
      */
+    @Override
     public void run() {
         this.status = 0;
-        this.listOfCompletedSimulationParsers = new ArrayList<SimulationType>();
+        this.listOfCompletedSimulationParsers = new ArrayList<>();
         int numberOfSimulations = 0;
         if (support.checkTimeNetPath()) {
             try {
@@ -293,6 +295,7 @@ public class SimulatorLocal implements Runnable, Simulator, nativeProcessCallbac
      *
      * @return List of completed simulation parsers
      */
+    @Override
     public ArrayList<SimulationType> getListOfCompletedSimulationParsers() {
         return this.listOfCompletedSimulationParsers;
     }
@@ -313,6 +316,7 @@ public class SimulatorLocal implements Runnable, Simulator, nativeProcessCallbac
      *
      * @return number of actual simulation
      */
+    @Override
     public int getSimulationCounter() {
         return this.simulationCounter;
     }
@@ -331,14 +335,17 @@ public class SimulatorLocal implements Runnable, Simulator, nativeProcessCallbac
      *
      * @return % of simulations that are finished
      */
+    @Override
     public int getStatus() {
         return this.status;
     }
 
+    @Override
     public void processEnded() {
         support.log("Local Simulation ended.");
     }
 
+    @Override
     public void errorOccured(String message) {
         support.log("Error while local simulation.");
     }
@@ -347,6 +354,7 @@ public class SimulatorLocal implements Runnable, Simulator, nativeProcessCallbac
      * Returns the calulated optimimum For Benchmark-Functions this can be
      * caluclated. For other simulators, this must be given by user.
      */
+    @Override
     public SimulationType getCalculatedOptimum(MeasureType targetMeasure) {
         support.log("SimulatorLocal: Getting absolute optimum simulation from Cache. Will return null.");
         return null;
