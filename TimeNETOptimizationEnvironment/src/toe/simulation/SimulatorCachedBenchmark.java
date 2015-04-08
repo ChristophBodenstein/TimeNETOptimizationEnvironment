@@ -1,7 +1,7 @@
 /**
  * Simulator which uses log data from already done simulations and returns them.
  * If not all parametersets can be found in cache, the rest is simulated
- * distributed
+ * via Benchmark-function
  *
  * Christoph Bodenstein TU-Ilmenau, FG SSE
  */
