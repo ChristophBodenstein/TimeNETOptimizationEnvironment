@@ -205,7 +205,12 @@ public class typedef {
         /**
          * Use chosen benchmark function to "simulate" parameter set
          */
-        Benchmark
+        Benchmark,
+        /**
+         * To test caching effects with benchmar functions
+         */
+        Cached_Benchmark
+
     };
 
     /**
@@ -420,70 +425,64 @@ public class typedef {
          * No Plot is possible, may no Axes are configured
          */
         NoPlot,
-
         /**
          * 2D-Plot is possble and colorchooser is active
          */
         Plot2D,
-
         /**
          * 3D-Plot is possible, also the interactive plot
          */
         Plot3D
     };
-    
+
     /**
      * Type of 3D-Plot to export Script
      */
-    public enum typeOf3DPlot{
+    public enum typeOf3DPlot {
 
         /**
-         *Standard Scatterplot3D with lib plot3D
+         * Standard Scatterplot3D with lib plot3D
          */
         ScatterPlot,
-
         /**
          * interactive opengl with lib rgl
          */
         Perspective,
-        
         /**
          * Draws a 2D-Heatmap
          */
         Heatmap
     }
-    
+
     /**
      * Type of distance calculation in definition space for found optima
      */
-    public enum typeOfRelativeDistanceCalculation{ 
+    public enum typeOfRelativeDistanceCalculation {
 
         /**
          * Use standard relative distance
          */
-        STANDARD, 
-
+        STANDARD,
         /**
          * use EULID Distance and calc relative value
          */
-        EUKLID}
-    
+        EUKLID
+    }
+
     /**
-     * Skills of Client to be mentioned for distributed simulation
-     * TimeNET, MLDesigner, Matlab ???
+     * Skills of Client to be mentioned for distributed simulation TimeNET,
+     * MLDesigner, Matlab ???
      */
-    public enum typeOfClientSkills{
-    
+    public enum typeOfClientSkills {
+
         /**
          * client can simulate SCPNs (with TimeNET)
          */
         TIMENET,
-
         /**
          * client can simulate MLD-Models
          */
         MLDESIGNER,
-
         /**
          * client can simulate Matlab models
          */

@@ -550,6 +550,7 @@ public class SimulatorDistributed implements Runnable, Simulator {
      * @param targetMeasure Measure to be optimized.
      * @return caluclated optimum. Not possible in Web-Simulator so returns null
      */
+    @Override
     public SimulationType getCalculatedOptimum(MeasureType targetMeasure) {
         //support.log("SimulatorDistributed: Getting absolute optimum simulation from Cache. Will return null.");
         return null;

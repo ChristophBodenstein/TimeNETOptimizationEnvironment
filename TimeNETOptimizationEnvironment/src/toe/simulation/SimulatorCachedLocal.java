@@ -24,9 +24,9 @@ public class SimulatorCachedLocal extends SimulatorCached {
 
     private SimulationCache mySimulationCache = null;
     private ArrayList<SimulationType> myListOfSimulationParsers = null;
-    private String logFileName;
+    private final String logFileName;
     private int status;
-    private Simulator myLocalSimulator = getNoCacheSimulator();
+    private final Simulator myLocalSimulator = getNoCacheSimulator();
 
     /**
      * Constructor
@@ -48,7 +48,7 @@ public class SimulatorCachedLocal extends SimulatorCached {
     public void initSimulator(ArrayList< ArrayList<parameter>> listOfParameterSetsTMP, int simulationCounterTMP, boolean log) {
         
         this.myListOfSimulationParsers = null;
-        ArrayList< ArrayList<parameter>> remainingParametersets = new ArrayList< ArrayList<parameter>>();
+        ArrayList< ArrayList<parameter>> remainingParametersets = new ArrayList< >();
         status = 0;
         //this.simulationCounter=simulationCounterTMP;
 
@@ -61,7 +61,7 @@ public class SimulatorCachedLocal extends SimulatorCached {
 
         if (this.myListOfSimulationParsers == null) {
             support.log("No Simulation found in local Cache. Starting simulation.");
-            this.myListOfSimulationParsers = new ArrayList<SimulationType>();
+            this.myListOfSimulationParsers = new ArrayList<>();
         }
 
         status = myListOfSimulationParsers.size() * 100 / listOfParameterSetsTMP.size();

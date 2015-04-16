@@ -23,7 +23,7 @@ public class SimulatorCached implements Simulator {
 
     private SimulationCache mySimulationCache = null;
     private ArrayList<SimulationType> myListOfSimulations = null;
-    private String logFileName;
+    private final String logFileName;
 
     /**
      * Constructor
@@ -40,6 +40,7 @@ public class SimulatorCached implements Simulator {
      * @param simulationCounterTMP actual Number of simulation, will be
      * increased with every simulation-run
      */
+    @Override
     public void initSimulator(ArrayList<ArrayList<parameter>> listOfParameterSetsTMP, int simulationCounterTMP, boolean log) {
         if (mySimulationCache != null) {
             this.myListOfSimulations = mySimulationCache.getListOfCompletedSimulationParsers(listOfParameterSetsTMP, support.getGlobalSimulationCounter());
@@ -83,6 +84,7 @@ public class SimulatorCached implements Simulator {
      *
      * @return % of simulatiions that are finished
      */
+    @Override
     public int getStatus() {
         if (this.myListOfSimulations != null) {
             return 100;
@@ -96,6 +98,7 @@ public class SimulatorCached implements Simulator {
      *
      * @return actual simulation counter
      */
+    @Override
     public int getSimulationCounter() {
         return support.getGlobalSimulationCounter();
     }
@@ -107,6 +110,7 @@ public class SimulatorCached implements Simulator {
      * @return list of completed simulations (parsers) which contain all data
      * from the log-files
      */
+    @Override
     public ArrayList<SimulationType> getListOfCompletedSimulationParsers() {
         return this.myListOfSimulations;
     }
@@ -136,6 +140,7 @@ public class SimulatorCached implements Simulator {
      *
      * @return
      */
+    @Override
     public SimulationType getCalculatedOptimum(MeasureType targetMeasure) {
         //iterate through all cached sims and look for best solution 
         support.log("SimulatorCached: Getting absolute optimum simulation from Cache.");

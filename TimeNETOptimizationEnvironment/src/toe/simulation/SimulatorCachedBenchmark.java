@@ -1,7 +1,7 @@
 /**
  * Simulator which uses log data from already done simulations and returns them.
  * If not all parametersets can be found in cache, the rest is simulated
- * distributed
+ * via Benchmark-function
  *
  * Christoph Bodenstein TU-Ilmenau, FG SSE
  */
@@ -14,17 +14,17 @@ import toe.datamodel.SimulationType;
  *
  * @author Christoph Bodenstein
  */
-public class SimulatorCachedDistributed extends SimulatorCachedLocal {
+public class SimulatorCachedBenchmark extends SimulatorCachedLocal {
 
     /**
      * Returns new Simulator-object to be used, if parametersets are not in
      * cache
      *
-     * @return Simulator object (distributed)
+     * @return Simulator object (benchmark)
      */
     @Override
     public Simulator getNoCacheSimulator() {
-        return new SimulatorDistributed();
+        return new SimulatorBenchmark();
     }
     
     /**
@@ -36,6 +36,6 @@ public class SimulatorCachedDistributed extends SimulatorCachedLocal {
      */
     @Override
     public SimulationType getCalculatedOptimum(MeasureType targetMeasure){
-    return new SimulatorDistributed().getCalculatedOptimum(targetMeasure);
+    return new SimulatorBenchmark().getCalculatedOptimum(targetMeasure);
     }
 }
