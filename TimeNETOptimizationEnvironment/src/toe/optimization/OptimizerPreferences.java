@@ -781,7 +781,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
         jLabelCSSPopulationSize.setText("Population Size");
 
-        jSpinnerCSSMaxAttraction.setModel(new javax.swing.SpinnerNumberModel(0, 0, 100, 1));
+        jSpinnerCSSMaxAttraction.setModel(new javax.swing.SpinnerNumberModel(0.0d, 0.0d, 100.0d, 1.0d));
         jSpinnerCSSMaxAttraction.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 jSpinnerCSSMaxAttractionPropertyChange(evt);
