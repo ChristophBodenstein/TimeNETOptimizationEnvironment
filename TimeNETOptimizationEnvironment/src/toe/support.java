@@ -39,7 +39,7 @@ import toe.typedef.typeOfProcessFeedback;
 public class support {
 
 //This Version of TimeNetExperimentGenerator
-    public static final String VERSION = "2015-04-07";
+    public static final String VERSION = "2015-05-18";
 
 //Define some program-wide default values
     public static final double DEFAULT_STEPPING = 1.0;
@@ -166,7 +166,7 @@ public class support {
     public static final double DEFAULT_Rastrigin_limitupper = 5;
 
 //Defaults for Opti-Statistics
-    public static final int DEFAULT_NUMBER_OF_OPTI_PROB_CLASSES = 100;
+    public static final int DEFAULT_NUMBER_OF_OPTI_PROB_CLASSES = 10;
 
     private static int globalSimulationCounter = 0;
 
@@ -1048,8 +1048,7 @@ public class support {
      */
     public static void setChosenSimulatorType(typeOfSimulator aChosenSimulatorType) {
         chosenSimulatorType = aChosenSimulatorType;
-        getMainFrame().setBenchmarkFunctionComboboxEnabled(chosenSimulatorType.equals(typeOfSimulator.Benchmark));
-
+        getMainFrame().setBenchmarkFunctionComboboxEnabled(chosenSimulatorType.equals(typeOfSimulator.Benchmark)||chosenSimulatorType.equals(typeOfSimulator.Cached_Benchmark));
     }
 
     /**

@@ -24,7 +24,6 @@ import java.awt.Dialog.ModalityType;
 import java.io.*;
 import java.io.File;
 import java.io.IOException;
-import static java.lang.Math.random;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.ArrayList;
