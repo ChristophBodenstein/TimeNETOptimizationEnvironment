@@ -244,8 +244,12 @@ public class StatisticAggregator {
                 support.log(tmpOutDSValue);
             }
             //Latex-Friendly output
-            support.log("Sim#, Distance, DistancsDS, CPU-Time");
-            support.log("&"+averageNumberOfSimulations+"    &"+averageDistanceToOptimumInValueRange+"\\%  &"+averageDistanceToOptimumInDefinitionRange+"\\% &"+averageCPUTimeTotal);
+            //support.log("Sim#, Distance, DistancsDS, CPU-Time");
+            //support.log("&"+averageNumberOfSimulations+"    &"+averageDistanceToOptimumInValueRange+"\\%  &"+averageDistanceToOptimumInDefinitionRange+"\\% &"+averageCPUTimeTotal);
+            support.log("WrongSolutionInARow, WrongSolutionsPerDir, Distance, DistancsEUKLID, Sim#, CPU-Time, CHR");
+            toe.optimization.OptimizerPreferences p=support.getOptimizerPreferences();
+            support.log(p.getPref_WrongSimulationsUntilBreak()+"    &"+p.getPref_WrongSimulationsPerDirection() +"      &"+support.round(averageDistanceToOptimumInValueRange)+"\\%     &"+support.round(averageDistanceToOptimumInDefinitionRange)+"\\%    &"+averageNumberOfSimulations+"    &"+averageCPUTimeTotal+"     &"+support.round(averageCacheRatio)*100+"\\%  \\\\  \\hline");
+            
             support.log("++++ End of Optimization Statistics ++++");
         }
         support.setLogToWindow(logToWindow);//Set Window-logging to original value
