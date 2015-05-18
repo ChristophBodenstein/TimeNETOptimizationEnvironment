@@ -12,7 +12,7 @@ var express = require('express'),
     formidable = require('formidable'),
     fs = require('graceful-fs'),
     path = require('path');
-var DEFAULT_SLEEPING_TIME = 3000;// in ms
+var DEFAULT_SLEEPING_TIME = 5000;// in ms
 var DEFAULT_MINIMUM_TIMEOUT = 500;//in sec
 
 /* GET home page. */
@@ -222,7 +222,7 @@ router.get('/rest/api/downloads/ND', function (req, res) {
                         if (err) {
                             console.log("Error removing client from list.");
                         }
-
+                    });
                         activeclients.insert({
                             ip: req.connection.remoteAddress,
 							id: clientID,
@@ -234,13 +234,8 @@ router.get('/rest/api/downloads/ND', function (req, res) {
                             } else {
                             }
                         });
-                    });
-                    /*
-                     activeclients.insert({ip:req.connection.remoteAddress, timestamp: Date.now()}, function(err, result){
-                     if (err) {
-                     console.log("Error updating client-collection.");
-                     } else {}
-                     });*/
+
+
 
                     //Check for timed out Simulations
                     checkForTimedOutSimulations(simlist, function (err) {
