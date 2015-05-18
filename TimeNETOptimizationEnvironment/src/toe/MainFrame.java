@@ -219,7 +219,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         support.log(auto.getProperty("SimulationType"));
 
         this.jComboBoxSimulationType.setSelectedItem(typeOfSimulator.valueOf(auto.getProperty("SimulationType", support.DEFAULT_TYPE_OF_SIMULATOR.toString())));
-
+        support.setChosenSimulatorType((typeOfSimulator)jComboBoxSimulationType.getSelectedItem());
         this.jComboBoxOptimizationType.setSelectedItem(typeOfOptimization.valueOf(auto.getProperty("OptimizationType", support.DEFAULT_TYPE_OF_OPTIMIZER.toString())));
 
         savePropertiesEnabled = true;//Enable property saving after init of all components
