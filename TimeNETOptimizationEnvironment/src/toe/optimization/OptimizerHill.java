@@ -29,7 +29,7 @@ import toe.typedef;
 public class OptimizerHill implements Runnable, Optimizer {
 
     private double sizeOfNeighborhood;
-    private static final OptimizerPreferences myPreferences = new OptimizerPreferences();
+    private static final OptimizerPreferences myPreferences = support.getOptimizerPreferences();
 
     private int simulationCounter = 0;
     SimulationType currentSolution;
