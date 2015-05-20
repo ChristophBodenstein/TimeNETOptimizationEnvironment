@@ -28,7 +28,7 @@ import toe.typedef;
  */
 public class OptimizerHill implements Runnable, Optimizer {
 
-    private double sizeOfNeighborhood;
+    private final double sizeOfNeighborhood;
     private static final OptimizerPreferences myPreferences = support.getOptimizerPreferences();
 
     private int simulationCounter = 0;
@@ -40,8 +40,8 @@ public class OptimizerHill implements Runnable, Optimizer {
     String pathToTimeNet = "";
     MainFrame parent = null;
     JTabbedPane MeasureFormPane;
-    ArrayList<MeasureType> listOfMeasures = new ArrayList<MeasureType>();//Get List of all measures from MainFrame //Empty here
-    ArrayList<SimulationType> historyOfParsers = new ArrayList<SimulationType>();//History of all simulation runs
+    ArrayList<MeasureType> listOfMeasures = new ArrayList<>();//Get List of all measures from MainFrame //Empty here
+    ArrayList<SimulationType> historyOfParsers = new ArrayList<>();//History of all simulation runs
     ArrayList<parameter> parameterBase;//Base set of parameters, start/end-value, stepping, etc.
     SimulationCache mySimulationCache = new SimulationCache();
     boolean optimized = false;//False until Optimization is ended
@@ -72,6 +72,7 @@ public class OptimizerHill implements Runnable, Optimizer {
      * support-class and starts optimization
      *
      */
+    @Override
     public void initOptimizer() {
         this.pathToTimeNet = support.getPathToTimeNet();// pathToTimeNetTMP;
         this.MeasureFormPane = support.getMeasureFormPane();//MeasureFormPaneTMP;
@@ -92,6 +93,7 @@ public class OptimizerHill implements Runnable, Optimizer {
     /**
      * Main Routine for Thread. The Optimization runs here
      */
+    @Override
     public void run() {
         ArrayList<parameter> lastParameterset;
         ArrayList<ArrayList<parameter>> newParameterset;
@@ -116,7 +118,7 @@ public class OptimizerHill implements Runnable, Optimizer {
             support.spinInLabel();
 
             newParameterset = getNextParametersetAsArrayList(lastParameterset);
-            listOfCompletedSimulations = null;
+            //listOfCompletedSimulations = null;
             //If result is already in cache, then count up corresponding counter
             //Else start simulation
 
@@ -128,8 +130,8 @@ public class OptimizerHill implements Runnable, Optimizer {
                 listOfCompletedSimulations = support.shrinkArrayListToFirstMember(listOfCompletedSimulations);
 
                 //set all results to "cached", for statistics
-                for (int i = 0; i < listOfCompletedSimulations.size(); i++) {
-                    listOfCompletedSimulations.get(i).setIsFromCache(true);
+                for (SimulationType listOfCompletedSimulation : listOfCompletedSimulations) {
+                    listOfCompletedSimulation.setIsFromCache(true);
                 }
 
                 //If last parameterset is double, then count up eject-counter for LastInCache
@@ -150,8 +152,8 @@ public class OptimizerHill implements Runnable, Optimizer {
                 listOfCompletedSimulations = support.shrinkArrayListToFirstMember(listOfCompletedSimulations);
 
                 //Fit all resulting Simulation-Parameterlists
-                for (int i1 = 0; i1 < listOfCompletedSimulations.size(); i1++) {
-                    listOfCompletedSimulations.get(i1).setListOfParameters(listOfCompletedSimulations.get(i1).getListOfParametersFittedToBaseParameterset());
+                for (SimulationType listOfCompletedSimulation : listOfCompletedSimulations) {
+                    listOfCompletedSimulation.setListOfParameters(listOfCompletedSimulation.getListOfParametersFittedToBaseParameterset());
                 }
 
                 //Add all Results to Cache
@@ -251,8 +253,7 @@ public class OptimizerHill implements Runnable, Optimizer {
                 support.log("Taking Min-Values as Start for every Parameter.");
                 //Calculate first parameterset, set every parameter to start-value
                 //For this choosing strategy, the first element must be minimum
-                for (int i = 0; i < newParameterset.size(); i++) {
-                    parameter p = newParameterset.get(i);
+                for (parameter p : newParameterset) {
                     if (p.isIteratableAndIntern()) {
                         p.setValue(p.getStartValue());
                     }
@@ -261,8 +262,7 @@ public class OptimizerHill implements Runnable, Optimizer {
             case middle:
                 support.log("Taking Middle-Values as Start for every Parameter.");
                 //Calulate first parameterset, the mean value of all parameters, with respect to stepping
-                for (int i = 0; i < newParameterset.size(); i++) {
-                    parameter p = newParameterset.get(i);
+                for (parameter p : newParameterset) {
                     if (p.isIteratableAndIntern()) {
                         double distance = p.getEndValue() - p.getStartValue();
                         distance = Math.round(0.5 * distance / p.getStepping()) * p.getStepping() + p.getStartValue();
@@ -274,8 +274,7 @@ public class OptimizerHill implements Runnable, Optimizer {
                 support.log("Taking Max-Values as Start for every Parameter.");
                 //Calculate first parameterset, set every parameter to end-value
                 //For this choosing strategy, the first element must be minimum
-                for (int i = 0; i < newParameterset.size(); i++) {
-                    parameter p = newParameterset.get(i);
+                for (parameter p : newParameterset) {
                     if (p.isIteratableAndIntern()) {
                         p.setValue(p.getEndValue());
                     }
@@ -284,8 +283,7 @@ public class OptimizerHill implements Runnable, Optimizer {
             case random:
                 support.log("Taking Random-Values as Start for every Parameter.");
                 //Calulate first parameterset, the random value of all parameters, with respect to stepping
-                for (int i = 0; i < newParameterset.size(); i++) {
-                    parameter p = newParameterset.get(i);
+                for (parameter p : newParameterset) {
                     if (p.isIteratableAndIntern()) {
                         double distance = p.getEndValue() - p.getStartValue();
                         double rnd = Math.random();
@@ -297,8 +295,7 @@ public class OptimizerHill implements Runnable, Optimizer {
             case preset:
                 //Nothing to to, Value is already set to the preferred start-Value
                 //But let`s make sure, set it to middle if something is wrong
-                for (int i = 0; i < newParameterset.size(); i++) {
-                    parameter p = newParameterset.get(i);
+                for (parameter p : newParameterset) {
                     if (p.isIteratableAndIntern()) {
                         if ((p.getValue() < p.getStartValue()) || (p.getValue() > p.getEndValue())) {
                             double distance = p.getEndValue() - p.getStartValue();
@@ -354,7 +351,7 @@ public class OptimizerHill implements Runnable, Optimizer {
                 support.log("Number of Parameters in List: " + lastParameterList.size());
 
                 //For every Parameter check if it is iteratable and if it was changed last time
-                int i = 0;
+                int i;
                 numberOfLastParameter = -1;//Number of last parameter that was changed(in an Array of changable parameters)
                 for (i = 0; i < lastParameterList.size(); i++) {
                     if (lastParameterList.get(i).isIteratableAndIntern()) {
@@ -438,9 +435,8 @@ public class OptimizerHill implements Runnable, Optimizer {
                     incResult = support.getParameterByName(newParameterset, nameOfParameterToBeChanged).incDecValue(this.directionOfOptimization);
                     break;
 
-                case StepForwardBackRandom://Step back and forward randomly based on stepping
-                    for (int i = 0; i < newParameterset.size(); i++) {
-                        parameter p = newParameterset.get(i);
+                case StepForwardBackRandom: //Step back and forward randomly based on stepping
+                    for (parameter p : newParameterset) {
                         if (p.isIteratableAndIntern()) {
                             double nextValue = 0.0;
                             if (Math.random() >= 0.5) {
@@ -452,13 +448,11 @@ public class OptimizerHill implements Runnable, Optimizer {
                         }
                     }
                     break;
-                case RandomStepInNeighborhood://Calculate neighborhood and choose next value randomly
-                    for (int i = 0; i < newParameterset.size(); i++) {
-                        parameter p = newParameterset.get(i);
+                case RandomStepInNeighborhood: //Calculate neighborhood and choose next value randomly
+                    for (parameter p : newParameterset) {
                         if (p.isIteratableAndIntern()) {
-                            double nextValue = 0.0;
                             double stepCount = (p.getEndValue() - p.getStartValue()) / p.getStepping();
-                            nextValue = p.getStepping() * Math.round(Math.random() * stepCount * this.sizeOfNeighborhood / 100);
+                            double nextValue = p.getStepping() * Math.round(Math.random() * stepCount * this.sizeOfNeighborhood / 100);
                             if (Math.random() >= 0.5) {
                                 nextValue = Math.min(p.getValue() + nextValue, p.getEndValue());
                             } else {
@@ -469,25 +463,21 @@ public class OptimizerHill implements Runnable, Optimizer {
                     }
                     incResult = true;
                     break;
-                case RandomStepInDesignspace://Choose Value randomly out of complete designspace
-                    for (int i = 0; i < newParameterset.size(); i++) {
-                        parameter p = newParameterset.get(i);
+                case RandomStepInDesignspace: //Choose Value randomly out of complete designspace
+                    for (parameter p : newParameterset) {
                         if (p.isIteratableAndIntern()) {
-                            double nextValue = 0.0;
                             double stepCount = (p.getEndValue() - p.getStartValue()) / p.getStepping();
-                            nextValue = p.getStartValue() + Math.round(Math.random() * stepCount);
+                            double nextValue = p.getStartValue() + Math.round(Math.random() * stepCount);
                             p.setValue(nextValue);
                         }
                     }
                     incResult = true;
                     break;
                 case RandomSteplessInNeighborhood: //Calculate neighborhood and choose next value randomly, Ignore Stepping!
-                    for (int i = 0; i < newParameterset.size(); i++) {
-                        parameter p = newParameterset.get(i);
+                    for (parameter p : newParameterset) {
                         if (p.isIteratableAndIntern()) {
-                            double nextValue = 0.0;
                             double range = (p.getEndValue() - p.getStartValue());
-                            nextValue = Math.round(Math.random() * range * this.sizeOfNeighborhood / 100);
+                            double nextValue = Math.round(Math.random() * range * this.sizeOfNeighborhood / 100);
                             if (Math.random() >= 0.5) {
                                 nextValue = Math.min(p.getValue() + nextValue, p.getEndValue());
                             } else {
@@ -532,7 +522,7 @@ public class OptimizerHill implements Runnable, Optimizer {
      * @return ArrayList of Parametersets
      */
     private ArrayList< ArrayList<parameter>> getNextParametersetAsArrayList(ArrayList<parameter> actualParameterset) {
-        ArrayList< ArrayList<parameter>> myParametersetList = new ArrayList< ArrayList<parameter>>();
+        ArrayList< ArrayList<parameter>> myParametersetList = new ArrayList<>();
         myParametersetList.add(getNextParameterset(actualParameterset));
         return myParametersetList;
     }
@@ -541,7 +531,7 @@ public class OptimizerHill implements Runnable, Optimizer {
      * Wrapper, returns ArrayList of ArrayList of Parameters
      */
     private ArrayList< ArrayList<parameter>> getParametersetAsArrayList(ArrayList<parameter> actualParameterset) {
-        ArrayList< ArrayList<parameter>> myParametersetList = new ArrayList< ArrayList<parameter>>();
+        ArrayList< ArrayList<parameter>> myParametersetList = new ArrayList<>();
         myParametersetList.add(actualParameterset);
         return myParametersetList;
     }
@@ -556,9 +546,9 @@ public class OptimizerHill implements Runnable, Optimizer {
      */
     protected double getActualDistance(SimulationType p) {
         double distance = 0;
-        for (int measureCount = 0; measureCount < listOfMeasures.size(); measureCount++) {
-            MeasureType activeMeasure = p.getMeasureByName(listOfMeasures.get(measureCount).getMeasureName());
-            MeasureType activeMeasureFromInterface = listOfMeasures.get(measureCount);//Contains Optimization targets
+        for (MeasureType listOfMeasure : listOfMeasures) {
+            MeasureType activeMeasure = p.getMeasureByName(listOfMeasure.getMeasureName());
+            MeasureType activeMeasureFromInterface = listOfMeasure; //Contains Optimization targets
             activeMeasure.setTargetValue(activeMeasureFromInterface.getTargetValue(), activeMeasureFromInterface.getTargetTypeOf());
             if (activeMeasure.getTargetTypeOf().equals(typedef.typeOfTarget.value)) {
                 distance = activeMeasure.getDistanceFromTarget();
@@ -595,6 +585,7 @@ public class OptimizerHill implements Runnable, Optimizer {
      *
      * @return null if optimization not yet ended, else Optimum
      */
+    @Override
     public SimulationType getOptimum() {
         if (this.optimized) {
             support.log("Its optimized, so returning best solution.");
@@ -611,6 +602,7 @@ public class OptimizerHill implements Runnable, Optimizer {
      *
      * @param name Name (path) of logfile
      */
+    @Override
     public void setLogFileName(String name) {
         this.logFileName = name;
     }
@@ -620,6 +612,7 @@ public class OptimizerHill implements Runnable, Optimizer {
      *
      * @return name of logfile
      */
+    @Override
     public String getLogFileName() {
         return this.logFileName;
     }
