@@ -7,9 +7,7 @@
  */
 package toe.simulation;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Calendar;
 import toe.datamodel.parameter;
 import toe.datamodel.SimulationType;
 import toe.support;
@@ -22,9 +20,7 @@ import toe.support;
  */
 public class SimulatorCachedLocal extends SimulatorCached {
 
-    private SimulationCache mySimulationCache = null;
     private ArrayList<SimulationType> myListOfSimulationParsers = null;
-    private final String logFileName;
     private int status;
     private final Simulator myLocalSimulator = getNoCacheSimulator();
 
@@ -32,8 +28,7 @@ public class SimulatorCachedLocal extends SimulatorCached {
      * Constructor
      */
     public SimulatorCachedLocal() {
-        logFileName = support.getTmpPath() + File.separator + "SimLog_LocalSimulation_with_Cache" + Calendar.getInstance().getTimeInMillis() + ".csv";
-        support.log("LogfileName:" + logFileName);
+        super();
     }
 
     /**

@@ -300,6 +300,8 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
     /**
      * Check, if cached simulation is possible if cached simulation is possible,
      * then set some switches etc...
+     * 
+     * Needs to be done after loading a cache-file
      *
      * @return true if CachedSimulation is possible, else false
      */
@@ -1056,15 +1058,19 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
             return;
         }
         //this.mySimulationCache=SimOptiFactory.getSimulationCache();
-        // Should we empty the cache each time, or only at user-wish?
-        support.emptyCache();
+        //Should we empty the cache each time, or only at user-wish? Everytime!
+        this.tryToFillCacheFromFile(inputFile, fileChooser.getSelectedFile().getPath());
+    }//GEN-LAST:event_jButtonLoadCacheFileActionPerformed
+
+    private void tryToFillCacheFromFile(String inputFile, String filePath){
+    support.emptyCache();
         this.mySimulationCache = support.getMySimulationCache();
         if (!mySimulationCache.parseSimulationCacheFile(inputFile, ((MeasurementForm) this.jTabbedPaneOptiTargets.getComponent(0)).getMeasurements(), (parameterTableModel) this.jTableParameterList.getModel(), this)) {
             support.log("Wrong Simulation cache file for this SCPN!");
             support.setStatusText("Error loading cache-file!");
             return;
         } else {
-            this.pathToLastSimulationCache = fileChooser.getSelectedFile().getPath();
+            this.pathToLastSimulationCache = filePath;
             this.saveProperties();
         }
         //If cached simulation is available activate cache as Cache/local simulation
@@ -1072,8 +1078,8 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
             this.jComboBoxSimulationType.setSelectedItem(typeOfSimulator.Cache_Only);
             support.setChosenSimulatorType(typeOfSimulator.Cache_Only);
         }
-    }//GEN-LAST:event_jButtonLoadCacheFileActionPerformed
-
+    }
+    
     private void jComboBoxOptimizationTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxOptimizationTypeActionPerformed
 
     }//GEN-LAST:event_jComboBoxOptimizationTypeActionPerformed

@@ -21,9 +21,9 @@ import toe.support;
  */
 public class SimulatorCached implements Simulator {
 
-    private SimulationCache mySimulationCache = null;
-    private ArrayList<SimulationType> myListOfSimulations = null;
-    private final String logFileName;
+    SimulationCache mySimulationCache = null;
+    ArrayList<SimulationType> myListOfSimulations = null;
+    final String logFileName;
 
     /**
      * Constructor
