@@ -1961,7 +1961,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
      * optimized
      */
     public ArrayList<MeasureType> getListOfActiveMeasureMentsToOptimize() {
-        ArrayList<MeasureType> myTmpList = new ArrayList<MeasureType>();//((MeasurementForm)this.jTabbedPane1.getComponent(0)).getListOfMeasurements();
+        ArrayList<MeasureType> myTmpList = new ArrayList<>();//((MeasurementForm)this.jTabbedPane1.getComponent(0)).getListOfMeasurements();
 
         for (int i = 0; i < this.jTabbedPaneOptiTargets.getComponentCount(); i++) {
             MeasurementForm tmpMeasurementForm = (MeasurementForm) this.jTabbedPaneOptiTargets.getComponent(i);
