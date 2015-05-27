@@ -149,33 +149,34 @@ public class Parser {
             //support.log("SimulationTime: "+getSimulationTime().toString()+" seconds.");
             //Add all Parameters from logfile-name
             segs = logName.split("_");
+            ArrayList<parameter> pBase=support.getParameterBase();
             for (int i = 0; i < segs.length; i++) {
                 if (segs[i].equals("MaxTime")) {
-                    parameter tmpP = new parameter();
+                    parameter tmpP = (parameter)support.getParameterByName(pBase, "MaxTime").clone();
                     tmpP.setName("MaxTime");
                     tmpP.setValue(support.getDouble(segs[i + 1]));
                     tmpParameterList.add(tmpP);
                 }
                 if (segs[i].equals("EndTime")) {
-                    parameter tmpP = new parameter();
+                    parameter tmpP = (parameter)support.getParameterByName(pBase, "EndTime").clone();
                     tmpP.setName("EndTime");
                     tmpP.setValue(support.getDouble(segs[i + 1]));
                     tmpParameterList.add(tmpP);
                 }
                 if (segs[i].equals("Seed")) {
-                    parameter tmpP = new parameter();
+                    parameter tmpP = (parameter)support.getParameterByName(pBase, "Seed").clone();
                     tmpP.setName("Seed");
                     tmpP.setValue(support.getDouble(segs[i + 1]));
                     tmpParameterList.add(tmpP);
                 }
                 if (segs[i].equals("ConfidenceIntervall")) {
-                    parameter tmpP = new parameter();
+                    parameter tmpP = (parameter)support.getParameterByName(pBase, "ConfidenceIntervall").clone();
                     tmpP.setName("Configured-ConfidenceIntervall");
                     tmpP.setValue(support.getDouble(segs[i + 1]));
                     tmpParameterList.add(tmpP);
                 }
                 if (segs[i].equals("MaxRelError")) {
-                    parameter tmpP = new parameter();
+                    parameter tmpP = (parameter)support.getParameterByName(pBase, "MaxRelError").clone();
                     tmpP.setName("MaxRelError");
                     tmpP.setValue(support.getDouble(segs[i + 1]));
                     tmpParameterList.add(tmpP);
