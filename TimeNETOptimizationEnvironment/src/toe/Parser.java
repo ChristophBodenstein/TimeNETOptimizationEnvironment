@@ -108,6 +108,8 @@ public class Parser {
                 support.log(parameterList.item(i).getAttributes().getNamedItem("name").getNodeValue());
                 tmpParameter.setName(parameterList.item(i).getAttributes().getNamedItem("name").getNodeValue());
                 tmpParameter.setValue(support.getDouble(parameterList.item(i).getAttributes().getNamedItem("defaultValue").getNodeValue()));
+                tmpParameter.setStartValue(support.getParameterByName(support.getParameterBase(), tmpParameter.getName()).getStartValue());
+                tmpParameter.setEndValue(support.getParameterByName(support.getParameterBase(), tmpParameter.getName()).getEndValue());
                 tmpParameterList.add(tmpParameter);
             }
             support.log("***End of List of Available parameters in xml-file***");
