@@ -56,14 +56,14 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
 
     Properties auto = new Properties();
     private String fileName = "";
-    ArrayList< ArrayList<parameter>> ListOfParameterSetsToBeWritten = new ArrayList< ArrayList<parameter>>();//Name, Value
+    ArrayList< ArrayList<parameter>> ListOfParameterSetsToBeWritten = new ArrayList< >();//Name, Value
     generator myGenerator;
     private parameter pConfidenceIntervall = new parameter();
     private parameter pSeed = new parameter();
     private parameter pEndTime = new parameter();
     private parameter pMaxTime = new parameter();
     private parameter pMaxError = new parameter();
-    ArrayList<Long> ListOfParameterSetIds = new ArrayList<Long>();
+    ArrayList<Long> ListOfParameterSetIds = new ArrayList<>();
     private int sizeOfDesignSpace;
     private String pathToTimeNet = "";
     private SimulationCache mySimulationCache = null;
@@ -79,8 +79,8 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
 
     private String logFileNameOfOptimizer = null;
 
-    private ArrayList<Component> listOfUIComponents = new ArrayList<Component>();//List of all Components
-    private ArrayList<Boolean> listOfUIStates = new ArrayList<Boolean>();
+    private ArrayList<Component> listOfUIComponents = new ArrayList<>();//List of all Components
+    private ArrayList<Boolean> listOfUIStates = new ArrayList<>();
     private ArrayList<Boolean> listOfUIStatesPushed;
 
     /**
@@ -1407,7 +1407,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                 for (int i = 0; i < endCounter; i++) {
                     usedValue = start + (double) i * step;
                     usedValue = support.round(usedValue);
-                    ArrayList<parameter> nextParameterSet = new ArrayList<parameter>();
+                    ArrayList<parameter> nextParameterSet = new ArrayList<>();
                     //Get copy of parameterset
                     for (parameter lastParameterSet1 : lastParameterSet) {
                         try {
@@ -1554,10 +1554,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
             support.setOriginalFilename(filename);
             activateGenerateButtons();
             activateReloadButtons();
-        } catch (ParserConfigurationException e) {
-        } catch (SAXException e) {
-        } catch (IOException e) {
-        } catch (DOMException e) {
+        } catch (ParserConfigurationException | SAXException | IOException | DOMException e) {
         }
         tableChanged(null);
     }
@@ -1638,8 +1635,8 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
     public void restartGenerator() {
         support.setCancelEverything(false);
         myGenerator = null;
-        ListOfParameterSetIds = new ArrayList<Long>();
-        ListOfParameterSetsToBeWritten = new ArrayList<ArrayList<parameter>>();
+        ListOfParameterSetIds = new ArrayList<>();
+        ListOfParameterSetsToBeWritten = new ArrayList<>();
         myGenerator = new generator(ListOfParameterSetsToBeWritten, fileName, jLabelExportStatus, this, jTableParameterList);
         myGenerator.start();
         support.waitForGeneratorAsynchronous(myGenerator, this);
@@ -1651,6 +1648,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
      *
      * @param e
      */
+    @Override
     public void tableChanged(TableModelEvent e) {
         //support.log("Editing of Cell stopped, restarting generator.");
         //this.restartGenerator();
@@ -1666,7 +1664,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
             }
         }
         ArrayList<parameter> myParameterList = ((parameterTableModel) this.jTableParameterList.getModel()).getListOfParameter();
-        ArrayList<parameter> resultParameterList = new ArrayList<parameter>();
+        ArrayList<parameter> resultParameterList = new ArrayList<>();
         for (parameter p : myParameterList) {
             if (!p.isExternalParameter() && !p.isIteratable()) {
                 resultParameterList.add(p);
@@ -1879,7 +1877,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
             auto.setProperty("isRunningAsSlave", Boolean.toString(support.isIsRunningAsSlave()));
 
             auto.setProperty("RemoteAddress", support.getReMoteAddress());
-            auto.setProperty("deleteTmpFile", new Boolean(jCheckBoxDeleteTmpFiles.isSelected()).toString());
+            auto.setProperty("deleteTmpFile", Boolean.toString(jCheckBoxDeleteTmpFiles.isSelected()));
 
             if (support.getTmpPath() != null) {
                 auto.setProperty("tmppath", support.getTmpPath());
@@ -1939,7 +1937,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         //int parameterCount=this.jTableParameterList.getModel().getRowCount();
         parameterTableModel tModel = (parameterTableModel) this.jTableParameterList.getModel();
         //String [][] parameterArray=tModel.getParameterArray();
-        ArrayList<parameter> parameterArray = new ArrayList<parameter>();
+        ArrayList<parameter> parameterArray = new ArrayList<>();
 
         //ArrayListe aufbauen und Funktion mit dieser Liste aufrufen
         for (int i = 0; i < tModel.getRowCount(); i++) {
@@ -2086,7 +2084,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
          19-jButtonOpenSCPN
          20-jSpinnerNumberOfOptimizationRuns
          */
-        this.listOfUIStates = new ArrayList<Boolean>();
+        this.listOfUIStates = new ArrayList<>();
         //Activate all
         for (Component listOfUIComponent : listOfUIComponents) {
             listOfUIStates.add(true);
@@ -2177,6 +2175,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
      * @param message will be shown in staus-label
      * @param feedback will determine what to do next (button activation etc.)
      */
+    @Override
     public void operationSucessfull(String message, typeOfProcessFeedback feedback) {
         int tmpNumberOfOptiRunsToGo = support.getNumberOfOptiRunsToGo();
         if (tmpNumberOfOptiRunsToGo <= 1) {
@@ -2208,6 +2207,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
      *
      * @param message will be shown in staus-label
      */
+    @Override
     public void operationCanceled(String message, typeOfProcessFeedback feedback) {
         this.popUIState();
         support.setStatusText(message);
