@@ -781,7 +781,7 @@ public class support {
      * @param logFileName name of logfile, data will be appended
      */
     public static void addLinesToLogFile(SimulationType p, String logFileName) {
-        ArrayList<SimulationType> myParserList = new ArrayList<SimulationType>();
+        ArrayList<SimulationType> myParserList = new ArrayList<>();
         myParserList.add(p);
         addLinesToLogFileFromListOfParser(myParserList, logFileName);
     }
