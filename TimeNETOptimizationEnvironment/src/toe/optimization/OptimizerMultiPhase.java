@@ -32,8 +32,8 @@ public class OptimizerMultiPhase implements Runnable, Optimizer {
     String pathToTimeNet = "";
     MainFrame parent = null;
     JTabbedPane MeasureFormPane;
-    ArrayList<MeasureType> listOfMeasures = new ArrayList<MeasureType>();//Liste aller Measures, abfragen von MeasureFormPane
-    ArrayList<SimulationType> historyOfParsers = new ArrayList<SimulationType>();//History of all simulation runs
+    ArrayList<MeasureType> listOfMeasures = new ArrayList<>();//Liste aller Measures, abfragen von MeasureFormPane
+    ArrayList<SimulationType> historyOfParsers = new ArrayList<>();//History of all simulation runs
     ArrayList<parameter> parameterBase;//Base set of parameters, start/end-value, stepping, etc.
     JLabel infoLabel;
     int numberOfPhases = 2;
@@ -62,6 +62,7 @@ public class OptimizerMultiPhase implements Runnable, Optimizer {
     /**
      * Run method for optimizer. Main Algorithm is located here
      */
+    @Override
     public void run() {
         this.optimized = false;
         //Optimizer init with initial parameterset
@@ -142,7 +143,7 @@ public class OptimizerMultiPhase implements Runnable, Optimizer {
             boolean iterateConfidenceInterval = prefs.getPref_ConfidenceIntervallStart() < prefs.getPref_ConfidenceIntervallEnd();
             boolean iterateMaxRelError = prefs.getPref_MaxRelErrorStart() > prefs.getPref_MaxRelErrorEnd();
             boolean iterateInternal = support.getOptimizerPreferences().getInternalParameterToIterateInMultiphase() != null;//It can be iterated up and down
-            double confInterval, maxRelError, internal = 0.0;
+            double confInterval, maxRelError, internal;
             if (phaseCounter == 0) {
                 //First Phase, so we use the start-values for all parameters
                 confInterval = prefs.getPref_ConfidenceIntervallStart();
@@ -185,7 +186,7 @@ public class OptimizerMultiPhase implements Runnable, Optimizer {
                 support.getParameterByName(lastParamaterset, "MaxRelError").setValue(maxRelError);
             }
             if (iterateInternal) {
-                support.getParameterByName(lastParamaterset, support.getOptimizerPreferences().getInternalParameterToIterateInMultiphase().getName()).setValue(internal);;
+                support.getParameterByName(lastParamaterset, support.getOptimizerPreferences().getInternalParameterToIterateInMultiphase().getName()).setValue(internal);
             }
 
             myOptimizer = SimOptiFactory.getOptimizer(support.getOptimizerPreferences().getPref_typeOfUsedMultiPhaseOptimization());
@@ -206,13 +207,17 @@ public class OptimizerMultiPhase implements Runnable, Optimizer {
         //Pop Startvalue-strategy
         support.getOptimizerPreferences().setPref_StartValue(myTmpStartValue);
 
+        this.optimized = true;//Even if its not optimized, this is set to true to end the optimization loop
+        if(lastOptimizer.getOptimum()!=null){
         this.bestSolution = lastOptimizer.getOptimum();
-        this.optimized = true;
         support.log(this.getClass().getSimpleName() + " has ended, printing optimal value:");
         support.addLinesToLogFile(bestSolution, logFileName);
         support.setStatusText("Optimization ended. See Log.");
         support.printOptimizedMeasures(bestSolution, this.listOfMeasures);
         StatisticAggregator.printStatistic(this.logFileName);
+        }else{
+        support.log("Optimization was not successful.");
+        }
     }
 
     /**
@@ -220,6 +225,7 @@ public class OptimizerMultiPhase implements Runnable, Optimizer {
      * support-class and starts optimization
      *
      */
+    @Override
     public void initOptimizer() {
         this.pathToTimeNet = support.getPathToTimeNet();// pathToTimeNetTMP;
         this.MeasureFormPane = support.getMeasureFormPane();//MeasureFormPaneTMP;
@@ -246,6 +252,7 @@ public class OptimizerMultiPhase implements Runnable, Optimizer {
      *
      * @return null if optimization not yet ended, else Optimum
      */
+    @Override
     public SimulationType getOptimum() {
         if (this.optimized) {
             return this.bestSolution;
@@ -260,6 +267,7 @@ public class OptimizerMultiPhase implements Runnable, Optimizer {
      *
      * @param name Name (path) of logfile
      */
+    @Override
     public void setLogFileName(String name) {
         this.logFileName = name;
     }
@@ -269,6 +277,7 @@ public class OptimizerMultiPhase implements Runnable, Optimizer {
      *
      * @return name of logfile
      */
+    @Override
     public String getLogFileName() {
         return this.logFileName;
     }
