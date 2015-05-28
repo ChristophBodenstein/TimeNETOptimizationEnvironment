@@ -421,7 +421,7 @@ public class OptimizerHill implements Runnable, Optimizer {
                             } else {
                                 incResult = support.getParameterByName(newParameterset, nameOfParameterToBeChanged).decValue();
                             }
-                            p.setValue(nextValue);
+                            //p.setValue(nextValue);
                         }
                     }
                     break;
