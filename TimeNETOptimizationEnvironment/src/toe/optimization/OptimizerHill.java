@@ -118,30 +118,7 @@ public class OptimizerHill implements Runnable, Optimizer {
             support.spinInLabel();
 
             newParameterset = getNextParametersetAsArrayList(lastParameterset);
-            //listOfCompletedSimulations = null;
-            //If result is already in cache, then count up corresponding counter
-            //Else start simulation
 
-            if (mySimulationCache.getListOfCompletedSimulationParsers(newParameterset, simulationCounter) != null) {
-                listOfCompletedSimulations = mySimulationCache.getListOfCompletedSimulationParsers(newParameterset, simulationCounter);
-                support.log("Getting List of Completed Simulations from Cache.");
-
-                //Shrink to first element of List
-                listOfCompletedSimulations = support.shrinkArrayListToFirstMember(listOfCompletedSimulations);
-
-                //set all results to "cached", for statistics
-                for (SimulationType listOfCompletedSimulation : listOfCompletedSimulations) {
-                    listOfCompletedSimulation.setIsFromCache(true);
-                }
-
-                //If last parameterset is double, then count up eject-counter for LastInCache
-                //TODO This only works if ONE parameterset is used. For Lists of Parameterset this will not work!
-                if (mySimulationCache.compareParameterList(lastParameterset, newParameterset.get(0))) {
-                    stuckInCacheCounter--;
-                }
-
-            } else {
-                support.log("Starting new Simulation, Parameterset not in Cache.");
                 stuckInCacheCounter = support.DEFAULT_CACHE_STUCK;//Reset Stuck-Counter
                 mySimulator.initSimulator(newParameterset, getSimulationCounter(), false);
                 support.waitForEndOfSimulator(mySimulator, getSimulationCounter(), support.DEFAULT_TIMEOUT);
@@ -158,7 +135,7 @@ public class OptimizerHill implements Runnable, Optimizer {
 
                 //Add all Results to Cache
                 mySimulationCache.addListOfSimulationsToCache(listOfCompletedSimulations);
-            }
+            //}
 
             if (listOfCompletedSimulations == null) {
                 support.log("Error. List of completed Simulations is NULL!");
