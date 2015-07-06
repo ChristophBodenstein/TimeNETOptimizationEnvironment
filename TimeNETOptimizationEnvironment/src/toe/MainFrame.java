@@ -56,7 +56,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
 
     Properties auto = new Properties();
     private String fileName = "";
-    ArrayList< ArrayList<parameter>> ListOfParameterSetsToBeWritten = new ArrayList< >();//Name, Value
+    ArrayList< ArrayList<parameter>> ListOfParameterSetsToBeWritten = new ArrayList<>();//Name, Value
     generator myGenerator;
     private parameter pConfidenceIntervall = new parameter();
     private parameter pSeed = new parameter();
@@ -219,7 +219,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         support.log(auto.getProperty("SimulationType"));
 
         this.jComboBoxSimulationType.setSelectedItem(typeOfSimulator.valueOf(auto.getProperty("SimulationType", support.DEFAULT_TYPE_OF_SIMULATOR.toString())));
-        support.setChosenSimulatorType((typeOfSimulator)jComboBoxSimulationType.getSelectedItem());
+        support.setChosenSimulatorType((typeOfSimulator) jComboBoxSimulationType.getSelectedItem());
         this.jComboBoxOptimizationType.setSelectedItem(typeOfOptimization.valueOf(auto.getProperty("OptimizationType", support.DEFAULT_TYPE_OF_OPTIMIZER.toString())));
 
         savePropertiesEnabled = true;//Enable property saving after init of all components
@@ -300,7 +300,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
     /**
      * Check, if cached simulation is possible if cached simulation is possible,
      * then set some switches etc...
-     * 
+     *
      * Needs to be done after loading a cache-file
      *
      * @return true if CachedSimulation is possible, else false
@@ -1062,8 +1062,8 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         this.tryToFillCacheFromFile(inputFile, fileChooser.getSelectedFile().getPath());
     }//GEN-LAST:event_jButtonLoadCacheFileActionPerformed
 
-    private void tryToFillCacheFromFile(String inputFile, String filePath){
-    support.emptyCache();
+    private void tryToFillCacheFromFile(String inputFile, String filePath) {
+        support.emptyCache();
         this.mySimulationCache = support.getMySimulationCache();
         if (!mySimulationCache.parseSimulationCacheFile(inputFile, ((MeasurementForm) this.jTabbedPaneOptiTargets.getComponent(0)).getMeasurements(), (parameterTableModel) this.jTableParameterList.getModel(), this)) {
             support.log("Wrong Simulation cache file for this SCPN!");
@@ -1079,7 +1079,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
             support.setChosenSimulatorType(typeOfSimulator.Cache_Only);
         }
     }
-    
+
     private void jComboBoxOptimizationTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxOptimizationTypeActionPerformed
 
     }//GEN-LAST:event_jComboBoxOptimizationTypeActionPerformed
@@ -1945,16 +1945,14 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         //String [][] parameterArray=tModel.getParameterArray();
         ArrayList<parameter> parameterArray = new ArrayList<>();
 
-        //ArrayListe aufbauen und Funktion mit dieser Liste aufrufen
+        //Build ArrayList of parameters from table
         for (int i = 0; i < tModel.getRowCount(); i++) {
             parameter tmpParameter = new parameter();
             tmpParameter.setName(tModel.getValueAt(i, 0).toString());
             tmpParameter.setStartValue(tModel.getDoubleValueAt(i, 1));//=StartValue
             tmpParameter.setEndValue(tModel.getDoubleValueAt(i, 2));
             tmpParameter.setValue(tModel.getDoubleValueAt(i, 1));
-
             tmpParameter.setStepping(tModel.getDoubleValueAt(i, 3));
-            //ListOfParameterAsFromTable.add(tmpParameter);
             parameterArray.add(tmpParameter);
         }
         return parameterArray;
