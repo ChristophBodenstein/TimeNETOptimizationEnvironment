@@ -179,17 +179,17 @@ public class SimulatorCached implements Simulator {
         support.log(support.padRight("Min", 10) + " | " + support.padRight("Mean", 10) + " | " + support.padRight("Max", 10));
         support.log(support.padRight(Double.toString(tmpMeasure.getMinValue()), 10) + " | " + support.padRight(Double.toString(tmpMeasure.getMeanValue()), 10) + " | " + support.padRight(Double.toString(tmpMeasure.getMaxValue()), 10));
 
-        SimulationType resultSimultation = mySimulationList.get(numberOfOptimalSimulation);
+        SimulationType resultSimulation = mySimulationList.get(numberOfOptimalSimulation);
         /*
          * Set start-end value for every parameter based on Parameterbase
          * This is a workaround, it should be set during read of cache-file
          */
-        for (int i = 0; i < resultSimultation.getListOfParameters().size(); i++) {
-            parameter pTmp = resultSimultation.getListOfParameters().get(i);
+        for (int i = 0; i < resultSimulation.getListOfParameters().size(); i++) {
+            parameter pTmp = resultSimulation.getListOfParameters().get(i);
             pTmp.setEndValue(support.getParameterByName(support.getParameterBase(), pTmp.getName()).getEndValue());
             pTmp.setStartValue(support.getParameterByName(support.getParameterBase(), pTmp.getName()).getStartValue());
         }
-        return resultSimultation;
+        return resultSimulation;
     }
 
     @Override
