@@ -185,9 +185,14 @@ public class SimulatorCached implements Simulator {
          * This is a workaround, it should be set during read of cache-file
          */
         for (int i = 0; i < resultSimulation.getListOfParameters().size(); i++) {
+            try{
             parameter pTmp = resultSimulation.getListOfParameters().get(i);
             pTmp.setEndValue(support.getParameterByName(support.getParameterBase(), pTmp.getName()).getEndValue());
             pTmp.setStartValue(support.getParameterByName(support.getParameterBase(), pTmp.getName()).getStartValue());
+            }catch(Exception e){
+            support.log("Error setting values for optimum.");
+            e.printStackTrace();
+            }
         }
         return resultSimulation;
     }
