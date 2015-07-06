@@ -29,7 +29,7 @@ public class SimulatorCached implements Simulator {
      * Constructor
      */
     public SimulatorCached() {
-        logFileName = support.getTmpPath() + File.separator + "SimLog_LocalSimulation_Only_Cache" + Calendar.getInstance().getTimeInMillis() + ".csv";
+        logFileName = support.getTmpPath() + File.separator + "SimLog_"+getClass().getSimpleName()+"_"+ Calendar.getInstance().getTimeInMillis() + ".csv";
         support.log("LogfileName:" + logFileName);
     }
 

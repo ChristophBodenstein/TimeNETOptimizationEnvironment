@@ -68,7 +68,9 @@ public class SimulatorDistributed implements Runnable, Simulator {
      * Constructor
      */
     public SimulatorDistributed() {
-        logFileName = support.getTmpPath() + File.separator + "SimLog_DistributedSimulation" + Calendar.getInstance().getTimeInMillis() + ".csv";
+        super();
+        logFileName = support.getTmpPath() + File.separator + "SimLog_"+getClass().getSimpleName()+"_"+ Calendar.getInstance().getTimeInMillis() + ".csv";
+        support.log("LogfileName:" + logFileName);
         listOfUnproccessedFilesNames = new ArrayList<String>();
         simid = Long.toString(Calendar.getInstance().getTimeInMillis());
     }
