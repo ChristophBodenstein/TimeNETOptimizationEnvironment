@@ -148,12 +148,12 @@ public class SimulationType {
                     parameter pOptimumCalculated = targetSimulation.getListOfParameters().get(i);
                     if (pOptimumCalculated.isIteratableAndIntern()) {
                         parameter pOptimumFound = support.getParameterByName(this.parameterList, pOptimumCalculated.getName());
-                        rangeSum = rangeSum + Math.pow(pOptimumCalculated.getEndValue() - pOptimumCalculated.getStartValue(),2);
-                        distanceSum = distanceSum + Math.pow(pOptimumCalculated.getValue() - pOptimumFound.getValue(),2);
+                        rangeSum = rangeSum + Math.pow(pOptimumCalculated.getEndValue() - pOptimumCalculated.getStartValue(), 2);
+                        distanceSum = distanceSum + Math.pow(pOptimumCalculated.getValue() - pOptimumFound.getValue(), 2);
                     }
                 }
-                distanceSum=Math.sqrt(distanceSum);
-                rangeSum=Math.sqrt(rangeSum);
+                distanceSum = Math.sqrt(distanceSum);
+                rangeSum = Math.sqrt(rangeSum);
                 distanceSum = (distanceSum * 100.0 / rangeSum);
                 break;
         }
@@ -168,51 +168,12 @@ public class SimulationType {
      *
      * @return distance to targetMeasure in % of possible range
      * @param targetMeasure Measure to calculate the distance to. Must contain
-     * Min/Max Values!
+     * Min/Max values! Make sure to set this values before caling this method!
+     *
      */
     public double getRelativeDistanceToTargetValueInValueRange(MeasureType targetMeasure) {
-        //TODO implement this method!
         double distance;
         double range;
-        //int numberOfParameters = support.getListOfChangableParameters(parameterList).size();
-        /*
-         Get Simulator type from support or Prefs
-         get min-max-values based on Simulator
-         */
-//        if (support.getChosenSimulatorType() == typedef.typeOfSimulator.Benchmark) {
-//
-//            switch (support.getChosenBenchmarkFunction()) {
-//                case Ackley:
-//                    //Optimum is in the middle of each parameter, its exact at 0,0
-//                    //TODO calculate value range fpr Ackley
-//                    break;
-//                case Sphere:
-//                    //Optimum is in the middle of each parameter, its exact at 0,0
-//                    range = Math.pow(5 * 5, numberOfParameters);
-//                    break;
-//                case Matya:
-//                    //Optimum is in the middle of each parameter, its exact at 0,0
-//                    double x0 = support.DEFAULT_Matya_limitLower;
-//                    double x1 = support.DEFAULT_Matya_limitupper;
-//                    range = 0.26 * (x0 * x0 + x1 * x1) - 0.48 * x0 * x1;
-//                    break;
-//                case Schwefel:
-//                    //TODO calculate value range for Schwefel
-//                    //Optimum is in the middle of each parameter, its exact at 0,0
-//                    break;
-//                case Rastrigin:
-//                    //TODO calculate value range for Rastrigin
-//                    //Optimum is in the middle of each parameter, its exact at 0,0
-//                    break;
-//
-//                default:
-//
-//                    break;
-//            }
-//
-//        } else {
-//            if (support.getChosenSimulatorType() == typedef.typeOfSimulator.Cache_Only) {
-//                //TODO add Cache-Local-Simulator
         range = targetMeasure.getMaxValue() - targetMeasure.getMinValue();
         //Get copy of actual optimization target (TargetMeasure is found by name)
         MeasureType activeMeasure = new MeasureType(this.getMeasureByName(support.getOptimizationMeasure().getMeasureName()));
@@ -220,11 +181,6 @@ public class SimulationType {
         activeMeasure.setTargetValue(targetMeasure.getMeanValue(), targetMeasure.getTargetTypeOf());
 
         distance = activeMeasure.getDistanceFromTarget();
-//        support.log("Absolute Distance to calculated Optimum (" + targetMeasure.getMeanValue() + ") is " + distance + " at a range of " + range + ".");
-//            }
-//            //TODO Get Min-Max, Opti-Values from somewhere else!
-//        }
-
         return (distance * 100 / range);
     }
 
