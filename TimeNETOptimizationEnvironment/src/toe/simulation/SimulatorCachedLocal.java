@@ -20,11 +20,15 @@ import toe.support;
  *
  * @author Christoph Bodenstein
  */
-public class SimulatorCachedLocal extends SimulatorCached {
+public class SimulatorCachedLocal extends SimulatorCached implements Runnable {
 
     private ArrayList<SimulationType> myListOfSimulationParsers = null;
     private int status;
     private final Simulator myLocalSimulator = getNoCacheSimulator();
+    private ArrayList< ArrayList<parameter>> remainingParametersets = new ArrayList<>();
+    ArrayList< ArrayList<parameter>> listOfParameterSetsTMP;
+    private int simulationCounterTMP = 0;
+    private boolean log = true;
 
     /**
      * Constructor
@@ -43,12 +47,24 @@ public class SimulatorCachedLocal extends SimulatorCached {
      */
     @Override
     public void initSimulator(ArrayList< ArrayList<parameter>> listOfParameterSetsTMP, int simulationCounterTMP, boolean log) {
-        
-        this.myListOfSimulationParsers = null;
-        ArrayList< ArrayList<parameter>> remainingParametersets = new ArrayList< >();
-        status = 0;
-        //this.simulationCounter=simulationCounterTMP;
 
+        this.myListOfSimulationParsers = null;
+        remainingParametersets = new ArrayList<>();
+        status = 0;
+        this.listOfParameterSetsTMP = listOfParameterSetsTMP;
+        this.simulationCounterTMP = simulationCounterTMP;
+        this.log = log;
+        //Start this thread
+        new Thread(this).start();
+
+    }
+
+    /**
+     * Run Method to start simulations and collect the data simulats the SCPNs,
+     * main routine
+     */
+    @Override
+    public void run() {
         if (mySimulationCache != null) {
             this.myListOfSimulationParsers = mySimulationCache.getListOfCompletedSimulationParsers(listOfParameterSetsTMP, support.getGlobalSimulationCounter());
         } else {
@@ -62,7 +78,7 @@ public class SimulatorCachedLocal extends SimulatorCached {
         }
 
         status = myListOfSimulationParsers.size() * 100 / listOfParameterSetsTMP.size();
-
+        support.setStatusText("Simulating " + myListOfSimulationParsers.size() + "/" + listOfParameterSetsTMP.size());
         if (this.myListOfSimulationParsers.size() < listOfParameterSetsTMP.size()) {
             support.log("Some simulations were missing in cache. Will simulate them local/distributed.");
 
@@ -79,8 +95,8 @@ public class SimulatorCachedLocal extends SimulatorCached {
             }
             support.log("Size of Remaining ParameterList is " + remainingParametersets.size());
             //Find simulations that are not already simulated
+            support.log("Will simulate " + remainingParametersets.size() + " local.");
 
-            
             myLocalSimulator.initSimulator(remainingParametersets, support.getGlobalSimulationCounter(), false);
             support.waitForEndOfSimulator(myLocalSimulator, support.getGlobalSimulationCounter(), support.DEFAULT_TIMEOUT);
 
@@ -100,7 +116,6 @@ public class SimulatorCachedLocal extends SimulatorCached {
             support.setGlobalSimulationCounter(support.getGlobalSimulationCounter() + myListOfSimulationParsers.size());
             support.log("SimulationCounter is now: " + support.getGlobalSimulationCounter());
         }
-
     }
 
     /**
@@ -164,7 +179,7 @@ public class SimulatorCachedLocal extends SimulatorCached {
     public void setMySimulationCache(SimulationCache mySimulationCache) {
         this.mySimulationCache = mySimulationCache;
     }
-    
+
     @Override
     public int cancelAllSimulations() {
         this.myLocalSimulator.cancelAllSimulations();
