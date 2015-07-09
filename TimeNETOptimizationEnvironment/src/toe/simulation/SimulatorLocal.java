@@ -98,7 +98,7 @@ public class SimulatorLocal implements Runnable, Simulator, nativeProcessCallbac
                     support.log("Supposed to simulate " + listOfParameterSets.size() + " parametersets.");
                     for (int i = 0; i < listOfParameterSets.size(); i++) {
 
-                        support.setStatusText("wating to start sim " + (i + 1) + "/" + listOfParameterSets.size());
+                        support.setStatusText("Waiting to start sim " + (i + 1) + "/" + listOfParameterSets.size());
                         //Wait for some Time. Maybe this is needed on some Systems
                         support.waitSingleThreaded(support.DEFAULT_TIME_BETWEEN_LOCAL_SIMULATIONS);//Wait to be (quite)sure system ressources are free
 
