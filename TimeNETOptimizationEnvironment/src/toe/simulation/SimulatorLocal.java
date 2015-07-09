@@ -43,12 +43,13 @@ public class SimulatorLocal implements Runnable, Simulator, nativeProcessCallbac
     boolean log = true;
     boolean keepSimulationFiles = false;
     long timeStamp = 0;//TimeStamp for measuring the runtime of one simulation
+    Integer maxTime=600;
 
     /**
      * Constructor
      */
     public SimulatorLocal() {
-        logFileName = support.getTmpPath() + File.separator + "SimLog_"+getClass().getSimpleName()+"_"+ Calendar.getInstance().getTimeInMillis() + ".csv";
+        logFileName = support.getTmpPath() + File.separator + "SimLog_" + getClass().getSimpleName() + "_" + Calendar.getInstance().getTimeInMillis() + ".csv";
         support.log("LogfileName:" + logFileName);
     }
 
@@ -99,7 +100,7 @@ public class SimulatorLocal implements Runnable, Simulator, nativeProcessCallbac
 
                         support.setStatusText("wating to start sim " + (i + 1) + "/" + listOfParameterSets.size());
                         //Wait for some Time. Maybe this is needed on some Systems
-                        Thread.sleep(support.DEFAULT_TIME_BETWEEN_LOCAL_SIMULATIONS);
+                        support.waitSingleThreaded(support.DEFAULT_TIME_BETWEEN_LOCAL_SIMULATIONS);//Wait to be (quite)sure system ressources are free
 
                         //Try every simulation several times if TimeNet crashs
                         //Reset Simulation-Attempt-Counter for next Parameterset
@@ -252,7 +253,8 @@ public class SimulatorLocal implements Runnable, Simulator, nativeProcessCallbac
                 support.del(new File(tmpPath));
             }
             // Execute command
-            java.lang.ProcessBuilder processBuilder = new java.lang.ProcessBuilder("java", "-jar", "TimeNET.jar", exportFileName, "autostart=true", "autostop=true", "secmax=" + support.getIntStringValueFromFileName(exportFileName, "MaxTime"), "endtime=" + support.getIntStringValueFromFileName(exportFileName, "EndTime"), "seed=" + support.getIntStringValueFromFileName(exportFileName, "Seed"), "confidence=" + support.getIntStringValueFromFileName(exportFileName, "ConfidenceIntervall"), "epsmax=" + support.getValueFromFileName(exportFileName, "MaxRelError"));
+            maxTime = new Integer(support.getIntStringValueFromFileName(exportFileName, "MaxTime"));
+            java.lang.ProcessBuilder processBuilder = new java.lang.ProcessBuilder("java", "-jar", "TimeNET.jar", exportFileName, "autostart=true", "autostop=true", "secmax=" + maxTime.toString(), "endtime=" + support.getIntStringValueFromFileName(exportFileName, "EndTime"), "seed=" + support.getIntStringValueFromFileName(exportFileName, "Seed"), "confidence=" + support.getIntStringValueFromFileName(exportFileName, "ConfidenceIntervall"), "epsmax=" + support.getValueFromFileName(exportFileName, "MaxRelError"));
             processBuilder.directory(new java.io.File(this.pathToTimeNet));
             support.log("Command is: " + processBuilder.command().toString());
 
@@ -263,11 +265,14 @@ public class SimulatorLocal implements Runnable, Simulator, nativeProcessCallbac
 
             //We wait until the process is ended or aborted
             while (myNativeProcess.isRunning()) {
-                Thread.sleep(1000);
+                Thread.sleep(500);
+                if ((Calendar.getInstance().getTimeInMillis() - timeStamp) / 1000 >= maxTime) {
+                    support.log("Simulation took longer than given MaxTime! Will be aborted! " + " MaxTime was:" + maxTime.toString());
+                    myNativeProcess.setKillProcess(true);
+                }
             }
 
             timeStamp = (Calendar.getInstance().getTimeInMillis() - timeStamp) / 1000;//Time for calculation in seconds
-
             //Copy results.log
             String sourceFile = support.removeExtention(exportFileName) + ".result" + File.separator + "results.log";
             String sinkFile = support.removeExtention(exportFileName) + "simTime_" + timeStamp + ".log";
