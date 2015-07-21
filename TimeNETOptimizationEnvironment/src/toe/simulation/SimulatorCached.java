@@ -29,7 +29,7 @@ public class SimulatorCached implements Simulator {
      * Constructor
      */
     public SimulatorCached() {
-        logFileName = support.getTmpPath() + File.separator + "SimLog_LocalSimulation_Only_Cache" + Calendar.getInstance().getTimeInMillis() + ".csv";
+        logFileName = support.getTmpPath() + File.separator + "SimLog_"+getClass().getSimpleName()+"_"+ Calendar.getInstance().getTimeInMillis() + ".csv";
         support.log("LogfileName:" + logFileName);
     }
 
@@ -179,11 +179,26 @@ public class SimulatorCached implements Simulator {
         support.log(support.padRight("Min", 10) + " | " + support.padRight("Mean", 10) + " | " + support.padRight("Max", 10));
         support.log(support.padRight(Double.toString(tmpMeasure.getMinValue()), 10) + " | " + support.padRight(Double.toString(tmpMeasure.getMeanValue()), 10) + " | " + support.padRight(Double.toString(tmpMeasure.getMaxValue()), 10));
 
-        return mySimulationList.get(numberOfOptimalSimulation);
+        SimulationType resultSimulation = mySimulationList.get(numberOfOptimalSimulation);
+        /*
+         * Set start-end value for every parameter based on Parameterbase
+         * This is a workaround, it should be set during read of cache-file
+         */
+        for (int i = 0; i < resultSimulation.getListOfParameters().size(); i++) {
+            try{
+            parameter pTmp = resultSimulation.getListOfParameters().get(i);
+            pTmp.setEndValue(support.getParameterByName(support.getParameterBase(), pTmp.getName()).getEndValue());
+            pTmp.setStartValue(support.getParameterByName(support.getParameterBase(), pTmp.getName()).getStartValue());
+            }catch(Exception e){
+            support.log("Error setting values for optimum.");
+            e.printStackTrace();
+            }
+        }
+        return resultSimulation;
     }
 
     @Override
     public int cancelAllSimulations() {
-    return 0;   
+        return 0;
     }
 }

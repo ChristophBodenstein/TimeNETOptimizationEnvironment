@@ -170,7 +170,7 @@ public OptimizerChargedSystemSearch()
                 pArray =  roundToStepping(pArray);
             }
             
-            System.out.println("Number of Parameters in: " + parameterList.get(0).size());
+            //System.out.println("Number of Parameters in: " + parameterList.get(0).size());
             
             mySimulator = SimOptiFactory.getSimulator();
             mySimulator.initSimulator(parameterList, simulationCounter, false);

@@ -1933,16 +1933,14 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         //String [][] parameterArray=tModel.getParameterArray();
         ArrayList<parameter> parameterArray = new ArrayList<>();
 
-        //ArrayListe aufbauen und Funktion mit dieser Liste aufrufen
+        //Build ArrayList of parameters from table
         for (int i = 0; i < tModel.getRowCount(); i++) {
             parameter tmpParameter = new parameter();
             tmpParameter.setName(tModel.getValueAt(i, 0).toString());
             tmpParameter.setStartValue(tModel.getDoubleValueAt(i, 1));//=StartValue
             tmpParameter.setEndValue(tModel.getDoubleValueAt(i, 2));
             tmpParameter.setValue(tModel.getDoubleValueAt(i, 1));
-
             tmpParameter.setStepping(tModel.getDoubleValueAt(i, 3));
-            //ListOfParameterAsFromTable.add(tmpParameter);
             parameterArray.add(tmpParameter);
         }
         return parameterArray;

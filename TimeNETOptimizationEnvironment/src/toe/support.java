@@ -42,7 +42,7 @@ import toe.typedef.typeOfProcessFeedback;
 public class support {
 
 //This Version of TimeNetExperimentGenerator
-    public static final String VERSION = "2015-05-27";
+    public static final String VERSION = "2015-07-10";
 
 //Define some program-wide default values
     public static final double DEFAULT_STEPPING = 1.0;
@@ -783,7 +783,7 @@ public class support {
      * @param logFileName name of logfile, data will be appended
      */
     public static void addLinesToLogFile(SimulationType p, String logFileName) {
-        ArrayList<SimulationType> myParserList = new ArrayList<SimulationType>();
+        ArrayList<SimulationType> myParserList = new ArrayList<>();
         myParserList.add(p);
         addLinesToLogFileFromListOfParser(myParserList, logFileName);
     }
