@@ -69,7 +69,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     private int pref_ABC_NumOnlookerBees;
     private int pref_ABC_NumScoutBees;
     private int pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement;
-    
+
 //parameters for MVMO Optimization
     private int pref_MVMO_StartingPop;
     private int pref_MVMO_MaxPop;
@@ -114,7 +114,8 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         tmpVector.remove((typeOfOptimization) typeOfOptimization.TwoPhase);
         this.jComboBoxOptimizationType.setModel(new DefaultComboBoxModel(tmpVector.toArray()));
 
-        this.loadPreferences();
+        this.loadPreferences(support.NAME_OF_OPTIMIZER_PREFFERENCES_FILE);
+        updateNumberOfOptiPrefs();
 
     }
 
@@ -133,7 +134,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         jTextFieldLogFileAddon = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jCheckBoxAddPrefsToLogfilename = new javax.swing.JCheckBox();
-        jButton1 = new javax.swing.JButton();
+        jButtonSavePrefs = new javax.swing.JButton();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanelHillClimbing = new javax.swing.JPanel();
         jSpinnerWrongSolutionsPerDirectionUntilBreak = new javax.swing.JSpinner();
@@ -240,6 +241,9 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         jLabel28 = new javax.swing.JLabel();
         jComboBoxTypeOfParentSelection = new javax.swing.JComboBox();
         jLabel29 = new javax.swing.JLabel();
+        jButtonSaveNextPrefs = new javax.swing.JButton();
+        jButtonDelAllPrefs = new javax.swing.JButton();
+        jTextFieldNumberOfOptiPrefs = new javax.swing.JTextField();
 
         jLabelStartvalueForParameters.setText("Startvalue for parameters");
 
@@ -284,10 +288,10 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         jCheckBoxAddPrefsToLogfilename.setSelected(true);
         jCheckBoxAddPrefsToLogfilename.setText("Add Prefs to Logfilename");
 
-        jButton1.setText("Save");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        jButtonSavePrefs.setText("Save");
+        jButtonSavePrefs.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                jButtonSavePrefsActionPerformed(evt);
             }
         });
 
@@ -1053,6 +1057,23 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("MVMO", jPanel6);
 
+        jButtonSaveNextPrefs.setText("SaveNext");
+        jButtonSaveNextPrefs.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonSaveNextPrefsActionPerformed(evt);
+            }
+        });
+
+        jButtonDelAllPrefs.setText("DelAllPrefs");
+        jButtonDelAllPrefs.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonDelAllPrefsActionPerformed(evt);
+            }
+        });
+
+        jTextFieldNumberOfOptiPrefs.setEditable(false);
+        jTextFieldNumberOfOptiPrefs.setText("0");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -1069,16 +1090,23 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
                         .addComponent(jCheckBoxAddPrefsToLogfilename)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
                         .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jTextFieldLogFileAddon, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(454, 454, 454)
-                        .addComponent(jButton1))
+                        .addGap(111, 111, 111)
+                        .addComponent(jButtonSavePrefs)
+                        .addGap(27, 27, 27)
+                        .addComponent(jButtonSaveNextPrefs)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButtonDelAllPrefs)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jTextFieldNumberOfOptiPrefs, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(17, 17, 17))
                     .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 987, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 32, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1095,7 +1123,10 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(jTextFieldLogFileAddon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1))
+                    .addComponent(jButtonSavePrefs)
+                    .addComponent(jButtonSaveNextPrefs)
+                    .addComponent(jButtonDelAllPrefs)
+                    .addComponent(jTextFieldNumberOfOptiPrefs, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -1126,9 +1157,9 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jTextFieldLogFileAddonKeyReleased
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        this.savePreferences();
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void jButtonSavePrefsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSavePrefsActionPerformed
+        this.savePreferences(support.NAME_OF_OPTIMIZER_PREFFERENCES_FILE);
+    }//GEN-LAST:event_jButtonSavePrefsActionPerformed
 
     private void jSpinnerABCNumOnlookerBeesPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jSpinnerABCNumOnlookerBeesPropertyChange
         // TODO add your handling code here:
@@ -1262,9 +1293,82 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBoxGeneticTypeOfGeneticCrossingActionPerformed
 
+    private void jButtonSaveNextPrefsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSaveNextPrefsActionPerformed
+        //Save a new opti-preferences-file in the default path
+        //New name is standardname+filenumber
+        String newOptiFileName = support.NAME_OF_OPTIMIZER_PREFFERENCES_FILE + getNumberOfOptiPrefs();
+        support.log("Will save prefs to: " + newOptiFileName);
+        this.savePreferences(newOptiFileName);
+        updateNumberOfOptiPrefs();
+    }//GEN-LAST:event_jButtonSaveNextPrefsActionPerformed
+
+    /**
+     * Returns the number of Opti-Pref-files in standard directory
+     *
+     * @return Number of Opti-Pref-Files
+     */
+    public int getNumberOfOptiPrefs() {
+        String standardFileName = support.NAME_OF_OPTIMIZER_PREFFERENCES_FILE;
+        String target_file;
+        int numberOfFoundOptiPrefs = 0;
+        File standardFile = new File(standardFileName);
+
+        File folderToScan = new File(standardFile.getParent());
+
+        File[] listOfFiles = folderToScan.listFiles();
+
+        for (int i = 0; i < listOfFiles.length; i++) {
+            if (listOfFiles[i].isFile()) {
+                target_file = listOfFiles[i].getName();
+                if (target_file.startsWith(standardFile.getName())) {
+                    numberOfFoundOptiPrefs++;
+                }
+            }
+        }
+        return numberOfFoundOptiPrefs;
+    }
+
+    /**
+     * Updates the label to shwo how many Optipreferences are stored in
+     * pref-folder
+     */
+    private void updateNumberOfOptiPrefs() {
+        this.jTextFieldNumberOfOptiPrefs.setText(Integer.toString(getNumberOfOptiPrefs()));
+    }
+
+    private void jButtonDelAllPrefsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDelAllPrefsActionPerformed
+        //Delete all Optimizerprefs and save the standard-version
+        String standardFileName = support.NAME_OF_OPTIMIZER_PREFFERENCES_FILE;
+        String target_file;
+        File standardFile = new File(standardFileName);
+        File folderToScan = new File(standardFile.getParent());
+
+        File[] listOfFiles = folderToScan.listFiles();
+        ArrayList listOfOptiPrefsToDelete = new ArrayList<>();
+
+        for (File chosenFile : listOfFiles) {
+            if (chosenFile.isFile()) {
+                target_file = chosenFile.getName();
+                if (target_file.startsWith(standardFile.getName())) {
+                    listOfOptiPrefsToDelete.add(chosenFile);
+                }
+            }
+        }
+
+        for (Object iterator : listOfOptiPrefsToDelete) {
+            File f = (File) iterator;
+            f.delete();
+        }
+        this.savePreferences(standardFileName);
+        this.updateNumberOfOptiPrefs();
+
+    }//GEN-LAST:event_jButtonDelAllPrefsActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButtonDelAllPrefs;
+    private javax.swing.JButton jButtonSaveNextPrefs;
+    private javax.swing.JButton jButtonSavePrefs;
     private javax.swing.JCheckBox jCheckBoxAddPrefsToLogfilename;
     private javax.swing.JCheckBox jCheckBoxGeneticMutateTopSolution;
     private javax.swing.JCheckBox jCheckBoxKeepDesignspaceAndResolution;
@@ -1376,15 +1480,16 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     private javax.swing.JSpinner jSpinnerWrongSolutionsUntilBreak;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTextField jTextFieldLogFileAddon;
+    private javax.swing.JTextField jTextFieldNumberOfOptiPrefs;
     private toe.MeasurementForm measurementForm1;
     // End of variables declaration//GEN-END:variables
 
     /**
      * Load Preferences from defined file
      */
-    public void loadPreferences() {
+    public void loadPreferences(String filename) {
         try {
-            FileInputStream in = new FileInputStream(support.NAME_OF_OPTIMIZER_PREFFERENCES_FILE);
+            FileInputStream in = new FileInputStream(filename);
             auto.load(in);
             in.close();
 
@@ -1456,12 +1561,12 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             this.setPref_GeneticMutateTopSolution(Boolean.valueOf(auto.getProperty("pref_GeneticMutateTopSolution", Boolean.toString(support.DEFAULT_GENETIC_MUTATE_TOP_SOLUTION))));
             support.log("Loaded pref_GeneticMutateTopSolution is " + this.getPref_GeneticMutateTopSolution());
             this.setPref_GeneticNumberOfCrossings(support.loadIntFromProperties("pref_GeneticNumberOfCrossings", support.DEFAULT_GENETIC_NUMBEROFCROSSINGS, auto));
-            
+
             this.setPref_GeneticMaximumOptirunsWithoutSolution(support.loadIntFromProperties("pref_GeneticMaxOptiRunsWithoutSolution", support.DEFAULT_GENETIC_MAXWRONGOPTIRUNS, auto));
-            support.log("Loaded pref_GeneticMaxOptiRunsWithoutSolution is "+ this.getPref_GeneticMaximumOptirunsWithoutSolution());
+            support.log("Loaded pref_GeneticMaxOptiRunsWithoutSolution is " + this.getPref_GeneticMaximumOptirunsWithoutSolution());
             this.setPref_GeneticTypeOfCrossover(typeOfGeneticCrossover.valueOf(auto.getProperty("pref_GeneticTypeOfCrossover", support.DEFAULT_GENETIC_CROSSOVER.toString())));
-            support.log("Loaded pref_GeneticTypeOfCrossover is "+ this.getPref_GeneticTypeOfCrossover().toString());
-            
+            support.log("Loaded pref_GeneticTypeOfCrossover is " + this.getPref_GeneticTypeOfCrossover().toString());
+
             //load settings for CSS Optimization
             this.setPref_CSS_PopulationSize(support.loadIntFromProperties("pref_CSS_PopulationSize", support.DEFAULT_CSS_POPULATION_SIZE, auto));
             support.log("Loaded pref_CSS_PopulationSize is " + this.getPref_CSS_PopulationSize());
@@ -1478,7 +1583,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             this.setPref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement(support.loadIntFromProperties(
                     "pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement", support.DEFAULT_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement, auto));
             support.log("Loaded pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement is " + this.getPref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement());
-            
+
             //load settings for MVMO Optimization
             this.setPref_MVMO_StartingPop(support.loadIntFromProperties("setPref_MVMO_StartingPop", support.DEFAULT_MVMO_STARTING_POPULATION, auto));
             support.log("Loaded pref__MVMO_StartingPop is" + this.getPref_MVMO_StartingPop());
@@ -1495,7 +1600,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     /**
      * Save Preferences to defined file
      */
-    public void savePreferences() {
+    public void savePreferences(String filename) {
         support.log("Saving Properties of Optimization");
         try {
 
@@ -1536,7 +1641,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             auto.setProperty("pref_GeneticMaxOptiRunsWithoutSolution", Integer.toString(this.getPref_GeneticMaximumOptirunsWithoutSolution()));
             auto.setProperty("pref_GeneticTypeOfCrossover", this.getPref_GeneticTypeOfCrossover().toString());
             auto.setProperty("pref_GeneticNumberOfCrossings", Integer.toString(this.getPref_GeneticNumberOfCrossings()));
-            
+
             //setting parameters for CSS optimization
             auto.setProperty("pref_CSS_PopulationSize", Integer.toString(this.getPref_CSS_PopulationSize()));
             auto.setProperty("pref_CSS_MaxAttraction", Double.toString(this.getPref_CSS_MaxAttraction()));
@@ -1547,7 +1652,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             auto.setProperty("pref_ABC_NumScoutBees", Integer.toString(this.getPref_ABC_NumScoutBees()));
             auto.setProperty("pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement", Integer.toString(this.getPref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement()));
 
-            File parserprops = new File(support.NAME_OF_OPTIMIZER_PREFFERENCES_FILE);
+            File parserprops = new File(filename);
             auto.store(new FileOutputStream(parserprops), "ExperimentGenerator-Properties");
         } catch (IOException e) {
             support.log("Problem Saving the properties.");
@@ -1622,11 +1727,11 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
                     break;
 
                 case Genetic:
-                    addonString += "_Popsize_"+this.getPref_GeneticPopulationSize();
-                    addonString += "_MutationChance_"+this.getPref_GeneticMutationChance();
-                    addonString += "_MutateTop_"+this.getPref_GeneticMutateTopSolution();
-                    addonString += "_MaxWrongOptiruns_"+this.getPref_GeneticMaximumOptirunsWithoutSolution();
-                    addonString += "_Crossover_"+this.getPref_GeneticTypeOfCrossover();
+                    addonString += "_Popsize_" + this.getPref_GeneticPopulationSize();
+                    addonString += "_MutationChance_" + this.getPref_GeneticMutationChance();
+                    addonString += "_MutateTop_" + this.getPref_GeneticMutateTopSolution();
+                    addonString += "_MaxWrongOptiruns_" + this.getPref_GeneticMaximumOptirunsWithoutSolution();
+                    addonString += "_Crossover_" + this.getPref_GeneticTypeOfCrossover();
                     break;
                 case ChargedSystemSearch:
                     //TODO Add Infos to this Algorithm here!
@@ -2118,72 +2223,72 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement.setValue(Pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement);
         this.pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement = Pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement;
     }
-    
+
     public int getPref_MVMO_StartingPop() {
         this.pref_MVMO_StartingPop = (Integer) jSpinnerMVMOStartingPop.getValue();
         return pref_MVMO_StartingPop;
     }
-    
+
     public void setPref_MVMO_StartingPop(int Pref_MVMO_StartingPop) {
         jSpinnerMVMOStartingPop.setValue(Pref_MVMO_StartingPop);
         this.pref_MVMO_StartingPop = Pref_MVMO_StartingPop;
     }
-    
+
     public int getPref_MVMO_MaxPop() {
         this.pref_MVMO_MaxPop = (Integer) jSpinnerMVMOMaxPop.getValue();
         return pref_MVMO_MaxPop;
     }
-    
+
     private void setPref_MVMO_MaxPop(int Pref_MVMO_MaxPop) {
         jSpinnerMVMOMaxPop.setValue(Pref_MVMO_MaxPop);
         this.pref_MVMO_MaxPop = Pref_MVMO_MaxPop;
     }
-    
+
     private double getPref_MVMO_ScalingFactor() {
         this.pref_MVMO_ScalingFactor = (Double) jSpinnerMVMOScalingFactor.getValue();
         return pref_MVMO_ScalingFactor;
     }
-    
+
     private void setPref_MVMO_ScalingFactor(double Pref_MVMO_ScalingFactor) {
         jSpinnerMVMOScalingFactor.setValue(Pref_MVMO_ScalingFactor);
         this.pref_MVMO_ScalingFactor = Pref_MVMO_ScalingFactor;
     }
-    
+
     private double getPref_MVMO_AsymmetryFactor() {
         this.pref_MVMO_AsymmetryFactor = (Double) jSpinnerMVMOAsymmetryFactor.getValue();
         return pref_MVMO_AsymmetryFactor;
     }
-    
+
     private void setPref_MVMO_AsymmetryFactor(double Pref_MVMO_AsymmetryFactor) {
         jSpinnerMVMOAsymmetryFactor.setValue(Pref_MVMO_AsymmetryFactor);
         this.pref_MVMO_AsymmetryFactor = Pref_MVMO_AsymmetryFactor;
     }
-    
+
     private double getPref_MVMO_sd() {
         this.pref_MVMO_sd = (Double) jSpinnerMVMOsd.getValue();
         return this.pref_MVMO_sd;
     }
-    
+
     private void getPref_MVMO_sd(double Pref_MVMO_sd) {
         jSpinnerMVMOsd.setValue(Pref_MVMO_sd);
         this.pref_MVMO_sd = Pref_MVMO_sd;
     }
-    
+
     private typeOfMVMOParentSelection getPref_MVMO_parentSelection() {
-        this.pref_MVMO_parentSelection = (typeOfMVMOParentSelection)jComboBoxTypeOfParentSelection.getSelectedItem();
+        this.pref_MVMO_parentSelection = (typeOfMVMOParentSelection) jComboBoxTypeOfParentSelection.getSelectedItem();
         return this.pref_MVMO_parentSelection;
     }
-    
+
     private void setPrefMVMOParentSelection(typeOfMVMOParentSelection PrefMVMOParentSelection) {
         jComboBoxTypeOfMVMOMutationSelection.setSelectedItem(PrefMVMOParentSelection);
         this.pref_MVMO_parentSelection = PrefMVMOParentSelection;
     }
-        
+
     private typeOfMVMOMutationSelection getPref_MVMO_mutationSelection() {
-        this.pref_MVMO_mutationSelection = (typeOfMVMOMutationSelection)jComboBoxTypeOfMVMOMutationSelection.getSelectedItem();
+        this.pref_MVMO_mutationSelection = (typeOfMVMOMutationSelection) jComboBoxTypeOfMVMOMutationSelection.getSelectedItem();
         return this.pref_MVMO_mutationSelection;
     }
-    
+
     private void setPref_MVMO_mutationSelection(typeOfMVMOMutationSelection Pref_MVMO_mutationSelection) {
         jComboBoxTypeOfMVMOMutationSelection.setSelectedItem(Pref_MVMO_mutationSelection);
         this.pref_MVMO_mutationSelection = Pref_MVMO_mutationSelection;
@@ -2244,12 +2349,13 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
      * @return the pref_GeneticMaximumOptirunsWithoutSolution
      */
     public int getPref_GeneticMaximumOptirunsWithoutSolution() {
-        this.pref_GeneticMaximumOptirunsWithoutSolution=(Integer)jSpinnerGeneticMaxOptiRunsWithoutImprovement.getValue();
+        this.pref_GeneticMaximumOptirunsWithoutSolution = (Integer) jSpinnerGeneticMaxOptiRunsWithoutImprovement.getValue();
         return pref_GeneticMaximumOptirunsWithoutSolution;
     }
 
     /**
-     * @param pref_GeneticMaximumOptirunsWithoutSolution the pref_GeneticMaximumOptirunsWithoutSolution to set
+     * @param pref_GeneticMaximumOptirunsWithoutSolution the
+     * pref_GeneticMaximumOptirunsWithoutSolution to set
      */
     public void setPref_GeneticMaximumOptirunsWithoutSolution(int pref_GeneticMaximumOptirunsWithoutSolution) {
         this.jSpinnerGeneticMaxOptiRunsWithoutImprovement.setValue(pref_GeneticMaximumOptirunsWithoutSolution);
@@ -2260,7 +2366,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
      * @return the pref_GeneticTypeOfCrossover
      */
     public typeOfGeneticCrossover getPref_GeneticTypeOfCrossover() {
-        this.pref_GeneticTypeOfCrossover=(typeOfGeneticCrossover)this.jComboBoxGeneticTypeOfGeneticCrossing.getSelectedItem();
+        this.pref_GeneticTypeOfCrossover = (typeOfGeneticCrossover) this.jComboBoxGeneticTypeOfGeneticCrossing.getSelectedItem();
         return pref_GeneticTypeOfCrossover;
     }
 
@@ -2276,12 +2382,13 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
      * @return the pref_GeneticNumberOfCrossings
      */
     public int getPref_GeneticNumberOfCrossings() {
-        pref_GeneticNumberOfCrossings=(Integer)jSpinnerGeneticMaxNumberOfCrossings.getValue();
+        pref_GeneticNumberOfCrossings = (Integer) jSpinnerGeneticMaxNumberOfCrossings.getValue();
         return pref_GeneticNumberOfCrossings;
     }
 
     /**
-     * @param pref_GeneticNumberOfCrossings the pref_GeneticNumberOfCrossings to set
+     * @param pref_GeneticNumberOfCrossings the pref_GeneticNumberOfCrossings to
+     * set
      */
     public void setPref_GeneticNumberOfCrossings(int pref_GeneticNumberOfCrossings) {
         jSpinnerGeneticMaxNumberOfCrossings.setValue(pref_GeneticNumberOfCrossings);

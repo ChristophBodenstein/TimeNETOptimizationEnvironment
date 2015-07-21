@@ -25,6 +25,7 @@ import java.io.*;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.nio.file.Files;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -46,6 +47,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
+import toe.optimization.OptimizerPreferences;
 import toe.typedef.*;
 
 /**
@@ -56,7 +58,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
 
     Properties auto = new Properties();
     private String fileName = "";
-    ArrayList< ArrayList<parameter>> ListOfParameterSetsToBeWritten = new ArrayList< >();//Name, Value
+    ArrayList< ArrayList<parameter>> ListOfParameterSetsToBeWritten = new ArrayList<>();//Name, Value
     generator myGenerator;
     private parameter pConfidenceIntervall = new parameter();
     private parameter pSeed = new parameter();
@@ -82,6 +84,8 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
     private ArrayList<Component> listOfUIComponents = new ArrayList<>();//List of all Components
     private ArrayList<Boolean> listOfUIStates = new ArrayList<>();
     private ArrayList<Boolean> listOfUIStatesPushed;
+
+    private Integer numberOfActualOptimizationAnalysis = 0;//We start counteing the pref-files from 0. But file #0 is without appended number, it`s the original.
 
     /**
      * Creates new form MainFrame
@@ -219,7 +223,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         support.log(auto.getProperty("SimulationType"));
 
         this.jComboBoxSimulationType.setSelectedItem(typeOfSimulator.valueOf(auto.getProperty("SimulationType", support.DEFAULT_TYPE_OF_SIMULATOR.toString())));
-        support.setChosenSimulatorType((typeOfSimulator)jComboBoxSimulationType.getSelectedItem());
+        support.setChosenSimulatorType((typeOfSimulator) jComboBoxSimulationType.getSelectedItem());
         this.jComboBoxOptimizationType.setSelectedItem(typeOfOptimization.valueOf(auto.getProperty("OptimizationType", support.DEFAULT_TYPE_OF_OPTIMIZER.toString())));
 
         savePropertiesEnabled = true;//Enable property saving after init of all components
@@ -300,7 +304,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
     /**
      * Check, if cached simulation is possible if cached simulation is possible,
      * then set some switches etc...
-     * 
+     *
      * Needs to be done after loading a cache-file
      *
      * @return true if CachedSimulation is possible, else false
@@ -979,25 +983,9 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                     support.setOriginalParameterBase(support.getCopyOfParameterSet(support.getParameterBase()));
                     //start Optimization via extra method, set number of multiple optimizations before
                     support.setNumberOfOptiRunsToGo((Integer) this.jSpinnerNumberOfOptimizationRuns.getValue());
+                    numberOfActualOptimizationAnalysis = 0;
                     startOptimizationAgain();
-                    /*
-                     Optimizer myOptimizer=SimOptiFactory.getOptimizer();
-                     logFileNameOfOptimizer=support.getTmpPath()+File.separator+this.getClass().getSimpleName()+"_"+Calendar.getInstance().getTimeInMillis()+support.getOptimizerPreferences().getPref_LogFileAddon()+".csv";
-                     myOptimizer.setLogFileName(logFileNameOfOptimizer);
-                     myOptimizer.initOptimizer();
-                     //Wait for end of Optimizer
-                     support.waitForOptimizerAsynchronous(myOptimizer, this);
-                     */
 
-                    /*    while(myOptimizer.getOptimum()==null){
-                     try {
-                     Thread.sleep(500);
-                     } catch (InterruptedException ex) {
-                     support.log("Problem while waiting for Optimizer.");
-                     }
-                     }
-                     */
-                    //support.log("Optimum found, activating the UIComponents");
                 } else {
                     support.log("No Tmp-Path given, Optimization not possible.");
                     this.popUIState();
@@ -1062,8 +1050,8 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         this.tryToFillCacheFromFile(inputFile, fileChooser.getSelectedFile().getPath());
     }//GEN-LAST:event_jButtonLoadCacheFileActionPerformed
 
-    private void tryToFillCacheFromFile(String inputFile, String filePath){
-    support.emptyCache();
+    private void tryToFillCacheFromFile(String inputFile, String filePath) {
+        support.emptyCache();
         this.mySimulationCache = support.getMySimulationCache();
         if (!mySimulationCache.parseSimulationCacheFile(inputFile, ((MeasurementForm) this.jTabbedPaneOptiTargets.getComponent(0)).getMeasurements(), (parameterTableModel) this.jTableParameterList.getModel(), this)) {
             support.log("Wrong Simulation cache file for this SCPN!");
@@ -1079,7 +1067,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
             support.setChosenSimulatorType(typeOfSimulator.Cache_Only);
         }
     }
-    
+
     private void jComboBoxOptimizationTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxOptimizationTypeActionPerformed
 
     }//GEN-LAST:event_jComboBoxOptimizationTypeActionPerformed
@@ -2185,12 +2173,36 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
     public void operationSucessfull(String message, typeOfProcessFeedback feedback) {
         int tmpNumberOfOptiRunsToGo = support.getNumberOfOptiRunsToGo();
         if (tmpNumberOfOptiRunsToGo <= 1) {
-            this.popUIState();
             support.unsetListOfChangableParametersMultiphase();//Stop Multiphase if it was active
             support.setStatusText(message);
             support.log("Last simulation run has ended. Will show statistics.");
             support.log("Ended was: " + feedback.toString());
+            support.log("This was Opti-Analysis: " + numberOfActualOptimizationAnalysis.toString());
             StatisticAggregator.printOptiStatistics();
+
+            String addonStringForFileName = numberOfActualOptimizationAnalysis.toString();
+            if (numberOfActualOptimizationAnalysis <= 0) {
+                addonStringForFileName = "";
+            }
+            support.log("Used Opti-Prefs:");
+            support.dumpTextFileToLog(support.NAME_OF_OPTIMIZER_PREFFERENCES_FILE + addonStringForFileName);
+
+            //Reset all statistics!
+            support.resetGlobalSimulationCounter();
+            StatisticAggregator.removeOldOptimizationsFromList();
+
+            //Check if other optiprefs have to be tested!
+            OptimizerPreferences p = support.getOptimizerPreferences();
+            if (numberOfActualOptimizationAnalysis >= p.getNumberOfOptiPrefs() - 1) {
+                //Restore UI after all optimization analysis
+                this.popUIState();
+            } else {
+                //Load next Optiprefs and start again
+                numberOfActualOptimizationAnalysis++;
+                p.loadPreferences(support.NAME_OF_OPTIMIZER_PREFFERENCES_FILE + numberOfActualOptimizationAnalysis.toString());
+                support.setNumberOfOptiRunsToGo((Integer) this.jSpinnerNumberOfOptimizationRuns.getValue());
+                startOptimizationAgain();
+            }
 
         } else {
             support.log("Starting next Optimization run, number:" + (tmpNumberOfOptiRunsToGo - 1));

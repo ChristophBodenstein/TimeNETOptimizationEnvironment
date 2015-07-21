@@ -15,6 +15,7 @@ import toe.datamodel.MeasureType;
 import toe.datamodel.SimulationType;
 import toe.support;
 import toe.plot.RPlugin;
+import toe.typedef;
 
 /**
  *
@@ -227,7 +228,7 @@ public class StatisticAggregator {
 
             if (tmpRelativeDistanceInValueRange < 101) {
                 support.log("Average relative distance to calculated optimum in value range: " + averageDistanceToOptimumInValueRange + " %");
-                support.log("Average relative ("+support.getChosenTypeOfRelativeDistanceCalculation().toString()+") distance to calculated optimum in definition range " + averageDistanceToOptimumInDefinitionRange + " %");
+                support.log("Average relative (" + support.getChosenTypeOfRelativeDistanceCalculation().toString() + ") distance to calculated optimum in definition range " + averageDistanceToOptimumInDefinitionRange + " %");
                 String tmpOutHead = "Radius:    ";
                 String tmpOutValue = "Values:    ";
                 String tmpOutDSValue = "DS-Values: ";
@@ -247,9 +248,25 @@ public class StatisticAggregator {
             //support.log("Sim#, Distance, DistancsDS, CPU-Time");
             //support.log("&"+averageNumberOfSimulations+"    &"+averageDistanceToOptimumInValueRange+"\\%  &"+averageDistanceToOptimumInDefinitionRange+"\\% &"+averageCPUTimeTotal);
             support.log("WrongSolutionInARow, WrongSolutionsPerDir, Distance, DistancsEUKLID, Sim#, CPU-Time, CHR");
-            toe.optimization.OptimizerPreferences p=support.getOptimizerPreferences();
-            support.log(p.getPref_WrongSimulationsUntilBreak()+"    &"+p.getPref_WrongSimulationsPerDirection() +"      &"+support.round(averageDistanceToOptimumInValueRange)+"\\%     &"+support.round(averageDistanceToOptimumInDefinitionRange)+"\\%    &"+averageNumberOfSimulations+"    &"+averageCPUTimeTotal+"     &"+support.round(averageCacheRatio)*100+"\\%  \\\\  \\hline");
-            
+            toe.optimization.OptimizerPreferences p = support.getOptimizerPreferences();
+            support.log("Outputting Optimization Config: "
+                    + "WrongSimulationsUntilBreak   "
+                    + "SizeOfNeighborhood \\%"
+                    + "&WrongSimulationsPerDirection "
+                    + "&averageDistanceToOptimumInValueRange\\%     "
+                    + "&averageDistanceToOptimumInDefinitionRange\\%    "
+                    + "&averageNumberOfSimulations "
+                    + "&averageCPUTimeTotal "
+                    + "&averageCacheRatio*100");
+            support.log("NeighborhoodType: " + p.getPref_NeighborhoodType().toString());
+            support.log("Optimizer: " + support.getChosenOptimizerType().toString());
+            support.log("Simulator: " + support.getChosenSimulatorType().toString());
+            if (support.getChosenSimulatorType().equals(typedef.typeOfSimulator.Benchmark)) {
+                support.log("Benchmarkfunction: " + support.getChosenBenchmarkFunction().toString());
+            }
+
+            support.log(p.getPref_WrongSimulationsUntilBreak() + "   & " + p.getPref_SizeOfNeighborhood() + "\\%     &" + p.getPref_WrongSimulationsPerDirection() + "      &" + support.round(averageDistanceToOptimumInValueRange) + "\\%     &" + support.round(averageDistanceToOptimumInDefinitionRange) + "\\%    &" + averageNumberOfSimulations + "    &" + averageCPUTimeTotal + "     &" + support.round(averageCacheRatio) * 100 + "\\%  \\\\  \\hline");
+
             support.log("++++ End of Optimization Statistics ++++");
         }
         support.setLogToWindow(logToWindow);//Set Window-logging to original value

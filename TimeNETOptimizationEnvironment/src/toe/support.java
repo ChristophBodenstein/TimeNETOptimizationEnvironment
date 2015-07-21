@@ -17,8 +17,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Properties;
+import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -71,9 +74,9 @@ public class support {
     public static final int DEFAULT_GENETIC_POPULATION_SIZE = 10;
     public static final double DEFAULT_GENETIC_MUTATION_CHANCE = 20;
     public static final boolean DEFAULT_GENETIC_MUTATE_TOP_SOLUTION = false;
-    public static final int DEFAULT_GENETIC_MAXWRONGOPTIRUNS=5;
-    public static final typeOfGeneticCrossover DEFAULT_GENETIC_CROSSOVER=typeOfGeneticCrossover.SBX;
-    public static final int DEFAULT_GENETIC_NUMBEROFCROSSINGS=2;
+    public static final int DEFAULT_GENETIC_MAXWRONGOPTIRUNS = 5;
+    public static final typeOfGeneticCrossover DEFAULT_GENETIC_CROSSOVER = typeOfGeneticCrossover.SBX;
+    public static final int DEFAULT_GENETIC_NUMBEROFCROSSINGS = 2;
 
 //default values for CSS Optimization
     public static final int DEFAULT_CSS_POPULATION_SIZE = 10;
@@ -427,8 +430,7 @@ public class support {
      * Rounds a float value to x digits
      *
      * @param valueToRound The input Vlaue to be round
-     * @return round Value with x precise digits
-     * TODO x is not defined
+     * @return round Value with x precise digits TODO x is not defined
      */
     public static double round(double valueToRound) {
         return (double) Math.round(valueToRound * 1000) / 1000;
@@ -1049,7 +1051,7 @@ public class support {
      */
     public static void setChosenSimulatorType(typeOfSimulator aChosenSimulatorType) {
         chosenSimulatorType = aChosenSimulatorType;
-        getMainFrame().setBenchmarkFunctionComboboxEnabled(chosenSimulatorType.equals(typeOfSimulator.Benchmark)||chosenSimulatorType.equals(typeOfSimulator.Cached_Benchmark));
+        getMainFrame().setBenchmarkFunctionComboboxEnabled(chosenSimulatorType.equals(typeOfSimulator.Benchmark) || chosenSimulatorType.equals(typeOfSimulator.Cached_Benchmark));
     }
 
     /**
@@ -1873,5 +1875,25 @@ public class support {
      */
     public static void setDeleteTmpSimulationFiles(boolean aDeleteTmpSimulationFiles) {
         deleteTmpSimulationFiles = aDeleteTmpSimulationFiles;
+    }
+
+    /**
+     * Dump a text-file into log
+     *
+     * @param filename File to drop into log
+     */
+    public static void dumpTextFileToLog(String filename) {
+        try {
+            Scanner scanner = new Scanner(new FileInputStream(filename), "UTF-8");
+            try {
+                while (scanner.hasNextLine()) {
+                    support.log(scanner.nextLine());
+                }
+            } finally {
+                scanner.close();
+            }
+        } catch (FileNotFoundException ex) {
+            support.log("File: " + filename + " not found!");
+        }
     }
 }
