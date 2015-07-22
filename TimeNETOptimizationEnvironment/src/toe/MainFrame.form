@@ -180,7 +180,6 @@
                           </Group>
                           <Component id="jButtonGenerateListOfExperiments" alignment="0" max="32767" attributes="1"/>
                           <Component id="jSeparator3" alignment="0" max="32767" attributes="1"/>
-                          <Component id="jButtonLoadCacheFile" alignment="1" max="32767" attributes="0"/>
                           <Component id="jButtonStartBatchSimulation" alignment="0" max="32767" attributes="1"/>
                           <Group type="102" alignment="1" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
@@ -197,7 +196,13 @@
                           </Group>
                           <Group type="102" alignment="1" attributes="0">
                               <Group type="103" groupAlignment="1" attributes="0">
+                                  <Group type="102" alignment="1" attributes="0">
+                                      <Component id="jButtonLoadCacheFile" min="-2" pref="227" max="-2" attributes="0"/>
+                                      <EmptySpace max="32767" attributes="0"/>
+                                      <Component id="jButtonEmptyCache" min="-2" pref="106" max="-2" attributes="0"/>
+                                  </Group>
                                   <Group type="102" attributes="0">
+                                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                                       <Component id="jButtonStartOptimization" min="-2" pref="219" max="-2" attributes="1"/>
                                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                       <Component id="jSpinnerNumberOfOptimizationRuns" min="-2" pref="95" max="-2" attributes="0"/>
@@ -256,7 +261,10 @@
                       <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
                       <Component id="jTabbedPaneOptiTargets" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
-                      <Component id="jButtonLoadCacheFile" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="jButtonLoadCacheFile" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jButtonEmptyCache" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
                       <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jComboBoxSimulationType" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -608,6 +616,14 @@
       </Properties>
       <Events>
         <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="jCheckBoxDeleteTmpFilesItemStateChanged"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="jButtonEmptyCache">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Empty Cache"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonEmptyCacheActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

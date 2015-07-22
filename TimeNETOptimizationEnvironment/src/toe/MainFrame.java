@@ -374,6 +374,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         jSpinnerNumberOfOptimizationRuns = new javax.swing.JSpinner();
         jButton1 = new javax.swing.JButton();
         jCheckBoxDeleteTmpFiles = new javax.swing.JCheckBox();
+        jButtonEmptyCache = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jSeparator4 = new javax.swing.JPopupMenu.Separator();
@@ -598,6 +599,13 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
             }
         });
 
+        jButtonEmptyCache.setText("Empty Cache");
+        jButtonEmptyCache.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonEmptyCacheActionPerformed(evt);
+            }
+        });
+
         jMenu1.setText("File");
         jMenu1.add(jSeparator4);
         jMenu1.add(jSeparator5);
@@ -726,7 +734,6 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                                 .add(jButtonCancel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 137, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                             .add(jButtonGenerateListOfExperiments, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .add(jSeparator3)
-                            .add(org.jdesktop.layout.GroupLayout.TRAILING, jButtonLoadCacheFile, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .add(jButtonStartBatchSimulation, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -741,6 +748,11 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                                     .add(layout.createSequentialGroup()
+                                        .add(jButtonLoadCacheFile, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 227, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .add(jButtonEmptyCache, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 106, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                                    .add(layout.createSequentialGroup()
+                                        .add(0, 0, Short.MAX_VALUE)
                                         .add(jButtonStartOptimization, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 219, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                                         .add(jSpinnerNumberOfOptimizationRuns, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 95, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
@@ -784,7 +796,9 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                         .add(5, 5, 5)
                         .add(jTabbedPaneOptiTargets, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .add(5, 5, 5)
-                        .add(jButtonLoadCacheFile)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                            .add(jButtonLoadCacheFile)
+                            .add(jButtonEmptyCache))
                         .add(5, 5, 5)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                             .add(jComboBoxSimulationType, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
@@ -1069,6 +1083,9 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         //Should we empty the cache each time, or only at user-wish? Everytime!
         this.tryToFillCacheFromFile(inputFile);
         support.getMySimulationCache().reformatParameterTable((parameterTableModel) this.jTableParameterList.getModel());
+        this.jTableParameterList.updateUI();
+        this.calculateDesignSpace();
+        this.checkIfCachedSimulationIsPossible();
     }//GEN-LAST:event_jButtonLoadCacheFileActionPerformed
 
     private void tryToFillCacheFromFile(String inputFile) {
@@ -1358,6 +1375,14 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         this.saveProperties();
     }//GEN-LAST:event_jCheckBoxDeleteTmpFilesItemStateChanged
 
+    private void jButtonEmptyCacheActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEmptyCacheActionPerformed
+        support.emptyCache();
+        this.mySimulationCache = support.getMySimulationCache();
+        this.pathToLastSimulationCache = "";
+        checkIfCachedSimulationIsPossible();
+        this.saveProperties();
+    }//GEN-LAST:event_jButtonEmptyCacheActionPerformed
+
     /**
      * Calculates the design space, number of all permutations of parameters
      * with respect to the stepping sizes
@@ -1460,6 +1485,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButtonCancel;
+    private javax.swing.JButton jButtonEmptyCache;
     private javax.swing.JButton jButtonEnterURLToSimServer;
     private javax.swing.JButton jButtonExport;
     private javax.swing.JButton jButtonGenerateListOfExperiments;
@@ -2044,15 +2070,6 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
     }
 
     /**
-     * Checks alle inforamtion about System state and sets the boolean operators
-     * for UI Element activation UI Components are not modified by this method,
-     * just updates the UIState-ArrayList
-     */
-    public void updateAllUIStates() {
-        //jTextFieldSCPNFile    
-    }
-
-    /**
      * updates all UI Components by information from UIState-ArrayList
      */
     public void updateAllUIComponents() {
@@ -2253,11 +2270,13 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
     }
 
     /**
-     * Check if Cache is used. If yes, then reload cache
+     * Check if cache is used. If yes, then reload cache In all cases delete
+     * local cache to start from scratch
      */
     private void reloadFromCacheIfNeeded() {
         //Check if cache-support is enabled
         support.emptyCache();
+        this.mySimulationCache = support.getMySimulationCache();
         //If yes, then reload cache
         typeOfSimulator usedSimulator = support.getChosenSimulatorType();
         if (usedSimulator.toString().contains("Cache")) {
