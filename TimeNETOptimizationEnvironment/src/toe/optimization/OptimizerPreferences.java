@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.*;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JSpinner.DefaultEditor;
@@ -83,6 +84,8 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
     final String noParameterString = "No parameter";
 
+    private Integer numberOfActualOptimizationAnalysis = 0;//We start counting the pref-files from 0. But file #0 is without appended number, it`s the original.
+
     /**
      * Creates new form OptimizerHillPreferences
      */
@@ -114,7 +117,8 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         tmpVector.remove((typeOfOptimization) typeOfOptimization.TwoPhase);
         this.jComboBoxOptimizationType.setModel(new DefaultComboBoxModel(tmpVector.toArray()));
 
-        this.loadPreferences(support.NAME_OF_OPTIMIZER_PREFFERENCES_FILE);
+        this.setNumberOfActualOptimizationAnalysis(0);
+        this.loadPreferences();
         updateNumberOfOptiPrefs();
 
     }
@@ -241,9 +245,18 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         jLabel28 = new javax.swing.JLabel();
         jComboBoxTypeOfParentSelection = new javax.swing.JComboBox();
         jLabel29 = new javax.swing.JLabel();
-        jButtonSaveNextPrefs = new javax.swing.JButton();
+        jButtonNextPrefs = new javax.swing.JButton();
         jButtonDelAllPrefs = new javax.swing.JButton();
         jTextFieldNumberOfOptiPrefs = new javax.swing.JTextField();
+        jButtonPrevPrefs = new javax.swing.JButton();
+
+        addWindowFocusListener(new java.awt.event.WindowFocusListener() {
+            public void windowGainedFocus(java.awt.event.WindowEvent evt) {
+            }
+            public void windowLostFocus(java.awt.event.WindowEvent evt) {
+                formWindowLostFocus(evt);
+            }
+        });
 
         jLabelStartvalueForParameters.setText("Startvalue for parameters");
 
@@ -1057,10 +1070,10 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("MVMO", jPanel6);
 
-        jButtonSaveNextPrefs.setText("SaveNext");
-        jButtonSaveNextPrefs.addActionListener(new java.awt.event.ActionListener() {
+        jButtonNextPrefs.setText(">> Next");
+        jButtonNextPrefs.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonSaveNextPrefsActionPerformed(evt);
+                jButtonNextPrefsActionPerformed(evt);
             }
         });
 
@@ -1073,6 +1086,13 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
         jTextFieldNumberOfOptiPrefs.setEditable(false);
         jTextFieldNumberOfOptiPrefs.setText("0");
+
+        jButtonPrevPrefs.setText("Prev <<");
+        jButtonPrevPrefs.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonPrevPrefsActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -1096,10 +1116,12 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
                         .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jTextFieldLogFileAddon, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(111, 111, 111)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButtonPrevPrefs)
+                        .addGap(21, 21, 21)
                         .addComponent(jButtonSavePrefs)
-                        .addGap(27, 27, 27)
-                        .addComponent(jButtonSaveNextPrefs)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButtonNextPrefs)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButtonDelAllPrefs)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -1124,9 +1146,10 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
                     .addComponent(jLabel4)
                     .addComponent(jTextFieldLogFileAddon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonSavePrefs)
-                    .addComponent(jButtonSaveNextPrefs)
+                    .addComponent(jButtonNextPrefs)
                     .addComponent(jButtonDelAllPrefs)
-                    .addComponent(jTextFieldNumberOfOptiPrefs, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextFieldNumberOfOptiPrefs, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonPrevPrefs))
                 .addContainerGap())
         );
 
@@ -1158,7 +1181,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextFieldLogFileAddonKeyReleased
 
     private void jButtonSavePrefsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSavePrefsActionPerformed
-        this.savePreferences(support.NAME_OF_OPTIMIZER_PREFFERENCES_FILE);
+        this.savePreferences();
     }//GEN-LAST:event_jButtonSavePrefsActionPerformed
 
     private void jSpinnerABCNumOnlookerBeesPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jSpinnerABCNumOnlookerBeesPropertyChange
@@ -1293,14 +1316,19 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBoxGeneticTypeOfGeneticCrossingActionPerformed
 
-    private void jButtonSaveNextPrefsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSaveNextPrefsActionPerformed
+    private void jButtonNextPrefsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonNextPrefsActionPerformed
         //Save a new opti-preferences-file in the default path
-        //New name is standardname+filenumber
-        String newOptiFileName = support.NAME_OF_OPTIMIZER_PREFFERENCES_FILE + getNumberOfOptiPrefs();
-        support.log("Will save prefs to: " + newOptiFileName);
-        this.savePreferences(newOptiFileName);
+        //Save the actual optPrefs
+        this.savePreferences();
+        //Increase number of optiPrefs
+        this.setNumberOfActualOptimizationAnalysis((Integer) (this.getNumberOfActualOptimizationAnalysis() + 1));
+        support.log("Next number of optiPrefs is " + this.getNumberOfActualOptimizationAnalysis().toString());
+        //Load optiPrefs from given File
+        this.loadPreferences();
+        //Save again optiPrefs to next file
+        this.savePreferences();
         updateNumberOfOptiPrefs();
-    }//GEN-LAST:event_jButtonSaveNextPrefsActionPerformed
+    }//GEN-LAST:event_jButtonNextPrefsActionPerformed
 
     /**
      * Returns the number of Opti-Pref-files in standard directory
@@ -1359,15 +1387,36 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             File f = (File) iterator;
             f.delete();
         }
-        this.savePreferences(standardFileName);
+        this.setNumberOfActualOptimizationAnalysis((Integer) 0);
+        this.savePreferences();
         this.updateNumberOfOptiPrefs();
 
     }//GEN-LAST:event_jButtonDelAllPrefsActionPerformed
 
+    private void jButtonPrevPrefsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPrevPrefsActionPerformed
+        //Save a new opti-preferences-file in the default path
+        //Save the actual optPrefs
+        this.savePreferences();
+        //Increase number of optiPrefs
+        this.setNumberOfActualOptimizationAnalysis((Integer) Math.max(this.getNumberOfActualOptimizationAnalysis() - 1, 0));
+        support.log("Next number of optiPrefs is " + this.getNumberOfActualOptimizationAnalysis().toString());
+        //Load optiPrefs from given File
+        this.loadPreferences();
+        //Save again optiPrefs to next file
+        this.savePreferences();
+        updateNumberOfOptiPrefs();
+    }//GEN-LAST:event_jButtonPrevPrefsActionPerformed
+
+    private void formWindowLostFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowLostFocus
+    support.log("OptiWindow lost focus. Will save optiPrefs.");
+    this.savePreferences();
+    }//GEN-LAST:event_formWindowLostFocus
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonDelAllPrefs;
-    private javax.swing.JButton jButtonSaveNextPrefs;
+    private javax.swing.JButton jButtonNextPrefs;
+    private javax.swing.JButton jButtonPrevPrefs;
     private javax.swing.JButton jButtonSavePrefs;
     private javax.swing.JCheckBox jCheckBoxAddPrefsToLogfilename;
     private javax.swing.JCheckBox jCheckBoxGeneticMutateTopSolution;
@@ -1487,7 +1536,17 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     /**
      * Load Preferences from defined file
      */
-    public void loadPreferences(String filename) {
+    public void loadPreferences() {
+        String addonStringForFileName = this.getNumberOfActualOptimizationAnalysis().toString();
+        if (this.getNumberOfActualOptimizationAnalysis() <= 0) {
+            addonStringForFileName = "";
+        }
+        String filename = support.NAME_OF_OPTIMIZER_PREFFERENCES_FILE + addonStringForFileName;
+        //If file does not exist, create it by savingprefs with actual numberOfActualOptimizationprefs
+        File testFileHandle = new File(filename);
+        if (!testFileHandle.isFile()) {
+            this.savePreferences();
+        }
         try {
             FileInputStream in = new FileInputStream(filename);
             auto.load(in);
@@ -1600,8 +1659,14 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     /**
      * Save Preferences to defined file
      */
-    public void savePreferences(String filename) {
-        support.log("Saving Properties of Optimization");
+    public void savePreferences() {
+        support.log("Saving Properties #" + this.getNumberOfActualOptimizationAnalysis().toString() + " of Optimization");
+        String addonStringForFileName = this.getNumberOfActualOptimizationAnalysis().toString();
+        if (this.getNumberOfActualOptimizationAnalysis() <= 0) {
+            addonStringForFileName = "";
+        }
+        String filename = support.NAME_OF_OPTIMIZER_PREFFERENCES_FILE + addonStringForFileName;
+
         try {
 
             //Setting Parameters of HillClimbing
@@ -2393,5 +2458,21 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     public void setPref_GeneticNumberOfCrossings(int pref_GeneticNumberOfCrossings) {
         jSpinnerGeneticMaxNumberOfCrossings.setValue(pref_GeneticNumberOfCrossings);
         this.pref_GeneticNumberOfCrossings = pref_GeneticNumberOfCrossings;
+    }
+
+    /**
+     * @return the numberOfActualOptimizationAnalysis
+     */
+    public Integer getNumberOfActualOptimizationAnalysis() {
+        return numberOfActualOptimizationAnalysis;
+    }
+
+    /**
+     * @param numberOfActualOptimizationAnalysis the
+     * numberOfActualOptimizationAnalysis to set
+     */
+    public void setNumberOfActualOptimizationAnalysis(Integer numberOfActualOptimizationAnalysis) {
+        this.numberOfActualOptimizationAnalysis = numberOfActualOptimizationAnalysis;
+        this.jButtonSavePrefs.setText("Save [" + (this.getNumberOfActualOptimizationAnalysis()+1) + "]");
     }
 }

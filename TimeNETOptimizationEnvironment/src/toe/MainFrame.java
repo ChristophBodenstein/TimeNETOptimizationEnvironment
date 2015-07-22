@@ -84,8 +84,6 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
     private ArrayList<Boolean> listOfUIStates = new ArrayList<>();
     private ArrayList<Boolean> listOfUIStatesPushed;
 
-    private Integer numberOfActualOptimizationAnalysis = 0;//We start counting the pref-files from 0. But file #0 is without appended number, it`s the original.
-
     /**
      * Creates new form MainFrame
      *
@@ -982,7 +980,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                     support.setOriginalParameterBase(support.getCopyOfParameterSet(support.getParameterBase()));
                     //start Optimization via extra method, set number of multiple optimizations before
                     support.setNumberOfOptiRunsToGo((Integer) this.jSpinnerNumberOfOptimizationRuns.getValue());
-                    numberOfActualOptimizationAnalysis = 0;
+                    support.getOptimizerPreferences().setNumberOfActualOptimizationAnalysis(0);
                     startOptimizationAgain();
 
                 } else {
@@ -2174,11 +2172,11 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
             support.setStatusText(message);
             support.log("Last simulation run has ended. Will show statistics.");
             support.log("Ended was: " + feedback.toString());
-            support.log("This was Opti-Analysis: " + numberOfActualOptimizationAnalysis.toString());
+            support.log("This was Opti-Analysis: " + support.getOptimizerPreferences().getNumberOfActualOptimizationAnalysis().toString());
             StatisticAggregator.printOptiStatistics();
 
-            String addonStringForFileName = numberOfActualOptimizationAnalysis.toString();
-            if (numberOfActualOptimizationAnalysis <= 0) {
+            String addonStringForFileName = support.getOptimizerPreferences().getNumberOfActualOptimizationAnalysis().toString();
+            if (support.getOptimizerPreferences().getNumberOfActualOptimizationAnalysis() <= 0) {
                 addonStringForFileName = "";
             }
             support.log("Used Opti-Prefs:");
@@ -2190,13 +2188,13 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
 
             //Check if other optiprefs have to be tested!
             OptimizerPreferences p = support.getOptimizerPreferences();
-            if (numberOfActualOptimizationAnalysis >= p.getNumberOfOptiPrefs() - 1) {
+            if (support.getOptimizerPreferences().getNumberOfActualOptimizationAnalysis() >= p.getNumberOfOptiPrefs() - 1) {
                 //Restore UI after all optimization analysis
                 this.popUIState();
             } else {
                 //Load next Optiprefs and start again
-                numberOfActualOptimizationAnalysis++;
-                p.loadPreferences(support.NAME_OF_OPTIMIZER_PREFFERENCES_FILE + numberOfActualOptimizationAnalysis.toString());
+                p.setNumberOfActualOptimizationAnalysis(p.getNumberOfActualOptimizationAnalysis() + 1);
+                p.loadPreferences();
                 support.setNumberOfOptiRunsToGo((Integer) this.jSpinnerNumberOfOptimizationRuns.getValue());
                 startOptimizationAgain();
             }

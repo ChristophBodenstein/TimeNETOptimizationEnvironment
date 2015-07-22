@@ -9,6 +9,9 @@
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
     <SyntheticProperty name="generateCenter" type="boolean" value="false"/>
   </SyntheticProperties>
+  <Events>
+    <EventHandler event="windowLostFocus" listener="java.awt.event.WindowFocusListener" parameters="java.awt.event.WindowEvent" handler="formWindowLostFocus"/>
+  </Events>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
@@ -46,10 +49,12 @@
                       <Component id="jLabel4" min="-2" pref="239" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jTextFieldLogFileAddon" min="-2" pref="207" max="-2" attributes="1"/>
-                      <EmptySpace min="-2" pref="111" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Component id="jButtonPrevPrefs" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
                       <Component id="jButtonSavePrefs" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
-                      <Component id="jButtonSaveNextPrefs" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Component id="jButtonNextPrefs" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="jButtonDelAllPrefs" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
@@ -79,9 +84,10 @@
                   <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jTextFieldLogFileAddon" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jButtonSavePrefs" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jButtonSaveNextPrefs" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jButtonNextPrefs" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jButtonDelAllPrefs" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jTextFieldNumberOfOptiPrefs" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jButtonPrevPrefs" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -1554,12 +1560,12 @@
         </Container>
       </SubComponents>
     </Container>
-    <Component class="javax.swing.JButton" name="jButtonSaveNextPrefs">
+    <Component class="javax.swing.JButton" name="jButtonNextPrefs">
       <Properties>
-        <Property name="text" type="java.lang.String" value="SaveNext"/>
+        <Property name="text" type="java.lang.String" value="&gt;&gt; Next"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonSaveNextPrefsActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonNextPrefsActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JButton" name="jButtonDelAllPrefs">
@@ -1575,6 +1581,14 @@
         <Property name="editable" type="boolean" value="false"/>
         <Property name="text" type="java.lang.String" value="0"/>
       </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="jButtonPrevPrefs">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Prev &lt;&lt;"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonPrevPrefsActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>
