@@ -2257,6 +2257,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
      */
     private void reloadFromCacheIfNeeded() {
         //Check if cache-support is enabled
+        support.emptyCache();
         //If yes, then reload cache
         typeOfSimulator usedSimulator = support.getChosenSimulatorType();
         if (usedSimulator.toString().contains("Cache")) {
