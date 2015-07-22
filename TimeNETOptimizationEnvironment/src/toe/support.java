@@ -944,19 +944,6 @@ public class support {
     }
 
     /**
-     * Checks, if the given remoteAddress (URL to Sim.-Server) is correct
-     *
-     * @param urlString The URL as String to be checked, if this is the
-     * available Sim.-Server
-     * @return True if URL is correct and server is working, else false To be
-     * modified by: Group studies 2014
-     */
-    public static boolean getRemoteAddress(String urlString) {
-        //TODO DISTRIBUTEDSERVER
-        return true;
-    }
-
-    /**
      * Checks, if Timenet is availabel at given Path, otherwise simulation run
      * is not possible
      *
@@ -1151,8 +1138,6 @@ public class support {
         setStatusText("Simulations started.");
         while (mySimulator.getStatus() < 100) {
             try {
-                //TODO Timer verwenden statt sleep!
-                //Thread.sleep(1000);
                 support.waitSingleThreaded(1000);
             } catch (Exception ex) {
                 support.log("InterruptedException in main loop of optimization. Optimization aborted.");
@@ -1347,12 +1332,12 @@ public class support {
      * @return the parameterBase
      */
     public static ArrayList<parameter> getParameterBase() {
-        if (parameterBase != null) {
+        //if (parameterBase != null) {
+        //    return parameterBase;
+        //} else {
+        //    setParameterBase(mainFrame.getParameterBase());
             return parameterBase;
-        } else {
-            setParameterBase(mainFrame.getParameterBase());
-            return parameterBase;
-        }
+        //}
 
     }
 
