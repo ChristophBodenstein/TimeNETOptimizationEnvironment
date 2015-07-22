@@ -938,6 +938,29 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
     }//GEN-LAST:event_jButtonGenerateListOfExperimentsActionPerformed
 
     private void jButtonStartOptimizationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonStartOptimizationActionPerformed
+        //Show Dialog if many optiruns are planned
+        if ((Integer) this.jSpinnerNumberOfOptimizationRuns.getValue() > 1 || support.getOptimizerPreferences().getNumberOfOptiPrefs() > 1) {
+            JOptionPane pane = new JOptionPane(
+                    "Do mupliple Optimizations ?\n Perform " + (Integer) this.jSpinnerNumberOfOptimizationRuns.getValue() + " Optimizations with"
+                    + "\n every of " + support.getOptimizerPreferences().getNumberOfOptiPrefs() + " different OptiPreferences?"
+                    + " (Total: " + (Integer) this.jSpinnerNumberOfOptimizationRuns.getValue() * support.getOptimizerPreferences().getNumberOfOptiPrefs() + ")");
+            Object[] options = new String[]{"Yes, perform multiple optimization!", "No / Cancel"};
+            pane.setOptions(options);
+            JDialog dialog = pane.createDialog(new JFrame(), "Perform multiple optimizations?");
+            dialog.setVisible(true);
+            Object obj = pane.getValue();
+            int result = -1;
+            for (int k = 0; k < options.length; k++) {
+                if (options[k].equals(obj)) {
+                    result = k;
+                }
+            }
+
+            if (result != 0) {
+                return;
+            }
+        }
+
         support.setCancelEverything(false);
         support.resetGlobalSimulationCounter();
 
