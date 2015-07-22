@@ -2198,7 +2198,11 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                 support.log("Generation of Designspace successful.");
                 jButtonStartBatchSimulation.setEnabled(true);
                 break;
-
+            case SimulationSuccessful:
+                support.log("Simulation successful.");
+                support.setStatusText("Simulation was successful.");
+                this.popUIState();
+                break;
             case OptimizationSuccessful:
                 if (tmpNumberOfOptiRunsToGo <= 1) {
                     support.unsetListOfChangableParametersMultiphase();//Stop Multiphase if it was active
