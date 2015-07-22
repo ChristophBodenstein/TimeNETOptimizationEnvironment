@@ -2191,50 +2191,56 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
     @Override
     public void operationSucessfull(String message, typeOfProcessFeedback feedback) {
         int tmpNumberOfOptiRunsToGo = support.getNumberOfOptiRunsToGo();
-        if (tmpNumberOfOptiRunsToGo <= 1) {
-            support.unsetListOfChangableParametersMultiphase();//Stop Multiphase if it was active
-            support.setStatusText(message);
-            support.log("Last simulation run has ended. Will show statistics.");
-            support.log("Ended was: " + feedback.toString());
-            support.log("This was Opti-Analysis: " + support.getOptimizerPreferences().getNumberOfActualOptimizationAnalysis().toString());
-            StatisticAggregator.printOptiStatistics();
 
-            String addonStringForFileName = support.getOptimizerPreferences().getNumberOfActualOptimizationAnalysis().toString();
-            if (support.getOptimizerPreferences().getNumberOfActualOptimizationAnalysis() <= 0) {
-                addonStringForFileName = "";
-            }
-            support.log("Used Opti-Prefs:");
-            support.dumpTextFileToLog(support.NAME_OF_OPTIMIZER_PREFFERENCES_FILE + addonStringForFileName);
-
-            //Reset all statistics!
-            support.resetGlobalSimulationCounter();
-            StatisticAggregator.removeOldOptimizationsFromList();
-
-            //Check if other optiprefs have to be tested!
-            OptimizerPreferences p = support.getOptimizerPreferences();
-            if (support.getOptimizerPreferences().getNumberOfActualOptimizationAnalysis() >= p.getNumberOfOptiPrefs() - 1) {
-                //Restore UI after all optimization analysis
-                this.popUIState();
-            } else {
-                //Load next Optiprefs and start again
-                p.setNumberOfActualOptimizationAnalysis(p.getNumberOfActualOptimizationAnalysis() + 1);
-                p.loadPreferences();
-                support.setNumberOfOptiRunsToGo((Integer) this.jSpinnerNumberOfOptimizationRuns.getValue());
-                //If cache or cache-support, reload cache
-                reloadFromCacheIfNeeded();
-                startOptimizationAgain();
-            }
-
-        } else {
-            support.log("Starting next Optimization run, number:" + (tmpNumberOfOptiRunsToGo - 1));
-            support.setNumberOfOptiRunsToGo(tmpNumberOfOptiRunsToGo - 1);
-            //If cache or cache-support, reload cache
-            reloadFromCacheIfNeeded();
-            this.startOptimizationAgain();
-        }
         switch (feedback) {
             case GenerationSuccessful:
+                this.popUIState();
+                support.log("Generation of Designspace successful.");
                 jButtonStartBatchSimulation.setEnabled(true);
+                break;
+
+            case OptimizationSuccessful:
+                if (tmpNumberOfOptiRunsToGo <= 1) {
+                    support.unsetListOfChangableParametersMultiphase();//Stop Multiphase if it was active
+                    support.setStatusText(message);
+                    support.log("Last simulation run has ended. Will show statistics.");
+                    support.log("Ended was: " + feedback.toString());
+                    support.log("This was Opti-Analysis: " + support.getOptimizerPreferences().getNumberOfActualOptimizationAnalysis().toString());
+                    StatisticAggregator.printOptiStatistics();
+
+                    String addonStringForFileName = support.getOptimizerPreferences().getNumberOfActualOptimizationAnalysis().toString();
+                    if (support.getOptimizerPreferences().getNumberOfActualOptimizationAnalysis() <= 0) {
+                        addonStringForFileName = "";
+                    }
+                    support.log("Used Opti-Prefs:");
+                    support.dumpTextFileToLog(support.NAME_OF_OPTIMIZER_PREFFERENCES_FILE + addonStringForFileName);
+
+                    //Reset all statistics!
+                    support.resetGlobalSimulationCounter();
+                    StatisticAggregator.removeOldOptimizationsFromList();
+
+                    //Check if other optiprefs have to be tested!
+                    OptimizerPreferences p = support.getOptimizerPreferences();
+                    if (support.getOptimizerPreferences().getNumberOfActualOptimizationAnalysis() >= p.getNumberOfOptiPrefs() - 1) {
+                        //Restore UI after all optimization analysis
+                        this.popUIState();
+                    } else {
+                        //Load next Optiprefs and start again
+                        p.setNumberOfActualOptimizationAnalysis(p.getNumberOfActualOptimizationAnalysis() + 1);
+                        p.loadPreferences();
+                        support.setNumberOfOptiRunsToGo((Integer) this.jSpinnerNumberOfOptimizationRuns.getValue());
+                        //If cache or cache-support, reload cache
+                        reloadFromCacheIfNeeded();
+                        startOptimizationAgain();
+                    }
+
+                } else {
+                    support.log("Starting next Optimization run, number:" + (tmpNumberOfOptiRunsToGo - 1));
+                    support.setNumberOfOptiRunsToGo(tmpNumberOfOptiRunsToGo - 1);
+                    //If cache or cache-support, reload cache
+                    reloadFromCacheIfNeeded();
+                    this.startOptimizationAgain();
+                }
                 break;
 
             default:
@@ -2245,15 +2251,15 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
     /**
      * Check if Cache is used. If yes, then reload cache
      */
-    private void reloadFromCacheIfNeeded(){
-    //Check if cache-support is enabled
+    private void reloadFromCacheIfNeeded() {
+        //Check if cache-support is enabled
         //If yes, then reload cache
-        typeOfSimulator usedSimulator=support.getChosenSimulatorType();
-        if(usedSimulator.toString().contains("Cache")){
-        tryToFillCacheFromFile(this.pathToLastSimulationCache);
+        typeOfSimulator usedSimulator = support.getChosenSimulatorType();
+        if (usedSimulator.toString().contains("Cache")) {
+            tryToFillCacheFromFile(this.pathToLastSimulationCache);
         }
     }
-    
+
     /**
      * Callback-Method of SimOptiCallback called when Simulation or optimization
      * is canceled
