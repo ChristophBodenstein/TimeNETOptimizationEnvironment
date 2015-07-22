@@ -258,14 +258,13 @@ public class StatisticAggregator {
                     + "&averageNumberOfSimulations "
                     + "&averageCPUTimeTotal "
                     + "&averageCacheRatio*100");
+            support.log(p.getPref_WrongSimulationsUntilBreak() + "   & " + p.getPref_SizeOfNeighborhood() + "\\%     &" + p.getPref_WrongSimulationsPerDirection() + "      &" + support.round(averageDistanceToOptimumInValueRange) + "\\%     &" + support.round(averageDistanceToOptimumInDefinitionRange) + "\\%    &" + averageNumberOfSimulations + "    &" + averageCPUTimeTotal + "     &" + support.round(averageCacheRatio) * 100 + "\\%  \\\\  \\hline");
             support.log("NeighborhoodType: " + p.getPref_NeighborhoodType().toString());
             support.log("Optimizer: " + support.getChosenOptimizerType().toString());
             support.log("Simulator: " + support.getChosenSimulatorType().toString());
             if (support.getChosenSimulatorType().equals(typedef.typeOfSimulator.Benchmark)) {
                 support.log("Benchmarkfunction: " + support.getChosenBenchmarkFunction().toString());
             }
-
-            support.log(p.getPref_WrongSimulationsUntilBreak() + "   & " + p.getPref_SizeOfNeighborhood() + "\\%     &" + p.getPref_WrongSimulationsPerDirection() + "      &" + support.round(averageDistanceToOptimumInValueRange) + "\\%     &" + support.round(averageDistanceToOptimumInDefinitionRange) + "\\%    &" + averageNumberOfSimulations + "    &" + averageCPUTimeTotal + "     &" + support.round(averageCacheRatio) * 100 + "\\%  \\\\  \\hline");
 
             support.log("++++ End of Optimization Statistics ++++");
         }
