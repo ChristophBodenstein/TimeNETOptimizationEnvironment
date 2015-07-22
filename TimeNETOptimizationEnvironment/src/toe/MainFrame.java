@@ -84,7 +84,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
     private ArrayList<Boolean> listOfUIStates = new ArrayList<>();
     private ArrayList<Boolean> listOfUIStatesPushed;
 
-    private Integer numberOfActualOptimizationAnalysis = 0;//We start counteing the pref-files from 0. But file #0 is without appended number, it`s the original.
+    private Integer numberOfActualOptimizationAnalysis = 0;//We start counting the pref-files from 0. But file #0 is without appended number, it`s the original.
 
     /**
      * Creates new form MainFrame
