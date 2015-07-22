@@ -212,8 +212,8 @@ public class SimulationCache {
                 getSimulationList().add(tmpSimulation);
             }
 
-            //Reformat Parameter-Table
-            this.reformatParameterTable(myParameterTableModel);
+            //Do not reformat Parameter-Table
+            //this.reformatParameterTable(myParameterTableModel);
             //Refresh Design Space label of MainFrame
             myParentFrame.calculateDesignSpace();
 

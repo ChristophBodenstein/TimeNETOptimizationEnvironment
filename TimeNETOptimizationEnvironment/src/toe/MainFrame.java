@@ -1067,10 +1067,11 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         }
         //this.mySimulationCache=SimOptiFactory.getSimulationCache();
         //Should we empty the cache each time, or only at user-wish? Everytime!
-        this.tryToFillCacheFromFile(inputFile, fileChooser.getSelectedFile().getPath());
+        this.tryToFillCacheFromFile(inputFile);
+        support.getMySimulationCache().reformatParameterTable((parameterTableModel) this.jTableParameterList.getModel());
     }//GEN-LAST:event_jButtonLoadCacheFileActionPerformed
 
-    private void tryToFillCacheFromFile(String inputFile, String filePath) {
+    private void tryToFillCacheFromFile(String inputFile) {
         support.emptyCache();
         this.mySimulationCache = support.getMySimulationCache();
         if (!mySimulationCache.parseSimulationCacheFile(inputFile, ((MeasurementForm) this.jTabbedPaneOptiTargets.getComponent(0)).getMeasurements(), (parameterTableModel) this.jTableParameterList.getModel(), this)) {
@@ -1078,7 +1079,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
             support.setStatusText("Error loading cache-file!");
             return;
         } else {
-            this.pathToLastSimulationCache = filePath;
+            this.pathToLastSimulationCache = inputFile;
             this.saveProperties();
         }
         //If cached simulation is available activate cache as Cache/local simulation
@@ -2219,12 +2220,16 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                 p.setNumberOfActualOptimizationAnalysis(p.getNumberOfActualOptimizationAnalysis() + 1);
                 p.loadPreferences();
                 support.setNumberOfOptiRunsToGo((Integer) this.jSpinnerNumberOfOptimizationRuns.getValue());
+                //If cache or cache-support, reload cache
+                reloadFromCacheIfNeeded();
                 startOptimizationAgain();
             }
 
         } else {
             support.log("Starting next Optimization run, number:" + (tmpNumberOfOptiRunsToGo - 1));
             support.setNumberOfOptiRunsToGo(tmpNumberOfOptiRunsToGo - 1);
+            //If cache or cache-support, reload cache
+            reloadFromCacheIfNeeded();
             this.startOptimizationAgain();
         }
         switch (feedback) {
@@ -2237,6 +2242,18 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         }
     }
 
+    /**
+     * Check if Cache is used. If yes, then reload cache
+     */
+    private void reloadFromCacheIfNeeded(){
+    //Check if cache-support is enabled
+        //If yes, then reload cache
+        typeOfSimulator usedSimulator=support.getChosenSimulatorType();
+        if(usedSimulator.toString().contains("Cache")){
+        tryToFillCacheFromFile(this.pathToLastSimulationCache);
+        }
+    }
+    
     /**
      * Callback-Method of SimOptiCallback called when Simulation or optimization
      * is canceled
