@@ -2185,7 +2185,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
      * Callback-Method of SimOptiCallback called when Simulation or optimization
      * is ended succesfully
      *
-     * @param message will be shown in staus-label
+     * @param message will be shown in status-label
      * @param feedback will determine what to do next (button activation etc.)
      */
     @Override
