@@ -19,7 +19,6 @@ import toe.datamodel.parameter;
 import toe.datamodel.SimulationType;
 import toe.simulation.Simulator;
 import toe.support;
-import toe.simulation.SimulationCache;
 import toe.typedef;
 
 /**
@@ -43,7 +42,6 @@ public class OptimizerHill implements Runnable, Optimizer {
     ArrayList<MeasureType> listOfMeasures = new ArrayList<>();//Get List of all measures from MainFrame //Empty here
     ArrayList<SimulationType> historyOfParsers = new ArrayList<>();//History of all simulation runs
     ArrayList<parameter> parameterBase;//Base set of parameters, start/end-value, stepping, etc.
-    SimulationCache mySimulationCache = new SimulationCache();
     boolean optimized = false;//False until Optimization is ended
     JLabel infoLabel;
     double simulationTimeSum = 0;
@@ -106,7 +104,6 @@ public class OptimizerHill implements Runnable, Optimizer {
         support.addLinesToLogFileFromListOfParser(mySimulator.getListOfCompletedSimulationParsers(), logFileName);
         this.historyOfParsers = support.appendListOfParsers(historyOfParsers, mySimulator.getListOfCompletedSimulationParsers());
         currentSolution = mySimulator.getListOfCompletedSimulationParsers().get(0);
-        //Fx=this.getActualDistance(currentSolution);
         nextSolution = currentSolution;
         bestSolution = currentSolution;
         ArrayList<SimulationType> listOfCompletedSimulations;
@@ -119,23 +116,19 @@ public class OptimizerHill implements Runnable, Optimizer {
 
             newParameterset = getNextParametersetAsArrayList(lastParameterset);
 
-                stuckInCacheCounter = support.DEFAULT_CACHE_STUCK;//Reset Stuck-Counter
-                mySimulator.initSimulator(newParameterset, getSimulationCounter(), false);
-                support.waitForEndOfSimulator(mySimulator, getSimulationCounter(), support.DEFAULT_TIMEOUT);
-                this.setSimulationCounter(mySimulator.getSimulationCounter());
-                listOfCompletedSimulations = mySimulator.getListOfCompletedSimulationParsers();
-                support.log("List of Simulation results is: " + listOfCompletedSimulations.size() + " elements big.");
-                //Shrink to first element of List
-                listOfCompletedSimulations = support.shrinkArrayListToFirstMember(listOfCompletedSimulations);
+            stuckInCacheCounter = support.DEFAULT_CACHE_STUCK;//Reset Stuck-Counter
+            mySimulator.initSimulator(newParameterset, getSimulationCounter(), false);
+            support.waitForEndOfSimulator(mySimulator, getSimulationCounter(), support.DEFAULT_TIMEOUT);
+            this.setSimulationCounter(mySimulator.getSimulationCounter());
+            listOfCompletedSimulations = mySimulator.getListOfCompletedSimulationParsers();
+            support.log("List of Simulation results is: " + listOfCompletedSimulations.size() + " elements big.");
+            //Shrink to first element of List
+            listOfCompletedSimulations = support.shrinkArrayListToFirstMember(listOfCompletedSimulations);
 
-                //Fit all resulting Simulation-Parameterlists
-                for (SimulationType listOfCompletedSimulation : listOfCompletedSimulations) {
-                    listOfCompletedSimulation.setListOfParameters(listOfCompletedSimulation.getListOfParametersFittedToBaseParameterset());
-                }
-
-                //Add all Results to Cache
-                mySimulationCache.addListOfSimulationsToCache(listOfCompletedSimulations);
-            //}
+            //Fit all resulting Simulation-Parameterlists
+            for (SimulationType listOfCompletedSimulation : listOfCompletedSimulations) {
+                listOfCompletedSimulation.setListOfParameters(listOfCompletedSimulation.getListOfParametersFittedToBaseParameterset());
+            }
 
             if (listOfCompletedSimulations == null) {
                 support.log("Error. List of completed Simulations is NULL!");
