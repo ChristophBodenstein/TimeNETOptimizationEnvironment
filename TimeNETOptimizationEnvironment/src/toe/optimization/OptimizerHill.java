@@ -30,7 +30,6 @@ public class OptimizerHill implements Runnable, Optimizer {
     private final double sizeOfNeighborhood;
     private static final OptimizerPreferences myPreferences = support.getOptimizerPreferences();
 
-    private int simulationCounter = 0;
     SimulationType currentSolution;
     SimulationType nextSolution;
     SimulationType bestSolution;
@@ -119,7 +118,6 @@ public class OptimizerHill implements Runnable, Optimizer {
             stuckInCacheCounter = support.DEFAULT_CACHE_STUCK;//Reset Stuck-Counter
             mySimulator.initSimulator(newParameterset, getSimulationCounter(), false);
             support.waitForEndOfSimulator(mySimulator, getSimulationCounter(), support.DEFAULT_TIMEOUT);
-            this.setSimulationCounter(mySimulator.getSimulationCounter());
             listOfCompletedSimulations = mySimulator.getListOfCompletedSimulationParsers();
             support.log("List of Simulation results is: " + listOfCompletedSimulations.size() + " elements big.");
             //Shrink to first element of List
@@ -540,13 +538,6 @@ public class OptimizerHill implements Runnable, Optimizer {
      */
     public int getSimulationCounter() {
         return support.getGlobalSimulationCounter();// simulationCounter;
-    }
-
-    /**
-     * @param simulationCounter the simulationCounter to set
-     */
-    public void setSimulationCounter(int simulationCounter) {
-        this.simulationCounter = simulationCounter;
     }
 
     /**
