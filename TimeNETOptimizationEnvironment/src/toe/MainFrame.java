@@ -1090,6 +1090,10 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
 
     private void tryToFillCacheFromFile(String inputFile) {
         support.emptyCache();
+        File testFile = new File(inputFile);
+        if (!testFile.isFile()) {
+            return;
+        }
         this.mySimulationCache = support.getMySimulationCache();
         if (!mySimulationCache.parseSimulationCacheFile(inputFile, ((MeasurementForm) this.jTabbedPaneOptiTargets.getComponent(0)).getMeasurements(), (parameterTableModel) this.jTableParameterList.getModel(), this)) {
             support.log("Wrong Simulation cache file for this SCPN!");
