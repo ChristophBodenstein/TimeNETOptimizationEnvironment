@@ -247,6 +247,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         listOfUIComponents.add(this.jComboBoxOptimizationType);
         listOfUIComponents.add(this.jButtonOpenSCPN);
         listOfUIComponents.add(this.jSpinnerNumberOfOptimizationRuns);
+        listOfUIComponents.add(this.jButtonEmptyCache);
 
         //Reload the last File
         try {
@@ -2162,13 +2163,15 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                 listOfUIStates.set(5, false);
                 listOfUIStates.set(6, false);
                 //Deactivate Benchmark JCombobox if no benchmark-simulator is chosen        
-                listOfUIStates.set(16, jComboBoxSimulationType.getSelectedItem().equals(typeOfSimulator.Benchmark));
+                listOfUIStates.set(16, jComboBoxSimulationType.getSelectedItem().equals(typeOfSimulator.Benchmark) || jComboBoxSimulationType.getSelectedItem().equals(typeOfSimulator.Cached_Benchmark));
                 break;
             case clientState:
                 for (int i = 0; i < listOfUIStates.size(); i++) {
                     listOfUIStates.set(i, false);
                 }
                 listOfUIStates.set(15, true);
+                //Deactivate Benchmark JCombobox if no benchmark-simulator is chosen
+                listOfUIStates.set(16, jComboBoxSimulationType.getSelectedItem().equals(typeOfSimulator.Benchmark) || jComboBoxSimulationType.getSelectedItem().equals(typeOfSimulator.Cached_Benchmark));
                 break;
             case processRunning:
                 //Something is running, only cancel is possible
