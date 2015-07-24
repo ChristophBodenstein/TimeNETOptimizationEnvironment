@@ -14,7 +14,7 @@ import toe.typedef.*;
  *
  * @author Christoph Bodenstein
  */
-public class MeasurementForm extends javax.swing.JPanel {
+public final class MeasurementForm extends javax.swing.JPanel {
 
     private ArrayList<MeasureType> listOfMeasureMents = new ArrayList<MeasureType>();
 
@@ -44,7 +44,7 @@ public class MeasurementForm extends javax.swing.JPanel {
         jTextFieldCustomTargetValue = new javax.swing.JTextField();
         jCheckBoxEnableOptimizationForThisMeasurement = new javax.swing.JCheckBox();
 
-        jComboBoxMeasurementName.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Measurement1", "Measurement 2" }));
+        jComboBoxMeasurementName.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "No Measure available!" }));
         jComboBoxMeasurementName.setToolTipText("Chose Measurement to optimize");
 
         jComboBoxOptimizationTarget.setModel(new DefaultComboBoxModel(typeOfTarget.values()));
