@@ -155,7 +155,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
 
         this.pathToLastSimulationCache = auto.getProperty("pathToLastSimulationCache", "");
 
-        this.jCheckBoxDeleteTmpFiles.setSelected(new Boolean(auto.getProperty("deleteTmpFile", "True")));
+        this.jCheckBoxDeleteTmpFiles.setSelected(Boolean.valueOf(auto.getProperty("deleteTmpFile", "True")));
         support.setDeleteTmpSimulationFiles(jCheckBoxDeleteTmpFiles.isSelected());
         try {
             support.setChosenBenchmarkFunction(typeOfBenchmarkFunction.valueOf(auto.getProperty("BenchmarkType", support.DEFAULT_TYPE_OF_BENCHMARKFUNCTION.toString())));
@@ -924,7 +924,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         this.switchUIState(uiState.processRunning);
 
         //Ask for Tmp-Path
-        String tmpPath = support.getPathToDirByDialog("Dir for export TMP-Files and log.\n ", support.getTmpPath());
+        String tmpPath = support.getPathToDirByDialog("Choose directory for export TMP-Files.\n ", support.getTmpPath());
 
         if (tmpPath != null) {
             support.setTmpPath(tmpPath);
@@ -1410,6 +1410,11 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         this.pathToLastSimulationCache = "";
         checkIfCachedSimulationIsPossible();
         this.saveProperties();
+        support.setStatusText("Cache discarded.");
+        if (support.getChosenSimulatorType().equals(typeOfSimulator.Cache_Only)) {
+            this.jComboBoxSimulationType.setSelectedItem(typeOfSimulator.Cached_Benchmark);
+            support.setChosenSimulatorType(typeOfSimulator.Cached_Benchmark);
+        }
     }//GEN-LAST:event_jButtonEmptyCacheActionPerformed
 
     /**
