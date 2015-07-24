@@ -100,7 +100,7 @@ public class SimulationCache {
                             tmpValue2 = support.round(tmpValue2);
                             if (tmpValue2 > 0) {
                                 listOfCachedParameterStepping[i] = Math.min(tmpValue2, listOfCachedParameterStepping[i]);
-                    //support.log("Result of round: "+tmpValue2);
+                                //support.log("Result of round: "+tmpValue2);
                                 //support.log("Setting new Value for Stepping.");
                             }
 
@@ -152,7 +152,7 @@ public class SimulationCache {
             for (i = 0; i < listOfCachedParameterNames.length; i++) {
                 //support.log("Checking  "+listOfCachedParameterNames[i]+" ... number "+i);
                 if ((myParameterTableModel.getValueByName(listOfCachedParameterNames[i], "StartValue")) == null) {
-            //support.log((myParameterTableModel.getValueByName(listOfCachedParameterNames[i], "StartValue"))!=null );
+                    //support.log((myParameterTableModel.getValueByName(listOfCachedParameterNames[i], "StartValue"))!=null );
                     //One Value is "" --> Parameter is not available --> Exit
                     support.log("The parameter " + listOfCachedParameterNames[i] + " seems not available in table.");
                     return false;
@@ -175,12 +175,12 @@ public class SimulationCache {
                     tmpMeasure.setConfidenceInterval(tmpConf);
                     tmpMeasure.setEpsilon(support.getDouble(listOfStringLines.get(lineNumber)[5]));
                     tmpMeasure.setSimulationTime(support.getDouble(listOfStringLines.get(lineNumber)[6]));
-                //CPU-Time is in last column
+                    //CPU-Time is in last column
                     //support.log("printing CPU-Time for experiment:"+i);
                     //support.log("LineNumber: "+lineNumber);
                     //support.log("CPUTime is in Col: "+(7+listOfCachedParameterNames.length));
                     tmpMeasure.setCPUTime(support.getDouble(listOfStringLines.get(lineNumber)[7 + listOfCachedParameterNames.length]));
-                //support.log("CPU-Time of "+tmpMeasure.getMeasureName()+" is " +tmpMeasure.getCPUTime()+".");
+                    //support.log("CPU-Time of "+tmpMeasure.getMeasureName()+" is " +tmpMeasure.getCPUTime()+".");
 
                     if (tmpSimulation.getListOfParameters() == null) //list of parameters for current simulation not set
                     {
@@ -192,7 +192,7 @@ public class SimulationCache {
                             tmpParameter.setEndValue(support.round(listOfCachedParameterMax[i1]));
                             tmpParameter.setStartValue(support.round(listOfCachedParameterMin[i1]));
                             tmpParameter.setStepping(support.round(listOfCachedParameterStepping[i1]));
-                        //Get and save Value of this Parameter
+                            //Get and save Value of this Parameter
                             //It is in the correct Column of the actual line
                             //We did not change the order of Parameters (it`s the same like in the raw file)
                             //tmpParameter.setValue(support.translateParameterNameFromLogFileToTable(listOfStringLines.get(lineNumber)[column]));
@@ -206,7 +206,7 @@ public class SimulationCache {
                     }
 
                     tmpSimulation.getMeasures().add(tmpMeasure);
-                //this.MeasureList.add(tmpSimulation);
+                    //this.MeasureList.add(tmpSimulation);
 
                 }
                 getSimulationList().add(tmpSimulation);
@@ -389,12 +389,12 @@ public class SimulationCache {
             sum[i] = 0;
             for (int c = 0; c < list[i].size(); c++) {
                 sum[i] += list[i].get(c).getValue();
-            //support.log("Size of List "+i+" is "+list[i].size());
+                //support.log("Size of List "+i+" is "+list[i].size());
                 //support.log("Value of Parameter "+c+" is "+list[i].get(c).getValue());
 
             }
         }
-    //support.log("Check For Disctance of parameterset---");
+        //support.log("Check For Disctance of parameterset---");
         //support.log("Distance-A "+sum[0]);
         //support.log("Distance-B "+sum[1]);
 
@@ -486,7 +486,7 @@ public class SimulationCache {
             }
             //Get local simulation results
             ArrayList<MeasureType> listOfMeasureWithGivenParameters = this.getAllMeasuresWithParameterList(tmpParameterList);
-        //support.log("Size of ParameterList: "+ tmpParameterList.size() + " results in " +listOfMeasureWithGivenParameters.size()+ " Measurements.");
+            //support.log("Size of ParameterList: "+ tmpParameterList.size() + " results in " +listOfMeasureWithGivenParameters.size()+ " Measurements.");
             //append if listSize is > 0
             if (listOfMeasureWithGivenParameters.size() > 0) {
                 /*SimulationType tmpParser=new SimulationType();
@@ -518,7 +518,7 @@ public class SimulationCache {
             SimulationType tmpParser = new SimulationType();
             for (int i = 0; i < mList.size(); i++) {
                 tmpParser.setMeasures(mList);
-            //tmpParser.setSimulationTime(mList.get(i).getSimulationTime());
+                //tmpParser.setSimulationTime(mList.get(i).getSimulationTime());
                 //tmpParser.setCPUTime(support.getInt(mList.get(i).getCPUTime()));
             }
             tmpParser.setIsFromCache(true);
@@ -586,5 +586,14 @@ public class SimulationCache {
      */
     public ArrayList<SimulationType> getSimulationList() {
         return simulationList;
+    }
+
+    /**
+     * Return actual size of simulation cache
+     *
+     * @return Size of SimulationList
+     */
+    public int getCacheSize() {
+        return this.simulationList.size();
     }
 }
