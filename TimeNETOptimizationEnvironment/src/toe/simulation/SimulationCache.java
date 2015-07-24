@@ -544,7 +544,7 @@ public class SimulationCache {
     /**
      * Adds every given SimulationType into list of simulations to local cache
      *
-     * @param SimulationListToAdd List of simulaions to be added to local cache
+     * @param SimulationListToAdd List of simulations to be added to local cache
      */
     public void addListOfSimulationsToCache(ArrayList<SimulationType> SimulationListToAdd) {
         for (int i = 0; i < SimulationListToAdd.size(); i++) {
