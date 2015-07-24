@@ -79,6 +79,10 @@ public class SimulatorCachedLocal extends SimulatorCached implements Runnable {
 
         status = myListOfSimulationParsers.size() * 100 / listOfParameterSetsTMP.size();
         support.setStatusText("Simulating " + myListOfSimulationParsers.size() + "/" + listOfParameterSetsTMP.size());
+        //Increase Simulationcounter only if Simulation results are found in cache
+        //Local or benchmark-simulators will update the counter on their own
+        support.setGlobalSimulationCounter(support.getGlobalSimulationCounter() + myListOfSimulationParsers.size());
+
         if (this.myListOfSimulationParsers.size() < listOfParameterSetsTMP.size()) {
             support.log("Some simulations were missing in cache. Will simulate them local/distributed.");
 
@@ -106,14 +110,13 @@ public class SimulatorCachedLocal extends SimulatorCached implements Runnable {
             support.log("Size of resultList is " + myListOfSimulationParsers.size());
 
             this.mySimulationCache.addListOfSimulationsToCache(myListOfSimulationParsers);
+            support.log("Size of SimulationCache: " + this.mySimulationCache.getCacheSize());
         }
 
         if (this.myListOfSimulationParsers != null) {
             support.log("Adding " + myListOfSimulationParsers.size() + " Results to logfile.");
             //Print out a log file
             support.addLinesToLogFileFromListOfParser(myListOfSimulationParsers, logFileName);
-            //Update global simulation counter
-            support.setGlobalSimulationCounter(support.getGlobalSimulationCounter() + myListOfSimulationParsers.size());
             support.log("SimulationCounter is now: " + support.getGlobalSimulationCounter());
         }
     }
