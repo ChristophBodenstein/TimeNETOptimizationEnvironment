@@ -320,16 +320,21 @@
     <Component class="javax.swing.JButton" name="jButtonOpenSCPN">
       <Properties>
         <Property name="text" type="java.lang.String" value="Open SCPN"/>
+        <Property name="toolTipText" type="java.lang.String" value="Open TimeNET SCPN (xml-file)"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonOpenSCPNActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="jTextFieldSCPNFile">
+      <Properties>
+        <Property name="toolTipText" type="java.lang.String" value="Path lo loaded SCPN-file"/>
+      </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="jButtonReload">
       <Properties>
         <Property name="text" type="java.lang.String" value="Reload"/>
+        <Property name="toolTipText" type="java.lang.String" value="Reload the chosen SCPN-file"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonReloadActionPerformed"/>
@@ -406,6 +411,7 @@
     <Component class="javax.swing.JButton" name="jButtonExport">
       <Properties>
         <Property name="text" type="java.lang.String" value="Export Experiments"/>
+        <Property name="toolTipText" type="java.lang.String" value=""/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonExportActionPerformed"/>
@@ -414,6 +420,7 @@
     <Component class="javax.swing.JButton" name="jButtonCancel">
       <Properties>
         <Property name="text" type="java.lang.String" value="Cancel"/>
+        <Property name="toolTipText" type="java.lang.String" value="Abort every running operation"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonCancelActionPerformed"/>
@@ -446,6 +453,9 @@
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout"/>
       <SubComponents>
         <Component class="toe.MeasurementForm" name="measurementForm1">
+          <Properties>
+            <Property name="toolTipText" type="java.lang.String" value="Choose your Target Measurement (defined in SCPN)"/>
+          </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
               <JTabbedPaneConstraints tabName="Target">
@@ -494,6 +504,7 @@
     <Component class="javax.swing.JButton" name="jButtonLoadCacheFile">
       <Properties>
         <Property name="text" type="java.lang.String" value="Load Cached Simulation Results"/>
+        <Property name="toolTipText" type="java.lang.String" value="Load simulation results from csv-file"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonLoadCacheFileActionPerformed"/>
@@ -531,6 +542,7 @@
     <Component class="javax.swing.JCheckBox" name="jCheckBoxSlaveSimulator">
       <Properties>
         <Property name="text" type="java.lang.String" value="be a Slave"/>
+        <Property name="toolTipText" type="java.lang.String" value=""/>
       </Properties>
       <Events>
         <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="jCheckBoxSlaveSimulatorItemStateChanged"/>
@@ -599,6 +611,7 @@
         <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
           <SpinnerModel initial="1" minimum="1" numberType="java.lang.Integer" stepSize="1" type="number"/>
         </Property>
+        <Property name="toolTipText" type="java.lang.String" value="How many optimizations will be run with the same settings"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="jButton1">
@@ -621,6 +634,7 @@
     <Component class="javax.swing.JButton" name="jButtonEmptyCache">
       <Properties>
         <Property name="text" type="java.lang.String" value="Empty Cache"/>
+        <Property name="toolTipText" type="java.lang.String" value="Clear local cache"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonEmptyCacheActionPerformed"/>

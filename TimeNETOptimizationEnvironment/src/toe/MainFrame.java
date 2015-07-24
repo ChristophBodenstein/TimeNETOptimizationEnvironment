@@ -273,6 +273,18 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                 System.exit(0);
             }
         });
+
+        //try to load from cache
+        if (!this.pathToLastSimulationCache.equals("")) {
+            if (this.tryToFillCacheFromFile(this.pathToLastSimulationCache)) {
+                JOptionPane.showMessageDialog(null, "Cached simulation data loaded. \n " + this.pathToLastSimulationCache);
+                support.getMySimulationCache().reformatParameterTable((parameterTableModel) this.jTableParameterList.getModel());
+                this.jTableParameterList.updateUI();
+                this.calculateDesignSpace();
+                this.checkIfCachedSimulationIsPossible();
+            }
+
+        }
     }
 
     /**
@@ -398,13 +410,17 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         setResizable(false);
 
         jButtonOpenSCPN.setText("Open SCPN");
+        jButtonOpenSCPN.setToolTipText("Open TimeNET SCPN (xml-file)");
         jButtonOpenSCPN.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonOpenSCPNActionPerformed(evt);
             }
         });
 
+        jTextFieldSCPNFile.setToolTipText("Path lo loaded SCPN-file");
+
         jButtonReload.setText("Reload");
+        jButtonReload.setToolTipText("Reload the chosen SCPN-file");
         jButtonReload.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonReloadActionPerformed(evt);
@@ -441,6 +457,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         jScrollPane1.setViewportView(jTableParameterList);
 
         jButtonExport.setText("Export Experiments");
+        jButtonExport.setToolTipText("");
         jButtonExport.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonExportActionPerformed(evt);
@@ -448,6 +465,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         });
 
         jButtonCancel.setText("Cancel");
+        jButtonCancel.setToolTipText("Abort every running operation");
         jButtonCancel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonCancelActionPerformed(evt);
@@ -468,6 +486,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
             }
         });
 
+        measurementForm1.setToolTipText("Choose your Target Measurement (defined in SCPN)");
         jTabbedPaneOptiTargets.addTab("Target", measurementForm1);
 
         jButtonStartOptimization.setText("Start Optimization");
@@ -493,6 +512,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         jLabelExportStatus.setPreferredSize(new java.awt.Dimension(50, 20));
 
         jButtonLoadCacheFile.setText("Load Cached Simulation Results");
+        jButtonLoadCacheFile.setToolTipText("Load simulation results from csv-file");
         jButtonLoadCacheFile.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonLoadCacheFileActionPerformed(evt);
@@ -526,6 +546,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         });
 
         jCheckBoxSlaveSimulator.setText("be a Slave");
+        jCheckBoxSlaveSimulator.setToolTipText("");
         jCheckBoxSlaveSimulator.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 jCheckBoxSlaveSimulatorItemStateChanged(evt);
@@ -583,6 +604,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         jLabelSpinning.setText("..");
 
         jSpinnerNumberOfOptimizationRuns.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
+        jSpinnerNumberOfOptimizationRuns.setToolTipText("How many optimizations will be run with the same settings");
 
         jButton1.setText("Secret");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -600,6 +622,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         });
 
         jButtonEmptyCache.setText("Empty Cache");
+        jButtonEmptyCache.setToolTipText("Clear local cache");
         jButtonEmptyCache.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonEmptyCacheActionPerformed(evt);
@@ -1088,17 +1111,17 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         this.checkIfCachedSimulationIsPossible();
     }//GEN-LAST:event_jButtonLoadCacheFileActionPerformed
 
-    private void tryToFillCacheFromFile(String inputFile) {
+    private boolean tryToFillCacheFromFile(String inputFile) {
         support.emptyCache();
         File testFile = new File(inputFile);
         if (!testFile.isFile()) {
-            return;
+            return false;
         }
         this.mySimulationCache = support.getMySimulationCache();
         if (!mySimulationCache.parseSimulationCacheFile(inputFile, ((MeasurementForm) this.jTabbedPaneOptiTargets.getComponent(0)).getMeasurements(), (parameterTableModel) this.jTableParameterList.getModel(), this)) {
             support.log("Wrong Simulation cache file for this SCPN!");
             support.setStatusText("Error loading cache-file!");
-            return;
+            return false;
         } else {
             this.pathToLastSimulationCache = inputFile;
             this.saveProperties();
@@ -1107,7 +1130,9 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         if (this.checkIfCachedSimulationIsPossible()) {
             this.jComboBoxSimulationType.setSelectedItem(typeOfSimulator.Cache_Only);
             support.setChosenSimulatorType(typeOfSimulator.Cache_Only);
+            return true;
         }
+        return false;
     }
 
     private void jComboBoxOptimizationTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxOptimizationTypeActionPerformed
