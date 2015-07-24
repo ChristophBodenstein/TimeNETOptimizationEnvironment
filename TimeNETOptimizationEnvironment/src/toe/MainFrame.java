@@ -2148,6 +2148,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
          18-jComboBoxOptimizationType
          19-jButtonOpenSCPN
          20-jSpinnerNumberOfOptimizationRuns
+         21-jButtonEmptyCache
          */
         this.listOfUIStates = new ArrayList<>();
         //Activate all
