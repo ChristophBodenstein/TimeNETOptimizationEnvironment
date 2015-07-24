@@ -309,6 +309,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         });
 
         jSpinnerWrongSolutionsPerDirectionUntilBreak.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
+        jSpinnerWrongSolutionsPerDirectionUntilBreak.setToolTipText("This should always be lower than Wrong Solutions until break");
         jSpinnerWrongSolutionsPerDirectionUntilBreak.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 jSpinnerWrongSolutionsPerDirectionUntilBreakStateChanged(evt);
