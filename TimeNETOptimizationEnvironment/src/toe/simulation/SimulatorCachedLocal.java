@@ -109,7 +109,7 @@ public class SimulatorCachedLocal extends SimulatorCached implements Runnable {
 
             support.log("Size of resultList is " + myListOfSimulationParsers.size());
 
-            this.mySimulationCache.addListOfSimulationsToCache(myListOfSimulationParsers);
+            this.mySimulationCache.addListOfSimulationsToCache(myLocalSimulator.getListOfCompletedSimulationParsers());
             support.log("Size of SimulationCache: " + this.mySimulationCache.getCacheSize());
         }
 
