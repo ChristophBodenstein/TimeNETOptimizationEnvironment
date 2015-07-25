@@ -206,8 +206,6 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         support.setPathToTimeNet(pathToTimeNet);
         support.setPathToR(pathToR);
 
-        this.checkIfCachedSimulationIsPossible();
-
         this.updateComboBoxSimulationType();
 
         if (support.isIsRunningAsSlave()) {
@@ -326,15 +324,19 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                 support.log("Cached Simulation available, all Parameter match.");
                 support.setMySimulationCache(mySimulationCache);
                 support.setCachedSimulationEnabled(true);
+                this.jButtonEmptyCache.setEnabled(true);
             } else {
                 support.log("Cached Simulation not available, but all Parameter match. Maybe Stepping or Range is wrong.");
                 support.setCachedSimulationEnabled(false);
+                this.jButtonEmptyCache.setEnabled(false);
             }
         } else {
             support.log("Cached Simulation not available, no simulation cache given.");
             support.setCachedSimulationEnabled(false);
+            this.jButtonEmptyCache.setEnabled(false);
         }
         this.updateComboBoxSimulationType();
+        this.saveProperties();
         return support.isCachedSimulationAvailable();
     }
 
@@ -1112,6 +1114,10 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         this.checkIfCachedSimulationIsPossible();
     }//GEN-LAST:event_jButtonLoadCacheFileActionPerformed
 
+    /**
+     * It will try to fill the local cache from simualtion results out of a csv
+     * file It will NOT fit the parameter table
+     */
     private boolean tryToFillCacheFromFile(String inputFile) {
         support.emptyCache();
         File testFile = new File(inputFile);
@@ -1124,16 +1130,16 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
             support.setStatusText("Error loading cache-file!");
             return false;
         } else {
+            support.log("Loading of Cache-file was successful. Will check if its working.");
             this.pathToLastSimulationCache = inputFile;
             this.saveProperties();
-        }
-        //If cached simulation is available activate cache as Cache/local simulation
-        if (this.checkIfCachedSimulationIsPossible()) {
-            this.jComboBoxSimulationType.setSelectedItem(typeOfSimulator.Cache_Only);
-            support.setChosenSimulatorType(typeOfSimulator.Cache_Only);
+            //If cached simulation is available activate cache as Cache/local simulation
+            if (this.checkIfCachedSimulationIsPossible()) {
+                this.jComboBoxSimulationType.setSelectedItem(typeOfSimulator.Cache_Only);
+                support.setChosenSimulatorType(typeOfSimulator.Cache_Only);
+            }
             return true;
         }
-        return false;
     }
 
     private void jComboBoxOptimizationTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxOptimizationTypeActionPerformed
@@ -2165,6 +2171,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                 listOfUIStates.set(6, false);
                 //Deactivate Benchmark JCombobox if no benchmark-simulator is chosen        
                 listOfUIStates.set(16, jComboBoxSimulationType.getSelectedItem().equals(typeOfSimulator.Benchmark) || jComboBoxSimulationType.getSelectedItem().equals(typeOfSimulator.Cached_Benchmark));
+                listOfUIStates.set(21, support.isCachedSimulationAvailable());
                 break;
             case clientState:
                 for (int i = 0; i < listOfUIStates.size(); i++) {
@@ -2173,6 +2180,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                 listOfUIStates.set(15, true);
                 //Deactivate Benchmark JCombobox if no benchmark-simulator is chosen
                 listOfUIStates.set(16, jComboBoxSimulationType.getSelectedItem().equals(typeOfSimulator.Benchmark) || jComboBoxSimulationType.getSelectedItem().equals(typeOfSimulator.Cached_Benchmark));
+                listOfUIStates.set(21, support.isCachedSimulationAvailable());
                 break;
             case processRunning:
                 //Something is running, only cancel is possible

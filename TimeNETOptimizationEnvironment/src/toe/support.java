@@ -551,6 +551,7 @@ public class support {
      */
     public static void emptyCache() {
         mySimulationCache = new SimulationCache();
+        setCachedSimulationEnabled(false);
     }
 
     /**
