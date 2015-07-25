@@ -35,6 +35,8 @@ You can use any other server port, just enter it in you clients.
 
 __Warning__: The networking stuff is really beta. It works, but no authentication, authorization or any safety/security issues are handled.
 
+Additionally you should take care of the mongodb.log. It can can get pretty big. Workaround can be a cronjob to delete it (sudo rm /var/log/mongodb/mongodb.log).
+
 ## Server side Requirements
 * node.js
 * mongoDB
