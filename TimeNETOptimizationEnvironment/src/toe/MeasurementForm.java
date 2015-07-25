@@ -16,7 +16,7 @@ import toe.typedef.*;
  */
 public final class MeasurementForm extends javax.swing.JPanel {
 
-    private ArrayList<MeasureType> listOfMeasureMents = new ArrayList<MeasureType>();
+    private ArrayList<MeasureType> listOfMeasureMents = new ArrayList<>();
 
     /**
      * Creates new form MeasurementForm
@@ -101,7 +101,7 @@ public final class MeasurementForm extends javax.swing.JPanel {
     }//GEN-LAST:event_jCheckBoxEnableOptimizationForThisMeasurementItemStateChanged
 
     private void jComboBoxOptimizationTargetItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxOptimizationTargetItemStateChanged
-        this.jTextFieldCustomTargetValue.setEnabled(this.getOptimizationTarget().equals("value"));
+        this.jTextFieldCustomTargetValue.setEnabled(this.getOptimizationTarget().equals(typeOfTarget.value));
     }//GEN-LAST:event_jComboBoxOptimizationTargetItemStateChanged
 
 
@@ -133,7 +133,7 @@ public final class MeasurementForm extends javax.swing.JPanel {
                 return listOfMeasureMent;
             }
         }
-        support.log("***Error: No MeasureMent chosen, wil return null!");
+        support.log("***Error: No Measurement chosen, will return null!");
         return null;
     }
 
