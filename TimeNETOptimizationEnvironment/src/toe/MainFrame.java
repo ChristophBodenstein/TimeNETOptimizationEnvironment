@@ -328,7 +328,6 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
             } else {
                 support.log("Cached Simulation not available, but all Parameter match. Maybe Stepping or Range is wrong.");
                 support.setCachedSimulationEnabled(false);
-                this.jButtonEmptyCache.setEnabled(false);
             }
         } else {
             support.log("Cached Simulation not available, no simulation cache given.");
@@ -336,6 +335,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
             this.jButtonEmptyCache.setEnabled(false);
         }
         this.updateComboBoxSimulationType();
+        this.jButtonEmptyCache.setEnabled(support.getMySimulationCache().getCacheSize() >= 1);
         this.saveProperties();
         return support.isCachedSimulationAvailable();
     }
@@ -2171,7 +2171,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                 listOfUIStates.set(6, false);
                 //Deactivate Benchmark JCombobox if no benchmark-simulator is chosen        
                 listOfUIStates.set(16, jComboBoxSimulationType.getSelectedItem().equals(typeOfSimulator.Benchmark) || jComboBoxSimulationType.getSelectedItem().equals(typeOfSimulator.Cached_Benchmark));
-                listOfUIStates.set(21, support.isCachedSimulationAvailable());
+                listOfUIStates.set(21, support.getMySimulationCache().getCacheSize() >= 1);
                 break;
             case clientState:
                 for (int i = 0; i < listOfUIStates.size(); i++) {
@@ -2180,7 +2180,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                 listOfUIStates.set(15, true);
                 //Deactivate Benchmark JCombobox if no benchmark-simulator is chosen
                 listOfUIStates.set(16, jComboBoxSimulationType.getSelectedItem().equals(typeOfSimulator.Benchmark) || jComboBoxSimulationType.getSelectedItem().equals(typeOfSimulator.Cached_Benchmark));
-                listOfUIStates.set(21, support.isCachedSimulationAvailable());
+                listOfUIStates.set(21, support.getMySimulationCache().getCacheSize() >= 1);
                 break;
             case processRunning:
                 //Something is running, only cancel is possible
@@ -2216,6 +2216,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                 listOfUIStates.set(i, listOfUIStatesPushed.get(i));
             }
             listOfUIStatesPushed = null;
+            listOfUIStates.set(21, support.getMySimulationCache().getCacheSize() >= 1);
             updateAllUIComponents();
         }
     }
