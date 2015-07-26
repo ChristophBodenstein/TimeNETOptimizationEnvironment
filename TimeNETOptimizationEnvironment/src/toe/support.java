@@ -1473,7 +1473,7 @@ public class support {
     /**
      * Update an info label or spinner
      */
-    public static void updateMemoryPrograssbar() {
+    public static void updateMemoryProgressbar() {
         int MegaBytes = 1024 * 1024;
         long freeMemory = Runtime.getRuntime().freeMemory() / MegaBytes;
         long totalMemory = Runtime.getRuntime().totalMemory() / MegaBytes;
