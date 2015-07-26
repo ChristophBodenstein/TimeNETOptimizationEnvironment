@@ -404,8 +404,8 @@ public class SimulationCache {
     /**
      * Checks if two parametersets are equal
      *
-     * @param listA will be compared to
-     * @param listB
+     * @param mylistA will be compared to
+     * @param mylistB
      * @return true if parametersets (only the values and names) are equal, else
      * false
      */
