@@ -60,7 +60,7 @@ public class support {
     public static final int DEFAULT_SLEEPING_TIME = 1000;
     public static final int DEFAULT_NUMBER_OF_SLEEPING_TIMES_AS_TIMEOUT = 20;
     public static final int DEFAULT_CONNECTION_TIMEOUT = 5000;
-
+    
     public static final double DEFAULT_T_RATIO_SCALE = 0.00001;
     public static final double DEFAULT_T_ANNEAL_SCALE = 100;
     public static final double DEFAULT_MAXTEMP_PARAMETER = 1.0;
@@ -94,7 +94,7 @@ public class support {
     public static final double DEFAULT_MVMO_SD = 75.0;
     public static final typeOfMVMOParentSelection DEFAULT_MVMO_PARENT_SELECTION = typeOfMVMOParentSelection.Best;
     public static final typeOfMVMOMutationSelection DEFAULT_MVMO_MUTATION_STRATEGY = typeOfMVMOMutationSelection.Random;
-
+    
     public static final int DEFAULT_CACHE_STUCK = 100;//Optimizer can ask 2 times for simulating the same parameterset in a row. Then optimization will be aborted!
     public static final int DEFAULT_LOCAL_SIMULATION_ATTEMPTS = 5;//Local simulation is tried so many times until break
     public static final int DEFAULT_TIME_BETWEEN_LOCAL_SIMULATIONS = 3000;//in ms
@@ -108,7 +108,7 @@ public class support {
     public static final int DEFAULT_InternalParameterStart = 0;
     public static final int DEFAULT_InternalParameterEnd = 0;
     public static final boolean DEFAULT_KeepDesignSpaceAndResolution = true;
-
+    
     public static final int DEFAULT_MINIMUM_DESIGNSPACE_SIZE_PER_PARAMETER = 10;//Minimum Steps per Parameter.
     public static final int DEFAULT_MINIMUM_DESIGNSPACE_FOR_OPTIMIZATION = 50;//If DS is smaller, no Optimization is possible
 
@@ -119,7 +119,7 @@ public class support {
 
     public static final boolean DEFAULT_LOG_TO_WINDOW = true;
     public static final boolean DEFAULT_LOG_TO_FILE = false;
-
+    
     public static final char DEFAULT_PLOT_CHAR = '.';//Default Char to be used in R-Plot-Scripts
 
     public static final int DEFAULT_MEMORYPRINT_INTERVALL = 1;//in seconds. Default Interval between updating the memory-usage-progressbar
@@ -148,7 +148,7 @@ public class support {
     private static boolean cancelEverything = false;//If set to true, everything is cancelled
     private static typeOfBenchmarkFunction chosenBenchmarkFunction = DEFAULT_TYPE_OF_BENCHMARKFUNCTION;
     private static long lastTimeOfSpinning = 0;
-
+    
     private static typeOfRelativeDistanceCalculation chosenTypeOfRelativeDistanceCalculation = DEFAULT_TYPE_OF_RELATIVE_DISTANCE_CALCULATION;
     private static int numberOfOptiRunsToGo = 1;//multiple-Optimization-run-number
 
@@ -168,12 +168,12 @@ public class support {
 
 //Defaults for Opti-Statistics
     public static final int DEFAULT_NUMBER_OF_OPTI_PROB_CLASSES = 10;
-
+    
     private static int globalSimulationCounter = 0;
 
 //List of Changable parameters for Multiphase-opi
     public static ArrayList<parameter> listOfChangableParametersMultiphase = null;
-
+    
     private static ArrayList<MeasureType> Measures;
 
     /**
@@ -182,9 +182,9 @@ public class support {
     public static OptimizerPreferences getOptimizerPreferences() {
         return myOptimizerPreferences;
     }
-
+    
     private static final OptimizerPreferences myOptimizerPreferences = new OptimizerPreferences();
-
+    
     private static boolean logToWindow = DEFAULT_LOG_TO_WINDOW;
     private static boolean logToFile = DEFAULT_LOG_TO_FILE;
 
@@ -205,7 +205,7 @@ public class support {
         if (s.equals("UsedCPUTIME")) {
             return "UsedCPUTIME";
         }
-
+        
         return s;
     }
 
@@ -381,7 +381,7 @@ public class support {
             }
             return absolutePath;
         }
-
+        
     }
 
     /**
@@ -401,7 +401,7 @@ public class support {
      * @return Chosen path from dialog
      */
     public static String getPathToDirByDialog(String title, String startPath) {
-
+        
         String outputDir = null;
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -601,7 +601,7 @@ public class support {
         support.log("Used CPU-Time: " + m.getCPUTime());
         support.log("***** End of Measure " + m.getMeasureName() + " ******");
         support.log(footer);
-
+        
     }
 
     /**
@@ -614,13 +614,13 @@ public class support {
     public static void addLinesToLogFileFromListOfParser(ArrayList<SimulationType> pList, String logFileName) {
         boolean writeHeader = false;
         String line;
-
+        
         parameter dummyParameterForCPUTime = new parameter();
         dummyParameterForCPUTime.setName("UsedCPUTIME");
         dummyParameterForCPUTime.setValue(0.0);
         dummyParameterForCPUTime.setStartValue(0.0);
         dummyParameterForCPUTime.setEndValue(0.0);
-
+        
         try {
         //support.log("Number of Simulationtypes to add is "+pList.size());
 
@@ -629,13 +629,13 @@ public class support {
                 support.log("List of Simulations to add to logfile is null. Exit");
                 return;
             }
-
+            
             File f = new File(logFileName);
             if (!f.exists()) {
                 writeHeader = true;
             }
             FileWriter fw = new FileWriter(logFileName, true);
-
+            
             if (writeHeader) {
                 //Write header of logfile
 
@@ -643,7 +643,7 @@ public class support {
                 if (support.getParameterByName(pList.get(0).getListOfParameters(), "UsedCPUTIME") == null) {
                     pList.get(0).getListOfParameters().add(dummyParameterForCPUTime);
                 }
-
+                
                 MeasureType exportMeasure = pList.get(0).getMeasures().get(0);//First Measure will be used to determine the lsit of Parameters
                 line = "MeasureName;Mean Value; Variance; Conf.Interval-Min;Conf.Interval-Max;Epsilon;" + "Simulation Time";
                 for (int i1 = 0; i1 < pList.get(0).getListOfParameters().size(); i1++) {
@@ -656,7 +656,7 @@ public class support {
                     support.log("Error writing Header to Summary-log-file.");
                 }
             }
-
+            
             for (int i = 0; i < pList.size(); i++) {
                 //set indicator
                 setStatusText("Writing: " + (i + 1) + "/" + pList.size());
@@ -666,7 +666,7 @@ public class support {
                 if (support.getParameterByName(myParser.getListOfParameters(), "UsedCPUTIME") == null) {
                     myParser.getListOfParameters().add(dummyParameterForCPUTime);
                 }
-
+                
                 StatisticAggregator.addToStatistics(myParser, logFileName);
                 try {
                     for (int i1 = 0; i1 < myParser.getMeasures().size(); i1++) {//Alle Measure schreiben
@@ -682,15 +682,15 @@ public class support {
                 } catch (IOException e) {
                     support.log("IOException while appending lines to summary log-file.");
                 }
-
+                
             }
-
+            
             fw.close();
         } catch (Exception e) {
             support.log("Exception while writing things to summary log-file.");
         }
     }
-
+    
     public static void addLinesToLogFileFromListOfSimulationBatchesIncludingNumRuns(
             ArrayList<SimulationType> pList,
             ArrayList<Integer> numRunList,
@@ -698,13 +698,13 @@ public class support {
             String logFileName) {
         boolean writeHeader = false;
         String line;
-
+        
         parameter dummyParameterForCPUTime = new parameter();
         dummyParameterForCPUTime.setName("UsedCPUTIME");
         dummyParameterForCPUTime.setValue(0.0);
         dummyParameterForCPUTime.setStartValue(0.0);
         dummyParameterForCPUTime.setEndValue(0.0);
-
+        
         try {
         //support.log("Number of Simulationtypes to add is "+pList.size());
 
@@ -713,13 +713,13 @@ public class support {
                 support.log("List of Simulations to add to logfile is null. Exit");
                 return;
             }
-
+            
             File f = new File(logFileName);
             if (!f.exists()) {
                 writeHeader = true;
             }
             FileWriter fw = new FileWriter(logFileName, true);
-
+            
             if (writeHeader) {
                 //Write header of logfile
 
@@ -727,7 +727,7 @@ public class support {
                 if (support.getParameterByName(pList.get(0).getListOfParameters(), "UsedCPUTIME") == null) {
                     pList.get(0).getListOfParameters().add(dummyParameterForCPUTime);
                 }
-
+                
                 MeasureType exportMeasure = pList.get(0).getMeasures().get(0);//First Measure will be used to determine the lsit of Parameters
                 line = "MeasureName;Mean Value; Variance; Conf.Interval-Min;Conf.Interval-Max;Epsilon;" + "Simulation Time";
                 for (int i1 = 0; i1 < pList.get(0).getListOfParameters().size(); i1++) {
@@ -740,7 +740,7 @@ public class support {
                     support.log("Error writing Header to Summary-log-file.");
                 }
             }
-
+            
             for (int i = 0; i < pList.size(); i++) {
                 //set indicator
                 setStatusText("Writing: " + (i + 1) + "/" + pList.size());
@@ -750,7 +750,7 @@ public class support {
                 if (support.getParameterByName(myParser.getListOfParameters(), "UsedCPUTIME") == null) {
                     myParser.getListOfParameters().add(dummyParameterForCPUTime);
                 }
-
+                
                 StatisticAggregator.addToStatistics(myParser, logFileName);
                 try {
                     for (int i1 = 0; i1 < myParser.getMeasures().size(); i1++) {//Alle Measure schreiben
@@ -766,9 +766,9 @@ public class support {
                 } catch (IOException e) {
                     support.log("IOException while appending lines to summary log-file.");
                 }
-
+                
             }
-
+            
             fw.close();
         } catch (Exception e) {
             support.log("Exception while writing things to summary log-file.");
@@ -796,11 +796,11 @@ public class support {
     public static void log(String s) {
         String timeStamp = new SimpleDateFormat("yyyy:MM.dd_HH:mm:ss").format(Calendar.getInstance().getTime());
         s = timeStamp + ": " + s;
-
+        
         if (isLogToWindow()) {
             myLogFrame.addText(s);
         }
-
+        
         if (isLogToFile()) {
             try {
                 FileWriter fw = new FileWriter(NAME_OF_LOGFILE, true);
@@ -810,7 +810,7 @@ public class support {
                 log("Error while saving logfile.");
             }
         }
-
+        
     }
 
     /**
@@ -853,7 +853,7 @@ public class support {
                 //For Overwrite the file.
                 out = new FileOutputStream(f2);
             }
-
+            
             byte[] buf = new byte[1024];
             int len;
             while ((len = in.read(buf)) > 0) {
@@ -914,7 +914,7 @@ public class support {
             urlString = urlString.substring(0, urlString.length() - 1);
             remoteAddress = urlString;
         }
-
+        
         try {
             try {
                 URL url = new URL(urlString);
@@ -934,11 +934,11 @@ public class support {
                     support.log("URL seems wrong or server is not available.");
                     return false;
                 }
-
+                
             } catch (java.net.MalformedURLException e) {
                 support.log("Wrong URL format, maybe protocol is missing.");
             }
-
+            
         } catch (Exception e) {
             support.log("Site is down or network error.");
         }
@@ -988,7 +988,7 @@ public class support {
      */
     public static String getValueFromFileName(String fileName, String needle) {
         String[] stringList = fileName.split("_");
-
+        
         for (int i = 0; i < stringList.length; i++) {
             if (stringList[i].equals(needle)) {
                 return stringList[i + 1];
@@ -1048,7 +1048,7 @@ public class support {
      */
     public static boolean isDistributedSimulationAvailable() {
         return distributedSimulationAvailable;
-
+        
     }
 
     /**
@@ -1068,7 +1068,7 @@ public class support {
     public static ArrayList<parameter> getCopyOfParameterSet(ArrayList<parameter> parameterBase) {
         ArrayList<parameter> newParameterSet = new ArrayList<parameter>();
         for (int i = 0; i < parameterBase.size(); i++) {
-
+            
             parameter p = new parameter();
             p.setName(parameterBase.get(i).getName());
             p.setStartValue(parameterBase.get(i).getStartValue());
@@ -1090,7 +1090,7 @@ public class support {
      */
     public static ArrayList< ArrayList<parameter>> getCopyOfArrayListOfParametersets(ArrayList< ArrayList<parameter>> oldArrayList) {
         ArrayList< ArrayList<parameter>> result = new ArrayList< ArrayList<parameter>>();
-
+        
         for (int i = 0; i < oldArrayList.size(); i++) {
             result.add(getCopyOfParameterSet(oldArrayList.get(i)));
         }
@@ -1153,7 +1153,7 @@ public class support {
                 support.log("Timeout for simulation reached. Aborting simulation.");
                 return false;
             }
-
+            
             if (support.isCancelEverything()) {
                 support.log("Waiting for Simulator canceled by user.");
                 return false;
@@ -1274,12 +1274,12 @@ public class support {
      */
     public static ArrayList<parameter> fitParametersetToBaseParameterset(ArrayList<parameter> pList) {
         ArrayList<parameter> baseList = getParameterBase();
-
+        
         if (baseList == null) {
             log("ParameterBase is NULL! Please set it before starting Optimization Algorithm.");
             return null;
         }
-
+        
         for (int i = 0; i < pList.size(); i++) {
             parameter tmpP = pList.get(i);
 
@@ -1338,7 +1338,7 @@ public class support {
         //    return parameterBase;
         //} else {
         //    setParameterBase(mainFrame.getParameterBase());
-            return parameterBase;
+        return parameterBase;
         //}
 
     }
@@ -1364,7 +1364,7 @@ public class support {
         if (aCancelEverything) {
             setStatusText("All Operations will be canceled.");
         }
-
+        
         cancelEverything = aCancelEverything;
     }
 
@@ -1389,7 +1389,7 @@ public class support {
         if (l == null) {
             return null;
         }
-
+        
         if (l.size() > 1) {
             for (int i = 1; i < l.size() - 1; i++) {
                 l.remove(i);
@@ -1447,7 +1447,7 @@ public class support {
                 listOfChangableParametersMultiphase.add(p);
             }
         }
-
+        
     }
 
     /**
@@ -1466,7 +1466,7 @@ public class support {
         long freeMemory = Runtime.getRuntime().freeMemory() / MegaBytes;
         long totalMemory = Runtime.getRuntime().totalMemory() / MegaBytes;
         long maxMemory = Runtime.getRuntime().maxMemory() / MegaBytes;
-
+        
         log("Memory usage: " + (maxMemory - freeMemory) * 100 / maxMemory + "% of " + maxMemory + " Mb . Init was " + totalMemory + " Mb.");
     }
 
@@ -1478,9 +1478,17 @@ public class support {
         long freeMemory = Runtime.getRuntime().freeMemory() / MegaBytes;
         long totalMemory = Runtime.getRuntime().totalMemory() / MegaBytes;
         long maxMemory = Runtime.getRuntime().maxMemory() / MegaBytes;
-
+        
         getMainFrame().setMemoryProgressbar((int) ((maxMemory - freeMemory) * 100 / maxMemory));
+        
+    }
 
+    /**
+     * Updates the status labels for sim# and cachesize
+     */
+    public static void updateCountLabels() {
+        getMainFrame().setCacheSizeLabel(getMySimulationCache().getCacheSize());
+        getMainFrame().setSimCountLabel(getGlobalSimulationCounter());
     }
 
     /**
@@ -1619,7 +1627,7 @@ public class support {
                 }
             }
         }, 1000 * support.DEFAULT_MEMORYPRINT_INTERVALL, 1000 * support.DEFAULT_MEMORYPRINT_INTERVALL);
-
+        
     }
 
     /**
@@ -1637,7 +1645,7 @@ public class support {
             public void run() {
                 //support.log("Entering again waitForOptimizerTimer.");
                 if (myOptimizer.getOptimum() != null) {
-
+                    
                     MeasureType myOptiMeasure = support.getOptimizationMeasure();
                     StatisticAggregator.getStatisticByName(myOptimizer.getLogFileName()).addFoundOptimum(myOptimizer.getOptimum(), SimOptiFactory.getSimulator().getCalculatedOptimum(myOptiMeasure));
                     listener.operationSucessfull("The end.", typeOfProcessFeedback.OptimizationSuccessful);
@@ -1685,12 +1693,12 @@ public class support {
     public static boolean checkIfDirIsWritable(String dir) {
         String testPath = dir + File.separator + "empty.txt";
         File testFile = new File(testPath);
-
+        
         try {
             testFile.createNewFile();
         } catch (IOException ex) {
         }
-
+        
         if (testFile.canWrite()) {
             testFile.delete();
             return true;
@@ -1698,7 +1706,7 @@ public class support {
             JOptionPane.showConfirmDialog(mainFrame, "Directory " + dir + " is not writable!", dir, JOptionPane.OK_OPTION);
             return false;
         }
-
+        
     }
 
     /**

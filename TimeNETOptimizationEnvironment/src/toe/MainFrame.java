@@ -2473,4 +2473,22 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
     public void setpMaxError(parameter pMaxError) {
         this.pMaxError = pMaxError;
     }
+
+    /**
+     * Sets the Labeltext of SimCountIndicator
+     *
+     * @param count Value to be displayed in SimCountLabel
+     */
+    public void setSimCountLabel(int count) {
+        this.jLabelSimulationCountIndicator.setText(Integer.toString(count));
+    }
+
+    /**
+     * Sets the LabelText of CacheSizeIndicator
+     *
+     * @param cacheSize Value to be displayed in CacheSizeLabel
+     */
+    public void setCacheSizeLabel(int cacheSize) {
+        this.jLabelCachSizeIndicator.setText(Integer.toString(cacheSize));
+    }
 }
