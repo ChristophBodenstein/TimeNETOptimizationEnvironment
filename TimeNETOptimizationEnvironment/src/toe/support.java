@@ -550,6 +550,7 @@ public class support {
      * Creates a new Cache for all simulations Used to "emptyY the cache-Object
      */
     public static void emptyCache() {
+        log("Will clear cache.");
         mySimulationCache = new SimulationCache();
         setCachedSimulationEnabled(false);
     }
