@@ -69,7 +69,7 @@ public class SimulatorDistributed implements Runnable, Simulator {
      */
     public SimulatorDistributed() {
         super();
-        logFileName = support.getTmpPath() + File.separator + "SimLog_"+getClass().getSimpleName()+"_"+ Calendar.getInstance().getTimeInMillis() + ".csv";
+        logFileName = support.getTmpPath() + File.separator + "SimLog_" + getClass().getSimpleName() + "_" + Calendar.getInstance().getTimeInMillis() + ".csv";
         support.log("LogfileName:" + logFileName);
         listOfUnproccessedFilesNames = new ArrayList<String>();
         simid = Long.toString(Calendar.getInstance().getTimeInMillis());
@@ -249,7 +249,9 @@ public class SimulatorDistributed implements Runnable, Simulator {
             support.log("Timenet-Path NOT ok!");
         }
         support.log("End of Thread reached, should end now.");
-
+        synchronized (this) {
+            notify();
+        }
     }
 
     /**

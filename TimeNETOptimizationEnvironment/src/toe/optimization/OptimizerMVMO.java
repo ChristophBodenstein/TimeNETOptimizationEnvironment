@@ -79,7 +79,7 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
             this.maxNumberOfOptiCyclesWithoutImprovement = newMaxNumberOfOptiCyclesWithoutImprovement;
         }
     }
-    
+
     /**
      * Contructor
      */
@@ -94,8 +94,14 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
 
         Simulator mySimulator = SimOptiFactory.getSimulator();
         mySimulator.initSimulator(getNextParameterSetAsArrayList(), optiCycleCounter, false);
-        support.waitForEndOfSimulator(mySimulator, optiCycleCounter, support.DEFAULT_TIMEOUT);
-
+        //support.waitForEndOfSimulator(mySimulator, optiCycleCounter, support.DEFAULT_TIMEOUT);
+        synchronized (mySimulator) {
+            try {
+                mySimulator.wait();
+            } catch (InterruptedException ex) {
+                support.log("Problem waiting for end of non-cache-simulator.");
+            }
+        }
         ArrayList<SimulationType> simulationResults = mySimulator.getListOfCompletedSimulationParsers();
         population = getPopulationFromSimulationResults(simulationResults);
         population = normalize(population);
@@ -129,7 +135,14 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
             }
 
             mySimulator.initSimulator(parameterList, simulationCounter, false);
-            support.waitForEndOfSimulator(mySimulator, simulationCounter, support.DEFAULT_TIMEOUT);
+            //support.waitForEndOfSimulator(mySimulator, simulationCounter, support.DEFAULT_TIMEOUT);
+            synchronized (mySimulator) {
+                try {
+                    mySimulator.wait();
+                } catch (InterruptedException ex) {
+                    support.log("Problem waiting for end of non-cache-simulator.");
+                }
+            }
             simulationCounter = mySimulator.getSimulationCounter();
 
             simulationResults = mySimulator.getListOfCompletedSimulationParsers();
@@ -142,7 +155,9 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
             }
 
             ++optiCycleCounter;
-            if(topMeasure.getDistanceToTargetValue()<=0)break;
+            if (topMeasure.getDistanceToTargetValue() <= 0) {
+                break;
+            }
         }
         this.optimized = true;
 

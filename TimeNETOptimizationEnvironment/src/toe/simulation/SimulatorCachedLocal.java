@@ -7,9 +7,7 @@
  */
 package toe.simulation;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Calendar;
 import toe.datamodel.parameter;
 import toe.datamodel.SimulationType;
 import toe.support;
@@ -102,7 +100,15 @@ public class SimulatorCachedLocal extends SimulatorCached implements Runnable {
             support.log("Will simulate " + remainingParametersets.size() + " local.");
 
             myLocalSimulator.initSimulator(remainingParametersets, support.getGlobalSimulationCounter(), false);
-            support.waitForEndOfSimulator(myLocalSimulator, support.getGlobalSimulationCounter(), support.DEFAULT_TIMEOUT);
+            //support.waitForEndOfSimulator(myLocalSimulator, support.getGlobalSimulationCounter(), support.DEFAULT_TIMEOUT);
+
+            synchronized (myLocalSimulator) {
+                try {
+                    myLocalSimulator.wait();
+                } catch (InterruptedException ex) {
+                    support.log("Problem waiting for end of non-cache-simulator.");
+                }
+            }
 
             myListOfSimulationParsers.addAll(myLocalSimulator.getListOfCompletedSimulationParsers());
             status = myListOfSimulationParsers.size() * 100 / listOfParameterSetsTMP.size();
@@ -118,6 +124,11 @@ public class SimulatorCachedLocal extends SimulatorCached implements Runnable {
             //Print out a log file
             support.addLinesToLogFileFromListOfParser(myListOfSimulationParsers, logFileName);
             support.log("SimulationCounter is now: " + support.getGlobalSimulationCounter());
+        }
+        
+        this.status = 100;
+        synchronized (this) {
+            notify();
         }
     }
 

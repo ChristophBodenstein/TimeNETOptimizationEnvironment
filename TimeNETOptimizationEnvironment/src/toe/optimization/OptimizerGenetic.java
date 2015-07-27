@@ -105,8 +105,14 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
 
         Simulator mySimulator = SimOptiFactory.getSimulator();
         mySimulator.initSimulator(getNextParameterSetAsArrayList(), optiCycleCounter, false);
-        support.waitForEndOfSimulator(mySimulator, support.getGlobalSimulationCounter(), support.DEFAULT_TIMEOUT);
-
+        //support.waitForEndOfSimulator(mySimulator, support.getGlobalSimulationCounter(), support.DEFAULT_TIMEOUT);
+        synchronized (mySimulator) {
+            try {
+                mySimulator.wait();
+            } catch (InterruptedException ex) {
+                support.log("Problem waiting for end of non-cache-simulator.");
+            }
+        }
         ArrayList<SimulationType> simulationResults = mySimulator.getListOfCompletedSimulationParsers();
 
         population = getPopulationFromSimulationResults(simulationResults);
@@ -125,9 +131,9 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
             }
 
             //modification phase -----------------------------------------------------------------------
-            population = crossPopulation(population, numberOfCrossovers); 
+            population = crossPopulation(population, numberOfCrossovers);
             support.log("New Population size after Crossing is: " + population.size());
-            population = mutatePopulation(population, mutationChance); 
+            population = mutatePopulation(population, mutationChance);
             support.log("New Population size after mutation is: " + population.size());
 
             //simulation phase -----------------------------------------------------------------------
@@ -137,8 +143,14 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
             }
 
             mySimulator.initSimulator(parameterList, support.getGlobalSimulationCounter(), false);
-            support.waitForEndOfSimulator(mySimulator, support.getGlobalSimulationCounter(), support.DEFAULT_TIMEOUT);
-
+            //support.waitForEndOfSimulator(mySimulator, support.getGlobalSimulationCounter(), support.DEFAULT_TIMEOUT);
+            synchronized (mySimulator) {
+                try {
+                    mySimulator.wait();
+                } catch (InterruptedException ex) {
+                    support.log("Problem waiting for end of non-cache-simulator.");
+                }
+            }
             simulationResults = mySimulator.getListOfCompletedSimulationParsers();
             population = getPopulationFromSimulationResults(simulationResults);
             support.addLinesToLogFileFromListOfParser(simulationResults, logFileName);

@@ -42,9 +42,8 @@ public class SimulatorBenchmark implements Simulator, Runnable {
 
     /**
      * inits and starts the simulation, this is neccessary and must be
-     * implemented 
-     * In Benchmark we don`t use a local cache 
-     * Ackley, Rosenbrock, Schwefel, Rastrigin: source from Le Minh Nghia, NTU-Singapore Parts of
+     * implemented In Benchmark we don`t use a local cache Ackley, Rosenbrock,
+     * Schwefel, Rastrigin: source from Le Minh Nghia, NTU-Singapore Parts of
      * other functions are isp. by http://fossies.org/dox/cilib-0.7.6
      *
      * @param listOfParameterSetsTMP List of Parametersets to be simulated
@@ -169,7 +168,10 @@ public class SimulatorBenchmark implements Simulator, Runnable {
             //Print out a log file
             support.addLinesToLogFileFromListOfParser(myListOfSimulations, logFileName);
         }
-        this.status = 100;   
+        this.status = 100;
+        synchronized (this) {
+            notify();
+        }
     }
 
     /**

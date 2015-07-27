@@ -5,7 +5,6 @@
  * Kaveh, Talatahari:
  * A novel heuristic optimization method: charged system search (2010)
  */
-
 package toe.optimization;
 
 import java.io.File;
@@ -26,10 +25,7 @@ import toe.support;
  *
  * @author A. Seidel
  */
-
-
-public class OptimizerChargedSystemSearch extends OptimizerPopulationBased implements Runnable, Optimizer{
-
+public class OptimizerChargedSystemSearch extends OptimizerPopulationBased implements Runnable, Optimizer {
 
 //private String tmpPath = "";
 //private String filename = "";//Original filename
@@ -42,244 +38,236 @@ public class OptimizerChargedSystemSearch extends OptimizerPopulationBased imple
 //private JLabel infoLabel;
 //private double simulationTimeSum = 0;
 //private double cpuTimeSum = 0;
-
 //private ArrayList<SimulationType> charges = new ArrayList<SimulationType>();//History of all simulation runs
-
-private int numberOfCharges = support.getOptimizerPreferences().getPref_CSS_PopulationSize(); //number of active charges to explore design space
-private double maxAttraction = support.getOptimizerPreferences().getPref_CSS_MaxAttraction();//limit of attraction-force of 2 charges
+    private int numberOfCharges = support.getOptimizerPreferences().getPref_CSS_PopulationSize(); //number of active charges to explore design space
+    private double maxAttraction = support.getOptimizerPreferences().getPref_CSS_MaxAttraction();//limit of attraction-force of 2 charges
 //private int maxNumberOfOptiCycles = 100; //maximum number of cycles, before optimization terminates
 //private int maxNumberOfOptiCyclesWithoutImprovement = 10; //how many cycles without improvement until break optimization loop
 //private int currentNumberOfOptiCyclesWithoutImprovement = 0;
 
-private double[] distances; //current Distance of all objects
-private double[] powerOfCharges; // attraction power of every object
-private double[][] speedOfCharges; //current speed vector for all objects with all parameters;
+    private double[] distances; //current Distance of all objects
+    private double[] powerOfCharges; // attraction power of every object
+    private double[][] speedOfCharges; //current speed vector for all objects with all parameters;
 
 //private SimulationType topMeasure;//temp top measure before implementing top-List
 //private double topDistance = Double.POSITIVE_INFINITY;//temp top distance
+    public OptimizerChargedSystemSearch() {
+        logFileName = support.getTmpPath() + File.separator + "Optimizing_with_CSS_" + Calendar.getInstance().getTimeInMillis() + "_ALL" + ".csv";
+    }
 
-
-
-public OptimizerChargedSystemSearch()
-{
-    logFileName = support.getTmpPath() + File.separator+"Optimizing_with_CSS_" + Calendar.getInstance().getTimeInMillis() + "_ALL" + ".csv";
-}
-    
-    
-    private void calculatePower()
-    {
+    private void calculatePower() {
         //calculate attraction of each charge
-        for(int i=0; i<population.size(); ++i)
-        {
+        for (int i = 0; i < population.size(); ++i) {
             powerOfCharges[i] = 1 / population.get(i).get(0).getDistanceToTargetValue(); //temporary function for calculating attraction. TODO: test other funktions
         }
     }
-    
-    private void updatePositions()
-    {
+
+    private void updatePositions() {
         calculatePower();
-        
+
         //currentCharge = the charge to be moved
         //compareCharge = the charge, which attracts the currentCharge
-        for(int currentChargeNumber=0; currentChargeNumber<numberOfCharges; ++currentChargeNumber)
-        {
+        for (int currentChargeNumber = 0; currentChargeNumber < numberOfCharges; ++currentChargeNumber) {
             ArrayList<parameter> currentParameterSet = getParameters(currentChargeNumber);
-            
-            for(int compareChargeNumber=0; compareChargeNumber<numberOfCharges;++compareChargeNumber)
-            {
+
+            for (int compareChargeNumber = 0; compareChargeNumber < numberOfCharges; ++compareChargeNumber) {
                 ArrayList<parameter> compareParemeterSet = getParameters(compareChargeNumber);
-                if (currentChargeNumber!=compareChargeNumber)
-                {
+                if (currentChargeNumber != compareChargeNumber) {
                     double attraction = powerOfCharges[compareChargeNumber] / powerOfCharges[currentChargeNumber];
-                    
-                    if(attraction>maxAttraction)
-                    {
+
+                    if (attraction > maxAttraction) {
                         attraction = maxAttraction;
                     }
-                    
-                    for (int parameterNumber = 0; parameterNumber<speedOfCharges[currentChargeNumber].length; ++parameterNumber)
-                    {
-                        if (currentParameterSet.get(parameterNumber).isIteratableAndIntern())
-                        {
+
+                    for (int parameterNumber = 0; parameterNumber < speedOfCharges[currentChargeNumber].length; ++parameterNumber) {
+                        if (currentParameterSet.get(parameterNumber).isIteratableAndIntern()) {
                             double currentValue = currentParameterSet.get(parameterNumber).getValue();
                             double compareValue = compareParemeterSet.get(parameterNumber).getValue();
                             double currentSpeed = speedOfCharges[currentChargeNumber][parameterNumber];
-                        
+
                             double diffSpeed = (compareValue - currentValue) * attraction / maxAttraction;
                             currentSpeed += diffSpeed;
                             currentValue += currentSpeed;
-                        
+
                             //safety check to prevent charges to "fly" over the border
-                            if (currentValue < currentParameterSet.get(parameterNumber).getStartValue())
-                            {
+                            if (currentValue < currentParameterSet.get(parameterNumber).getStartValue()) {
                                 currentValue = currentParameterSet.get(parameterNumber).getStartValue();
+                            } else if (currentValue > currentParameterSet.get(parameterNumber).getEndValue()) {
+                                currentValue = currentParameterSet.get(parameterNumber).getEndValue();
                             }
-                            else if (currentValue > currentParameterSet.get(parameterNumber).getEndValue())
-                            {
-                            currentValue = currentParameterSet.get(parameterNumber).getEndValue();
-                            }
-                        
+
                             speedOfCharges[currentChargeNumber][parameterNumber] = currentSpeed;
                             currentParameterSet.get(parameterNumber).setValue(currentValue);
-                        } 
+                        }
                     }
                 }
             }
             setParameters(currentParameterSet, currentChargeNumber);
-        }    
+        }
     }
 
-    public void run()
-    {
+    public void run() {
         int optiCycleCounter = 0;
         population = createRandomPopulation(numberOfCharges, false);
         distances = new double[numberOfCharges];
         powerOfCharges = new double[numberOfCharges];
         speedOfCharges = new double[numberOfCharges][parameterBase.size()];
-        
+
         Arrays.fill(distances, 0);
-        for (int i=0; i<numberOfCharges; ++i)
-        {
+        for (int i = 0; i < numberOfCharges; ++i) {
             double[] newArray = new double[parameterBase.size()];
             Arrays.fill(newArray, 0);
             speedOfCharges[i] = newArray;
         }
         Arrays.fill(powerOfCharges, 0);
-        
-        Simulator mySimulator = SimOptiFactory.getSimulator();       
+
+        Simulator mySimulator = SimOptiFactory.getSimulator();
         mySimulator.initSimulator(getNextParameterSetAsArrayList(), optiCycleCounter, false);
-        support.waitForEndOfSimulator(mySimulator, optiCycleCounter, support.DEFAULT_TIMEOUT);
-        
-        ArrayList<SimulationType> simulationResults = mySimulator.getListOfCompletedSimulationParsers(); 
+        //support.waitForEndOfSimulator(mySimulator, optiCycleCounter, support.DEFAULT_TIMEOUT);
+        synchronized (mySimulator) {
+            try {
+                mySimulator.wait();
+            } catch (InterruptedException ex) {
+                support.log("Problem waiting for end of non-cache-simulator.");
+            }
+        }
+        ArrayList<SimulationType> simulationResults = mySimulator.getListOfCompletedSimulationParsers();
         population = getPopulationFromSimulationResults(simulationResults);
-        
+
         int simulationCounter = 0;
-        while(optiCycleCounter < this.maxNumberOfOptiCycles)
-        {
+        while (optiCycleCounter < this.maxNumberOfOptiCycles) {
             updatePositions();
-            if (currentNumberOfOptiCyclesWithoutImprovement >= maxNumberOfOptiCyclesWithoutImprovement)
-            {
+            if (currentNumberOfOptiCyclesWithoutImprovement >= maxNumberOfOptiCyclesWithoutImprovement) {
                 support.log("Too many optimization cycles without improvement. Ending optimization.");
                 break;
             }
-            
-            ArrayList< ArrayList<parameter> > parameterList = getNextParameterSetAsArrayList();
-            
-            for (ArrayList<parameter> pArray : parameterList)
-            {
-                pArray =  roundToStepping(pArray);
+
+            ArrayList< ArrayList<parameter>> parameterList = getNextParameterSetAsArrayList();
+
+            for (ArrayList<parameter> pArray : parameterList) {
+                pArray = roundToStepping(pArray);
             }
-            
+
             //System.out.println("Number of Parameters in: " + parameterList.get(0).size());
-            
             mySimulator = SimOptiFactory.getSimulator();
             mySimulator.initSimulator(parameterList, simulationCounter, false);
-            support.waitForEndOfSimulator(mySimulator, simulationCounter, support.DEFAULT_TIMEOUT);
+            //support.waitForEndOfSimulator(mySimulator, simulationCounter, support.DEFAULT_TIMEOUT);
+            synchronized (mySimulator) {
+                try {
+                    mySimulator.wait();
+                } catch (InterruptedException ex) {
+                    support.log("Problem waiting for end of non-cache-simulator.");
+                }
+            }
             simulationCounter = mySimulator.getSimulationCounter();
             simulationResults = mySimulator.getListOfCompletedSimulationParsers();
             support.addLinesToLogFileFromListOfParser(simulationResults, logFileName);
             population = getPopulationFromSimulationResults(simulationResults);
-            
+
             //calculateDistances();
             updateTopMeasure();
             printPopulationDistances();
             ++optiCycleCounter;
         }
-        for(int measureCount=0;measureCount<listOfMeasures.size();measureCount++)
-        {
-            String measureName  = listOfMeasures.get(measureCount).getMeasureName();
+        for (int measureCount = 0; measureCount < listOfMeasures.size(); measureCount++) {
+            String measureName = listOfMeasures.get(measureCount).getMeasureName();
             MeasureType activeMeasure = topMeasure.getMeasureByName(measureName);
             support.log(activeMeasure.getStateAsString());
         }
         support.log("CCS Finished");
-        
+
     }
-    
-    private ArrayList<parameter> getParameters(int indexOfCharge)
-    {
+
+    private ArrayList<parameter> getParameters(int indexOfCharge) {
         return population.get(indexOfCharge).get(0).getListOfParameters();
     }
-    
-    private void setParameters(ArrayList<parameter> parameterList, int indexOfCharge)
-    {
-        population.get(indexOfCharge).get(0).setListOfParameters(parameterList);        
+
+    private void setParameters(ArrayList<parameter> parameterList, int indexOfCharge) {
+        population.get(indexOfCharge).get(0).setListOfParameters(parameterList);
     }
-    
+
     /**
      * returnes the number of charges used for optimization
+     *
      * @return the number of charges
      */
-    public int getNumberOfCharges()
-    {
+    public int getNumberOfCharges() {
         return this.numberOfCharges;
     }
-    
+
     /**
-     * sets the number of charges, if its a least one. zero or negative values are ignored
+     * sets the number of charges, if its a least one. zero or negative values
+     * are ignored
+     *
      * @param newNumberOfCharges the new number of charges
      */
-    public void setNumberOfCharges(int newNumberOfCharges)
-    {
-        if (newNumberOfCharges > 0)
-        {
+    public void setNumberOfCharges(int newNumberOfCharges) {
+        if (newNumberOfCharges > 0) {
             this.numberOfCharges = newNumberOfCharges;
         }
     }
-    
+
     /**
      * return maximum number of optimization cycles before breaking up
+     *
      * @return the current maximum number of optimization cycles
      */
-    public int getMaxNumberOfOptiCycles()
-    {
+    public int getMaxNumberOfOptiCycles() {
         return this.maxNumberOfOptiCycles;
     }
-    
+
     /**
-     * sets maximum number of optimization cycles. Has to be at least 1, otherwise it is ignored.
-     * @param newMaxNumberOfOtpiCycles the new maximum number of optimization cycles
+     * sets maximum number of optimization cycles. Has to be at least 1,
+     * otherwise it is ignored.
+     *
+     * @param newMaxNumberOfOtpiCycles the new maximum number of optimization
+     * cycles
      */
-    public void setMaxNumberOfOptiCycles(int newMaxNumberOfOtpiCycles)
-    {
-        if (newMaxNumberOfOtpiCycles > 0)
-        {
+    public void setMaxNumberOfOptiCycles(int newMaxNumberOfOtpiCycles) {
+        if (newMaxNumberOfOtpiCycles > 0) {
             this.maxNumberOfOptiCycles = newMaxNumberOfOtpiCycles;
         }
     }
-    
+
     /**
-     * gets maximum number of optimization cycles without improvement, before breaking optimization loop.
+     * gets maximum number of optimization cycles without improvement, before
+     * breaking optimization loop.
+     *
      * @return the maximum number of optimization cycles without improvemet
      */
-    public int getMaxNumberOfOptiCyclesWithoutImprovement()
-    {
+    public int getMaxNumberOfOptiCyclesWithoutImprovement() {
         return this.maxNumberOfOptiCyclesWithoutImprovement;
     }
-    
+
     /**
-     * sets maximum number of optimization cycles without improvement. Has to be at least 1, otherwise it is ignored.
-     * @param newMaxNumberOfOptiCyclesWithoutImprovement the new maximum number of optimization cycles without improvement
+     * sets maximum number of optimization cycles without improvement. Has to be
+     * at least 1, otherwise it is ignored.
+     *
+     * @param newMaxNumberOfOptiCyclesWithoutImprovement the new maximum number
+     * of optimization cycles without improvement
      */
-    public void setMaxNumberOfOptiCyclesWithoutImprovement(int newMaxNumberOfOptiCyclesWithoutImprovement)
-    {
-        if (newMaxNumberOfOptiCyclesWithoutImprovement > 0)
-        {
+    public void setMaxNumberOfOptiCyclesWithoutImprovement(int newMaxNumberOfOptiCyclesWithoutImprovement) {
+        if (newMaxNumberOfOptiCyclesWithoutImprovement > 0) {
             this.maxNumberOfOptiCyclesWithoutImprovement = newMaxNumberOfOptiCyclesWithoutImprovement;
         }
     }
+
     /**
-     * Set the logfilename
-     * this is useful for multi-optimization or if you like specific names for your logfiles
+     * Set the logfilename this is useful for multi-optimization or if you like
+     * specific names for your logfiles
+     *
      * @param name Name (path) of logfile
      */
-    public void setLogFileName(String name){
-    this.logFileName=name;
+    public void setLogFileName(String name) {
+        this.logFileName = name;
     }
+
     /**
      * Returns the used logfileName
+     *
      * @return name of logfile
      */
     public String getLogFileName() {
-    return this.logFileName;
+        return this.logFileName;
     }
 }

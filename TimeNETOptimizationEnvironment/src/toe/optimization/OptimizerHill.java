@@ -99,7 +99,14 @@ public class OptimizerHill implements Runnable, Optimizer {
 
         mySimulator.initSimulator(getParametersetAsArrayList(getFirstParameterset()), getSimulationCounter(), false);
         //Wait until Simulator has ended
-        support.waitForEndOfSimulator(mySimulator, getSimulationCounter(), support.DEFAULT_TIMEOUT);
+        //support.waitForEndOfSimulator(mySimulator, getSimulationCounter(), support.DEFAULT_TIMEOUT);
+        synchronized (mySimulator) {
+                try {
+                    mySimulator.wait();
+                } catch (InterruptedException ex) {
+                    support.log("Problem waiting for end of non-cache-simulator.");
+                }
+            }
         support.addLinesToLogFileFromListOfParser(mySimulator.getListOfCompletedSimulationParsers(), logFileName);
         this.historyOfParsers = support.appendListOfParsers(historyOfParsers, mySimulator.getListOfCompletedSimulationParsers());
         currentSolution = mySimulator.getListOfCompletedSimulationParsers().get(0);
@@ -117,7 +124,14 @@ public class OptimizerHill implements Runnable, Optimizer {
 
             stuckInCacheCounter = support.DEFAULT_CACHE_STUCK;//Reset Stuck-Counter
             mySimulator.initSimulator(newParameterset, getSimulationCounter(), false);
-            support.waitForEndOfSimulator(mySimulator, getSimulationCounter(), support.DEFAULT_TIMEOUT);
+            //support.waitForEndOfSimulator(mySimulator, getSimulationCounter(), support.DEFAULT_TIMEOUT);
+            synchronized (mySimulator) {
+                try {
+                    mySimulator.wait();
+                } catch (InterruptedException ex) {
+                    support.log("Problem waiting for end of non-cache-simulator.");
+                }
+            }
             listOfCompletedSimulations = mySimulator.getListOfCompletedSimulationParsers();
             support.log("List of Simulation results is: " + listOfCompletedSimulations.size() + " elements big.");
             //Shrink to first element of List

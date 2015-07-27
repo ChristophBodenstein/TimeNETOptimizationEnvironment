@@ -29,7 +29,7 @@ public class SimulatorCached implements Simulator {
      * Constructor
      */
     public SimulatorCached() {
-        logFileName = support.getTmpPath() + File.separator + "SimLog_"+getClass().getSimpleName()+"_"+ Calendar.getInstance().getTimeInMillis() + ".csv";
+        logFileName = support.getTmpPath() + File.separator + "SimLog_" + getClass().getSimpleName() + "_" + Calendar.getInstance().getTimeInMillis() + ".csv";
         support.log("LogfileName:" + logFileName);
     }
 
@@ -76,7 +76,10 @@ public class SimulatorCached implements Simulator {
                 support.addLinesToLogFileFromListOfParser(myListOfSimulations, logFileName);
             }
         }
-
+        //Notify, even if this is a non-threaded simulator
+        synchronized (this) {
+            notify();
+        }
     }
 
     /**
@@ -185,13 +188,13 @@ public class SimulatorCached implements Simulator {
          * This is a workaround, it should be set during read of cache-file
          */
         for (int i = 0; i < resultSimulation.getListOfParameters().size(); i++) {
-            try{
-            parameter pTmp = resultSimulation.getListOfParameters().get(i);
-            pTmp.setEndValue(support.getParameterByName(support.getParameterBase(), pTmp.getName()).getEndValue());
-            pTmp.setStartValue(support.getParameterByName(support.getParameterBase(), pTmp.getName()).getStartValue());
-            }catch(Exception e){
-            support.log("Error setting values for optimum.");
-            e.printStackTrace();
+            try {
+                parameter pTmp = resultSimulation.getListOfParameters().get(i);
+                pTmp.setEndValue(support.getParameterByName(support.getParameterBase(), pTmp.getName()).getEndValue());
+                pTmp.setStartValue(support.getParameterByName(support.getParameterBase(), pTmp.getName()).getStartValue());
+            } catch (Exception e) {
+                support.log("Error setting values for optimum.");
+                e.printStackTrace();
             }
         }
         return resultSimulation;

@@ -43,7 +43,7 @@ public class SimulatorLocal implements Runnable, Simulator, nativeProcessCallbac
     boolean log = true;
     boolean keepSimulationFiles = false;
     long timeStamp = 0;//TimeStamp for measuring the runtime of one simulation
-    Integer maxTime=600;
+    Integer maxTime = 600;
 
     /**
      * Constructor
@@ -166,6 +166,9 @@ public class SimulatorLocal implements Runnable, Simulator, nativeProcessCallbac
             support.log("Timenet-Path NOT ok!");
         }
         support.setStatusText("Local simulation finished.");
+        synchronized (this) {
+            notify();
+        }
         //Simple ending Callback to reactivate uer-interface
         support.simOptiOperationSuccessfull("The End");
     }
