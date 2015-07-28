@@ -2139,12 +2139,21 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
      *
      * @param s value of progressbar (0..100)
      */
-    public void setMemoryProgressbar(int s) {
+    protected void setMemoryProgressbar(int s) {
 
         if ((s <= 100) && (s >= 0)) {
             this.jProgressBarMemoryUsage.setValue(s);
         }
 
+    }
+
+    /**
+     * Sets the tooltip of memory-progressbar
+     *
+     * @param s String to show as tooltip
+     */
+    protected void setMemoryProgressbarTooltip(String s) {
+        this.jProgressBarMemoryUsage.setToolTipText(s);
     }
 
     /**
