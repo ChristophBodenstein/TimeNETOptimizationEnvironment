@@ -9,6 +9,7 @@ import toe.datamodel.SimulationType;
 import toe.datamodel.parameter;
 import toe.support;
 import toe.typedef;
+import toe.typedef.typeOfLogLevel;
 
 /**
  *
@@ -49,9 +50,9 @@ public class BFSchwefel implements BenchmarkFunction {
         sum = 0;
         for (int i = 0; i < x.length; i++) {
             sum += x[i] * Math.sin(Math.pow(Math.abs(x[i]), 0.5));
-            }
+        }
         sum = 418.9829 * x.length - sum;
-        
+
         ArrayList<MeasureType> tmpListOfMeasurements = support.getMeasures();
         //All Measure will have the same result value
 
@@ -74,6 +75,7 @@ public class BFSchwefel implements BenchmarkFunction {
         return tmpSimulation;
     }
 
+    @Override
     public SimulationType getOptimumSimulation() {
         ArrayList<parameter> optimumParameterlist = support.getCopyOfParameterSet(support.getOriginalParameterBase());
         ArrayList<parameter> optimumChangableParameterset = support.getListOfChangableParameters(optimumParameterlist);
@@ -81,30 +83,33 @@ public class BFSchwefel implements BenchmarkFunction {
         //Optimum is in the middle of each parameter, its exact at 0,0
         for (parameter p : optimumChangableParameterset) {
             p.setValue(p.getEndValue() - ((p.getEndValue() - p.getStartValue()) / 2));
-            support.log("P-Value for optimal solution (" + p.getName() + "): " + p.getValue());
+            support.log("P-Value for optimal solution (" + p.getName() + "): " + p.getValue(), typeOfLogLevel.INFO);
         }
         SimulationType tmpSimulation = this.getSimulationResult(optimumParameterlist);
-        support.log("Measurement-Values of optimal solution are:");
+        support.log("Measurement-Values of optimal solution are:", typeOfLogLevel.INFO);
 
         for (MeasureType m : tmpSimulation.getMeasures()) {
-            support.log(m.getMeasureName() + " has value: " + m.getMeanValue() + " with max: " + m.getMaxValue() + " and min: " + m.getMinValue());
+            support.log(m.getMeasureName() + " has value: " + m.getMeanValue() + " with max: " + m.getMaxValue() + " and min: " + m.getMinValue(), typeOfLogLevel.INFO);
         }
 
         return tmpSimulation;
 
     }
 
+    @Override
     public double getMinValue() {
         return 0.0;
     }
 
+    @Override
     public double getMaxValue() {
         ArrayList<parameter> tmpParameterList = support.getParameterBase();
         ArrayList<parameter> tmpListOfChangableParameter = support.getListOfChangableParameters(tmpParameterList);
-        
+
         return 418.9829 * tmpListOfChangableParameter.size() * 2;
     }
 
+    @Override
     public typedef.typeOfBenchmarkFunction getTypeOfBenchmarkFunction() {
         return typedef.typeOfBenchmarkFunction.Schwefel;
     }

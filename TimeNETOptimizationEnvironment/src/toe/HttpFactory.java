@@ -13,6 +13,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
+import toe.typedef.*;
 
 /**
  *
@@ -34,7 +35,7 @@ public class HttpFactory {
         if (client == null) {
             final HttpParams httpParams = new BasicHttpParams();
             HttpConnectionParams.setConnectionTimeout(httpParams, 2000);
-            client = new DefaultHttpClient(httpParams); 
+            client = new DefaultHttpClient(httpParams);
         }
         return client;
     }
@@ -53,7 +54,7 @@ public class HttpFactory {
         try {
             postRequest.setURI(new URI(s));
         } catch (URISyntaxException ex) {
-            support.log("Error creating new PostRequest.");
+            support.log("Error creating new PostRequest.", typeOfLogLevel.ERROR);
             postRequest = null;
         }
         return postRequest;
@@ -73,19 +74,19 @@ public class HttpFactory {
         try {
             httpGet.setURI(new URI(s));
         } catch (URISyntaxException ex) {
-            support.log("Error creating new PostRequest.");
+            support.log("Error creating new PostRequest.", typeOfLogLevel.ERROR);
             httpGet = null;
         }
         return httpGet;
     }
-    
+
     /**
      * Reset all connection objects to be created newly
      */
-    public static void resetConnections(){
-        httpGet=null;
-        postRequest=null;
-        client=null;
+    public static void resetConnections() {
+        httpGet = null;
+        postRequest = null;
+        client = null;
     }
 
 }

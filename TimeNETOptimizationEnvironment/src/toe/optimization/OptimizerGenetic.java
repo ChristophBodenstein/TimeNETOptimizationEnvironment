@@ -13,6 +13,7 @@ import toe.datamodel.parameter;
 import toe.simulation.Simulator;
 import toe.support;
 import toe.typedef.typeOfGeneticCrossover;
+import toe.typedef.typeOfLogLevel;
 
 /**
  *
@@ -110,31 +111,31 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
             try {
                 mySimulator.wait();
             } catch (InterruptedException ex) {
-                support.log("Problem waiting for end of non-cache-simulator.");
+                support.log("Problem waiting for end of non-cache-simulator.", typeOfLogLevel.ERROR);
             }
         }
         ArrayList<SimulationType> simulationResults = mySimulator.getListOfCompletedSimulationParsers();
 
         population = getPopulationFromSimulationResults(simulationResults);
-        support.log("Population size is: " + population.size());
-        support.log("maxNumberOfOptiCyclesWithoutImprovement: " + maxNumberOfOptiCyclesWithoutImprovement);
-        support.log("maxNumberOfOptiCycles: " + maxNumberOfOptiCycles);
+        support.log("Population size is: " + population.size(), typeOfLogLevel.INFO);
+        support.log("maxNumberOfOptiCyclesWithoutImprovement: " + maxNumberOfOptiCyclesWithoutImprovement, typeOfLogLevel.INFO);
+        support.log("maxNumberOfOptiCycles: " + maxNumberOfOptiCycles, typeOfLogLevel.INFO);
         while (optiCycleCounter < this.maxNumberOfOptiCycles) {
-            support.log("currentNumberOfOptiCyclesWithoutImprovement: " + currentNumberOfOptiCyclesWithoutImprovement);
+            support.log("currentNumberOfOptiCyclesWithoutImprovement: " + currentNumberOfOptiCyclesWithoutImprovement, typeOfLogLevel.INFO);
             if (currentNumberOfOptiCyclesWithoutImprovement >= maxNumberOfOptiCyclesWithoutImprovement) {
-                support.log("Too many optimization cycles without improvement. Ending optimization.");
+                support.log("Too many optimization cycles without improvement. Ending optimization.", typeOfLogLevel.INFO);
                 break;
             }
             if (support.isCancelEverything()) {
-                support.log("Operation Canceled (Genetic Optimization).");
+                support.log("Operation Canceled (Genetic Optimization).", typeOfLogLevel.INFO);
                 break;
             }
 
             //modification phase -----------------------------------------------------------------------
             population = crossPopulation(population, numberOfCrossovers);
-            support.log("New Population size after Crossing is: " + population.size());
+            support.log("New Population size after Crossing is: " + population.size(), typeOfLogLevel.INFO);
             population = mutatePopulation(population, mutationChance);
-            support.log("New Population size after mutation is: " + population.size());
+            support.log("New Population size after mutation is: " + population.size(), typeOfLogLevel.INFO);
 
             //simulation phase -----------------------------------------------------------------------
             ArrayList< ArrayList<parameter>> parameterList = getNextParameterSetAsArrayList();
@@ -148,7 +149,7 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
                 try {
                     mySimulator.wait();
                 } catch (InterruptedException ex) {
-                    support.log("Problem waiting for end of non-cache-simulator.");
+                    support.log("Problem waiting for end of non-cache-simulator.", typeOfLogLevel.ERROR);
                 }
             }
             simulationResults = mySimulator.getListOfCompletedSimulationParsers();
@@ -157,7 +158,7 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
 
             //evaluation phase --------------------------------------------------------------------------
             population = cutPopulation(population);
-            support.log("New Population size after cutting is: " + population.size());
+            support.log("New Population size after cutting is: " + population.size(), typeOfLogLevel.INFO);
             updateTopMeasure();
             printPopulationDistances();
 
@@ -182,7 +183,7 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
             return null;
         }
         if (father.getListOfParameters().size() != mother.getListOfParameters().size()) {
-            support.log("Parameter length of mother and father different. No Crossover Possible");
+            support.log("Parameter length of mother and father different. No Crossover Possible", typeOfLogLevel.INFO);
             return null;
         }
         SimulationType child1 = new SimulationType(father);
@@ -203,7 +204,7 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
                 parameterFromMother = (parameter) motherDNA.get(i).clone();
                 parameterFromFather = (parameter) fatherDNA.get(i).clone();
             } catch (CloneNotSupportedException e) {
-                support.log(e.getMessage());
+                support.log(e.getMessage(), typeOfLogLevel.ERROR);
             }
             if (parameterFromMother != null && parameterFromFather != null) //clone was successful
             {
@@ -233,7 +234,7 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
         }
 
         if (father.getListOfParameters().size() != mother.getListOfParameters().size()) {
-            support.log("Parameter length of mother and father different. No Crossover Possible");
+            support.log("Parameter length of mother and father different. No Crossover Possible.", typeOfLogLevel.ERROR);
             return null;
         }
         SimulationType child1 = new SimulationType(father);
@@ -263,7 +264,7 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
                 c1 = (parameter) motherDNA.get(i).clone();
                 c2 = (parameter) motherDNA.get(i).clone();
             } catch (CloneNotSupportedException e) {
-                support.log(e.getMessage());
+                support.log(e.getMessage(), typeOfLogLevel.INFO);
             }
 
             if (p1 != null && p2 != null && c1 != null && c2 != null) //clone was successful
@@ -294,7 +295,7 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
         }
 
         if (parent1.getListOfParameters().size() != parent2.getListOfParameters().size() || parent1.getListOfParameters().size() != parent3.getListOfParameters().size()) {
-            support.log("Parameter length different. No Crossover Possible");
+            support.log("Parameter length different. No Crossover Possible.", typeOfLogLevel.ERROR);
             return null;
         }
 
@@ -326,7 +327,7 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
                 c2 = (parameter) child2DNA.get(i).clone();
                 c3 = (parameter) child3DNA.get(i).clone();
             } catch (CloneNotSupportedException e) {
-                support.log(e.getMessage());
+                support.log(e.getMessage(), typeOfLogLevel.ERROR);
             }
 
             if (p1 != null && p2 != null && p3 != null && c1 != null && c2 != null && c3 != null) //clone was successful
@@ -387,7 +388,7 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
                 break;
         }
 
-        support.log("Number of new children: " + children.size());
+        support.log("Number of new children: " + children.size(), typeOfLogLevel.INFO);
         for (SimulationType child : children) {
             ArrayList<SimulationType> childList = new ArrayList<>();
             childList.add(child);

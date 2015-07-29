@@ -9,6 +9,7 @@ import toe.datamodel.SimulationType;
 import toe.datamodel.parameter;
 import toe.support;
 import toe.typedef;
+import toe.typedef.typeOfLogLevel;
 
 /**
  *
@@ -19,6 +20,7 @@ public class BFSphere implements BenchmarkFunction {
     double limitUpper = support.DEFAULT_Sphere_limitupper;
     double limitLower = support.DEFAULT_Sphere_limitLower;
 
+    @Override
     public SimulationType getSimulationResult(ArrayList<parameter> parameterList) {
         ArrayList<parameter> tmpParameterList = (parameterList);
         ArrayList<parameter> tmpListOfChangableParameter = support.getListOfChangableParameters(tmpParameterList);
@@ -75,6 +77,7 @@ public class BFSphere implements BenchmarkFunction {
         return tmpSimulation;
     }
 
+    @Override
     public SimulationType getOptimumSimulation() {
         ArrayList<parameter> optimumParameterlist = support.getCopyOfParameterSet(support.getOriginalParameterBase());
         ArrayList<parameter> optimumChangableParameterset = support.getListOfChangableParameters(optimumParameterlist);
@@ -82,23 +85,25 @@ public class BFSphere implements BenchmarkFunction {
         //Optimum is in the middle of each parameter, its exact at 0,0
         for (parameter p : optimumChangableParameterset) {
             p.setValue(p.getEndValue() - ((p.getEndValue() - p.getStartValue()) / 2));
-            support.log("P-Value for optimal solution (" + p.getName() + "): " + p.getValue());
+            support.log("P-Value for optimal solution (" + p.getName() + "): " + p.getValue(), typeOfLogLevel.INFO);
         }
         SimulationType tmpSimulation = this.getSimulationResult(optimumParameterlist);
-        support.log("Measurement-Values of optimal solution are:");
+        support.log("Measurement-Values of optimal solution are:", typeOfLogLevel.INFO);
 
         for (MeasureType m : tmpSimulation.getMeasures()) {
-            support.log(m.getMeasureName() + " has value: " + m.getMeanValue() + " with max: " + m.getMaxValue() + " and min: " + m.getMinValue());
+            support.log(m.getMeasureName() + " has value: " + m.getMeanValue() + " with max: " + m.getMaxValue() + " and min: " + m.getMinValue(), typeOfLogLevel.INFO);
         }
 
         return tmpSimulation;
 
     }
 
+    @Override
     public double getMinValue() {
         return 0.0;
     }
 
+    @Override
     public double getMaxValue() {
         ArrayList<parameter> tmpParameterList = support.getParameterBase();
         ArrayList<parameter> tmpListOfChangableParameter = support.getListOfChangableParameters(tmpParameterList);
@@ -107,6 +112,7 @@ public class BFSphere implements BenchmarkFunction {
 
     }
 
+    @Override
     public typedef.typeOfBenchmarkFunction getTypeOfBenchmarkFunction() {
         return typedef.typeOfBenchmarkFunction.Sphere;
     }

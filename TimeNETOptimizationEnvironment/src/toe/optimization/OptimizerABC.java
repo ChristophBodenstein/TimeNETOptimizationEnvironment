@@ -19,6 +19,7 @@ import toe.datamodel.SimulationType;
 import toe.datamodel.parameter;
 import toe.simulation.Simulator;
 import toe.support;
+import toe.typedef.typeOfLogLevel;
 
 /**
  *
@@ -175,7 +176,7 @@ public class OptimizerABC extends OptimizerPopulationBased implements Runnable, 
             try {
                 mySimulator.wait();
             } catch (InterruptedException ex) {
-                support.log("Problem waiting for end of non-cache-simulator.");
+                support.log("Problem waiting for end of non-cache-simulator.", typeOfLogLevel.ERROR);
             }
         }
 
@@ -184,7 +185,7 @@ public class OptimizerABC extends OptimizerPopulationBased implements Runnable, 
 
         while (optiCycleCounter < this.maxNumberOfOptiCycles) {
             if (currentNumberOfOptiCyclesWithoutImprovement >= maxNumberOfOptiCyclesWithoutImprovement) {
-                support.log("Too many optimization cycles without improvement. Ending optimization.");
+                support.log("Too many optimization cycles without improvement. Ending optimization.", typeOfLogLevel.INFO);
                 break;
             }
 
@@ -200,7 +201,7 @@ public class OptimizerABC extends OptimizerPopulationBased implements Runnable, 
                     try {
                         mySimulator.wait();
                     } catch (InterruptedException ex) {
-                        support.log("Problem waiting for end of non-cache-simulator.");
+                        support.log("Problem waiting for end of non-cache-simulator.", typeOfLogLevel.ERROR);
                     }
                 }
                 source = mySimulator.getListOfCompletedSimulationParsers();

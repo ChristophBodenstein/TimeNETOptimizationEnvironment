@@ -17,6 +17,7 @@ import toe.datamodel.parameter;
 import toe.datamodel.SimulationType;
 import toe.simulation.Simulator;
 import toe.support;
+import toe.typedef.typeOfLogLevel;
 
 /**
  *
@@ -109,7 +110,7 @@ public class OptimizerChargedSystemSearch extends OptimizerPopulationBased imple
             try {
                 mySimulator.wait();
             } catch (InterruptedException ex) {
-                support.log("Problem waiting for end of non-cache-simulator.");
+                support.log("Problem waiting for end of non-cache-simulator.", typeOfLogLevel.ERROR);
             }
         }
         ArrayList<SimulationType> simulationResults = mySimulator.getListOfCompletedSimulationParsers();
@@ -119,7 +120,7 @@ public class OptimizerChargedSystemSearch extends OptimizerPopulationBased imple
         while (optiCycleCounter < this.maxNumberOfOptiCycles) {
             updatePositions();
             if (currentNumberOfOptiCyclesWithoutImprovement >= maxNumberOfOptiCyclesWithoutImprovement) {
-                support.log("Too many optimization cycles without improvement. Ending optimization.");
+                support.log("Too many optimization cycles without improvement. Ending optimization.", typeOfLogLevel.INFO);
                 break;
             }
 
@@ -137,7 +138,7 @@ public class OptimizerChargedSystemSearch extends OptimizerPopulationBased imple
                 try {
                     mySimulator.wait();
                 } catch (InterruptedException ex) {
-                    support.log("Problem waiting for end of non-cache-simulator.");
+                    support.log("Problem waiting for end of non-cache-simulator.", typeOfLogLevel.ERROR);
                 }
             }
             simulationResults = mySimulator.getListOfCompletedSimulationParsers();
@@ -152,9 +153,9 @@ public class OptimizerChargedSystemSearch extends OptimizerPopulationBased imple
         for (int measureCount = 0; measureCount < listOfMeasures.size(); measureCount++) {
             String measureName = listOfMeasures.get(measureCount).getMeasureName();
             MeasureType activeMeasure = topMeasure.getMeasureByName(measureName);
-            support.log(activeMeasure.getStateAsString());
+            support.log(activeMeasure.getStateAsString(), typeOfLogLevel.INFO);
         }
-        support.log("CCS Finished");
+        support.log("CCS Finished", typeOfLogLevel.INFO);
 
     }
 

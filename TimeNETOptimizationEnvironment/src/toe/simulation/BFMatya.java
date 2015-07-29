@@ -9,30 +9,32 @@ import toe.datamodel.SimulationType;
 import toe.datamodel.parameter;
 import toe.support;
 import toe.typedef;
+import toe.typedef.typeOfLogLevel;
 
 /**
  *
  * @author Christoph Bodenstein
  */
 public class BFMatya implements BenchmarkFunction {
-    
+
     double limitUpper = support.DEFAULT_Matya_limitLower;
     double limitLower = support.DEFAULT_Matya_limitupper;
-    
+
+    @Override
     public SimulationType getSimulationResult(ArrayList<parameter> parameterList) {
         ArrayList<parameter> tmpParameterList = (parameterList);
         ArrayList<parameter> tmpListOfChangableParameter = support.getListOfChangableParameters(tmpParameterList);
         SimulationType tmpSimulation = new SimulationType();
-        
+
         double sum;
         int dimension = tmpListOfChangableParameter.size();
         double xNew;
         double x[] = new double[dimension];
         double value;
-        
+
         double confInterval = support.getParameterByName(parameterList, "ConfidenceIntervall").getValue();
         double maxError = support.getParameterByName(parameterList, "MaxRelError").getValue();
-        
+
         for (int c = 0; c < dimension; c++) {
             parameter p = tmpListOfChangableParameter.get(c);
             value = p.getValue();
@@ -43,18 +45,18 @@ public class BFMatya implements BenchmarkFunction {
             x[c] = xNew * (limitUpper - limitLower) + limitLower;
         }
         if (dimension != 2) {
-            support.log("Matya is only defined for 2 dimensions");
+            support.log("Matya is only defined for 2 dimensions.", typeOfLogLevel.ERROR);
             return null;
         }
         double x0 = x[0];
         double x1 = x[1];
         sum = 0.26 * (x0 * x0 + x1 * x1) - 0.48 * x0 * x1;
-        
+
         ArrayList<MeasureType> tmpListOfMeasurements = support.getMeasures();
         //All Measure will have the same result value
 
-        ArrayList<MeasureType> newListOfMeasurements = new ArrayList<MeasureType>();
-        
+        ArrayList<MeasureType> newListOfMeasurements = new ArrayList<>();
+
         for (MeasureType tmpListOfMeasurement : tmpListOfMeasurements) {
             //make deep copy of old Measurement
             MeasureType tmpMeasurement = new MeasureType(tmpListOfMeasurement);
@@ -66,12 +68,13 @@ public class BFMatya implements BenchmarkFunction {
             tmpMeasurement.setMinValue(this.getMinValue());
             newListOfMeasurements.add(tmpMeasurement);
         }
-        
+
         tmpSimulation.setListOfParameters(tmpParameterList);
         tmpSimulation.setMeasures(newListOfMeasurements);
         return tmpSimulation;
     }
-    
+
+    @Override
     public SimulationType getOptimumSimulation() {
         ArrayList<parameter> optimumParameterlist = support.getCopyOfParameterSet(support.getOriginalParameterBase());
         ArrayList<parameter> optimumChangableParameterset = support.getListOfChangableParameters(optimumParameterlist);
@@ -79,27 +82,30 @@ public class BFMatya implements BenchmarkFunction {
         //Optimum is in the middle of each parameter, its exact at 0,0
         for (parameter p : optimumChangableParameterset) {
             p.setValue(p.getEndValue() - ((p.getEndValue() - p.getStartValue()) / 2));
-            support.log("P-Value for optimal solution (" + p.getName() + "): " + p.getValue());
+            support.log("P-Value for optimal solution (" + p.getName() + "): " + p.getValue(), typeOfLogLevel.INFO);
         }
         SimulationType tmpSimulation = this.getSimulationResult(optimumParameterlist);
-        support.log("Measurement-Values of optimal solution are:");
-        
+        support.log("Measurement-Values of optimal solution are:", typeOfLogLevel.INFO);
+
         for (MeasureType m : tmpSimulation.getMeasures()) {
-            support.log(m.getMeasureName() + " has value: " + m.getMeanValue() + " with max: " + m.getMaxValue() + " and min: " + m.getMinValue());
+            support.log(m.getMeasureName() + " has value: " + m.getMeanValue() + " with max: " + m.getMaxValue() + " and min: " + m.getMinValue(), typeOfLogLevel.INFO);
         }
-        
+
         return tmpSimulation;
-        
+
     }
-    
+
+    @Override
     public double getMinValue() {
         return 0.0;
     }
-    
+
+    @Override
     public double getMaxValue() {
         return 0.26 * (support.DEFAULT_Matya_limitLower * support.DEFAULT_Matya_limitLower + support.DEFAULT_Matya_limitupper * support.DEFAULT_Matya_limitupper) - 0.48 * support.DEFAULT_Matya_limitLower * support.DEFAULT_Matya_limitupper;
     }
-    
+
+    @Override
     public typedef.typeOfBenchmarkFunction getTypeOfBenchmarkFunction() {
         return typedef.typeOfBenchmarkFunction.Matya;
     }

@@ -488,4 +488,27 @@ public class typedef {
          */
         MATLAB
     }
+
+    /**
+     * Types of log (Verbose, Info, Error, Result)
+     */
+    public enum typeOfLogLevel {
+
+        /**
+         * Everything to be mentioned, which is less interesting
+         */
+        VERBOSE,
+        /**
+         * Everything which might be interesting
+         */
+        INFO,
+        /**
+         * Errors during runtime
+         */
+        ERROR,
+        /**
+         * Results of Optimization/Simulation, etc.
+         */
+        RESULT
+    }
 }

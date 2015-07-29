@@ -12,6 +12,7 @@ import toe.datamodel.parameter;
 import toe.datamodel.SimulationType;
 import toe.datamodel.MeasureType;
 import toe.support;
+import toe.typedef.typeOfLogLevel;
 
 /**
  * Class to simulate real SCPN-Simulation. It uses the SimulationCache with read
@@ -30,7 +31,7 @@ public class SimulatorCached implements Simulator {
      */
     public SimulatorCached() {
         logFileName = support.getTmpPath() + File.separator + "SimLog_" + getClass().getSimpleName() + "_" + Calendar.getInstance().getTimeInMillis() + ".csv";
-        support.log("LogfileName:" + logFileName);
+        support.log("LogfileName:" + logFileName, typeOfLogLevel.INFO);
     }
 
     /**
@@ -43,13 +44,13 @@ public class SimulatorCached implements Simulator {
     public void initSimulator(ArrayList<ArrayList<parameter>> listOfParameterSetsTMP, boolean log) {
         if (mySimulationCache != null) {
             this.myListOfSimulations = mySimulationCache.getListOfCompletedSimulationParsers(listOfParameterSetsTMP, support.getGlobalSimulationCounter());
-            support.setGlobalSimulationCounter(support.getGlobalSimulationCounter()+myListOfSimulations.size());
+            support.setGlobalSimulationCounter(support.getGlobalSimulationCounter() + myListOfSimulations.size());
         } else {
-            support.log("No local Simulation file loaded. Simulation not possible.");
+            support.log("No local Simulation file loaded. Simulation not possible.", typeOfLogLevel.ERROR);
         }
 
         if ((this.myListOfSimulations == null) || (this.myListOfSimulations.size() != listOfParameterSetsTMP.size())) {
-            support.log("Not all Simulations found in local Cache.  Will take next possible parametersets from cache.");
+            support.log("Not all Simulations found in local Cache.  Will take next possible parametersets from cache.", typeOfLogLevel.INFO);
             myListOfSimulations = this.mySimulationCache.getNearestParserListFromListOfParameterSets(listOfParameterSetsTMP);
         }
 
@@ -63,10 +64,10 @@ public class SimulatorCached implements Simulator {
                         myListOfSimulations.get(i).setListOfParameters(listOfParameterSetsTMP.get(i));
                     }
                 } else {
-                    support.log("No Measures found in parser.");
+                    support.log("No Measures found in parser.", typeOfLogLevel.ERROR);
                 }
             } else {
-                support.log("List of parsers is empty.");
+                support.log("List of parsers is empty.", typeOfLogLevel.INFO);
             }
 
             if (log) {
@@ -134,7 +135,7 @@ public class SimulatorCached implements Simulator {
     @Override
     public SimulationType getCalculatedOptimum(MeasureType targetMeasure) {
         //iterate through all cached sims and look for best solution 
-        support.log("SimulatorCached: Getting absolute optimum simulation from Cache.");
+        support.log("SimulatorCached: Getting absolute optimum simulation from Cache.", typeOfLogLevel.INFO);
         ArrayList<SimulationType> mySimulationList = this.mySimulationCache.getSimulationList();
         double distance = Double.MAX_VALUE;
         double minValue = Double.MAX_VALUE;
@@ -159,16 +160,16 @@ public class SimulatorCached implements Simulator {
         }
 
         if (numberOfOptimalSimulation >= 0) {
-            support.log("Found optimal Simulation for Measure " + targetMeasure.getMeasureName());
+            support.log("Found optimal Simulation for Measure " + targetMeasure.getMeasureName(), typeOfLogLevel.INFO);
 
         } else {
-            support.log("No Optimum Solution for " + targetMeasure.getMeasureName() + " could be found in cache.");
+            support.log("No Optimum Solution for " + targetMeasure.getMeasureName() + " could be found in cache.", typeOfLogLevel.INFO);
         }
         MeasureType tmpMeasure = mySimulationList.get(numberOfOptimalSimulation).getMeasureByName(targetMeasure.getMeasureName());
         tmpMeasure.setMinValue(minValue);
         tmpMeasure.setMaxValue(maxValue);
-        support.log(support.padRight("Min", 10) + " | " + support.padRight("Mean", 10) + " | " + support.padRight("Max", 10));
-        support.log(support.padRight(Double.toString(tmpMeasure.getMinValue()), 10) + " | " + support.padRight(Double.toString(tmpMeasure.getMeanValue()), 10) + " | " + support.padRight(Double.toString(tmpMeasure.getMaxValue()), 10));
+        support.log(support.padRight("Min", 10) + " | " + support.padRight("Mean", 10) + " | " + support.padRight("Max", 10), typeOfLogLevel.INFO);
+        support.log(support.padRight(Double.toString(tmpMeasure.getMinValue()), 10) + " | " + support.padRight(Double.toString(tmpMeasure.getMeanValue()), 10) + " | " + support.padRight(Double.toString(tmpMeasure.getMaxValue()), 10), typeOfLogLevel.INFO);
 
         SimulationType resultSimulation = mySimulationList.get(numberOfOptimalSimulation);
         /*
@@ -181,8 +182,8 @@ public class SimulatorCached implements Simulator {
                 pTmp.setEndValue(support.getParameterByName(support.getParameterBase(), pTmp.getName()).getEndValue());
                 pTmp.setStartValue(support.getParameterByName(support.getParameterBase(), pTmp.getName()).getStartValue());
             } catch (Exception e) {
-                support.log("Error setting values for optimum.");
-                e.printStackTrace();
+                support.log("Error setting values for optimum.", typeOfLogLevel.ERROR);
+                support.log(e.getLocalizedMessage(), typeOfLogLevel.ERROR);
             }
         }
         return resultSimulation;

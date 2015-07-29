@@ -13,6 +13,7 @@ package toe.helper;
 
 import javax.swing.JLabel;
 import toe.support;
+import toe.typedef.typeOfLogLevel;
 
 /**
  *
@@ -55,7 +56,7 @@ public class nativeProcess extends Thread {
                 support.spinInLabel();
                 if (support.isCancelEverything() || killProcess) {
                     //Kill native Thread and set Running to false
-                    support.log("Try to kill the started process.");
+                    support.log("Try to kill the started process.", typeOfLogLevel.INFO);
                     myNativeProcess.killProcess();
                     this.setRunning(false);
                     this.pfc.errorOccured("Plot canceled.");
@@ -64,14 +65,14 @@ public class nativeProcess extends Thread {
                 }
 
             } catch (InterruptedException ex) {
-                support.log("Error while waiting for real native Process: " + myProcessBuilder.toString());
+                support.log("Error while waiting for real native Process: " + myProcessBuilder.toString(), typeOfLogLevel.ERROR);
             }
         }
 
         if (this.pfc != null) {
             pfc.processEnded();
         } else {
-            support.log("No PlotFramController given, will not show image.");
+            support.log("No PlotFrameController given, will not show image.", typeOfLogLevel.ERROR);
         }
 
     }
@@ -131,11 +132,11 @@ class realNativeProcess extends Thread {
                 p.waitFor();
                 myNativeProcess.setRunning(false);
             } catch (Exception ex) {
-                support.log("Error while waiting for nativeProcess:" + myNativeProcess.toString());
+                support.log("Error while waiting for nativeProcess:" + myNativeProcess.toString(), typeOfLogLevel.ERROR);
             }
 
         } else {
-            support.log("No Process given, could not start anything.");
+            support.log("No Process given, could not start anything.", typeOfLogLevel.ERROR);
         }
     }
 
@@ -146,7 +147,7 @@ class realNativeProcess extends Thread {
     public void killProcess() {
         if (p != null) {
             p.destroy();
-            support.log("Process will be killed. Check for running simulation binaries and kill them manually!!!");
+            support.log("Process will be killed. Check for running simulation binaries and kill them manually!!!", typeOfLogLevel.INFO);
         }
     }
 }

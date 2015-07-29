@@ -15,6 +15,7 @@ import toe.datamodel.SimulationType;
 import toe.datamodel.parameter;
 import toe.simulation.Simulator;
 import toe.support;
+import toe.typedef.typeOfLogLevel;
 import toe.typedef.typeOfMVMOMutationSelection;
 import toe.typedef.typeOfMVMOParentSelection;
 
@@ -99,7 +100,7 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
             try {
                 mySimulator.wait();
             } catch (InterruptedException ex) {
-                support.log("Problem waiting for end of non-cache-simulator.");
+                support.log("Problem waiting for end of non-cache-simulator.", typeOfLogLevel.ERROR);
             }
         }
         ArrayList<SimulationType> simulationResults = mySimulator.getListOfCompletedSimulationParsers();
@@ -111,7 +112,7 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
         int numGenesToSelect = 1;
         while (optiCycleCounter < this.maxNumberOfOptiCycles) {
             if (currentNumberOfOptiCyclesWithoutImprovement >= maxNumberOfOptiCyclesWithoutImprovement) {
-                support.log("Too many optimization cycles without improvement. Ending optimization.");
+                support.log("Too many optimization cycles without improvement. Ending optimization.", typeOfLogLevel.INFO);
                 break;
             }
 
@@ -140,7 +141,7 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
                 try {
                     mySimulator.wait();
                 } catch (InterruptedException ex) {
-                    support.log("Problem waiting for end of non-cache-simulator.");
+                    support.log("Problem waiting for end of non-cache-simulator.", typeOfLogLevel.INFO);
                 }
             }
 
@@ -169,7 +170,7 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
             return population;
         }
         if (population.get(population.size() - 1).get(0).getDistanceToTargetValue() >= candidate.get(0).getDistanceToTargetValue()) {
-            support.log("Added new one to population");
+            support.log("Added new one to population", typeOfLogLevel.INFO);
             population.set(population.size() - 1, candidate);
             population = sortPopulation(population);
         }
@@ -187,7 +188,7 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
                 {
                     sum += population.get(populationIndex).get(0).getListOfParameters().get(parameterIndex).getValue();
                 } catch (IndexOutOfBoundsException e) {
-                    support.log(e.getMessage());
+                    support.log(e.getMessage(), typeOfLogLevel.ERROR);
                 }
             }
             meanValues.add(sum / population.size());
@@ -206,7 +207,7 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
                     double value = population.get(populationIndex).get(0).getListOfParameters().get(parameterIndex).getValue();
                     sum += (value - parameterMeanValues.get(parameterIndex)) * (value - parameterMeanValues.get(parameterIndex));
                 } catch (IndexOutOfBoundsException e) {
-                    support.log(e.getMessage());
+                    support.log(e.getMessage(), typeOfLogLevel.ERROR);
                 }
 
             }
@@ -287,10 +288,10 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
                         - transform(mean, si1, si2, 0);
                 if (x < 0) {
                     x = 0;
-                    support.log("Transformation value too low, forced to 0");
+                    support.log("Transformation value too low, forced to 0", typeOfLogLevel.INFO);
                 } else if (x > 1) {
                     x = 1;
-                    support.log("Transformation value too high, forced to 1");
+                    support.log("Transformation value too high, forced to 1", typeOfLogLevel.INFO);
                 }
                 //support.log("x: " + x);
                 p.setValue(x);

@@ -9,6 +9,7 @@ package toe.datamodel;
 
 import toe.support;
 import java.util.ArrayList;
+import toe.typedef.typeOfLogLevel;
 
 /**
  *
@@ -51,7 +52,7 @@ public class SimulationType {
     public SimulationType(SimulationType originalParser) {
         this.logName = originalParser.logName;
         this.SimulationType = originalParser.SimulationType;
-        this.Measures = new ArrayList<MeasureType>();
+        this.Measures = new ArrayList<>();
         for (int i = 0; i < originalParser.getMeasures().size(); ++i) {
             MeasureType newMeasure = new MeasureType(originalParser.getMeasures().get(i));
             this.Measures.add(newMeasure);
@@ -60,14 +61,14 @@ public class SimulationType {
         this.parseStatus = originalParser.parseStatus;
         this.CPUTime = originalParser.CPUTime;
 
-        this.parameterList = new ArrayList<parameter>();
+        this.parameterList = new ArrayList<>();
         ArrayList<parameter> originalParamterArray = originalParser.getListOfParameters();
         for (int i = 0; i < originalParamterArray.size(); ++i) {
             try {
                 parameter p = (parameter) originalParamterArray.get(i).clone();
                 parameterList.add(p);
             } catch (CloneNotSupportedException e) {
-                support.log(e.getMessage());
+                support.log(e.getMessage(), typeOfLogLevel.ERROR);
             }
 
         }

@@ -13,6 +13,7 @@ import toe.datamodel.SimulationType;
 import toe.datamodel.parameter;
 import toe.support;
 import toe.typedef;
+import toe.typedef.typeOfLogLevel;
 
 /**
  *
@@ -92,8 +93,8 @@ public class OptimizerSimAnnealing extends OptimizerHill implements Runnable, Op
                 break;
         }
 
-        support.log("Actual Temp for Parameters: " + actualTempParameter);
-        support.log("Actual Temp for Cost: " + actualTempCost);
+        support.log("Actual Temp for Parameters: " + actualTempParameter, typeOfLogLevel.INFO);
+        support.log("Actual Temp for Cost: " + actualTempCost, typeOfLogLevel.INFO);
         //Eject if Temperature is lower then Epsilon
         if (actualTempCost <= support.getOptimizerPreferences().getPref_Epsilon() || actualTempParameter <= support.getOptimizerPreferences().getPref_Epsilon()) {
             //Set currentsolution=bestsolution so it will be printed as optimum
@@ -129,7 +130,7 @@ public class OptimizerSimAnnealing extends OptimizerHill implements Runnable, Op
         ArrayList<parameter> newParameterset = support.getCopyOfParameterSet(parameterBase);
         ArrayList<parameter> listOfChangableParameters = support.getListOfChangableParameters(newParameterset);
 
-        support.log("TempParameter:" + actualTempParameter + " and TempCost:" + actualTempCost);
+        support.log("TempParameter:" + actualTempParameter + " and TempCost:" + actualTempCost, typeOfLogLevel.INFO);
         for (int i = 0; i < listOfChangableParameters.size(); i++) {
 
             parameter p = listOfChangableParameters.get(i);
@@ -151,7 +152,7 @@ public class OptimizerSimAnnealing extends OptimizerHill implements Runnable, Op
             //Calculation of Standard nextValue
                 //nextValue = p.getValue() + sign * actualTempParameter *(Math.pow(1+(1/actualTempParameter),Math.abs(2*r-1) )) * distanceMax;
                 nextValue = p.getValue() + sign * actualTempParameter * (Math.pow(1 + (1 / actualTempParameter), Math.abs(2 * r) - 1)) * distanceMax;
-                support.log("Min:" + p.getStartValue() + " Max:" + p.getEndValue() + " NextValue:" + nextValue);
+                support.log("Min:" + p.getStartValue() + " Max:" + p.getEndValue() + " NextValue:" + nextValue, typeOfLogLevel.INFO);
                 /*
                  support.log("xCurrent:"+p.getValue());
                  support.log("sign:"+sign);
@@ -182,7 +183,7 @@ public class OptimizerSimAnnealing extends OptimizerHill implements Runnable, Op
                         //Do nothing
                         break;
                     case Simple:
-                        support.log("SimpleVaule to add is " + simpleValue);
+                        support.log("SimpleValue to add is " + simpleValue, typeOfLogLevel.INFO);
                         if (Math.random() >= 0.5) {
                             nextValue = p.getValue() + simpleValue;
                         } else {
@@ -190,7 +191,7 @@ public class OptimizerSimAnnealing extends OptimizerHill implements Runnable, Op
                         }
                         break;
                     case SimpleStepwise:
-                        support.log("SimpleVaule to add is " + simpleValue);
+                        support.log("SimpleValue to add is " + simpleValue, typeOfLogLevel.INFO);
 
                         if (Math.random() >= 0.5) {
                             nextValue = p.getValue() + Math.round(simpleValue / p.getStepping()) * p.getStepping();
@@ -205,11 +206,11 @@ public class OptimizerSimAnnealing extends OptimizerHill implements Runnable, Op
                 nextValue = Math.min(nextValue, p.getEndValue());
                 nextValue = Math.max(nextValue, p.getStartValue());
 
-                support.log("Try to set value to: " + nextValue);
+                support.log("Try to set value to: " + nextValue, typeOfLogLevel.INFO);
             }
 
             p.setValue(nextValue);
-            support.log("Setting Parameter " + p.getName() + " to Value " + p.getValue() + ".");
+            support.log("Setting Parameter " + p.getName() + " to Value " + p.getValue() + ".", typeOfLogLevel.INFO);
 
         }
 
@@ -222,14 +223,14 @@ public class OptimizerSimAnnealing extends OptimizerHill implements Runnable, Op
         parameterCostParameter.setName(typedef.listOfParametersToIgnore[1]);
         parameterCostParameter.setValue(actualTempCost);
 
-        ArrayList<parameter> dummyParameterset = new ArrayList<parameter>();
+        ArrayList<parameter> dummyParameterset = new ArrayList<>();
 
         dummyParameterset.add(parameterCostParameter);
         dummyParameterset.add(parameterTempParameter);
 
         MeasureType dummyMeasure = new MeasureType();
         dummyMeasure.setMeasureName("SimAnnealingTemperature");
-        ArrayList<MeasureType> dummyMeasureList = new ArrayList<MeasureType>();
+        ArrayList<MeasureType> dummyMeasureList = new ArrayList<>();
 
         dummyMeasureList.add(dummyMeasure);
 
@@ -237,7 +238,7 @@ public class OptimizerSimAnnealing extends OptimizerHill implements Runnable, Op
         dummySim.setListOfParameters(dummyParameterset);
         dummySim.setMeasures(dummyMeasureList);
 
-        ArrayList<SimulationType> dummySimulationTypeList = new ArrayList<SimulationType>();
+        ArrayList<SimulationType> dummySimulationTypeList = new ArrayList<>();
         dummySimulationTypeList.add(dummySim);
 
         support.addLinesToLogFileFromListOfParser(dummySimulationTypeList, nameOfdummyLogfile);

@@ -41,6 +41,7 @@ import toe.datamodel.MeasureType;
 import toe.datamodel.SimulationType;
 import toe.datamodel.parameter;
 import toe.support;
+import toe.typedef.typeOfLogLevel;
 
 /**
  *
@@ -69,8 +70,8 @@ public class SimulatorDistributed implements Runnable, Simulator {
     public SimulatorDistributed() {
         super();
         logFileName = support.getTmpPath() + File.separator + "SimLog_" + getClass().getSimpleName() + "_" + Calendar.getInstance().getTimeInMillis() + ".csv";
-        support.log("LogfileName:" + logFileName);
-        listOfUnproccessedFilesNames = new ArrayList<String>();
+        support.log("LogfileName:" + logFileName, typeOfLogLevel.INFO);
+        listOfUnproccessedFilesNames = new ArrayList<>();
         simid = Long.toString(Calendar.getInstance().getTimeInMillis());
     }
 
@@ -82,13 +83,13 @@ public class SimulatorDistributed implements Runnable, Simulator {
         client = HttpFactory.getHttpClient();
         boolean uploadSuccessful;//To handle upload errors
 
-        support.log("Web-Simulation-Thread started to simulate " + listOfParameterSets.size() + " simulations.");
+        support.log("Web-Simulation-Thread started to simulate " + listOfParameterSets.size() + " simulations.", typeOfLogLevel.INFO);
         if (support.isDistributedSimulationAvailable()) {
             try {
-                support.log("Distributed Simulation available, starting distributed simulations.");
+                support.log("Distributed Simulation available, starting distributed simulations.", typeOfLogLevel.INFO);
 
-                support.log("Logfilename is:" + logFileName);
-                support.log("simid: " + simid);
+                support.log("Logfilename is:" + logFileName, typeOfLogLevel.INFO);
+                support.log("simid: " + simid, typeOfLogLevel.INFO);
                 //Open Logfile and write first line
                 //FileWriter fw;
                 if (listOfParameterSets.size() > 0) {
@@ -106,14 +107,14 @@ public class SimulatorDistributed implements Runnable, Simulator {
                         uploadSuccessful = false;
                         while (!uploadSuccessful) {
                             count++;
-                            support.log("Trying to upload the same simulation " + count + " time. ThreadID:" + Thread.currentThread().toString());
+                            support.log("Trying to upload the same simulation " + count + " time. ThreadID:" + Thread.currentThread().toString(), typeOfLogLevel.INFO);
                             try {
                                 //Upload the file
                                 uploadSimulationFile(support.getReMoteAddress() + "/rest/file/upload", file, file.getName(), "File Uploaded :: WORDS");
                                 uploadSuccessful = true;
-                                support.log("Upload successful. Will wait for results. Try: " + count);
+                                support.log("Upload successful. Will wait for results. Try: " + count, typeOfLogLevel.INFO);
                             } catch (Exception ex) {
-                                support.log("Upload error, will try again in " + support.DEFAULT_SLEEPING_TIME + " ms.");
+                                support.log("Upload error, will try again in " + support.DEFAULT_SLEEPING_TIME + " ms.", typeOfLogLevel.INFO);
                                 support.waitSingleThreaded(support.DEFAULT_SLEEPING_TIME);
                                 Thread.currentThread().join();
                             }
@@ -128,7 +129,7 @@ public class SimulatorDistributed implements Runnable, Simulator {
                     }
                 }
             } catch (Exception e) {
-                support.log("Error while creating local simulation file or log-file.");
+                support.log("Error while creating local simulation file or log-file.", typeOfLogLevel.ERROR);
             }
             //end of the first phase which is uploading the XML files
 
@@ -159,7 +160,7 @@ public class SimulatorDistributed implements Runnable, Simulator {
 
                             FileWriter fileWriter;
 
-                            support.log("Downloading filename=======" + filename);
+                            support.log("Downloading filename=======" + filename, typeOfLogLevel.INFO);
                             String exportFileName = tmpFilePath + File.separator + filename;
                             File newTextFile = new File(exportFileName);
                             fileWriter = new FileWriter(newTextFile);
@@ -173,7 +174,7 @@ public class SimulatorDistributed implements Runnable, Simulator {
                             if (myParser.isParsingSuccessfullFinished()) {
                                 i++;
                                 listOfUnproccessedFilesNames.remove(filenameWithoutExtension);
-                                support.log("Parsing successful.");
+                                support.log("Parsing successful.", typeOfLogLevel.INFO);
                                 myResults.setIsFromDistributedSimulation(true);
                                 if (this.log) {
                                     support.addLinesToLogFile(myResults, logFileName);
@@ -182,7 +183,7 @@ public class SimulatorDistributed implements Runnable, Simulator {
                                 this.listOfCompletedSimulationParsers.add(myResults);//add parser to local list of completed simulations
 
                                 if (!keepSimulationFiles) {
-                                    support.log("Will delete XML-File and log-File.");
+                                    support.log("Will delete XML-File and log-File.", typeOfLogLevel.INFO);
                                     tmpFilenameArray = actualSimulationLogFile.split("simTime");
                                     String actualParameterFileName = tmpFilenameArray[0] + ".xml";
                                     support.del(new File(actualParameterFileName));
@@ -190,11 +191,11 @@ public class SimulatorDistributed implements Runnable, Simulator {
                                 }
                                 //Update status
                                 this.status = 100 * i / listOfParameterSets.size();
-                                support.log("Status of WebSimulator: " + this.status);
+                                support.log("Status of WebSimulator: " + this.status, typeOfLogLevel.INFO);
                                 this.deleteSimulationOnServer(filenameWithoutExtension);
                             } else {
                                 //Trigger simulation again (send request to server)
-                                support.log("The received file has been ignored because of problems parsing the result logfile " + filenameWithoutExtension);
+                                support.log("The received file has been ignored because of problems parsing the result logfile " + filenameWithoutExtension, typeOfLogLevel.INFO);
                                 this.resetSimulation(filenameWithoutExtension);
                             }
                         }
@@ -208,7 +209,7 @@ public class SimulatorDistributed implements Runnable, Simulator {
 
                 } catch (Exception ex) {
                     Logger.getLogger(SimulatorWebSlave.class.getName()).log(Level.SEVERE, null, ex);
-                    support.log("Problem connecting to server (asking for results). please check your network preferences.");
+                    support.log("Problem connecting to server (asking for results). please check your network preferences.", typeOfLogLevel.ERROR);
                 } finally {
                     //support.log("Trying to consume Response from upload.");
                     try {
@@ -216,14 +217,14 @@ public class SimulatorDistributed implements Runnable, Simulator {
                             try {
                                 EntityUtils.consume(response.getEntity());
                             } catch (final ConnectionClosedException ignore) {
-                                support.log("Connection-Closed-Exception while consuming http-response!");
+                                support.log("Connection-Closed-Exception while consuming http-response!", typeOfLogLevel.ERROR);
                                 HttpFactory.resetConnections();
                             }
                         }
 
                     } catch (Exception ex) {
                         Logger.getLogger(SimulatorWebSlave.class.getName()).log(Level.SEVERE, null, ex);
-                        support.log("Error consuming the http-response while asking for results.");
+                        support.log("Error consuming the http-response while asking for results.", typeOfLogLevel.ERROR);
                     }
                     //support.log("Try to cleanup after download.");
                     httpGet.releaseConnection();
@@ -231,10 +232,10 @@ public class SimulatorDistributed implements Runnable, Simulator {
 
             }
             if (support.isCancelEverything()) {
-                support.log("Distributed Simulation canceled. Will send command to delete all simulations on server.");
+                support.log("Distributed Simulation canceled. Will send command to delete all simulations on server.", typeOfLogLevel.INFO);
                 deleteAllSimulationsFromServer();
             } else {
-                support.log("All Simulation results collected from server. Simulator will end.");
+                support.log("All Simulation results collected from server. Simulator will end.", typeOfLogLevel.INFO);
             }
 
             /*try {
@@ -243,9 +244,9 @@ public class SimulatorDistributed implements Runnable, Simulator {
              support.log("Error joining this distributed-simulation thread.");
              }*/
         } else {
-            support.log("Timenet-Path NOT ok!");
+            support.log("TimeNET-Path NOT ok!", typeOfLogLevel.INFO);
         }
-        support.log("End of Thread reached, should end now.");
+        support.log("End of Thread reached, should end now.", typeOfLogLevel.INFO);
         synchronized (this) {
             notify();
         }
@@ -261,7 +262,7 @@ public class SimulatorDistributed implements Runnable, Simulator {
         client = HttpFactory.getHttpClient();
         HttpPost postRequest = HttpFactory.getPostRequest(support.getReMoteAddress() + "/resetSimulation");
         try {
-            support.log("Try to connect " + postRequest.getURI().toString());
+            support.log("Try to connect " + postRequest.getURI().toString(), typeOfLogLevel.INFO);
 
             //Set various attributes 
             MultipartEntity multiPartEntity = new MultipartEntity();
@@ -274,12 +275,12 @@ public class SimulatorDistributed implements Runnable, Simulator {
 
             //Send request
             String result = client.execute(postRequest, myTmpResponseHandler);
-            support.log("Response of Upload was:" + result);
+            support.log("Response of Upload was:" + result, typeOfLogLevel.INFO);
             if (result.contains("false")) {
                 throw new Exception("Simulation-Reset not successful. Server returned false!");
             }
             if (result.contains("true")) {
-                support.log("Deletion of file " + filename + " successful.");
+                support.log("Deletion of file " + filename + " successful.", typeOfLogLevel.INFO);
             }
             multiPartEntity.consumeContent();
             //EntityUtils.consume(response.getEntity());
@@ -287,7 +288,7 @@ public class SimulatorDistributed implements Runnable, Simulator {
             postRequest.reset();
 
         } catch (Exception ex) {
-            support.log(ex.getLocalizedMessage());
+            support.log(ex.getLocalizedMessage(), typeOfLogLevel.ERROR);
         }
     }
 
@@ -300,7 +301,7 @@ public class SimulatorDistributed implements Runnable, Simulator {
         client = HttpFactory.getHttpClient();
         HttpPost postRequest = HttpFactory.getPostRequest(support.getReMoteAddress() + "/deleteSimulation");
         try {
-            support.log("Try to connect " + postRequest.getURI().toString());
+            support.log("Try to connect " + postRequest.getURI().toString(), typeOfLogLevel.INFO);
 
             //Set various attributes 
             MultipartEntity multiPartEntity = new MultipartEntity();
@@ -327,7 +328,7 @@ public class SimulatorDistributed implements Runnable, Simulator {
             postRequest.reset();
 
         } catch (Exception ex) {
-            support.log(ex.getLocalizedMessage());
+            support.log(ex.getLocalizedMessage(), typeOfLogLevel.ERROR);
         }
     }
 
@@ -339,7 +340,7 @@ public class SimulatorDistributed implements Runnable, Simulator {
         client = HttpFactory.getHttpClient();
         HttpPost postRequest = HttpFactory.getPostRequest(support.getReMoteAddress() + "/deleteAllSimulations");
         try {
-            support.log("Try to connect " + postRequest.getURI().toString());
+            support.log("Try to connect " + postRequest.getURI().toString(), typeOfLogLevel.INFO);
 
             //Set various attributes 
             MultipartEntity multiPartEntity = new MultipartEntity();
@@ -351,12 +352,12 @@ public class SimulatorDistributed implements Runnable, Simulator {
 
             //Send request
             String result = client.execute(postRequest, myTmpResponseHandler);
-            support.log("Response of Upload was:" + result);
+            support.log("Response of Upload was:" + result, typeOfLogLevel.INFO);
             if (result.contains("false")) {
                 throw new Exception("Deletion of all Simulations not successful. Server returned false!");
             }
             if (result.contains("true")) {
-                support.log("Deletion of all Simulations successful.");
+                support.log("Deletion of all Simulations successful.", typeOfLogLevel.INFO);
             }
             multiPartEntity.consumeContent();
             //EntityUtils.consume(response.getEntity());
@@ -364,7 +365,7 @@ public class SimulatorDistributed implements Runnable, Simulator {
             postRequest.reset();
 
         } catch (Exception ex) {
-            support.log(ex.getLocalizedMessage());
+            support.log(ex.getLocalizedMessage(), typeOfLogLevel.ERROR);
         }
     }
 
@@ -383,7 +384,7 @@ public class SimulatorDistributed implements Runnable, Simulator {
         this.listOfCompletedSimulationParsers = new ArrayList<>();
 
         this.listOfParameterSets = support.getCopyOfArrayListOfParametersets(listOfParameterSetsTMP);
-        support.log("Given " + listOfParameterSetsTMP.size() + " parametersets to be simulated via web.");
+        support.log("Given " + listOfParameterSetsTMP.size() + " parametersets to be simulated via web.", typeOfLogLevel.INFO);
         this.log = log;
         this.originalFilename = support.getOriginalFilename();//  originalFilenameTMP;
         this.tmpFilePath = support.getTmpPath();// tmpFilePathTMP;
@@ -441,7 +442,7 @@ public class SimulatorDistributed implements Runnable, Simulator {
             String exportFileName = this.tmpFilePath + File.separator + support.removeExtention(f.getName()) + "_n_" + simulationNumber + "_MaxTime_" + MaxTime + "_EndTime_" + EndTime + "_Seed_" + Seed + "_ConfidenceIntervall_" + ConfidenceIntervall + "_MaxRelError_" + MaxRelError + "_.xml";
 
             //Export/write file to filesystem
-            support.log("File to export: " + exportFileName);
+            support.log("File to export: " + exportFileName, typeOfLogLevel.INFO);
             TransformerFactory tFactory
                     = TransformerFactory.newInstance();
             Transformer transformer = tFactory.newTransformer();
@@ -495,7 +496,7 @@ public class SimulatorDistributed implements Runnable, Simulator {
         client = HttpFactory.getHttpClient();
         HttpPost postRequest = HttpFactory.getPostRequest(urlString);
         try {
-            support.log("Try to connect " + urlString);
+            support.log("Try to connect " + urlString, typeOfLogLevel.INFO);
 
             //Set various attributes 
             MultipartEntity multiPartEntity = new MultipartEntity();
@@ -518,12 +519,12 @@ public class SimulatorDistributed implements Runnable, Simulator {
             //HttpResponse response = client.execute(postRequest, myTmpResponseHandler) ;
             String result = client.execute(postRequest, myTmpResponseHandler);
             //support.waitSingleThreaded(support.DEFAULT_TIMEOUT);
-            support.log("Response of Upload was:" + result);
+            support.log("Response of Upload was:" + result, typeOfLogLevel.INFO);
             if (result.contains("false")) {
                 throw new Exception("Upload not successful. Server returned false!");
             }
             if (result.contains("true")) {
-                support.log("Upload of file " + fileName + " successful.");
+                support.log("Upload of file " + fileName + " successful.", typeOfLogLevel.INFO);
             }
             multiPartEntity.consumeContent();
             //EntityUtils.consume(response.getEntity());
@@ -531,7 +532,7 @@ public class SimulatorDistributed implements Runnable, Simulator {
             postRequest.reset();
 
         } catch (Exception ex) {
-            support.log(ex.getLocalizedMessage());
+            support.log(ex.getLocalizedMessage(), typeOfLogLevel.ERROR);
             throw (ex);
         }
     }

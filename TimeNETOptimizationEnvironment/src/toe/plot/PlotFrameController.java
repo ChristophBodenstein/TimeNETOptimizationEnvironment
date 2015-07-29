@@ -10,7 +10,6 @@ import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import javax.swing.DefaultComboBoxModel;
@@ -31,6 +30,7 @@ import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 import javax.swing.colorchooser.AbstractColorChooserPanel;
 import toe.typedef;
+import toe.typedef.typeOfLogLevel;
 
 /**
  *
@@ -93,7 +93,7 @@ public class PlotFrameController extends javax.swing.JFrame implements nativePro
             BufferedReader in = new BufferedReader(namereader);
             String header = in.readLine();
 
-            support.log("csv header is: " + header);
+            support.log("csv header is: " + header, typeOfLogLevel.INFO);
 
             String[] parts = header.split(";");
             DefaultListModel model = new DefaultListModel();
@@ -433,13 +433,13 @@ public class PlotFrameController extends javax.swing.JFrame implements nativePro
             } else {
                 filePath = fileChooser.getCurrentDirectory().toString();
             }
-            support.log("chosen .csv file: " + filePath);
+            support.log("chosen .csv file: " + filePath, typeOfLogLevel.INFO);
             OpenFileTextField.setText(filePath);
             loadCSV(filePath);
-            
-            ((DefaultListModel)CachedFilesList.getModel()).addElement(filePath);
+
+            ((DefaultListModel) CachedFilesList.getModel()).addElement(filePath);
         } else {
-            support.log("No .csv file selected.");
+            support.log("No .csv file selected.", typeOfLogLevel.INFO);
         }
     }//GEN-LAST:event_OpenButtonActionPerformed
 
@@ -617,7 +617,7 @@ public class PlotFrameController extends javax.swing.JFrame implements nativePro
                             //image2D(z = my.array,x=x1,y=y1,xlab = "X-Name", ylab = "Y-Name",rasterImage = TRUE, colkey = list(length = 0.5, shift = 0.0, width = 1.0, cex.axis=0.5))
                             break;
                         default:
-                            support.log("No 3DPlot-Type chosen. Plot not possible.");
+                            support.log("No 3DPlot-Type chosen. Plot not possible.", typeOfLogLevel.ERROR);
                             break;
 
                     }
@@ -626,13 +626,13 @@ public class PlotFrameController extends javax.swing.JFrame implements nativePro
                     break;
 
                 default:
-                    support.log("No Plot possible");
+                    support.log("No Plot possible", typeOfLogLevel.ERROR);
                     break;
             }
             writer.close();
 
             String command = support.getPathToR() + File.separator + "bin" + File.separator + "Rscript rscript.r > " + errorFilename;
-            support.log("executing command: " + command);
+            support.log("executing command: " + command, typeOfLogLevel.INFO);
 
             java.lang.ProcessBuilder processBuilder = new java.lang.ProcessBuilder(support.getPathToR() + File.separator + "bin" + File.separator + "Rscript", "rscript.r", "2>", "errorFile.Rout");
 
@@ -672,18 +672,18 @@ public class PlotFrameController extends javax.swing.JFrame implements nativePro
     @Override
     public void processEnded() {
         boolean error = false;
-        support.log("Try to show image at:" + imageFilePath);
+        support.log("Try to show image at:" + imageFilePath, typeOfLogLevel.INFO);
         try {
             File errorFile = new File(errorFilename);
             if (errorFile.exists()) {
 
                 if (errorFile.length() >= 2) {
-                    error=true;
+                    error = true;
                     FileReader errorReader = new FileReader(errorFile);
                     BufferedReader bufferedErrorReader = new BufferedReader(errorReader);
                     String eLine;
                     while ((eLine = bufferedErrorReader.readLine()) != null) {
-                        support.log(eLine);
+                        support.log(eLine, typeOfLogLevel.ERROR);
                     }
 
                     bufferedErrorReader.close();
@@ -693,7 +693,7 @@ public class PlotFrameController extends javax.swing.JFrame implements nativePro
                 }
             }
         } catch (Exception e) {
-            support.log("Error while reading the error file.");
+            support.log("Error while reading the error file.", typeOfLogLevel.ERROR);
         }
         if (this.possiblePlot == typedef.typeOfPossiblePlot.Plot3D && typedef.typeOf3DPlot.valueOf(jComboBoxTypeOf3DPlot.getSelectedItem().toString()) == typedef.typeOf3DPlot.Perspective) {
             //3d-Plot was rendered to webgl
@@ -777,7 +777,7 @@ public class PlotFrameController extends javax.swing.JFrame implements nativePro
             plotColor = chosen;
             jButtonOpenColorChooser.setBackground(chosen);
 
-            support.log("chosen color: " + String.format("#%02X%02X%02X", chosen.getRed(), chosen.getGreen(), chosen.getBlue()));
+            support.log("Chosen color: " + String.format("#%02X%02X%02X", chosen.getRed(), chosen.getGreen(), chosen.getBlue()), typeOfLogLevel.INFO);
         }
 
     }//GEN-LAST:event_jButtonOpenColorChooserActionPerformed
@@ -826,7 +826,7 @@ public class PlotFrameController extends javax.swing.JFrame implements nativePro
      */
     public void errorOccured(String message) {
         this.JButtonPlot.setEnabled(true);
-        support.log("Error occured durin Plot.");
+        support.log("Error occured during Plot.", typeOfLogLevel.ERROR);
         support.setStatusText("Plot Error!");
         this.JButtonPlot.setEnabled(true);
     }

@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import javax.swing.JOptionPane;
+import toe.typedef.typeOfLogLevel;
 
 /**
  *
@@ -69,16 +70,16 @@ public class SimulationCache {
 
             //Check length of List of Parameter
             if (listOfCachedParameterNames.length != myParameterTableModel.getRowCount()) {
-                support.log("Count of cached Parameters differs from Count of given Parameters.");
-                support.log(listOfCachedParameterNames.length + " parameters in cache while " + myParameterTableModel.getRowCount() + " in table.");
-                support.log("List of Parameters in Cache:");
+                support.log("Count of cached Parameters differs from Count of given Parameters.", typeOfLogLevel.ERROR);
+                support.log(listOfCachedParameterNames.length + " parameters in cache while " + myParameterTableModel.getRowCount() + " in table.", typeOfLogLevel.INFO);
+                support.log("List of Parameters in Cache:", typeOfLogLevel.INFO);
                 for (int i = 0; i < listOfCachedParameterNames.length; i++) {
-                    support.log(support.translateParameterNameFromLogFileToTable(listOfStringLines.get(0)[i + 7]));
+                    support.log(support.translateParameterNameFromLogFileToTable(listOfStringLines.get(0)[i + 7]), typeOfLogLevel.INFO);
                 }
-                support.log("End of List of Parameters in Cache.");
+                support.log("End of List of Parameters in Cache.", typeOfLogLevel.INFO);
                 return false;
             }
-            support.log("Count of cached Parameters seems correct.");
+            support.log("Count of cached Parameters seems correct.", typeOfLogLevel.INFO);
 
             for (int i = 0; i < listOfCachedParameterNames.length; i++) {
                 column = i + 7;
@@ -105,7 +106,7 @@ public class SimulationCache {
                             }
 
                         } catch (Exception e) {
-                            support.log("Maybe there was an error getting the stepping from cache file.");
+                            support.log("Maybe there was an error getting the stepping from cache file.", typeOfLogLevel.ERROR);
                         }
                     }
                 }
@@ -131,22 +132,22 @@ public class SimulationCache {
             }
 
             //Debug Output of Measurement Names
-            support.log("Name of read Measures are: ");
+            support.log("Name of read Measures are: ", typeOfLogLevel.INFO);
             for (i = 0; i < (listOfCachedMeasureNames.size()) - 1; i++) {
-                support.log(listOfCachedMeasureNames.get(i) + ", ");
+                support.log(listOfCachedMeasureNames.get(i) + ", ", typeOfLogLevel.INFO);
             }
-            support.log(listOfCachedMeasureNames.get(listOfCachedMeasureNames.size() - 1));
+            support.log(listOfCachedMeasureNames.get(listOfCachedMeasureNames.size() - 1), typeOfLogLevel.INFO);
 
             //Check Length of List of Measurements
             if (listOfCachedMeasureNames.size() != listOfMeasures.size()) {
-                support.log("Count of cached Measures differs from Count of given Measures.");
+                support.log("Count of cached Measures differs from Count of given Measures.", typeOfLogLevel.INFO);
                 return false;
             }
-            support.log("Count of cached Measures seems correct.");
+            support.log("Count of cached Measures seems correct.", typeOfLogLevel.INFO);
 
             //Calc real number of experiments
             numberOfExperiments = (listOfStringLines.size() - 1) / listOfCachedMeasureNames.size();
-            support.log("Number of experiments:" + numberOfExperiments);
+            support.log("Number of experiments:" + numberOfExperiments, typeOfLogLevel.INFO);
 
             //So the number of parameters seems ok, let` check the names
             for (i = 0; i < listOfCachedParameterNames.length; i++) {
@@ -154,13 +155,13 @@ public class SimulationCache {
                 if ((myParameterTableModel.getValueByName(listOfCachedParameterNames[i], "StartValue")) == null) {
                     //support.log((myParameterTableModel.getValueByName(listOfCachedParameterNames[i], "StartValue"))!=null );
                     //One Value is "" --> Parameter is not available --> Exit
-                    support.log("The parameter " + listOfCachedParameterNames[i] + " seems not available in table.");
+                    support.log("The parameter " + listOfCachedParameterNames[i] + " seems not available in table.", typeOfLogLevel.ERROR);
                     return false;
                 }
             }
-            support.log("All parameters seem available in table.");
+            support.log("All parameters seem available in table.", typeOfLogLevel.INFO);
 
-            support.log("Number of Measures:" + listOfCachedMeasureNames.size());
+            support.log("Number of Measures:" + listOfCachedMeasureNames.size(), typeOfLogLevel.INFO);
             //Generate List of Simulated Experiments
             for (i = 0; i < numberOfExperiments; i++) {
                 SimulationType tmpSimulation = new SimulationType();
@@ -184,7 +185,7 @@ public class SimulationCache {
 
                     if (tmpSimulation.getListOfParameters() == null) //list of parameters for current simulation not set
                     {
-                        ArrayList<parameter> tmpParameterList = new ArrayList<parameter>();
+                        ArrayList<parameter> tmpParameterList = new ArrayList<>();
                         for (int i1 = 0; i1 < listOfCachedParameterNames.length; i1++) {
                             column = i1 + 7;
                             parameter tmpParameter = new parameter();
@@ -218,7 +219,7 @@ public class SimulationCache {
             myParentFrame.calculateDesignSpace();
 
         } catch (Exception ex) {
-            support.log("Error while reading the Simulation Cache File.");
+            support.log("Error while reading the Simulation Cache File.", typeOfLogLevel.ERROR);
             JOptionPane.showMessageDialog(null, "Could not read simulation cache file!");
         }
         //Get all parameters
@@ -235,17 +236,17 @@ public class SimulationCache {
         //Names are equal --> format the table so that Start-,End-,Stepping-Value match
         for (int i = 0; i < listOfCachedParameterNames.length; i++) {
             myTableModel.setValueByName(listOfCachedParameterNames[i], "StartValue", listOfCachedParameterMin[i]);
-            support.log("Setting StartValue to " + listOfCachedParameterMin[i]);
+            support.log("Setting StartValue to " + listOfCachedParameterMin[i], typeOfLogLevel.INFO);
             myTableModel.setValueByName(listOfCachedParameterNames[i], "EndValue", listOfCachedParameterMax[i]);
-            support.log("Setting EndValue to " + listOfCachedParameterMax[i]);
+            support.log("Setting EndValue to " + listOfCachedParameterMax[i], typeOfLogLevel.INFO);
             myTableModel.setValueByName(listOfCachedParameterNames[i], "Stepping", listOfCachedParameterStepping[i]);
-            support.log("Setting Stepping to " + listOfCachedParameterStepping[i]);
+            support.log("Setting Stepping to " + listOfCachedParameterStepping[i], typeOfLogLevel.INFO);
         }
     }
 
     public boolean checkIfAllParameterMatchTable(parameterTableModel myTableModel) {
         if (listOfCachedParameterNames == null) {
-            support.log("ListOfCachedParameterNames=NULL.");
+            support.log("ListOfCachedParameterNames=NULL.", typeOfLogLevel.INFO);
             return false;
         }
         ArrayList<parameter> parameterListFromTable = myTableModel.getListOfParameter();
@@ -283,7 +284,7 @@ public class SimulationCache {
             }
 
             if (!strike[0] || !strike[1] || !strike[2]) {
-                support.log("Parameter " + p.getName() + " does not fit!");
+                support.log("Parameter " + p.getName() + " does not fit!", typeOfLogLevel.ERROR);
                 return false;
             }//If less then all 3 conditions are met, then exit with false    
         }
@@ -321,7 +322,7 @@ public class SimulationCache {
      * into getListOfCompletedSimulationParsers()
      */
     public SimulationType getNearestParserWithParameterList(ArrayList<parameter> parameterList) {
-        ArrayList<Double[]> distArrayList = new ArrayList<Double[]>();
+        ArrayList<Double[]> distArrayList = new ArrayList<>();
 
         for (int i = 0; i < this.getSimulationList().size(); i++) {
             Double[] tmpDist = new Double[2];//0->Dist, 1->Index
@@ -361,7 +362,7 @@ public class SimulationCache {
      * @return ArrayList of parsers
      */
     public ArrayList<SimulationType> getNearestParserListFromListOfParameterSets(ArrayList< ArrayList<parameter>> pList) {
-        ArrayList<SimulationType> returnList = new ArrayList<SimulationType>();
+        ArrayList<SimulationType> returnList = new ArrayList<>();
         for (int i = 0; i < pList.size(); i++) {
             ArrayList<parameter> tmpPList = new ArrayList();
             for (int c = 0; c < pList.get(i).size(); c++) {
@@ -416,16 +417,16 @@ public class SimulationCache {
         ArrayList<parameter> listB = this.getParameterListWithoutIgnorableParameters(mylistB);
 
         if (listA.size() != listB.size()) {
-            support.log("Size of needle-ParameterList is different from haystack-ParameterList.");
-            support.log("Size of A: " + listA.size() + " vs. Size of B: " + listB.size());
-            support.log("List of ParameterNames of A is:");
+            support.log("Size of needle-ParameterList is different from haystack-ParameterList.", typeOfLogLevel.INFO);
+            support.log("Size of A: " + listA.size() + " vs. Size of B: " + listB.size(), typeOfLogLevel.INFO);
+            support.log("List of ParameterNames of A is:", typeOfLogLevel.INFO);
             for (int i = 0; i < listA.size(); i++) {
-                support.log(listA.get(i).getName());
+                support.log(listA.get(i).getName(), typeOfLogLevel.INFO);
             }
 
-            support.log("List of ParameterNames of B is:");
+            support.log("List of ParameterNames of B is:", typeOfLogLevel.INFO);
             for (int i = 0; i < listB.size(); i++) {
-                support.log(listB.get(i).getName());
+                support.log(listB.get(i).getName(), typeOfLogLevel.INFO);
             }
 
             return false;
@@ -436,7 +437,7 @@ public class SimulationCache {
             nameA = support.translateParameterNameFromLogFileToTable(tmpParameterA.getName());
             tmpParameterB = this.findParameterInListByName(nameA, listB);
             if (tmpParameterB == null) {
-                support.log("ParameterB is null.");
+                support.log("ParameterB is null.", typeOfLogLevel.INFO);
                 return false;
             }
             //Parameter found, now check the values of this parameter

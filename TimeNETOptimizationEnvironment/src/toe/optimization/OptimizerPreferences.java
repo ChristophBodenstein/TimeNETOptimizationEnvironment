@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.*;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JSpinner.DefaultEditor;
@@ -1323,7 +1322,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         this.savePreferences();
         //Increase number of optiPrefs
         this.setNumberOfActualOptimizationAnalysis((Integer) (this.getNumberOfActualOptimizationAnalysis() + 1));
-        support.log("Next number of optiPrefs is " + this.getNumberOfActualOptimizationAnalysis().toString());
+        support.log("Next number of optiPrefs is " + this.getNumberOfActualOptimizationAnalysis().toString(), typeOfLogLevel.INFO);
         //Load optiPrefs from given File
         this.loadPreferences();
         //Save again optiPrefs to next file
@@ -1400,7 +1399,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         this.savePreferences();
         //Increase number of optiPrefs
         this.setNumberOfActualOptimizationAnalysis((Integer) Math.max(this.getNumberOfActualOptimizationAnalysis() - 1, 0));
-        support.log("Next number of optiPrefs is " + this.getNumberOfActualOptimizationAnalysis().toString());
+        support.log("Next number of optiPrefs is " + this.getNumberOfActualOptimizationAnalysis().toString(), typeOfLogLevel.INFO);
         //Load optiPrefs from given File
         this.loadPreferences();
         //Save again optiPrefs to next file
@@ -1409,8 +1408,8 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonPrevPrefsActionPerformed
 
     private void formWindowLostFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowLostFocus
-    support.log("OptiWindow lost focus. Will save optiPrefs.");
-    this.savePreferences();
+        support.log("OptiWindow lost focus. Will save optiPrefs.", typeOfLogLevel.INFO);
+        this.savePreferences();
     }//GEN-LAST:event_formWindowLostFocus
 
 
@@ -1555,104 +1554,104 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
             this.setPref_WrongSimulationsUntilBreak(support.loadIntFromProperties("pref_WrongSimulationsUntilBreak", support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW, auto));
             //support.log(Integer.toString(support.loadIntFromProperties("pref_WrongSimulationsUntilBreak", getPref_WrongSimulationsUntilBreak(), auto)));
-            support.log("Loaded pref_WrongSimulationsUntilBreak is " + getPref_WrongSimulationsUntilBreak());
+            support.log("Loaded pref_WrongSimulationsUntilBreak is " + getPref_WrongSimulationsUntilBreak(), typeOfLogLevel.INFO);
 
             this.setPref_WrongSimulationsPerDirection(support.loadIntFromProperties("pref_WrongSimulationsPerDirection", support.DEFAULT_WRONG_SOLUTION_PER_DIRECTION, auto));
-            support.log("Loaded pref_WrongSimulationsPerDirection is " + getPref_WrongSimulationsPerDirection());
+            support.log("Loaded pref_WrongSimulationsPerDirection is " + getPref_WrongSimulationsPerDirection(), typeOfLogLevel.INFO);
 
             this.setPref_SizeOfNeighborhood(support.loadIntFromProperties("pref_SizeOfNeighborhood", support.DEFAULT_SIZE_OF_NEIGHBORHOOD, auto));
-            support.log("Loaded Size of Neighborhood is " + getPref_SizeOfNeighborhood());
+            support.log("Loaded Size of Neighborhood is " + getPref_SizeOfNeighborhood(), typeOfLogLevel.INFO);
 
             this.setPref_StartValue(typeOfStartValueEnum.valueOf(auto.getProperty("pref_StartValue", support.DEFAULT_TYPE_OF_STARTVALUE.toString())));
-            support.log("Loaded StartValue is " + getPref_StartValue());
+            support.log("Loaded StartValue is " + getPref_StartValue(), typeOfLogLevel.INFO);
 
             this.setPref_NeighborhoodType(typeOfNeighborhoodEnum.valueOf(auto.getProperty("pref_NeighborhoodType", support.DEFAULT_TYPE_OF_NEIGHBORHOOD.toString())));
-            support.log("Loaded Neighborhoodtype is " + getPref_NeighborhoodType());
+            support.log("Loaded Neighborhoodtype is " + getPref_NeighborhoodType(), typeOfLogLevel.INFO);
 
             this.setPref_Cooling(typeOfAnnealing.valueOf(auto.getProperty("pref_Cooling", support.DEFAULT_TYPE_OF_ANNEALING.toString())));
-            support.log("Loaded Annealing method is " + getPref_Cooling());
+            support.log("Loaded Annealing method is " + getPref_Cooling(), typeOfLogLevel.INFO);
 
             this.setPref_TScaleRatio(support.loadDoubleFromProperties("pref_TScaleRatio", support.DEFAULT_T_RATIO_SCALE, auto));
-            support.log("Loaded TRatioScale is " + getPref_TRatioScale());
+            support.log("Loaded TRatioScale is " + getPref_TRatioScale(), typeOfLogLevel.INFO);
 
             this.setPref_TAnnealScale(support.loadDoubleFromProperties("pref_TAnnealScale", support.DEFAULT_T_ANNEAL_SCALE, auto));
-            support.log("Loaded TAnnealScale is " + getPref_TAnnealScale());
+            support.log("Loaded TAnnealScale is " + getPref_TAnnealScale(), typeOfLogLevel.INFO);
 
             this.setPref_MaxTempParameter(support.loadDoubleFromProperties("pref_MaxTempParameter", support.DEFAULT_MAXTEMP_PARAMETER, auto));
-            support.log("Loaded MaxTempParameter is " + getPref_MaxTempParameter());
+            support.log("Loaded MaxTempParameter is " + getPref_MaxTempParameter(), typeOfLogLevel.INFO);
 
             this.setPref_MaxTempCost(support.loadDoubleFromProperties("pref_MaxTempCost", support.DEFAULT_MAXTEMP_COST, auto));
-            support.log("Loaded MaxTempCost is " + getPref_MaxTempCost());
+            support.log("Loaded MaxTempCost is " + getPref_MaxTempCost(), typeOfLogLevel.INFO);
 
             this.setPref_Epsilon(support.loadDoubleFromProperties("pref_Epsilon", support.DEFAULT_EPSILON, auto));
-            support.log("Loaded Epsilon is " + getPref_Epsilon());
+            support.log("Loaded Epsilon is " + getPref_Epsilon(), typeOfLogLevel.INFO);
 
             this.setPref_CalculationOfNextParameterset(typeOfAnnealingParameterCalculation.valueOf(auto.getProperty("pref_CalculationOfNextParameterset", support.DEFAULT_CALC_NEXT_PARAMETER.toString())));
-            support.log("Loaded Calculation of next Parameterset is " + this.getPref_CalculationOfNextParameterset().toString());
+            support.log("Loaded Calculation of next Parameterset is " + this.getPref_CalculationOfNextParameterset().toString(), typeOfLogLevel.INFO);
 
             this.setPref_LogFileAddon(auto.getProperty("pref_LogFileAddon", ""));
-            support.log("Loaded Optimizer_Logfile-Addon is " + this.jTextFieldLogFileAddon.getText());
+            support.log("Loaded Optimizer_Logfile-Addon is " + this.jTextFieldLogFileAddon.getText(), typeOfLogLevel.INFO);
 
             this.setPref_NumberOfPhases(support.loadIntFromProperties("pref_NumberOfPhases", support.DEFAULT_NumberOfPhases, auto));
-            support.log("Loaded pref_NumberOfPhases is " + this.getPref_NumberOfPhases());
+            support.log("Loaded pref_NumberOfPhases is " + this.getPref_NumberOfPhases(), typeOfLogLevel.INFO);
             this.setPref_ConfidenceIntervallStart(support.loadIntFromProperties("pref_ConfidenceIntervallStart", support.DEFAULT_ConfidenceIntervallStart, auto));
-            support.log("Loaded pref_ConfidenceIntervallStart is " + this.getPref_ConfidenceIntervallStart());
+            support.log("Loaded pref_ConfidenceIntervallStart is " + this.getPref_ConfidenceIntervallStart(), typeOfLogLevel.INFO);
             this.setPref_ConfidenceIntervallEnd(support.loadIntFromProperties("pref_ConfidenceIntervallEnd", support.DEFAULT_ConfidenceIntervallEnd, auto));
-            support.log("Loaded pref_ConfidenceIntervallEnd is " + this.getPref_ConfidenceIntervallEnd());
+            support.log("Loaded pref_ConfidenceIntervallEnd is " + this.getPref_ConfidenceIntervallEnd(), typeOfLogLevel.INFO);
             this.setPref_MaxRelErrorStart(support.loadIntFromProperties("pref_MaxRelErrorStart", support.DEFAULT_MaxRelErrorStart, auto));
-            support.log("Loaded pref_MaxRelErrorStart is " + this.getPref_MaxRelErrorStart());
+            support.log("Loaded pref_MaxRelErrorStart is " + this.getPref_MaxRelErrorStart(), typeOfLogLevel.INFO);
             this.setPref_MaxRelErrorEnd(support.loadIntFromProperties("pref_MaxRelErrorEnd", support.DEFAULT_MaxRelErrorEnd, auto));
-            support.log("Loaded pref_MaxRelErrorEnd is " + this.getPref_MaxRelErrorEnd());
+            support.log("Loaded pref_MaxRelErrorEnd is " + this.getPref_MaxRelErrorEnd(), typeOfLogLevel.INFO);
             this.setPref_InternalParameterStart(support.loadIntFromProperties("pref_InternalParameterStart", support.DEFAULT_InternalParameterStart, auto));
-            support.log("Loaded pref_InternalParameterStart is " + this.getPref_InternalParameterStart());
+            support.log("Loaded pref_InternalParameterStart is " + this.getPref_InternalParameterStart(), typeOfLogLevel.INFO);
             this.setPref_InternalParameterEnd(support.loadIntFromProperties("pref_InternalParameterEnd", support.DEFAULT_InternalParameterEnd, auto));
-            support.log("Loaded pref_InternalParameterEnd is " + this.getPref_InternalParameterEnd());
+            support.log("Loaded pref_InternalParameterEnd is " + this.getPref_InternalParameterEnd(), typeOfLogLevel.INFO);
 
             this.setPref_typeOfUsedMultiPhaseOptimization(typeOfOptimization.valueOf(auto.getProperty("pref_typeOfUsedMultiPhaseOptimization", support.DEFAULT_typeOfUsedMultiPhaseOptimization.toString())));
-            support.log("Loaded pref_typeOfUsedMultiPhaseOptimization is " + this.getPref_typeOfUsedMultiPhaseOptimization().toString());
+            support.log("Loaded pref_typeOfUsedMultiPhaseOptimization is " + this.getPref_typeOfUsedMultiPhaseOptimization().toString(), typeOfLogLevel.INFO);
             this.setPref_KeepDesignSpaceAndResolution(Boolean.valueOf(auto.getProperty("pref_KeepDesignSpaceAndResolution", Boolean.toString(support.DEFAULT_KeepDesignSpaceAndResolution))));
-            support.log("Loaded pref_KeepDesignSpaceAndResolution is " + this.getPref_KeepDesignSpaceAndResolution());
+            support.log("Loaded pref_KeepDesignSpaceAndResolution is " + this.getPref_KeepDesignSpaceAndResolution(), typeOfLogLevel.INFO);
 
             //load settings for Genetic Optimization
             this.setPref_GeneticPopulationSize(support.loadIntFromProperties("pref_GeneticPopulationSize", support.DEFAULT_GENETIC_POPULATION_SIZE, auto));
-            support.log("Loaded pref_GeneticPopulationSize is " + this.getPref_GeneticPopulationSize());
+            support.log("Loaded pref_GeneticPopulationSize is " + this.getPref_GeneticPopulationSize(), typeOfLogLevel.INFO);
             this.setPref_GeneticMutationChance(support.loadDoubleFromProperties("pref_GeneticMutationChance", support.DEFAULT_GENETIC_MUTATION_CHANCE, auto));
-            support.log("Loaded pref_GeneticMutationChance is " + this.getPref_GeneticMutationChance());
+            support.log("Loaded pref_GeneticMutationChance is " + this.getPref_GeneticMutationChance(), typeOfLogLevel.INFO);
             this.setPref_GeneticMutateTopSolution(Boolean.valueOf(auto.getProperty("pref_GeneticMutateTopSolution", Boolean.toString(support.DEFAULT_GENETIC_MUTATE_TOP_SOLUTION))));
-            support.log("Loaded pref_GeneticMutateTopSolution is " + this.getPref_GeneticMutateTopSolution());
+            support.log("Loaded pref_GeneticMutateTopSolution is " + this.getPref_GeneticMutateTopSolution(), typeOfLogLevel.INFO);
             this.setPref_GeneticNumberOfCrossings(support.loadIntFromProperties("pref_GeneticNumberOfCrossings", support.DEFAULT_GENETIC_NUMBEROFCROSSINGS, auto));
 
             this.setPref_GeneticMaximumOptirunsWithoutSolution(support.loadIntFromProperties("pref_GeneticMaxOptiRunsWithoutSolution", support.DEFAULT_GENETIC_MAXWRONGOPTIRUNS, auto));
-            support.log("Loaded pref_GeneticMaxOptiRunsWithoutSolution is " + this.getPref_GeneticMaximumOptirunsWithoutSolution());
+            support.log("Loaded pref_GeneticMaxOptiRunsWithoutSolution is " + this.getPref_GeneticMaximumOptirunsWithoutSolution(), typeOfLogLevel.INFO);
             this.setPref_GeneticTypeOfCrossover(typeOfGeneticCrossover.valueOf(auto.getProperty("pref_GeneticTypeOfCrossover", support.DEFAULT_GENETIC_CROSSOVER.toString())));
-            support.log("Loaded pref_GeneticTypeOfCrossover is " + this.getPref_GeneticTypeOfCrossover().toString());
+            support.log("Loaded pref_GeneticTypeOfCrossover is " + this.getPref_GeneticTypeOfCrossover().toString(), typeOfLogLevel.INFO);
 
             //load settings for CSS Optimization
             this.setPref_CSS_PopulationSize(support.loadIntFromProperties("pref_CSS_PopulationSize", support.DEFAULT_CSS_POPULATION_SIZE, auto));
-            support.log("Loaded pref_CSS_PopulationSize is " + this.getPref_CSS_PopulationSize());
+            support.log("Loaded pref_CSS_PopulationSize is " + this.getPref_CSS_PopulationSize(), typeOfLogLevel.INFO);
             this.setPref_CSS_MaxAttraction(support.loadDoubleFromProperties("pref_CSS_MaxAttraction", support.DEFAULT_CSS_MAX_ATTRACTION, auto));
-            support.log("Loaded pref_CSS_MaxAttraction is " + this.getPref_CSS_MaxAttraction());
+            support.log("Loaded pref_CSS_MaxAttraction is " + this.getPref_CSS_MaxAttraction(), typeOfLogLevel.INFO);
 
             //load settings for ABC Optimization
             this.setPref_ABC_NumEmployedBees(support.loadIntFromProperties("pref_ABC_NumEmployedBees", support.DEFAULT_ABC_NumEmployedBees, auto));
-            support.log("Loaded pref_ABC_NumEmployedBees is " + this.getPref_ABC_NumEmployedBees());
+            support.log("Loaded pref_ABC_NumEmployedBees is " + this.getPref_ABC_NumEmployedBees(), typeOfLogLevel.INFO);
             this.setPref_ABC_NumOnlookerBees(support.loadIntFromProperties("pref_ABC_NumOnlookerBees", support.DEFAULT_ABC_NumOnlookerBees, auto));
-            support.log("Loaded pref_ABC_NumOnlookerBees is " + this.getPref_ABC_NumOnlookerBees());
+            support.log("Loaded pref_ABC_NumOnlookerBees is " + this.getPref_ABC_NumOnlookerBees(), typeOfLogLevel.INFO);
             this.setPref_ABC_NumScoutBees(support.loadIntFromProperties("pref_ABC_NumScoutBees", support.DEFAULT_ABC_NumScoutBees, auto));
-            support.log("Loaded pref_ABC_NumScoutBees is " + this.getPref_ABC_NumScoutBees());
+            support.log("Loaded pref_ABC_NumScoutBees is " + this.getPref_ABC_NumScoutBees(), typeOfLogLevel.INFO);
             this.setPref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement(support.loadIntFromProperties(
                     "pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement", support.DEFAULT_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement, auto));
-            support.log("Loaded pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement is " + this.getPref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement());
+            support.log("Loaded pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement is " + this.getPref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement(), typeOfLogLevel.INFO);
 
             //load settings for MVMO Optimization
             this.setPref_MVMO_StartingPop(support.loadIntFromProperties("setPref_MVMO_StartingPop", support.DEFAULT_MVMO_STARTING_POPULATION, auto));
-            support.log("Loaded pref__MVMO_StartingPop is" + this.getPref_MVMO_StartingPop());
+            support.log("Loaded pref__MVMO_StartingPop is" + this.getPref_MVMO_StartingPop(), typeOfLogLevel.INFO);
             this.setPref_MVMO_MaxPop(support.loadIntFromProperties("setPref_MVMO_MaxPop", support.DEFAULT_MVMO_MAX_POPULATION, auto));
-            support.log("Loaded setPref_MVMO_MaxPop is" + this.getPref_MVMO_MaxPop());
+            support.log("Loaded setPref_MVMO_MaxPop is" + this.getPref_MVMO_MaxPop(), typeOfLogLevel.INFO);
 
         } catch (IOException e) {
             // Exception bearbeiten
-            support.log("Error while loading Optimizer-Properties.");
+            support.log("Error while loading Optimizer-Properties.", typeOfLogLevel.ERROR);
         }
 
     }
@@ -1661,7 +1660,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
      * Save Preferences to defined file
      */
     public void savePreferences() {
-        support.log("Saving Properties #" + this.getNumberOfActualOptimizationAnalysis().toString() + " of Optimization");
+        support.log("Saving Properties #" + this.getNumberOfActualOptimizationAnalysis().toString() + " of Optimization", typeOfLogLevel.INFO);
         String addonStringForFileName = this.getNumberOfActualOptimizationAnalysis().toString();
         if (this.getNumberOfActualOptimizationAnalysis() <= 0) {
             addonStringForFileName = "";
@@ -1721,7 +1720,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             File parserprops = new File(filename);
             auto.store(new FileOutputStream(parserprops), "ExperimentGenerator-Properties");
         } catch (IOException e) {
-            support.log("Problem Saving the properties.");
+            support.log("Problem Saving the properties.", typeOfLogLevel.ERROR);
         }
 
     }
@@ -2474,6 +2473,6 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
      */
     public void setNumberOfActualOptimizationAnalysis(Integer numberOfActualOptimizationAnalysis) {
         this.numberOfActualOptimizationAnalysis = numberOfActualOptimizationAnalysis;
-        this.jButtonSavePrefs.setText("Save [" + (this.getNumberOfActualOptimizationAnalysis()+1) + "]");
+        this.jButtonSavePrefs.setText("Save [" + (this.getNumberOfActualOptimizationAnalysis() + 1) + "]");
     }
 }

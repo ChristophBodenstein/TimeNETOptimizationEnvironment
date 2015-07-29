@@ -53,7 +53,7 @@ public class OptimizerMultiPhase implements Runnable, Optimizer {
         support.setParameterBase(parameterBase);
         this.optimized = false;
         logFileName = support.getTmpPath() + File.separator + this.getClass().getSimpleName() + "_" + Calendar.getInstance().getTimeInMillis() + support.getOptimizerPreferences().getPref_LogFileAddon() + ".csv";
-        support.log("LogfileName:" + logFileName);
+        support.log("LogfileName:" + logFileName, typeOfLogLevel.INFO);
         //this.keepSizeAndResolutionOfDesignspace=support.getOptimizerPreferences().getPref_KeepDesignSpaceAndResolution();
         this.numberOfPhases = support.getOptimizerPreferences().getPref_NumberOfPhases();
         support.setListOfChangableParametersMultiphase(support.getOriginalParameterBase());
@@ -83,16 +83,16 @@ public class OptimizerMultiPhase implements Runnable, Optimizer {
                     if ((Math.abs(p.getEndValue() - p.getStartValue()) / tmpStepping) >= ((double) support.DEFAULT_MINIMUM_DESIGNSPACE_SIZE_PER_PARAMETER)) {
                         p.setStepping(tmpStepping);
                         //p.printInfo();
-                        support.log("New Stepping for Parameter " + p.getName() + " is " + p.getStepping());
+                        support.log("New Stepping for Parameter " + p.getName() + " is " + p.getStepping(), typeOfLogLevel.INFO);
                     } else {
-                        support.log("Will not change stepping for parameter " + p.getName() + "Designspace would be to small.");
+                        support.log("Will not change stepping for parameter " + p.getName() + "Designspace would be to small.", typeOfLogLevel.INFO);
                     }
                 } else {
-                    support.log("Will not change stepping for parameter " + p.getName() + "KeeSizeAndStepping is activated.");
+                    support.log("Will not change stepping for parameter " + p.getName() + "KeeSizeAndStepping is activated.", typeOfLogLevel.INFO);
                 }
 
             } else {
-                support.log("Parameter is not Intern & Changable.");
+                support.log("Parameter is not Intern & Changable.", typeOfLogLevel.INFO);
             }
         }
 
@@ -102,7 +102,7 @@ public class OptimizerMultiPhase implements Runnable, Optimizer {
             //Start with given parameter value (preset)
         //support.getOptimizerPreferences().setPref_StartValue(typeOfStartValueEnum.middle);
         for (int phaseCounter = 0; phaseCounter < this.numberOfPhases; phaseCounter++) {
-            support.log("Starting phase " + (phaseCounter + 1) + " of " + this.numberOfPhases);
+            support.log("Starting phase " + (phaseCounter + 1) + " of " + this.numberOfPhases, typeOfLogLevel.INFO);
             if (lastOptimizer != null) {
                 //get Optimum from last Optimizer as start for next one
                 ArrayList<parameter> lastParamaterset = lastOptimizer.getOptimum().getListOfParameters();
@@ -121,11 +121,11 @@ public class OptimizerMultiPhase implements Runnable, Optimizer {
 
                         //If design space resolution is to small, ensmall the stepping
                         if ((p.getEndValue() - p.getStartValue()) / p.getStepping() < ((double) support.DEFAULT_MINIMUM_DESIGNSPACE_SIZE_PER_PARAMETER)) {
-                            support.log("Resulting designspace for parameter " + p.getName() + " to small. Ensmalling the Stepping.");
+                            support.log("Resulting designspace for parameter " + p.getName() + " to small. Ensmalling the Stepping.", typeOfLogLevel.INFO);
                             p.setStepping(Math.max((p.getEndValue() - p.getStartValue()) / support.DEFAULT_MINIMUM_DESIGNSPACE_SIZE_PER_PARAMETER, 1));
                         }
 
-                        support.log("Parameter " + p.getName() + " set to Start: " + p.getStartValue() + ", End: " + p.getEndValue() + ", Stepping: " + p.getStepping() + ", Value: " + p.getValue());
+                        support.log("Parameter " + p.getName() + " set to Start: " + p.getStartValue() + ", End: " + p.getEndValue() + ", Stepping: " + p.getStepping() + ", Value: " + p.getValue(), typeOfLogLevel.INFO);
 
                     }
                 }
@@ -178,7 +178,7 @@ public class OptimizerMultiPhase implements Runnable, Optimizer {
                 }
 
             }
-            support.log("In phase " + (phaseCounter + 1) + " will set Confinterval:" + confInterval + ", maxRelError:" + maxRelError + ", internalParamter:" + internal);
+            support.log("In phase " + (phaseCounter + 1) + " will set Confinterval:" + confInterval + ", maxRelError:" + maxRelError + ", internalParamter:" + internal, typeOfLogLevel.INFO);
             if (iterateConfidenceInterval) {
                 support.getParameterByName(lastParamaterset, "ConfidenceIntervall").setValue(confInterval);
             }
@@ -198,7 +198,7 @@ public class OptimizerMultiPhase implements Runnable, Optimizer {
                 try {
                     Thread.sleep(10);
                 } catch (InterruptedException ex) {
-                    support.log("Problem waiting for Optimizer. (Multiphase)");
+                    support.log("Problem waiting for Optimizer. (Multiphase)", typeOfLogLevel.ERROR);
                 }
             }
             lastOptimizer = myOptimizer;
@@ -210,13 +210,13 @@ public class OptimizerMultiPhase implements Runnable, Optimizer {
         this.optimized = true;//Even if its not optimized, this is set to true to end the optimization loop
         if(lastOptimizer.getOptimum()!=null){
         this.bestSolution = lastOptimizer.getOptimum();
-        support.log(this.getClass().getSimpleName() + " has ended, printing optimal value:");
+        support.log(this.getClass().getSimpleName() + " has ended, printing optimal value:", typeOfLogLevel.INFO);
         support.addLinesToLogFile(bestSolution, logFileName);
         support.setStatusText("Optimization ended. See Log.");
         support.printOptimizedMeasures(bestSolution, this.listOfMeasures);
         StatisticAggregator.printStatistic(this.logFileName);
         }else{
-        support.log("Optimization was not successful.");
+        support.log("Optimization was not successful.", typeOfLogLevel.ERROR);
         }
     }
 
@@ -232,7 +232,7 @@ public class OptimizerMultiPhase implements Runnable, Optimizer {
         this.parent = support.getMainFrame();// parentTMP;
         this.parameterBase = parent.getParameterBase();
         this.listOfMeasures = parent.getListOfActiveMeasureMentsToOptimize(); //((MeasurementForm)MeasureFormPane.getComponent(0)).getListOfMeasurements();
-        support.log("# of Measures to be optimized: " + this.listOfMeasures.size());
+        support.log("# of Measures to be optimized: " + this.listOfMeasures.size(), typeOfLogLevel.INFO);
 
         this.filename = support.getOriginalFilename();// originalFilename;
 

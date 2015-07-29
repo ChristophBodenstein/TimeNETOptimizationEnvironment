@@ -13,6 +13,7 @@ import toe.datamodel.SimulationType;
 import toe.datamodel.MeasureType;
 import toe.support;
 import toe.typedef.typeOfBenchmarkFunction;
+import toe.typedef.typeOfLogLevel;
 
 /**
  * Class to simulate real SCPN-Simulation. It uses the SimulationCache with read
@@ -36,7 +37,7 @@ public class SimulatorBenchmark implements Simulator, Runnable {
     public SimulatorBenchmark() {
         this.benchmarkFunction = support.getChosenBenchmarkFunction();
         logFileName = support.getTmpPath() + File.separator + "SimLog_Benchmark_" + benchmarkFunction.toString() + "_" + Calendar.getInstance().getTimeInMillis() + ".csv";
-        support.log("LogfileName:" + logFileName);
+        support.log("LogfileName:" + logFileName, typeOfLogLevel.INFO);
     }
 
     /**
@@ -142,14 +143,14 @@ public class SimulatorBenchmark implements Simulator, Runnable {
     @Override
     public void run() {
         myListOfSimulations = new ArrayList<>();
-        support.log("Number of Benchmark-Simulations to do: " + listOfParameterSetsTMP.size());
+        support.log("Number of Benchmark-Simulations to do: " + listOfParameterSetsTMP.size(), typeOfLogLevel.INFO);
         for (int i = 0; i < this.listOfParameterSetsTMP.size(); i++) {
             support.setStatusText("Simulating: " + (i + 1) + "/" + listOfParameterSetsTMP.size());
             support.incGlobalSimulationCounter();
             this.status = (100 / listOfParameterSetsTMP.size()) * i;
             myListOfSimulations.add(BenchmarkFactory.getBenchmarkFunction().getSimulationResult(listOfParameterSetsTMP.get(i)));
         }
-        support.log("Number of done simulations: " + myListOfSimulations.size());
+        support.log("Number of done simulations: " + myListOfSimulations.size(), typeOfLogLevel.INFO);
         if (log) {
             //Print out a log file
             support.addLinesToLogFileFromListOfParser(myListOfSimulations, logFileName);

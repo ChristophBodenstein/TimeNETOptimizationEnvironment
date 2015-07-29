@@ -15,6 +15,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
+import toe.typedef.*;
 
 /**
  *
@@ -39,7 +40,7 @@ public class AboutPanel extends javax.swing.JPanel implements HyperlinkListener 
 
         try {
             URL file = getClass().getResource("SystemRequirements.html");
-            support.log("Path to file is:" + file.toString());
+            support.log("Path to file is:" + file.toString(), typeOfLogLevel.INFO);
             //Desktop.getDesktop().browse(file.toURI());
 
             InputStream in = file.openStream();
@@ -57,7 +58,7 @@ public class AboutPanel extends javax.swing.JPanel implements HyperlinkListener 
             this.jEditorPaneRequirments.setText(buff.toString());
 
         } catch (Exception ex) {
-            support.log("Failed to open SystemRequirements.html in default browser. Maybe you are using an old java-version.");
+            support.log("Failed to open SystemRequirements.html in default browser. Maybe you are using an old java-version.", typeOfLogLevel.ERROR);
         }
         //Add this listener to handle hyperlink clicks
         this.jEditorPaneRequirments.addHyperlinkListener(this);
@@ -158,6 +159,7 @@ public class AboutPanel extends javax.swing.JPanel implements HyperlinkListener 
      *
      * @param e Hyperlinkevent (click, Activated, etc.)
      */
+    @Override
     public void hyperlinkUpdate(HyperlinkEvent e) {
 
         if (e.getEventType().equals(HyperlinkEvent.EventType.ACTIVATED)) {
@@ -165,9 +167,9 @@ public class AboutPanel extends javax.swing.JPanel implements HyperlinkListener 
             try {
                 Desktop.getDesktop().browse(url.toURI());
             } catch (IOException ex) {
-                support.log("IOException while opening Link to " + url.toString());
+                support.log("IOException while opening Link to " + url.toString(), typeOfLogLevel.ERROR);
             } catch (URISyntaxException ex) {
-                support.log("URISyntaxException while opening Link to " + url.toString());
+                support.log("URISyntaxException while opening Link to " + url.toString(), typeOfLogLevel.ERROR);
             }
         }
     }

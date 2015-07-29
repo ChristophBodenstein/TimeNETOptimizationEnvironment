@@ -133,7 +133,7 @@ public final class MeasurementForm extends javax.swing.JPanel {
                 return listOfMeasureMent;
             }
         }
-        support.log("***Error: No Measurement chosen, will return null!");
+        support.log("***Error: No Measurement chosen, will return null!", typeOfLogLevel.ERROR);
         return null;
     }
 

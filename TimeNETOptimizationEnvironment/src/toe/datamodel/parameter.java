@@ -10,6 +10,7 @@ package toe.datamodel;
 import java.util.Arrays;
 import toe.support;
 import toe.typedef;
+import toe.typedef.typeOfLogLevel;
 
 /**
  *
@@ -305,7 +306,7 @@ public class parameter implements Cloneable, Comparable<parameter> {
     /**
      * prints some interesting information about itself to log
      */
-    public void printInfo() {
+    public void printInfo(typeOfLogLevel logLevel) {
         String s = "Parameter " + this.getName() + ": Start=" + this.getStartValue() + ", End=" + this.getEndValue();
         s += ", Stepping=" + this.getStepping() + ", Value=" + this.getValue() + ", is ";
         if (!isIgnorable()) {
@@ -320,7 +321,7 @@ public class parameter implements Cloneable, Comparable<parameter> {
             s += "NOT";
         }
         s += " external.";
-        support.log(s);
+        support.log(s, logLevel);
     }
 
 }
