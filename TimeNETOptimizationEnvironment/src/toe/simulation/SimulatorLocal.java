@@ -36,7 +36,6 @@ public class SimulatorLocal implements Runnable, Simulator, nativeProcessCallbac
     String pathToTimeNet;
     String tmpFilePath;
     private int status = 0; //Status of simulations, 0..100%
-    private int simulationCounter = 0;//Startvalue for count of simulations, will be in the filename of sim and log
     String logFileName;
     String actualSimulationLogFile = "";//actual log-file for one local simulation
     private final String nameOfTempDirectory = "14623786483530251523506521233052";
@@ -58,19 +57,15 @@ public class SimulatorLocal implements Runnable, Simulator, nativeProcessCallbac
      * 0, the old value wil be used and continouusly increased
      *
      * @param listOfParameterSetsTMP List of Parameter-sets to be simulated
-     * @param simulationCounterTMP start value of simulation counter
      */
     @Override
-    public void initSimulator(ArrayList< ArrayList<parameter>> listOfParameterSetsTMP, int simulationCounterTMP, boolean log) {
+    public void initSimulator(ArrayList< ArrayList<parameter>> listOfParameterSetsTMP, boolean log) {
         this.status = 0;
         this.listOfParameterSets = listOfParameterSetsTMP;
         this.log = log;
         this.originalFilename = support.getOriginalFilename();//  originalFilenameTMP;
         this.pathToTimeNet = support.getPathToTimeNet();//  pathToTimeNetTMP;
         this.tmpFilePath = support.getTmpPath();// tmpFilePathTMP;
-        if (simulationCounterTMP >= 0) {
-            this.simulationCounter = simulationCounterTMP;
-        }
 
         //Start this thread
         new Thread(this).start();
@@ -152,7 +147,7 @@ public class SimulatorLocal implements Runnable, Simulator, nativeProcessCallbac
                         support.incGlobalSimulationCounter();
 
                         this.status = numberOfSimulations * 100 / listOfParameterSets.size(); //update status of local simulations (in %)
-                        this.simulationCounter++;//increment given global simulation counter, TODO : remove this
+                        support.incGlobalSimulationCounter();
 
                     }
 
@@ -267,6 +262,7 @@ public class SimulatorLocal implements Runnable, Simulator, nativeProcessCallbac
             nativeProcess myNativeProcess = new nativeProcess(processBuilder, this);
 
             //We wait until the process is ended or aborted
+            //TODO: Use thread synchronization with timeout!
             while (myNativeProcess.isRunning()) {
                 Thread.sleep(500);
                 if ((Calendar.getInstance().getTimeInMillis() - timeStamp) / 1000 >= maxTime) {
@@ -318,25 +314,6 @@ public class SimulatorLocal implements Runnable, Simulator, nativeProcessCallbac
         for (File listOfFile1 : listOfFile) {
             support.del(listOfFile1);
         }
-    }
-
-    /**
-     * Returns actual number of simulation
-     *
-     * @return number of actual simulation
-     */
-    @Override
-    public int getSimulationCounter() {
-        return this.simulationCounter;
-    }
-
-    /**
-     * sets the number of simulation to be started with
-     *
-     * @param i number of simulation for simulation counter
-     */
-    public void setSimulationCounter(int i) {
-        this.simulationCounter = i;
     }
 
     /**

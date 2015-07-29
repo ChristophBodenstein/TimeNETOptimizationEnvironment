@@ -11,9 +11,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import javax.swing.JLabel;
-import javax.swing.JTabbedPane;
-import toe.MainFrame;
 import toe.SimOptiFactory;
 import toe.datamodel.MeasureType;
 import toe.datamodel.parameter;
@@ -27,30 +24,13 @@ import toe.support;
  */
 public class OptimizerChargedSystemSearch extends OptimizerPopulationBased implements Runnable, Optimizer {
 
-//private String tmpPath = "";
-//private String filename = "";//Original filename
-//private String pathToTimeNet = "";
-//private String logFileName = "";
-//private MainFrame parent = null;
-//private JTabbedPane MeasureFormPane;
-//private ArrayList<MeasureType> listOfMeasures = new ArrayList<MeasureType>();//Liste aller Measures, abfragen von MeasureFormPane
-//private ArrayList<parameter> parameterBase;//Base set of parameters, start/end-value, stepping, etc.
-//private JLabel infoLabel;
-//private double simulationTimeSum = 0;
-//private double cpuTimeSum = 0;
-//private ArrayList<SimulationType> charges = new ArrayList<SimulationType>();//History of all simulation runs
     private int numberOfCharges = support.getOptimizerPreferences().getPref_CSS_PopulationSize(); //number of active charges to explore design space
     private double maxAttraction = support.getOptimizerPreferences().getPref_CSS_MaxAttraction();//limit of attraction-force of 2 charges
-//private int maxNumberOfOptiCycles = 100; //maximum number of cycles, before optimization terminates
-//private int maxNumberOfOptiCyclesWithoutImprovement = 10; //how many cycles without improvement until break optimization loop
-//private int currentNumberOfOptiCyclesWithoutImprovement = 0;
 
     private double[] distances; //current Distance of all objects
     private double[] powerOfCharges; // attraction power of every object
     private double[][] speedOfCharges; //current speed vector for all objects with all parameters;
 
-//private SimulationType topMeasure;//temp top measure before implementing top-List
-//private double topDistance = Double.POSITIVE_INFINITY;//temp top distance
     public OptimizerChargedSystemSearch() {
         logFileName = support.getTmpPath() + File.separator + "Optimizing_with_CSS_" + Calendar.getInstance().getTimeInMillis() + "_ALL" + ".csv";
     }
@@ -106,6 +86,7 @@ public class OptimizerChargedSystemSearch extends OptimizerPopulationBased imple
         }
     }
 
+    @Override
     public void run() {
         int optiCycleCounter = 0;
         population = createRandomPopulation(numberOfCharges, false);
@@ -122,7 +103,7 @@ public class OptimizerChargedSystemSearch extends OptimizerPopulationBased imple
         Arrays.fill(powerOfCharges, 0);
 
         Simulator mySimulator = SimOptiFactory.getSimulator();
-        mySimulator.initSimulator(getNextParameterSetAsArrayList(), optiCycleCounter, false);
+        mySimulator.initSimulator(getNextParameterSetAsArrayList(), false);
         //support.waitForEndOfSimulator(mySimulator, optiCycleCounter, support.DEFAULT_TIMEOUT);
         synchronized (mySimulator) {
             try {
@@ -134,7 +115,7 @@ public class OptimizerChargedSystemSearch extends OptimizerPopulationBased imple
         ArrayList<SimulationType> simulationResults = mySimulator.getListOfCompletedSimulationParsers();
         population = getPopulationFromSimulationResults(simulationResults);
 
-        int simulationCounter = 0;
+        //int simulationCounter = 0;
         while (optiCycleCounter < this.maxNumberOfOptiCycles) {
             updatePositions();
             if (currentNumberOfOptiCyclesWithoutImprovement >= maxNumberOfOptiCyclesWithoutImprovement) {
@@ -150,7 +131,7 @@ public class OptimizerChargedSystemSearch extends OptimizerPopulationBased imple
 
             //System.out.println("Number of Parameters in: " + parameterList.get(0).size());
             mySimulator = SimOptiFactory.getSimulator();
-            mySimulator.initSimulator(parameterList, simulationCounter, false);
+            mySimulator.initSimulator(parameterList, false);
             //support.waitForEndOfSimulator(mySimulator, simulationCounter, support.DEFAULT_TIMEOUT);
             synchronized (mySimulator) {
                 try {
@@ -159,7 +140,6 @@ public class OptimizerChargedSystemSearch extends OptimizerPopulationBased imple
                     support.log("Problem waiting for end of non-cache-simulator.");
                 }
             }
-            simulationCounter = mySimulator.getSimulationCounter();
             simulationResults = mySimulator.getListOfCompletedSimulationParsers();
             support.addLinesToLogFileFromListOfParser(simulationResults, logFileName);
             population = getPopulationFromSimulationResults(simulationResults);
@@ -258,6 +238,7 @@ public class OptimizerChargedSystemSearch extends OptimizerPopulationBased imple
      *
      * @param name Name (path) of logfile
      */
+    @Override
     public void setLogFileName(String name) {
         this.logFileName = name;
     }
@@ -267,6 +248,7 @@ public class OptimizerChargedSystemSearch extends OptimizerPopulationBased imple
      *
      * @return name of logfile
      */
+    @Override
     public String getLogFileName() {
         return this.logFileName;
     }

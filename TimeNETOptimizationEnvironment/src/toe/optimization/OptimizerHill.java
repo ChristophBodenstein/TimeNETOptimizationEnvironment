@@ -97,16 +97,16 @@ public class OptimizerHill implements Runnable, Optimizer {
         //Simulator init with initial parameterset
         Simulator mySimulator = SimOptiFactory.getSimulator();
 
-        mySimulator.initSimulator(getParametersetAsArrayList(getFirstParameterset()), getSimulationCounter(), false);
+        mySimulator.initSimulator(getParametersetAsArrayList(getFirstParameterset()), false);
         //Wait until Simulator has ended
         //support.waitForEndOfSimulator(mySimulator, getSimulationCounter(), support.DEFAULT_TIMEOUT);
         synchronized (mySimulator) {
-                try {
-                    mySimulator.wait();
-                } catch (InterruptedException ex) {
-                    support.log("Problem waiting for end of non-cache-simulator.");
-                }
+            try {
+                mySimulator.wait();
+            } catch (InterruptedException ex) {
+                support.log("Problem waiting for end of non-cache-simulator.");
             }
+        }
         support.addLinesToLogFileFromListOfParser(mySimulator.getListOfCompletedSimulationParsers(), logFileName);
         this.historyOfParsers = support.appendListOfParsers(historyOfParsers, mySimulator.getListOfCompletedSimulationParsers());
         currentSolution = mySimulator.getListOfCompletedSimulationParsers().get(0);
@@ -123,7 +123,7 @@ public class OptimizerHill implements Runnable, Optimizer {
             newParameterset = getNextParametersetAsArrayList(lastParameterset);
 
             stuckInCacheCounter = support.DEFAULT_CACHE_STUCK;//Reset Stuck-Counter
-            mySimulator.initSimulator(newParameterset, getSimulationCounter(), false);
+            mySimulator.initSimulator(newParameterset, false);
             //support.waitForEndOfSimulator(mySimulator, getSimulationCounter(), support.DEFAULT_TIMEOUT);
             synchronized (mySimulator) {
                 try {
@@ -547,12 +547,6 @@ public class OptimizerHill implements Runnable, Optimizer {
         return distance;
     }
 
-    /**
-     * @return the simulationCounter
-     */
-    public int getSimulationCounter() {
-        return support.getGlobalSimulationCounter();// simulationCounter;
-    }
 
     /**
      * Returns the found optmium (SimulationType) If optimum is not found or

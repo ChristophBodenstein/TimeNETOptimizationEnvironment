@@ -23,12 +23,10 @@ public interface Simulator {
      *
      * @param listOfParameterSetsTMP ArrayList of parametersets (ArrayList) to
      * be simulated
-     * @param simulationCounterTMP actual simualtion counter, to be increased by
-     * this simulator (deprecated)
      * @param log boolean value whether to write results to a separate log file
      * or not
      */
-    public void initSimulator(ArrayList< ArrayList<parameter>> listOfParameterSetsTMP, int simulationCounterTMP, boolean log);
+    public void initSimulator(ArrayList< ArrayList<parameter>> listOfParameterSetsTMP, boolean log);
 
     /**
      *
@@ -37,11 +35,6 @@ public interface Simulator {
      */
     public int getStatus();
 
-    /**
-     *
-     * @return actual simulation counter (deprecated)
-     */
-    public int getSimulationCounter();
 
     /**
      *
@@ -61,6 +54,7 @@ public interface Simulator {
     
     /**
      * Cancel all running simulations (called on program exit)
+     * @return info-value about success of cancelation
      */
     public int cancelAllSimulations();
 }

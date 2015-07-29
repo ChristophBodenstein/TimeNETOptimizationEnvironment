@@ -189,22 +189,16 @@
                                       <Component id="jButtonEmptyCache" min="-2" pref="106" max="-2" attributes="0"/>
                                   </Group>
                                   <Group type="102" attributes="0">
-                                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                                      <Component id="jButtonStartOptimization" min="-2" pref="219" max="-2" attributes="1"/>
+                                      <Component id="jButtonStartOptimization" max="32767" attributes="1"/>
                                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                      <Component id="jSpinnerNumberOfOptimizationRuns" min="-2" pref="95" max="-2" attributes="0"/>
+                                      <Component id="jSpinnerNumberOfOptimizationRuns" min="-2" pref="115" max="-2" attributes="0"/>
                                   </Group>
                                   <Group type="102" attributes="0">
-                                      <Group type="103" groupAlignment="1" attributes="0">
-                                          <Group type="102" attributes="0">
-                                              <Component id="jComboBoxSimulationType" max="32767" attributes="0"/>
-                                              <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
-                                          </Group>
-                                          <Group type="102" alignment="1" attributes="0">
-                                              <Component id="jComboBoxBenchmarkFunction" max="32767" attributes="0"/>
-                                              <EmptySpace max="-2" attributes="0"/>
-                                          </Group>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="jComboBoxBenchmarkFunction" max="32767" attributes="0"/>
+                                          <Component id="jComboBoxSimulationType" max="32767" attributes="0"/>
                                       </Group>
+                                      <EmptySpace max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                           <Component id="jButtonOptiOptions" max="32767" attributes="1"/>
                                           <Component id="jComboBoxOptimizationType" alignment="0" pref="121" max="32767" attributes="1"/>

@@ -37,15 +37,13 @@ public class SimulatorCached implements Simulator {
      * inits the simulation, this is neccessary and must be implemented
      *
      * @param listOfParameterSetsTMP List of Parametersets to be simulated
-     * @param simulationCounterTMP actual Number of simulation, will be
      * increased with every simulation-run
      */
     @Override
-    public void initSimulator(ArrayList<ArrayList<parameter>> listOfParameterSetsTMP, int simulationCounterTMP, boolean log) {
+    public void initSimulator(ArrayList<ArrayList<parameter>> listOfParameterSetsTMP, boolean log) {
         if (mySimulationCache != null) {
             this.myListOfSimulations = mySimulationCache.getListOfCompletedSimulationParsers(listOfParameterSetsTMP, support.getGlobalSimulationCounter());
-            //this.simulationCounter=mySimulationCache.getLocalSimulationCounter();
-            support.setGlobalSimulationCounter(mySimulationCache.getLocalSimulationCounter());
+            support.setGlobalSimulationCounter(support.getGlobalSimulationCounter()+myListOfSimulations.size());
         } else {
             support.log("No local Simulation file loaded. Simulation not possible.");
         }
@@ -94,16 +92,6 @@ public class SimulatorCached implements Simulator {
         } else {
             return 0;
         }
-    }
-
-    /**
-     * Returns the actual simulation Counter
-     *
-     * @return actual simulation counter
-     */
-    @Override
-    public int getSimulationCounter() {
-        return support.getGlobalSimulationCounter();
     }
 
     /**

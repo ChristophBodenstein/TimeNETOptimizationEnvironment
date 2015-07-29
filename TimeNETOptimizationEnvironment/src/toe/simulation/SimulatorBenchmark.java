@@ -24,7 +24,6 @@ public class SimulatorBenchmark implements Simulator, Runnable {
 
     private SimulationCache mySimulationCache = null;
     private ArrayList<SimulationType> myListOfSimulations = null;
-//private int simulationCounter=0;
     private final String logFileName;
     private typeOfBenchmarkFunction benchmarkFunction = typeOfBenchmarkFunction.Sphere;
     int status = 0;
@@ -47,15 +46,12 @@ public class SimulatorBenchmark implements Simulator, Runnable {
      * other functions are isp. by http://fossies.org/dox/cilib-0.7.6
      *
      * @param listOfParameterSetsTMP List of Parametersets to be simulated
-     * @param simulationCounterTMP actual Number of simulation, will be
-     * increased with every simulation-run
      * @param log write special log file for this simulator. true: write log
      * file, false: dont write log file
      */
     @Override
-    public void initSimulator(ArrayList<ArrayList<parameter>> listOfParameterSetsTMP, int simulationCounterTMP, boolean log) {
+    public void initSimulator(ArrayList<ArrayList<parameter>> listOfParameterSetsTMP, boolean log) {
         this.log = log;
-        //this.simulationCounter=simulationCounterTMP;
         this.listOfParameterSetsTMP = listOfParameterSetsTMP;
         this.status = 0;
         new Thread(this).start();
@@ -69,16 +65,6 @@ public class SimulatorBenchmark implements Simulator, Runnable {
     @Override
     public int getStatus() {
         return this.status;
-    }
-
-    /**
-     * Returns the actual simulation Counter
-     *
-     * @return actual simulation counter
-     */
-    @Override
-    public int getSimulationCounter() {
-        return support.getGlobalSimulationCounter();
     }
 
     /**

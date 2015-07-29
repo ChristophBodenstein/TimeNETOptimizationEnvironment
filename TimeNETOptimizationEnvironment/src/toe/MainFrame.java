@@ -785,18 +785,14 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .add(jButtonEmptyCache, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 106, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                                     .add(layout.createSequentialGroup()
-                                        .add(0, 0, Short.MAX_VALUE)
-                                        .add(jButtonStartOptimization, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 219, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                        .add(jButtonStartOptimization, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                                        .add(jSpinnerNumberOfOptimizationRuns, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 95, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                                        .add(jSpinnerNumberOfOptimizationRuns, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 115, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                                     .add(layout.createSequentialGroup()
-                                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                                            .add(layout.createSequentialGroup()
-                                                .add(jComboBoxSimulationType, 0, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .add(5, 5, 5))
-                                            .add(layout.createSequentialGroup()
-                                                .add(jComboBoxBenchmarkFunction, 0, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)))
+                                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                            .add(jComboBoxBenchmarkFunction, 0, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .add(jComboBoxSimulationType, 0, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
                                             .add(jButtonOptiOptions, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                             .add(jComboBoxOptimizationType, 0, 121, Short.MAX_VALUE))))
@@ -955,7 +951,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
      */
     private void jButtonStartBatchSimulationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonStartBatchSimulationActionPerformed
         support.setCancelEverything(false);
-        support.resetGlobalSimulationCounter();
+        //support.resetGlobalSimulationCounter();
         this.pushUIState();
         this.switchUIState(uiState.processRunning);
 
@@ -992,7 +988,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
             }
 
             Simulator mySimulator = SimOptiFactory.getSimulator();
-            mySimulator.initSimulator(ListOfParameterSetsToBeWritten, 0, true);
+            mySimulator.initSimulator(ListOfParameterSetsToBeWritten, true);
             support.waitForSimulatorAsynchronous(mySimulator, this);
         } else {
             this.popUIState();
@@ -1035,7 +1031,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         }
 
         support.setCancelEverything(false);
-        support.resetGlobalSimulationCounter();
+        //support.resetGlobalSimulationCounter();
 
         //Set base parameterset and orignal base parameterset in support
         support.setOriginalParameterBase(((parameterTableModel) jTableParameterList.getModel()).getListOfParameter());
@@ -2330,7 +2326,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                     support.dumpTextFileToLog(support.NAME_OF_OPTIMIZER_PREFFERENCES_FILE + addonStringForFileName);
 
                     //Reset all statistics!
-                    support.resetGlobalSimulationCounter();
+                    //support.resetGlobalSimulationCounter();
                     StatisticAggregator.removeOldOptimizationsFromList();
 
                     //Check if other optiprefs have to be tested!

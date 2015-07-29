@@ -104,7 +104,7 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
         population = createRandomPopulation(populationSize, false);
 
         Simulator mySimulator = SimOptiFactory.getSimulator();
-        mySimulator.initSimulator(getNextParameterSetAsArrayList(), optiCycleCounter, false);
+        mySimulator.initSimulator(getNextParameterSetAsArrayList(), false);
         //support.waitForEndOfSimulator(mySimulator, support.getGlobalSimulationCounter(), support.DEFAULT_TIMEOUT);
         synchronized (mySimulator) {
             try {
@@ -142,7 +142,7 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
                 pArray = roundToStepping(pArray);
             }
 
-            mySimulator.initSimulator(parameterList, support.getGlobalSimulationCounter(), false);
+            mySimulator.initSimulator(parameterList, false);
             //support.waitForEndOfSimulator(mySimulator, support.getGlobalSimulationCounter(), support.DEFAULT_TIMEOUT);
             synchronized (mySimulator) {
                 try {

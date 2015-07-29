@@ -169,7 +169,7 @@ public class OptimizerABC extends OptimizerPopulationBased implements Runnable, 
         }
 
         Simulator mySimulator = SimOptiFactory.getSimulator();
-        mySimulator.initSimulator(getNextParameterSetAsArrayList(), optiCycleCounter, false);
+        mySimulator.initSimulator(getNextParameterSetAsArrayList(), false);
         //support.waitForEndOfSimulator(mySimulator, optiCycleCounter, support.DEFAULT_TIMEOUT);
         synchronized (mySimulator) {
             try {
@@ -178,7 +178,6 @@ public class OptimizerABC extends OptimizerPopulationBased implements Runnable, 
                 support.log("Problem waiting for end of non-cache-simulator.");
             }
         }
-        int simulationCounter = 0;
 
         ArrayList<SimulationType> simulationResults = mySimulator.getListOfCompletedSimulationParsers();
         population = getPopulationFromSimulationResults(simulationResults);
@@ -195,7 +194,7 @@ public class OptimizerABC extends OptimizerPopulationBased implements Runnable, 
 
             for (int fs = 0; fs < population.size(); ++fs) {
                 ArrayList<SimulationType> source = population.get(fs);
-                mySimulator.initSimulator(getNextParameterSetAsArrayList(source), optiCycleCounter, false);
+                mySimulator.initSimulator(getNextParameterSetAsArrayList(source), false);
                 //support.waitForEndOfSimulator(mySimulator, optiCycleCounter, support.DEFAULT_TIMEOUT);
                 synchronized (mySimulator) {
                     try {
@@ -220,7 +219,6 @@ public class OptimizerABC extends OptimizerPopulationBased implements Runnable, 
             printPopulationDistances();
             updateTopMeasure();
             ++optiCycleCounter;
-            ++simulationCounter;
             if (topMeasure.getDistanceToTargetValue() <= 0) {
                 break;
             }
@@ -340,6 +338,7 @@ public class OptimizerABC extends OptimizerPopulationBased implements Runnable, 
      *
      * @param name Name (path) of logfile
      */
+    @Override
     public void setLogFileName(String name) {
         this.logFileName = name;
     }
@@ -349,6 +348,7 @@ public class OptimizerABC extends OptimizerPopulationBased implements Runnable, 
      *
      * @return name of logfile
      */
+    @Override
     public String getLogFileName() {
         return this.logFileName;
     }

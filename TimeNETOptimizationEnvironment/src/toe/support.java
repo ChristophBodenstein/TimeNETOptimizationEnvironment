@@ -40,7 +40,7 @@ import toe.typedef.typeOfProcessFeedback;
 public class support {
 
 //This Version of TimeNetExperimentGenerator
-    public static final String VERSION = "2015-07-27";
+    public static final String VERSION = "2015-07-29";
 
 //Define some program-wide default values
     public static final double DEFAULT_STEPPING = 1.0;
@@ -1119,11 +1119,10 @@ public class support {
      * Blocks the program and waits until the simulation has ended or timeout
      *
      * @param mySimulator Simulator to wait for
-     * @param simulationCounter Simulation counter to show in the info-label
      * @param timeout Timeout in Seconds!
      * @return true if simulation was sucessful. false if timeout
      */
-    public static boolean waitForEndOfSimulator(Simulator mySimulator, int simulationCounter, long timeout) {
+    public static boolean waitForEndOfSimulator(Simulator mySimulator, long timeout) {
         long timeoutCounter = timeout;
         support.log("wait for Simulator has 100% completed.");
         //Shortcut for benchmark-Simulators
@@ -1159,10 +1158,9 @@ public class support {
                 return false;
             }
         }
-        simulationCounter = mySimulator.getSimulationCounter();
         //getMainFrame().updateSimulationCounterLabel(simulationCounter);
         //support.log("Simulation status:"+mySimulator.getStatus() +"%");
-        support.log("Simulation Counter: " + simulationCounter);
+        support.log("Simulation Counter: " + getGlobalSimulationCounter());
         return true;
     }
 

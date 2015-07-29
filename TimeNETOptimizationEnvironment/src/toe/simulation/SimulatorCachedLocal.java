@@ -25,7 +25,6 @@ public class SimulatorCachedLocal extends SimulatorCached implements Runnable {
     private final Simulator myLocalSimulator = getNoCacheSimulator();
     private ArrayList< ArrayList<parameter>> remainingParametersets = new ArrayList<>();
     ArrayList< ArrayList<parameter>> listOfParameterSetsTMP;
-    private int simulationCounterTMP = 0;
     private boolean log = true;
 
     /**
@@ -39,18 +38,16 @@ public class SimulatorCachedLocal extends SimulatorCached implements Runnable {
      * inits the simulation, this is neccessary and must be implemented
      *
      * @param listOfParameterSetsTMP List of Parametersets to be simulated
-     * @param simulationCounterTMP actual Number of simulation, will be
      * increased with every simulation-run
      * @param log true if own logfile should be written, else false
      */
     @Override
-    public void initSimulator(ArrayList< ArrayList<parameter>> listOfParameterSetsTMP, int simulationCounterTMP, boolean log) {
+    public void initSimulator(ArrayList< ArrayList<parameter>> listOfParameterSetsTMP, boolean log) {
 
         this.myListOfSimulationParsers = null;
         remainingParametersets = new ArrayList<>();
         status = 0;
         this.listOfParameterSetsTMP = listOfParameterSetsTMP;
-        this.simulationCounterTMP = simulationCounterTMP;
         this.log = log;
         //Start this thread
         new Thread(this).start();
@@ -99,7 +96,7 @@ public class SimulatorCachedLocal extends SimulatorCached implements Runnable {
             //Find simulations that are not already simulated
             support.log("Will simulate " + remainingParametersets.size() + " local.");
 
-            myLocalSimulator.initSimulator(remainingParametersets, support.getGlobalSimulationCounter(), false);
+            myLocalSimulator.initSimulator(remainingParametersets, false);
             //support.waitForEndOfSimulator(myLocalSimulator, support.getGlobalSimulationCounter(), support.DEFAULT_TIMEOUT);
 
             synchronized (myLocalSimulator) {
@@ -125,7 +122,7 @@ public class SimulatorCachedLocal extends SimulatorCached implements Runnable {
             support.addLinesToLogFileFromListOfParser(myListOfSimulationParsers, logFileName);
             support.log("SimulationCounter is now: " + support.getGlobalSimulationCounter());
         }
-        
+
         this.status = 100;
         synchronized (this) {
             notify();
@@ -150,16 +147,6 @@ public class SimulatorCachedLocal extends SimulatorCached implements Runnable {
      */
     public Simulator getNoCacheSimulator() {
         return new SimulatorLocal();
-    }
-
-    /**
-     * Returns the actual simulation Counter
-     *
-     * @return actual simulation counter
-     */
-    @Override
-    public int getSimulationCounter() {
-        return support.getGlobalSimulationCounter();
     }
 
     /**

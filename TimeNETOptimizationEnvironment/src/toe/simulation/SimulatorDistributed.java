@@ -57,7 +57,6 @@ public class SimulatorDistributed implements Runnable, Simulator {
     String actualSimulationLogFile = "";//actual log-file for one local simulation
     String simid;
     private int status = 0; //Status of simulations, 0..100%
-    private int simulationCounter = 0;//Startvalue for count of simulations, will be in the filename of sim and log
     boolean cancelSimulations = false;
     boolean log = true;
     boolean keepSimulationFiles = false;
@@ -122,7 +121,6 @@ public class SimulatorDistributed implements Runnable, Simulator {
                         }
                         //add the file to the unprocessed files names 
                         listOfUnproccessedFilesNames.add(support.removeExtention(file.getName()));
-                        this.simulationCounter++;
                         support.incGlobalSimulationCounter();
                         if (support.isCancelEverything()) {
                             break;
@@ -177,7 +175,6 @@ public class SimulatorDistributed implements Runnable, Simulator {
                                 listOfUnproccessedFilesNames.remove(filenameWithoutExtension);
                                 support.log("Parsing successful.");
                                 myResults.setIsFromDistributedSimulation(true);
-
                                 if (this.log) {
                                     support.addLinesToLogFile(myResults, logFileName);
                                 }
@@ -257,6 +254,8 @@ public class SimulatorDistributed implements Runnable, Simulator {
     /**
      * Reset the simulation. Send reset-request to server. This will delete the
      * log-file and cause a new simulation
+     *
+     * @param filename Filename of simulation to reset
      */
     public void resetSimulation(String filename) {
         client = HttpFactory.getHttpClient();
@@ -294,6 +293,8 @@ public class SimulatorDistributed implements Runnable, Simulator {
 
     /**
      * Delete all related files for this simulation (log, xml)
+     *
+     * @param filename Name of simulation file to be deleted from server
      */
     public void deleteSimulationOnServer(String filename) {
         client = HttpFactory.getHttpClient();
@@ -373,23 +374,19 @@ public class SimulatorDistributed implements Runnable, Simulator {
      *
      * @param listOfParameterSetsTMP ArrayList of parametersets (ArrayList) to
      * be simulated
-     * @param simulationCounterTMP actual simualtion counter, to be increased by
-     * this simulator (deprecated)
      * @param log boolean value whether to write results to a separate log file
      * or not
      */
-    public void initSimulator(ArrayList< ArrayList<parameter>> listOfParameterSetsTMP, int simulationCounterTMP, boolean log) {
+    @Override
+    public void initSimulator(ArrayList< ArrayList<parameter>> listOfParameterSetsTMP, boolean log) {
         this.status = 0;
-        this.listOfCompletedSimulationParsers = new ArrayList<SimulationType>();
+        this.listOfCompletedSimulationParsers = new ArrayList<>();
 
         this.listOfParameterSets = support.getCopyOfArrayListOfParametersets(listOfParameterSetsTMP);
         support.log("Given " + listOfParameterSetsTMP.size() + " parametersets to be simulated via web.");
         this.log = log;
         this.originalFilename = support.getOriginalFilename();//  originalFilenameTMP;
         this.tmpFilePath = support.getTmpPath();// tmpFilePathTMP;
-        if (simulationCounterTMP >= 0) {
-            this.simulationCounter = simulationCounterTMP;
-        }
 
         //Start this thread
         new Thread(this).start();
@@ -467,18 +464,9 @@ public class SimulatorDistributed implements Runnable, Simulator {
      *
      * @return % of simulations that are finished
      */
+    @Override
     public int getStatus() {
         return this.status;
-
-    }
-
-    /**
-     * Returns actual number of simulation
-     *
-     * @return number of actual simulation
-     */
-    public int getSimulationCounter() {
-        return this.simulationCounter;
 
     }
 
@@ -487,6 +475,7 @@ public class SimulatorDistributed implements Runnable, Simulator {
      *
      * @return List of completed simulation parsers
      */
+    @Override
     public ArrayList<SimulationType> getListOfCompletedSimulationParsers() {
         return this.listOfCompletedSimulationParsers;
     }

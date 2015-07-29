@@ -93,7 +93,7 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
         population = createRandomPopulation(startPopulationSize, false);
 
         Simulator mySimulator = SimOptiFactory.getSimulator();
-        mySimulator.initSimulator(getNextParameterSetAsArrayList(), optiCycleCounter, false);
+        mySimulator.initSimulator(getNextParameterSetAsArrayList(), false);
         //support.waitForEndOfSimulator(mySimulator, optiCycleCounter, support.DEFAULT_TIMEOUT);
         synchronized (mySimulator) {
             try {
@@ -134,7 +134,7 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
                 pArray = roundToStepping(pArray);
             }
 
-            mySimulator.initSimulator(parameterList, simulationCounter, false);
+            mySimulator.initSimulator(parameterList, false);
             //support.waitForEndOfSimulator(mySimulator, simulationCounter, support.DEFAULT_TIMEOUT);
             synchronized (mySimulator) {
                 try {
@@ -143,7 +143,6 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
                     support.log("Problem waiting for end of non-cache-simulator.");
                 }
             }
-            simulationCounter = mySimulator.getSimulationCounter();
 
             simulationResults = mySimulator.getListOfCompletedSimulationParsers();
             support.addLinesToLogFileFromListOfParser(simulationResults, logFileName);
