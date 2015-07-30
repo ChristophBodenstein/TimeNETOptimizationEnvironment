@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.SecureRandom;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Properties;
@@ -2525,7 +2526,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
      * @param count Value to be displayed in SimCountLabel
      */
     public void setSimCountLabel(int count) {
-        this.jLabelSimulationCountIndicator.setText(Integer.toString(count));
+        this.jLabelSimulationCountIndicator.setText(NumberFormat.getInstance().format(count));
     }
 
     /**
@@ -2534,7 +2535,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
      * @param cacheSize Value to be displayed in CacheSizeLabel
      */
     public void setCacheSizeLabel(int cacheSize) {
-        this.jLabelCachSizeIndicator.setText(Integer.toString(cacheSize));
+        this.jLabelCachSizeIndicator.setText(NumberFormat.getInstance().format(cacheSize));
     }
 
     /**
