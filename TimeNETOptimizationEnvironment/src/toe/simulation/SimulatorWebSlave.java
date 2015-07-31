@@ -15,8 +15,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Calendar;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -101,7 +99,7 @@ public class SimulatorWebSlave implements Runnable {
                 //HttpClient client = new DefaultHttpClient() ;
                 //Verify response if any
                 if (response != null) {
-                    //System.out.println(response.getStatusLine().getStatusCode());
+                    support.log("Responsecode of task-request: " + Integer.toString(response.getStatusLine().getStatusCode()), typeOfLogLevel.INFO);
                     EntityUtils.consume(response.getEntity());
                 }
             } catch (Exception ex) {
@@ -161,7 +159,7 @@ public class SimulatorWebSlave implements Runnable {
             java.lang.Process p = processBuilder.start();
 
             java.util.Scanner s = new java.util.Scanner(p.getInputStream()).useDelimiter("\\Z");//Scans output of process
-            support.log(s.next(), typeOfLogLevel.INFO);//prints output of process into System.out
+            support.log(s.next(), typeOfLogLevel.INFO);//prints output of process into log
             boolean isRunning = true;
             while (isRunning) {
                 try {
@@ -240,7 +238,7 @@ public class SimulatorWebSlave implements Runnable {
 
             //Verify response if any
             if (response != null) {
-                System.out.println(response.getStatusLine().getStatusCode());
+                support.log("Responsecode of Upload-Request: " + Integer.toString(response.getStatusLine().getStatusCode()), typeOfLogLevel.INFO);
                 EntityUtils.consume(response.getEntity());
             }
 
