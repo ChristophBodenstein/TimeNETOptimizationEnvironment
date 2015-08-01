@@ -1496,7 +1496,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
     public void calculateDesignSpace() {
         myGenerator = new generator(ListOfParameterSetsToBeWritten, fileName, jLabelExportStatus, this, jTableParameterList);
         this.sizeOfDesignSpace = myGenerator.getSizeOfDesignspace();
-        support.setStatusText("Designspace-Size:" + sizeOfDesignSpace);
+        support.setStatusText("Designspace-Size:" + NumberFormat.getInstance().format(sizeOfDesignSpace));
 
         if (sizeOfDesignSpace > support.DEFAULT_MINIMUM_DESIGNSPACE_FOR_OPTIMIZATION) {
             this.jButtonStartOptimization.setEnabled(true);
@@ -2540,6 +2540,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
 
     /**
      * Returns list of activated LogLevels
+     *
      * @return List of activated LogLevels
      */
     public ArrayList getListOfActivatedLogLevels() {
