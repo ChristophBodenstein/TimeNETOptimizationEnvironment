@@ -125,9 +125,6 @@
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Verbose"/>
                   </Properties>
-                  <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jCheckBoxMenuItemVerboseActionPerformed"/>
-                  </Events>
                 </MenuItem>
                 <MenuItem class="javax.swing.JCheckBoxMenuItem" name="jCheckBoxMenuItemError">
                   <Properties>

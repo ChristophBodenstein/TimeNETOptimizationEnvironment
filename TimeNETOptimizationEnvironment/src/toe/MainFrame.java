@@ -749,11 +749,6 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         jMenu4.add(jCheckBoxMenuItemInfo);
 
         jCheckBoxMenuItemVerbose.setText("Verbose");
-        jCheckBoxMenuItemVerbose.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCheckBoxMenuItemVerboseActionPerformed(evt);
-            }
-        });
         jMenu4.add(jCheckBoxMenuItemVerbose);
 
         jCheckBoxMenuItemError.setText("Error");
@@ -1484,10 +1479,6 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
             support.setChosenSimulatorType(typeOfSimulator.Cached_Benchmark);
         }
     }//GEN-LAST:event_jButtonEmptyCacheActionPerformed
-
-    private void jCheckBoxMenuItemVerboseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItemVerboseActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jCheckBoxMenuItemVerboseActionPerformed
 
     /**
      * Calculates the design space, number of all permutations of parameters
