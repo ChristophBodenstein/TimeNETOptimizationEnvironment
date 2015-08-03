@@ -1189,10 +1189,11 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
             support.log("Loading of Cache-file was successful. Will check if its working.", typeOfLogLevel.INFO);
             this.pathToLastSimulationCache = inputFile;
             this.saveProperties();
-            //If cached simulation is available activate cache as Cache/local simulation
-            if (this.checkIfCachedSimulationIsPossible()) {
+            //If cached simulation is available and not yet selected as simulator: activate cache as Cache/local simulation
+            if (!this.jComboBoxSimulationType.getSelectedItem().toString().contains("Cache") && this.checkIfCachedSimulationIsPossible()) {
                 this.jComboBoxSimulationType.setSelectedItem(typeOfSimulator.Cache_Only);
                 support.setChosenSimulatorType(typeOfSimulator.Cache_Only);
+            } else {
             }
             return true;
         }
