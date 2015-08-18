@@ -277,7 +277,9 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         //try to load from cache
         if (!this.pathToLastSimulationCache.equals("")) {
             if (this.tryToFillCacheFromFile(this.pathToLastSimulationCache)) {
-                JOptionPane.showMessageDialog(null, "Cached simulation data loaded. \n " + this.pathToLastSimulationCache);
+                if (!support.isIsRunningAsSlave()) {
+                    JOptionPane.showMessageDialog(null, "Cached simulation data loaded. \n " + this.pathToLastSimulationCache);
+                }
                 support.getMySimulationCache().reformatParameterTable((parameterTableModel) this.jTableParameterList.getModel());
                 this.jTableParameterList.updateUI();
                 this.calculateDesignSpace();
