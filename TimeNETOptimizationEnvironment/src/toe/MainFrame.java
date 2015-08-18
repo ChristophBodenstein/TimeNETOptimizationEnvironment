@@ -398,6 +398,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         jLabelTotalSimCount = new javax.swing.JLabel();
         jLabelCachSizeIndicator = new javax.swing.JLabel();
         jLabelCacheSize = new javax.swing.JLabel();
+        jLabelDesignspaceSize = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jSeparator4 = new javax.swing.JPopupMenu.Separator();
@@ -661,6 +662,8 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         jLabelCacheSize.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
         jLabelCacheSize.setText("Cache Size");
 
+        jLabelDesignspaceSize.setText("Designspace size:");
+
         jMenu1.setText("File");
         jMenu1.add(jSeparator4);
         jMenu1.add(jSeparator5);
@@ -776,7 +779,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(jTextFieldSCPNFile)
                             .add(layout.createSequentialGroup()
-                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
                                     .add(layout.createSequentialGroup()
                                         .add(jButtonPathToR, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 192, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                                         .add(18, 18, 18)
@@ -790,7 +793,8 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                                     .add(layout.createSequentialGroup()
                                         .add(jButtonEnterURLToSimServer, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 192, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                                         .add(18, 18, 18)
-                                        .add(jButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 100, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                                        .add(jButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 100, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                                    .add(jLabelDesignspaceSize, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .add(0, 0, Short.MAX_VALUE)))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -884,7 +888,9 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                         .add(5, 5, 5)
                         .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
-                .add(18, 18, 18)
+                .add(4, 4, 4)
+                .add(jLabelDesignspaceSize)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jButtonStartOptimization, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 32, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(jSpinnerNumberOfOptimizationRuns, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
@@ -1490,14 +1496,16 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
     public void calculateDesignSpace() {
         myGenerator = new generator(ListOfParameterSetsToBeWritten, fileName, jLabelExportStatus, this, jTableParameterList);
         this.sizeOfDesignSpace = myGenerator.getSizeOfDesignspace();
-        support.setStatusText("Designspace-Size:" + NumberFormat.getInstance().format(sizeOfDesignSpace));
+        //support.setStatusText("Designspace-Size:" + NumberFormat.getInstance().format(sizeOfDesignSpace));
+        this.jLabelDesignspaceSize.setText("Designspace size: " + NumberFormat.getInstance().format(sizeOfDesignSpace));
 
         if (sizeOfDesignSpace > support.DEFAULT_MINIMUM_DESIGNSPACE_FOR_OPTIMIZATION) {
             this.jButtonStartOptimization.setEnabled(true);
+            support.setStatusText("Optimization possible.");
         } else {
             this.jButtonStartOptimization.setEnabled(false);
             support.log("Design space smaller then " + support.DEFAULT_MINIMUM_DESIGNSPACE_FOR_OPTIMIZATION + ". Optimization not possible!", typeOfLogLevel.INFO);
-            support.setStatusText(jLabelExportStatus.getText() + ". DS to small for Optimization.");
+            support.setStatusText("DS to small for Optimization.");
         }
     }
 
@@ -1612,6 +1620,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
     private javax.swing.JComboBox jComboBoxSimulationType;
     private javax.swing.JLabel jLabelCachSizeIndicator;
     private javax.swing.JLabel jLabelCacheSize;
+    private javax.swing.JLabel jLabelDesignspaceSize;
     private javax.swing.JLabel jLabelExportStatus;
     private javax.swing.JLabel jLabelMemoryUsage;
     private javax.swing.JLabel jLabelSimulationCountIndicator;

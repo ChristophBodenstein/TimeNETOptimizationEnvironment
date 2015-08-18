@@ -176,7 +176,7 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="jTextFieldSCPNFile" max="32767" attributes="0"/>
                           <Group type="102" attributes="0">
-                              <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                   <Group type="102" attributes="0">
                                       <Component id="jButtonPathToR" min="-2" pref="192" max="-2" attributes="0"/>
                                       <EmptySpace type="separate" max="-2" attributes="0"/>
@@ -194,6 +194,7 @@
                                       <EmptySpace type="separate" max="-2" attributes="0"/>
                                       <Component id="jButton1" min="-2" pref="100" max="-2" attributes="0"/>
                                   </Group>
+                                  <Component id="jLabelDesignspaceSize" alignment="0" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           </Group>
@@ -317,7 +318,9 @@
                       <Component id="jScrollPane1" pref="0" max="32767" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
+              <Component id="jLabelDesignspaceSize" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jButtonStartOptimization" alignment="3" min="-2" pref="32" max="-2" attributes="0"/>
                   <Component id="jSpinnerNumberOfOptimizationRuns" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -720,6 +723,11 @@
           <Font name="Lucida Grande" size="13" style="1"/>
         </Property>
         <Property name="text" type="java.lang.String" value="Cache Size"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabelDesignspaceSize">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Designspace size:"/>
       </Properties>
     </Component>
   </SubComponents>
