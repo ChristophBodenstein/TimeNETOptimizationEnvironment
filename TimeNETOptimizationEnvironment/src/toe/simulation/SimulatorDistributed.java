@@ -15,8 +15,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
@@ -535,6 +533,7 @@ public class SimulatorDistributed implements Runnable, Simulator {
             postRequest.reset();
 
         } catch (Exception ex) {
+            support.log("Error uploading simulation file: " + fileName, typeOfLogLevel.ERROR);
             support.log(ex.getLocalizedMessage(), typeOfLogLevel.ERROR);
             throw (ex);
         }
@@ -549,12 +548,13 @@ public class SimulatorDistributed implements Runnable, Simulator {
      */
     @Override
     public SimulationType getCalculatedOptimum(MeasureType targetMeasure) {
-        //support.log("SimulatorDistributed: Getting absolute optimum simulation from Cache. Will return null.");
+        support.log("No calculated optimum available in distributed simulation. Will return null.", typeOfLogLevel.ERROR);
         return null;
     }
 
     @Override
     public int cancelAllSimulations() {
+        support.log("Will cancel all remote simulations (delete from server).", typeOfLogLevel.INFO);
         this.deleteAllSimulationsFromServer();
         return 0;
     }
