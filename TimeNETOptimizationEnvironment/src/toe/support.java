@@ -40,7 +40,7 @@ import toe.typedef.typeOfProcessFeedback;
 public class support {
 
 //This Version of TimeNetExperimentGenerator
-    public static final String VERSION = "2015-08-03";
+    public static final String VERSION = "2015-08-18";
 
 //Define some program-wide default values
     public static final double DEFAULT_STEPPING = 1.0;
