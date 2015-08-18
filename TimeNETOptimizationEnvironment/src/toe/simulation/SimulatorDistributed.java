@@ -208,8 +208,8 @@ public class SimulatorDistributed implements Runnable, Simulator {
                     }
 
                 } catch (Exception ex) {
-                    Logger.getLogger(SimulatorWebSlave.class.getName()).log(Level.SEVERE, null, ex);
                     support.log("Problem connecting to server (asking for results). please check your network preferences.", typeOfLogLevel.ERROR);
+                    support.log(ex.getMessage(), typeOfLogLevel.ERROR);
                 } finally {
                     //support.log("Trying to consume Response from upload.");
                     try {
@@ -223,8 +223,8 @@ public class SimulatorDistributed implements Runnable, Simulator {
                         }
 
                     } catch (Exception ex) {
-                        Logger.getLogger(SimulatorWebSlave.class.getName()).log(Level.SEVERE, null, ex);
                         support.log("Error consuming the http-response while asking for results.", typeOfLogLevel.ERROR);
+                        support.log(ex.getMessage(), typeOfLogLevel.ERROR);
                     }
                     //support.log("Try to cleanup after download.");
                     httpGet.releaseConnection();
@@ -288,6 +288,7 @@ public class SimulatorDistributed implements Runnable, Simulator {
             postRequest.reset();
 
         } catch (Exception ex) {
+            support.log("Error resetting simulation: " + filename, typeOfLogLevel.ERROR);
             support.log(ex.getLocalizedMessage(), typeOfLogLevel.ERROR);
         }
     }
@@ -328,6 +329,7 @@ public class SimulatorDistributed implements Runnable, Simulator {
             postRequest.reset();
 
         } catch (Exception ex) {
+            support.log("Error deleting simulation on server: " + filename, typeOfLogLevel.ERROR);
             support.log(ex.getLocalizedMessage(), typeOfLogLevel.ERROR);
         }
     }
@@ -365,6 +367,7 @@ public class SimulatorDistributed implements Runnable, Simulator {
             postRequest.reset();
 
         } catch (Exception ex) {
+            support.log("Error deleting all simulations on server.", typeOfLogLevel.ERROR);
             support.log(ex.getLocalizedMessage(), typeOfLogLevel.ERROR);
         }
     }
