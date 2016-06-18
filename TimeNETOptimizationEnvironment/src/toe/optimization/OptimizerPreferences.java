@@ -1345,13 +1345,11 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
         File[] listOfFiles = folderToScan.listFiles();
 
-        if (listOfFiles  != null) {
-            for (int i = 0; i < listOfFiles.length; i++) {
-                if (listOfFiles[i].isFile()) {
-                    target_file = listOfFiles[i].getName();
-                    if (target_file.startsWith(standardFile.getName())) {
-                        numberOfFoundOptiPrefs++;
-                    }
+        for (int i = 0; i < listOfFiles.length; i++) {
+            if (listOfFiles[i].isFile()) {
+                target_file = listOfFiles[i].getName();
+                if (target_file.startsWith(standardFile.getName())) {
+                    numberOfFoundOptiPrefs++;
                 }
             }
         }
@@ -1359,7 +1357,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     }
 
     /**
-     * Updates the label to show how many Optipreferences are stored in
+     * Updates the label to shwo how many Optipreferences are stored in
      * pref-folder
      */
     private void updateNumberOfOptiPrefs() {
