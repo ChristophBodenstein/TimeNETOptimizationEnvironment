@@ -1359,7 +1359,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     }
 
     /**
-     * Updates the label to shwo how many Optipreferences are stored in
+     * Updates the label to show how many Optipreferences are stored in
      * pref-folder
      */
     private void updateNumberOfOptiPrefs() {
