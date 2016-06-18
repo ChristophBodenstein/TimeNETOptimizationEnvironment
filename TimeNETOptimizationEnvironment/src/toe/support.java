@@ -40,7 +40,7 @@ import toe.typedef.typeOfProcessFeedback;
 public class support {
 
 //This Version of TimeNetExperimentGenerator
-    public static final String VERSION = "2015-08-18";
+    public static final String VERSION = "2016-06-18";
 
 //Define some program-wide default values
     public static final double DEFAULT_STEPPING = 1.0;
@@ -138,6 +138,7 @@ public class support {
     private static SimulationCache mySimulationCache = null;
     private static boolean cachedSimulationAvailable = false;
     private static boolean distributedSimulationAvailable = true;
+    private static boolean localSimulationAvailable = false;
     private static boolean isRunningAsSlave = false;
     private static String remoteAddress = null;
     private static typedef.typeOfOptimization chosenOptimizerType = DEFAULT_TYPE_OF_OPTIMIZER;//0=Greedy, 1=?, 2=?
@@ -1900,5 +1901,19 @@ public class support {
         } catch (FileNotFoundException ex) {
             support.log("File: " + filename + " not found!", typeOfLogLevel.ERROR);
         }
+    }
+
+    /**
+     * @return true if local Simulation is available / Path to TimeNET is correct
+     */
+    public static boolean isLocalSimulationAvailable() {
+        return localSimulationAvailable;
+    }
+
+    /**
+     * @param aLocalSimulationAvailable the localSimulationAvailable to set
+     */
+    public static void setLocalSimulationAvailable(boolean aLocalSimulationAvailable) {
+        localSimulationAvailable = aLocalSimulationAvailable;
     }
 }
