@@ -109,6 +109,30 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
             // Exception bearbeiten
         }
 
+        //Install default scpn file
+        File defaultSCPN = new File(support.NAME_OF_DEFAULT_SCPN);
+        if (!defaultSCPN.exists() || !defaultSCPN.isFile()) {
+            try {
+                InputStream ddlStream = this.getClass().getClassLoader().getResourceAsStream("toe/default_SCPN.xml");
+                FileOutputStream fos = null;
+                try {
+                    fos = new FileOutputStream(support.NAME_OF_DEFAULT_SCPN);
+                    byte[] buf = new byte[2048];
+                    int r = ddlStream.read(buf);
+                    while (r != -1) {
+                        fos.write(buf, 0, r);
+                        r = ddlStream.read(buf);
+                    }
+                } finally {
+                    if (fos != null) {
+                        fos.close();
+                    }
+                }
+            } catch (IOException e) {
+                support.log("Failed to install default SCPN", typeOfLogLevel.ERROR);
+            }
+        }
+
         jButtonPathToTimeNet.setBackground(Color.GRAY);
         jButtonPathToTimeNet.setText("Enter Path To TimeNet");
 
@@ -121,7 +145,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         pMaxTime.initWithValues("MaxTime", 0, 0, 1);
         pMaxError.initWithValues("MaxError", 5, 5, 1);
 
-        this.jTextFieldSCPNFile.setText(auto.getProperty("file"));
+        this.jTextFieldSCPNFile.setText(auto.getProperty("file", support.NAME_OF_DEFAULT_SCPN));
         //this.jTextFieldPathToTimeNet.setText(auto.getProperty("timenetpath"));
         this.setPathToTimeNet(auto.getProperty("timenetpath", ""));
         //support.log("Read Path to TimeNet:"+auto.getProperty("timenetpath"));
@@ -1077,48 +1101,46 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         if (this.sizeOfDesignSpace <= support.DEFAULT_MINIMUM_DESIGNSPACE_FOR_OPTIMIZATION) {
             support.log("Design space to small, no Optimization posible.", typeOfLogLevel.INFO);
             support.setStatusText("Designspace to small for Opti.");
-        } else {
-            if (this.getListOfActiveMeasureMentsToOptimize().size() >= 1) {
-                this.switchUIState(uiState.processRunning);
-                //Ask for Tmp-Path
-                String tPath = (support.getPathToDirByDialog("Dir for export TMP-Files and log.\n ", support.getTmpPath()));
-                //if tmpPath is empty or null --> return
-                if (tPath != null) {
-                    support.setTmpPath(tPath);
-                    this.saveProperties();
-                    support.setPathToTimeNet(pathToTimeNet);
-                    support.setMainFrame(this);
-                    support.setOriginalFilename(fileName);
-                    support.setStatusLabel(jLabelExportStatus);
-                    support.setMeasureFormPane(jTabbedPaneOptiTargets);
-                    //support.setTypeOfStartValue((typeOfStartValueEnum)support.getOptimizerPreferences().jComboBoxTypeOfStartValue.getSelectedItem());
+        } else if (this.getListOfActiveMeasureMentsToOptimize().size() >= 1) {
+            this.switchUIState(uiState.processRunning);
+            //Ask for Tmp-Path
+            String tPath = (support.getPathToDirByDialog("Dir for export TMP-Files and log.\n ", support.getTmpPath()));
+            //if tmpPath is empty or null --> return
+            if (tPath != null) {
+                support.setTmpPath(tPath);
+                this.saveProperties();
+                support.setPathToTimeNet(pathToTimeNet);
+                support.setMainFrame(this);
+                support.setOriginalFilename(fileName);
+                support.setStatusLabel(jLabelExportStatus);
+                support.setMeasureFormPane(jTabbedPaneOptiTargets);
+                //support.setTypeOfStartValue((typeOfStartValueEnum)support.getOptimizerPreferences().jComboBoxTypeOfStartValue.getSelectedItem());
 
-                    //If Parameterbase is null -->eject
-                    if (support.getParameterBase() == null) {
-                        support.setStatusText("No Paramaterbase set.");
-                        support.log("No Paramaterbase set. No Simulation possible.", typeOfLogLevel.INFO);
-                        this.popUIState();
-                        return;
-                    }
-                    //Remove all old Optimizationstatistics
-                    StatisticAggregator.removeOldOptimizationsFromList();
-
-                    //Save original Parameterset, for stepping and designspace borders
-                    support.setOriginalParameterBase(support.getCopyOfParameterSet(support.getParameterBase()));
-                    //start Optimization via extra method, set number of multiple optimizations before
-                    support.setNumberOfOptiRunsToGo((Integer) this.jSpinnerNumberOfOptimizationRuns.getValue());
-                    support.getOptimizerPreferences().setNumberOfActualOptimizationAnalysis(0);
-                    startOptimizationAgain();
-
-                } else {
-                    support.log("No Tmp-Path given, Optimization not possible.", typeOfLogLevel.ERROR);
+                //If Parameterbase is null -->eject
+                if (support.getParameterBase() == null) {
+                    support.setStatusText("No Paramaterbase set.");
+                    support.log("No Paramaterbase set. No Simulation possible.", typeOfLogLevel.INFO);
                     this.popUIState();
+                    return;
                 }
+                //Remove all old Optimizationstatistics
+                StatisticAggregator.removeOldOptimizationsFromList();
+
+                //Save original Parameterset, for stepping and designspace borders
+                support.setOriginalParameterBase(support.getCopyOfParameterSet(support.getParameterBase()));
+                //start Optimization via extra method, set number of multiple optimizations before
+                support.setNumberOfOptiRunsToGo((Integer) this.jSpinnerNumberOfOptimizationRuns.getValue());
+                support.getOptimizerPreferences().setNumberOfActualOptimizationAnalysis(0);
+                startOptimizationAgain();
 
             } else {
-                support.log("No Measurements to optimize for are chosen.", typeOfLogLevel.INFO);
-                support.setStatusText("No Measurements chosen. No Opti possible.");
+                support.log("No Tmp-Path given, Optimization not possible.", typeOfLogLevel.ERROR);
+                this.popUIState();
             }
+
+        } else {
+            support.log("No Measurements to optimize for are chosen.", typeOfLogLevel.INFO);
+            support.setStatusText("No Measurements chosen. No Opti possible.");
         }
     }//GEN-LAST:event_jButtonStartOptimizationActionPerformed
 
@@ -1421,7 +1443,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
      * @param evt Event from mouseclick
      */
     private void jCheckBoxSlaveSimulatorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jCheckBoxSlaveSimulatorMouseClicked
-         //set Property for startup
+        //set Property for startup
         //start the Slave-Thread
 
         //If is selected and will be unselected then stop thread

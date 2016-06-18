@@ -116,6 +116,7 @@ public class support {
     public static final String NAME_OF_LOGFILE = NAME_OF_PREF_DIR + "TimeNETLogFile.log";//the name of the program logfile, if logging to file is active
     public static final String NAME_OF_PREFERENCES_FILE = NAME_OF_PREF_DIR + "ApplicationPreferences.prop";//name of the pref-file for program-wide prefs
     public static final String NAME_OF_OPTIMIZER_PREFFERENCES_FILE = NAME_OF_PREF_DIR + "OptimizerPreferences.prop";//name of the pref file for optimization parameters
+    public static final String NAME_OF_DEFAULT_SCPN = NAME_OF_PREF_DIR + "default_SCPN.xml";//name of default scpn to be loaded at first start
 
     public static final boolean DEFAULT_LOG_TO_WINDOW = true;
     public static final boolean DEFAULT_LOG_TO_FILE = false;
@@ -622,7 +623,7 @@ public class support {
         dummyParameterForCPUTime.setEndValue(0.0);
 
         try {
-        //support.log("Number of Simulationtypes to add is "+pList.size());
+            //support.log("Number of Simulationtypes to add is "+pList.size());
 
             //Check if list is null, then exit
             if (pList == null) {
@@ -706,7 +707,7 @@ public class support {
         dummyParameterForCPUTime.setEndValue(0.0);
 
         try {
-        //support.log("Number of Simulationtypes to add is "+pList.size());
+            //support.log("Number of Simulationtypes to add is "+pList.size());
 
             //Check if list is null, then exit
             if (pList == null) {
@@ -1202,14 +1203,10 @@ public class support {
             activeMeasure.setTargetValue(activeMeasureFromInterface.getTargetValue(), activeMeasureFromInterface.getTargetTypeOf());
             if (activeMeasure.getTargetTypeOf().equals(typedef.typeOfTarget.value)) {
                 distance = activeMeasure.getDistanceFromTarget();
-            } else {
-                if (activeMeasure.getTargetTypeOf().equals(typedef.typeOfTarget.min)) {
-                    distance = activeMeasure.getMeanValue();
-                } else {
-                    if (activeMeasure.getTargetTypeOf().equals(typedef.typeOfTarget.max)) {
-                        distance = 0 - activeMeasure.getMeanValue();
-                    }
-                }
+            } else if (activeMeasure.getTargetTypeOf().equals(typedef.typeOfTarget.min)) {
+                distance = activeMeasure.getMeanValue();
+            } else if (activeMeasure.getTargetTypeOf().equals(typedef.typeOfTarget.max)) {
+                distance = 0 - activeMeasure.getMeanValue();
             }
             support.printMeasureType(activeMeasure, "**** Optimized Value for Measure is ****", "---------------------------");
         }
