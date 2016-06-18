@@ -1345,11 +1345,13 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
         File[] listOfFiles = folderToScan.listFiles();
 
-        for (int i = 0; i < listOfFiles.length; i++) {
-            if (listOfFiles[i].isFile()) {
-                target_file = listOfFiles[i].getName();
-                if (target_file.startsWith(standardFile.getName())) {
-                    numberOfFoundOptiPrefs++;
+        if (listOfFiles != null) {
+            for (int i = 0; i < listOfFiles.length; i++) {
+                if (listOfFiles[i].isFile()) {
+                    target_file = listOfFiles[i].getName();
+                    if (target_file.startsWith(standardFile.getName())) {
+                        numberOfFoundOptiPrefs++;
+                    }
                 }
             }
         }
