@@ -49,5 +49,5 @@ Tool introduction:
 Multiphase introduction:
 [http://ieeexplore.ieee.org/xpl/articleDetails.jsp?reload=true&arnumber=7116742](https://www.tu-ilmenau.de/fileadmin/public/sse/Veroeffentlichungen/2015/SysCon2015Bod.pdf)
 
-Muliphase validation with benchmark functions:
+Multiphase validation with benchmark functions:
 [http://www.scitepress.org/DigitalLibrary/PublicationsDetail.aspx?ID=t+AXD5JJD04=&t=1](https://www.tu-ilmenau.de/fileadmin/public/sse/Veroeffentlichungen/2015/Simultech2015.pdf)
