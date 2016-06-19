@@ -55,7 +55,7 @@ import toe.typedef.*;
  * @author Christoph Bodenstein
  */
 public final class MainFrame extends javax.swing.JFrame implements TableModelListener, SimOptiCallback {
-    
+
     Properties auto = new Properties();
     private String fileName = "";
     ArrayList< ArrayList<parameter>> ListOfParameterSetsToBeWritten = new ArrayList<>();//Name, Value
@@ -72,15 +72,15 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
     private String pathToLastSimulationCache = "";
     private SimulationTypeComboBoxModel mySimulationTypeModel = new SimulationTypeComboBoxModel(typeOfSimulator.values());
     SimulatorWebSlave mySlave = new SimulatorWebSlave();
-    
+
     private RPlugin rplugin;
     private String pathToR = "";
     private JDialog aboutDialog;
-    
+
     private boolean savePropertiesEnabled = false;
-    
+
     private String logFileNameOfOptimizer = null;
-    
+
     private ArrayList<Component> listOfUIComponents = new ArrayList<>();//List of all Components
     private ArrayList<Boolean> listOfUIStates = new ArrayList<>();
     private ArrayList<Boolean> listOfUIStatesPushed;
@@ -91,11 +91,11 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
      * @throws java.io.IOException
      */
     public MainFrame() throws IOException {
-        
+
         support.setMainFrame(this);
-        
+
         initComponents();
-        
+
         aboutDialog = new JDialog(MainFrame.getWindows()[0], ModalityType.DOCUMENT_MODAL);
         aboutDialog.setContentPane(new AboutPanel());
         aboutDialog.pack();
@@ -106,7 +106,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         if (!prefDir.exists()) {
             prefDir.mkdir();
         }
-        
+
         try {
             FileInputStream in = new FileInputStream(support.NAME_OF_PREFERENCES_FILE);
             auto.load(in);
@@ -138,54 +138,54 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                 support.log("Failed to install default SCPN", typeOfLogLevel.ERROR);
             }
         }
-        
+
         jButtonPathToTimeNet.setBackground(Color.GRAY);
         jButtonPathToTimeNet.setText("Enter Path To TimeNet");
-        
+
         jButtonPathToR.setBackground(Color.GRAY);
         jButtonPathToR.setText("Enter Path To R");
-        
+
         pConfidenceIntervall.initWithValues("ConfidenceIntervall", 95, 95, 1);
         pSeed.initWithValues("Seed", 0, 0, 1);
         pEndTime.initWithValues("EndTime", 0, 0, 1);
         pMaxTime.initWithValues("MaxTime", 0, 0, 1);
         pMaxError.initWithValues("MaxError", 5, 5, 1);
-        
+
         this.jTextFieldSCPNFile.setText(auto.getProperty("file", support.NAME_OF_DEFAULT_SCPN));
         //this.jTextFieldPathToTimeNet.setText(auto.getProperty("timenetpath"));
         this.setPathToTimeNet(auto.getProperty("timenetpath", ""));
         //support.log("Read Path to TimeNet:"+auto.getProperty("timenetpath"));
-        this.setPathToR(auto.getProperty("rpath", ""));
+        this.setPathToR(auto.getProperty("rpath", support.getDefaultPathToR()));
         //Read tmp path from properties, needed for client-mode-start
         support.setTmpPath(auto.getProperty("tmppath"));
-        
+
         support.setServerSecret(auto.getProperty("serversecret", new BigInteger(70, new SecureRandom()).toString(32)));
 
         //init r plugin
         rplugin = new RPlugin();
-        
+
         this.pConfidenceIntervall.setStartValue(support.loadDoubleFromProperties("ConfidenceIntervallStart", pConfidenceIntervall.getStartValue(), auto));
         this.pConfidenceIntervall.setEndValue(support.loadDoubleFromProperties("ConfidenceIntervallEnd", pConfidenceIntervall.getEndValue(), auto));
         this.pConfidenceIntervall.setStepping(support.loadDoubleFromProperties("ConfidenceIntervallStepping", pConfidenceIntervall.getStepping(), auto));
-        
+
         this.pEndTime.setStartValue(support.loadDoubleFromProperties("EndTimeStart", pEndTime.getStartValue(), auto));
         this.pEndTime.setEndValue(support.loadDoubleFromProperties("EndTimeEnd", pEndTime.getEndValue(), auto));
         this.pEndTime.setStepping(support.loadDoubleFromProperties("EndTimeStepping", pEndTime.getStepping(), auto));
-        
+
         this.pMaxTime.setStartValue(support.loadDoubleFromProperties("MaxTimeStart", pMaxTime.getStartValue(), auto));
         this.pMaxTime.setEndValue(support.loadDoubleFromProperties("MaxTimeEnd", pMaxTime.getEndValue(), auto));
         this.pMaxTime.setStepping(support.loadDoubleFromProperties("MaxTimeStepping", pMaxTime.getStepping(), auto));
-        
+
         this.pSeed.setStartValue(support.loadDoubleFromProperties("SeedStart", pSeed.getStartValue(), auto));
         this.pSeed.setEndValue(support.loadDoubleFromProperties("SeedEnd", pSeed.getEndValue(), auto));
         this.pSeed.setStepping(support.loadDoubleFromProperties("SeedStepping", pSeed.getStepping(), auto));
-        
+
         this.pMaxError.setStartValue(support.loadDoubleFromProperties("MaxErrorStart", pMaxError.getStartValue(), auto));
         this.pMaxError.setEndValue(support.loadDoubleFromProperties("MaxErrorEnd", pMaxError.getEndValue(), auto));
         this.pMaxError.setStepping(support.loadDoubleFromProperties("MaxErrorStepping", pMaxError.getStepping(), auto));
-        
+
         this.pathToLastSimulationCache = auto.getProperty("pathToLastSimulationCache", "");
-        
+
         this.jCheckBoxDeleteTmpFiles.setSelected(Boolean.valueOf(auto.getProperty("deleteTmpFile", "True")));
         support.setDeleteTmpSimulationFiles(jCheckBoxDeleteTmpFiles.isSelected());
         try {
@@ -195,22 +195,22 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
             support.setChosenBenchmarkFunction(support.DEFAULT_TYPE_OF_BENCHMARKFUNCTION);
         }
         this.jComboBoxBenchmarkFunction.setSelectedItem(support.getChosenBenchmarkFunction());
-        
+
         support.setIsRunningAsSlave(Boolean.parseBoolean(auto.getProperty("isRunningAsSlave", "false")));
-        
+
         support.setRemoteAddress(auto.getProperty("RemoteAddress", ""));
-        
+
         this.checkIfTimeNetPathIsCorrect();
         this.checkIfRPathIsCorrect();
         this.checkIfURLIsCorrect();
         this.deactivateExportButtons();
-        
+
         jTableParameterList.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table,
                     Object value, boolean isSelected, boolean hasFocus,
                     int row, int column) {
-                
+
                 Component c = super.getTableCellRendererComponent(table, value,
                         isSelected, hasFocus, row, column);
                 try {
@@ -231,27 +231,27 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                 return this;
             }
         });
-        
+
         support.setStatusLabel(jLabelExportStatus);
         support.setMeasureFormPane(jTabbedPaneOptiTargets);
         support.setPathToTimeNet(pathToTimeNet);
         support.setPathToR(pathToR);
-        
+
         this.updateComboBoxSimulationType();
-        
+
         if (support.isIsRunningAsSlave()) {
             this.jCheckBoxSlaveSimulator.setSelected(true);
             new Thread(this.mySlave).start();
         } else {
             this.jCheckBoxSlaveSimulator.setSelected(false);
         }
-        
+
         support.log("Using simulationtype: " + auto.getProperty("SimulationType"), typeOfLogLevel.INFO);
-        
+
         this.jComboBoxSimulationType.setSelectedItem(typeOfSimulator.valueOf(auto.getProperty("SimulationType", support.DEFAULT_TYPE_OF_SIMULATOR.toString())));
         support.setChosenSimulatorType((typeOfSimulator) jComboBoxSimulationType.getSelectedItem());
         this.jComboBoxOptimizationType.setSelectedItem(typeOfOptimization.valueOf(auto.getProperty("OptimizationType", support.DEFAULT_TYPE_OF_OPTIMIZER.toString())));
-        
+
         savePropertiesEnabled = true;//Enable property saving after init of all components
 
         //Add all Components to ListOfUIComponents
@@ -285,12 +285,12 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
             support.log("Could not read SCPN-file!", typeOfLogLevel.ERROR);
             JOptionPane.showMessageDialog(null, "Please choose a correct SCPN file!");
         }
-        
+
         this.switchUIState(uiState.defaultState);
         if (support.isIsRunningAsSlave()) {
             this.switchUIState(uiState.clientState);
         }
-        
+
         this.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
@@ -315,7 +315,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                 this.calculateDesignSpace();
                 this.checkIfCachedSimulationIsPossible();
             }
-            
+
         }
     }
 
@@ -338,7 +338,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         model.addSelectionInterval(5, 6);
         enabledSimulationTypes.add(5);
         enabledSimulationTypes.add(6);
-        
+
         if (support.isCachedSimulationAvailable()) {
             model.addSelectionInterval(1, 1);
             enabledSimulationTypes.add(1);
@@ -349,11 +349,11 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
             model.addSelectionInterval(4, 4);
             enabledSimulationTypes.add(4);
         }
-        
+
         if (!enabledSimulationTypes.contains(this.jComboBoxSimulationType.getSelectedIndex())) {
             this.jComboBoxSimulationType.setSelectedIndex(5);
         }
-        
+
         this.jComboBoxSimulationType.setRenderer(new EnabledJComboBoxRenderer(model));
         this.jComboBoxSimulationType.setModel(mySimulationTypeModel);
     }
@@ -367,7 +367,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
      * @return true if CachedSimulation is possible, else false
      */
     private boolean checkIfCachedSimulationIsPossible() {
-        
+
         if (mySimulationCache != null) {
             if (mySimulationCache.checkIfAllParameterMatchTable((parameterTableModel) this.jTableParameterList.getModel())) {
                 support.log("Cached Simulation available, all Parameter match.", typeOfLogLevel.INFO);
@@ -974,13 +974,13 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
 
     private void jButtonOpenSCPNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonOpenSCPNActionPerformed
         support.setCancelEverything(false);
-        
+
         javax.swing.filechooser.FileFilter myFilter = new javax.swing.filechooser.FileNameExtensionFilter("xml file", "xml");
         JFileChooser fileChooser = new JFileChooser(this.jTextFieldSCPNFile.getText());
         fileChooser.setCurrentDirectory(new java.io.File(this.jTextFieldSCPNFile.getText() + "/.."));
         fileChooser.setFileFilter(myFilter);
         fileChooser.setDialogTitle("Select SCPN-Net");
-        
+
         if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             support.log("getCurrentDirectory(): "
                     + fileChooser.getCurrentDirectory(), typeOfLogLevel.INFO);
@@ -1008,7 +1008,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         support.setOriginalFilename(fileName);
         support.setStatusLabel(jLabelExportStatus);
         support.setMeasureFormPane(jTabbedPaneOptiTargets);
-        
+
         if (ListOfParameterSetsToBeWritten != null) {
             support.log("Length of ParameterSet-List: " + ListOfParameterSetsToBeWritten.size(), typeOfLogLevel.INFO);
             exporter tmpExporter = new exporter(ListOfParameterSetsToBeWritten);
@@ -1034,7 +1034,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
 
         //Ask for Tmp-Path
         String tmpPath = support.getPathToDirByDialog("Choose directory for export TMP-Files.\n ", support.getTmpPath());
-        
+
         if (tmpPath != null) {
             support.setTmpPath(tmpPath);
             support.setPathToTimeNet(pathToTimeNet);
@@ -1063,7 +1063,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                 this.popUIState();
                 return;
             }
-            
+
             Simulator mySimulator = SimOptiFactory.getSimulator();
             mySimulator.initSimulator(ListOfParameterSetsToBeWritten, true);
             support.waitForSimulatorAsynchronous(mySimulator, this);
@@ -1101,12 +1101,12 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                     result = k;
                 }
             }
-            
+
             if (result != 0) {
                 return;
             }
         }
-        
+
         support.setCancelEverything(false);
         //support.resetGlobalSimulationCounter();
 
@@ -1150,12 +1150,12 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                 support.setNumberOfOptiRunsToGo((Integer) this.jSpinnerNumberOfOptimizationRuns.getValue());
                 support.getOptimizerPreferences().setNumberOfActualOptimizationAnalysis(0);
                 startOptimizationAgain();
-                
+
             } else {
                 support.log("No Tmp-Path given, Optimization not possible.", typeOfLogLevel.ERROR);
                 this.popUIState();
             }
-            
+
         } else {
             support.log("No Measurements to optimize for are chosen.", typeOfLogLevel.INFO);
             support.setStatusText("No Measurements chosen. No Opti possible.");
@@ -1169,7 +1169,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         fileChooser.setControlButtonsAreShown(true);
         fileChooser.setDialogTitle(" Choose Dir of TimeNet ");
         String outputDir;
-        
+
         if (fileChooser.showDialog(this, "Choose this") == JFileChooser.APPROVE_OPTION) {
             if (fileChooser.getSelectedFile().isDirectory()) {
                 outputDir = fileChooser.getSelectedFile().toString();
@@ -1182,7 +1182,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         } else {
             support.log("No Path to TimeNET chosen.", typeOfLogLevel.INFO);
         }
-        
+
 
     }//GEN-LAST:event_jButtonPathToTimeNetActionPerformed
 
@@ -1196,7 +1196,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         fileChooser.setDialogTitle(" Choose File with cached simulation files ");
         fileChooser.setFileFilter(myFilter);
         String inputFile;
-        
+
         if (fileChooser.showDialog(this, "Open") == JFileChooser.APPROVE_OPTION) {
             if (fileChooser.getSelectedFile().isDirectory()) {
                 support.log("No input file chosen!", typeOfLogLevel.INFO);
@@ -1262,7 +1262,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
     }//GEN-LAST:event_jComboBoxOptimizationTypeItemStateChanged
 
     private void jButtonEnterURLToSimServerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEnterURLToSimServerActionPerformed
-        
+
         String s = (String) JOptionPane.showInputDialog(
                 this,
                 "Enter URL of Simulation Server:\n",
@@ -1299,7 +1299,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         } catch (IOException ex) {
             support.log("Problem checking the URL to disctributed simulation.", typeOfLogLevel.ERROR);
         }
-        
+
         support.log("Checking URL of distributed simulation server.", typeOfLogLevel.INFO);
         support.setDistributedSimulationAvailable(checksuccessful);
         updateComboBoxSimulationType();
@@ -1342,7 +1342,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
 
     private void jButtonOptiOptionsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonOptiOptionsActionPerformed
         support.getOptimizerPreferences().setVisible(true);
-        
+
 
     }//GEN-LAST:event_jButtonOptiOptionsActionPerformed
 
@@ -1353,7 +1353,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         fileChooser.setControlButtonsAreShown(true);
         fileChooser.setDialogTitle(" Choose Dir of R ");
         String outputDir;
-        
+
         if (fileChooser.showDialog(this, "Choose this") == JFileChooser.APPROVE_OPTION) {
             if (fileChooser.getSelectedFile().isDirectory()) {
                 outputDir = fileChooser.getSelectedFile().toString();
@@ -1427,7 +1427,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                 result = k;
             }
         }
-        
+
         if (result == 0) {
             support.deleteLogFile();
         }
@@ -1474,7 +1474,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
             this.saveProperties();
         } else {
             String tmpPath = support.getPathToDirByDialog("Dir for export TMP-Files and log.\n ", support.getTmpPath());
-            
+
             if (tmpPath != null) {
                 support.setTmpPath(tmpPath);
                 if (support.checkTimeNetPath()) {
@@ -1538,7 +1538,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         this.sizeOfDesignSpace = myGenerator.getSizeOfDesignspace();
         //support.setStatusText("Designspace-Size:" + NumberFormat.getInstance().format(sizeOfDesignSpace));
         this.jLabelDesignspaceSize.setText("Designspace size: " + NumberFormat.getInstance().format(sizeOfDesignSpace));
-        
+
         if (sizeOfDesignSpace > support.DEFAULT_MINIMUM_DESIGNSPACE_FOR_OPTIMIZATION) {
             this.jButtonStartOptimization.setEnabled(true);
             support.setStatusText("Optimization possible.");
@@ -1561,19 +1561,19 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
      */
     public void buildListOfParameterSetsToExport(ArrayList ListOfParameterSetsToBeWritten, ArrayList ListOfParameterAsFromTable, ArrayList<parameter> lastParameterSet, JLabel infoLabel) {
         boolean isAlreadyInExportList = false;
-        
+
         if (support.isCancelEverything()) {
             this.activateReloadButtons();
             return;
         }
         if (ListOfParameterAsFromTable.size() > 0) {
             parameter loopParameter = (parameter) ListOfParameterAsFromTable.get(ListOfParameterAsFromTable.size() - 1);
-            
+
             ListOfParameterAsFromTable.remove(loopParameter);
-            
+
             String loopName = loopParameter.getName();
             boolean canIterate;
-            
+
             double start, end, step;
             try {
                 start = support.getDouble(loopParameter.getStartValue());
@@ -1584,14 +1584,14 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                 support.log("Could not convert into double, maybe String is used. Will not iterate through parameter " + loopParameter.getName(), typeOfLogLevel.ERROR);
                 return;
             }
-            
+
             if (canIterate) {
                 double usedValue;
                 int endCounter = 1;
                 if ((end - start) > 0) {
                     endCounter = (int) Math.ceil((end - start) / step) + 1;
                 }
-                
+
                 for (int i = 0; i < endCounter; i++) {
                     usedValue = start + (double) i * step;
                     usedValue = support.round(usedValue);
@@ -1604,7 +1604,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                             support.log("Clone is not Supported:" + e.toString(), typeOfLogLevel.ERROR);
                         }
                     }
-                    
+
                     for (parameter nextParameterSet1 : nextParameterSet) {
                         if (nextParameterSet1.getName().equals(loopName)) {
                             //set modified parameterset
@@ -1623,7 +1623,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                 isAlreadyInExportList = false;
             }
             ListOfParameterAsFromTable.add(loopParameter);
-            
+
         } else {
             //Exit the loop, popup
         }
@@ -1699,21 +1699,21 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
      * @param filename String name of the SCPN-File to read
      */
     private void readSCPNFile(String filename) {
-        
+
         if (filename == null) {
             return;
         }
         if (filename.equals("")) {
             return;
         }
-        
+
         deactivateExportButtons();
         try {
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
             Document doc = docBuilder.parse(filename);
             NodeList parameterList = doc.getElementsByTagName("parameter");
-            
+
             for (int i = 0; i < parameterList.getLength(); i++) {
                 support.log(parameterList.item(i).getAttributes().getNamedItem("name").getNodeValue(), typeOfLogLevel.INFO);
             }
@@ -1731,14 +1731,14 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                     tmpMeasure.setMeasureName(MeasurenameList.item(i).getAttributes().getNamedItem("name").getNodeValue());
                     Measures.add(tmpMeasure);
                 }
-                
+
                 for (int i = 0; i < this.jTabbedPaneOptiTargets.getComponentCount(); i++) {
                     ((MeasurementForm) this.jTabbedPaneOptiTargets.getComponent(i)).setMeasurements(Measures);
                 }
 
                 //Set List of all Measurements to support
                 support.setMeasures(Measures);
-                
+
             }
 
             //Set Editor for every Cell
@@ -1746,9 +1746,9 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
             singleclick.setClickCountToStart(1);
             for (int i = 0; i < jTableParameterList.getColumnCount(); i++) {
                 jTableParameterList.setDefaultEditor(jTableParameterList.getColumnClass(i), singleclick);
-                
+
             }
-            
+
             this.fileName = filename;//nach Erfolg, globalen filename setzen
             support.setOriginalFilename(filename);
             activateGenerateButtons();
@@ -1792,7 +1792,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                         support.log("These Parameters are equal:", typeOfLogLevel.INFO);
                         support.log(tmpParameterSetID + " and " + tmpListParameterID, typeOfLogLevel.INFO);
                         printParameterSetCompare(tmpParameterSet, tmpListParameter);
-                        
+
                     }
                 }
             }
@@ -1877,27 +1877,27 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
      * and stores these parameters in local fields
      */
     private void readStaticParametersFromTable() {
-        
+
         this.getpConfidenceIntervall().setStartValue(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("ConfidenceIntervall", "StartValue"));
         this.getpConfidenceIntervall().setEndValue(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("ConfidenceIntervall", "EndValue"));
         this.getpConfidenceIntervall().setStepping(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("ConfidenceIntervall", "Stepping"));
-        
+
         this.getpEndTime().setStartValue(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("EndTime", "StartValue"));
         this.getpEndTime().setEndValue(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("EndTime", "EndValue"));
         this.getpEndTime().setStepping(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("EndTime", "Stepping"));
-        
+
         this.getpMaxTime().setStartValue(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("MaxTime", "StartValue"));
         this.getpMaxTime().setEndValue(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("MaxTime", "EndValue"));
         this.getpMaxTime().setStepping(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("MaxTime", "Stepping"));
-        
+
         this.getpSeed().setStartValue(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("Seed", "StartValue"));
         this.getpSeed().setEndValue(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("Seed", "EndValue"));
         this.getpSeed().setStepping(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("Seed", "Stepping"));
-        
+
         this.getpMaxError().setStartValue(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("MaxRelError", "StartValue"));
         this.getpMaxError().setEndValue(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("MaxRelError", "EndValue"));
         this.getpMaxError().setStepping(((parameterTableModel) this.jTableParameterList.getModel()).getDoubleValueByName("MaxRelError", "Stepping"));
-        
+
     }
 
     /**
@@ -2001,7 +2001,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
     private void checkIfRPathIsCorrect() {
         String path = this.getPathToR();
         String rApplicationName;
-        
+
         String OS = System.getProperty("os.name").toLowerCase();
         if ((OS.contains("win"))) {
             //We are on a windows-system
@@ -2010,19 +2010,27 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
             //We are on a non-windows-system
             rApplicationName = "R";
         }
+
+        if (path.endsWith(File.separator)) {
+            path = path.substring(0, path.length() - 2);
+        }
+        if (path.endsWith(File.separator + "bin")) {
+            path = path.substring(0, path.length() - (File.separator + "bin").length());
+        }
+
         File tmpFile = new File(path + File.separator + "bin" + File.separator + rApplicationName);
-        
+
         support.log("R should be here: " + tmpFile.getAbsolutePath(), typeOfLogLevel.INFO);
         if (tmpFile.exists()) {
             jButtonPathToR.setBackground(Color.GREEN);
             jButtonPathToR.setOpaque(true);
             jButtonPathToR.setBorderPainted(false);
             jButtonPathToR.setText("RESET Path To R");
-            
+
             support.setPathToR(path);
             this.pathToR = path;
             this.saveProperties();
-            
+
             jButtonPlotR.setEnabled(true);
         } else {
             jButtonPathToR.setBackground(Color.RED);
@@ -2042,56 +2050,56 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         }
         support.log("Saving Properties.", typeOfLogLevel.INFO);
         try {
-            
+
             auto.setProperty("timenetpath", this.getPathToTimeNet());
             auto.setProperty("file", this.jTextFieldSCPNFile.getText());
-            
+
             auto.setProperty("serversecret", support.getServerSecret());
-            
+
             auto.setProperty("rpath", this.getPathToR());
-            
+
             auto.setProperty("ConfidenceIntervallStart", support.getString(this.getpConfidenceIntervall().getStartValue()));
             auto.setProperty("ConfidenceIntervallEnd", support.getString(this.getpConfidenceIntervall().getEndValue()));
             auto.setProperty("ConfidenceIntervallStepping", support.getString(this.getpConfidenceIntervall().getStepping()));
-            
+
             auto.setProperty("EndTimeStart", support.getString(this.getpEndTime().getStartValue()));
             auto.setProperty("EndTimeEnd", support.getString(this.getpEndTime().getEndValue()));
             auto.setProperty("EndTimeStepping", support.getString(this.getpEndTime().getStepping()));
-            
+
             auto.setProperty("MaxTimeStart", support.getString(this.getpMaxTime().getStartValue()));
             auto.setProperty("MaxTimeEnd", support.getString(this.getpMaxTime().getEndValue()));
             auto.setProperty("MaxTimeStepping", support.getString(this.getpMaxTime().getStepping()));
             auto.setProperty("SeedStart", support.getString(this.getpSeed().getStartValue()));
             auto.setProperty("SeedEnd", support.getString(this.getpSeed().getEndValue()));
             auto.setProperty("SeedStepping", support.getString(this.getpSeed().getStepping()));
-            
+
             auto.setProperty("MaxErrorStart", support.getString(this.getpMaxError().getStartValue()));
             auto.setProperty("MaxErrorEnd", support.getString(this.getpMaxError().getEndValue()));
             auto.setProperty("MaxErrorStepping", support.getString(this.getpMaxError().getStepping()));
-            
+
             auto.setProperty("pathToLastSimulationCache", this.pathToLastSimulationCache);
-            
+
             auto.setProperty("OptimizationType", support.getChosenOptimizerType().toString());
             auto.setProperty("SimulationType", support.getChosenSimulatorType().toString());
             auto.setProperty("BenchmarkType", support.getChosenBenchmarkFunction().toString());
-            
+
             auto.setProperty("isRunningAsSlave", Boolean.toString(support.isIsRunningAsSlave()));
-            
+
             auto.setProperty("RemoteAddress", support.getReMoteAddress());
             auto.setProperty("deleteTmpFile", Boolean.toString(jCheckBoxDeleteTmpFiles.isSelected()));
-            
+
             if (support.getTmpPath() != null) {
                 auto.setProperty("tmppath", support.getTmpPath());
             } else {
                 support.log("No tmp-path yet given. Please do so.", typeOfLogLevel.ERROR);
             }
-            
+
             File parserprops = new File(support.NAME_OF_PREFERENCES_FILE);
             auto.store(new FileOutputStream(parserprops), "ExperimentGenerator-Properties");
         } catch (IOException e) {
             support.log("Problem Saving the properties.", typeOfLogLevel.ERROR);
         }
-        
+
     }
 
     /**
@@ -2117,7 +2125,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
     public void addToListOfParameterSetsToBeWritten(ArrayList<parameter> p) {
         ListOfParameterSetsToBeWritten.add(p);
         support.setStatusText("Building Parametersets:" + ListOfParameterSetsToBeWritten.size() * 100 / this.sizeOfDesignSpace + "%");
-        
+
     }
 
     /**
@@ -2221,11 +2229,11 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
      * @param s value of progressbar (0..100)
      */
     protected void setMemoryProgressbar(int s) {
-        
+
         if ((s <= 100) && (s >= 0)) {
             this.jProgressBarMemoryUsage.setValue(s);
         }
-        
+
     }
 
     /**
@@ -2288,9 +2296,9 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         for (Component listOfUIComponent : listOfUIComponents) {
             listOfUIStates.add(true);
         }
-        
+
         switch (newState) {
-            
+
             case defaultState:
                 listOfUIStates.set(2, false);
                 listOfUIStates.set(3, false);
@@ -2357,11 +2365,11 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
      */
     public void deactivateEveryComponentExcept(Component[] oList) {
         this.jButtonGenerateListOfExperiments.setEnabled(false);
-        
+
         for (Component listOfUIComponent : this.listOfUIComponents) {
             listOfUIComponent.setEnabled(false);
         }
-        
+
         for (Component oList1 : oList) {
             try {
                 oList1.setEnabled(true);
@@ -2369,7 +2377,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                 //
             }
         }
-        
+
     }
 
     /**
@@ -2382,7 +2390,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
     @Override
     public void operationSucessfull(String message, typeOfProcessFeedback feedback) {
         int tmpNumberOfOptiRunsToGo = support.getNumberOfOptiRunsToGo();
-        
+
         switch (feedback) {
             case GenerationSuccessful:
                 this.popUIState();
@@ -2402,7 +2410,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                     support.log("Ended was: " + feedback.toString(), typeOfLogLevel.RESULT);
                     support.log("This was Opti-Analysis: " + support.getOptimizerPreferences().getNumberOfActualOptimizationAnalysis().toString(), typeOfLogLevel.RESULT);
                     StatisticAggregator.printOptiStatistics();
-                    
+
                     String addonStringForFileName = support.getOptimizerPreferences().getNumberOfActualOptimizationAnalysis().toString();
                     if (support.getOptimizerPreferences().getNumberOfActualOptimizationAnalysis() <= 0) {
                         addonStringForFileName = "";
@@ -2428,7 +2436,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                         reloadFromCacheIfNeeded();
                         startOptimizationAgain();
                     }
-                    
+
                 } else {
                     support.log("Starting next Optimization run, number:" + (tmpNumberOfOptiRunsToGo - 1), typeOfLogLevel.INFO);
                     support.setNumberOfOptiRunsToGo(tmpNumberOfOptiRunsToGo - 1);
@@ -2437,7 +2445,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                     this.startOptimizationAgain();
                 }
                 break;
-            
+
             default:
                 break;
         }
@@ -2476,7 +2484,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
             case GenerationNotSuccessful:
                 jButtonStartBatchSimulation.setEnabled(false);
                 break;
-            
+
             default:
                 break;
         }

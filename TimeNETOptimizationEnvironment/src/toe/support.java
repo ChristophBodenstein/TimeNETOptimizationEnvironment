@@ -1904,7 +1904,8 @@ public class support {
     }
 
     /**
-     * @return true if local Simulation is available / Path to TimeNET is correct
+     * @return true if local Simulation is available / Path to TimeNET is
+     * correct
      */
     public static boolean isLocalSimulationAvailable() {
         return localSimulationAvailable;
@@ -1915,5 +1916,30 @@ public class support {
      */
     public static void setLocalSimulationAvailable(boolean aLocalSimulationAvailable) {
         localSimulationAvailable = aLocalSimulationAvailable;
+    }
+
+    /**
+     * Returns default Path to R for different systems
+     */
+    public static String getDefaultPathToR() {
+        //Determine System
+        //Return default String
+        String OS = System.getProperty("os.name").toLowerCase();
+        support.log(OS, typeOfLogLevel.RESULT);
+        if ((OS.contains("win"))) {
+            //We are on a windows-system
+            //TODO scan for subfolders because version number is in path?
+            return "c:\\Program Files\\R\\R-3.3.0";
+        } else {
+            //We are on a non-windows-system
+            if(OS.contains("mac")){
+            //We are on a mac
+            return "/Library/Frameworks/R.framework/Resources";
+            }else{
+            //we are probably on a linux like machine
+            //TODO find out the path in linux systems
+            return "/usr";
+            }
+        }
     }
 }
