@@ -1925,21 +1925,30 @@ public class support {
         //Determine System
         //Return default String
         String OS = System.getProperty("os.name").toLowerCase();
-        support.log(OS, typeOfLogLevel.RESULT);
+        support.log("Operating system: " + OS, typeOfLogLevel.INFO);
         if ((OS.contains("win"))) {
             //We are on a windows-system
-            //TODO scan for subfolders because version number is in path?
-            return "c:\\Program Files\\R\\R-3.3.0";
-        } else {
-            //We are on a non-windows-system
-            if(OS.contains("mac")){
+            File parentDir = new File("c:\\Program Files\\R");
+            if (parentDir.isDirectory()) {
+                File[] subDirs = parentDir.listFiles();
+                for (int i = 0; i < subDirs.length; i++) {
+                    if (subDirs[i].isDirectory()) {
+                        if (subDirs[i].getName().charAt(0) == 'R') {
+                            support.log("Guessed name of R-Directory: " + parentDir.getAbsolutePath() + File.separator + subDirs[i].getName(), typeOfLogLevel.INFO);
+                            return parentDir.getAbsolutePath() + File.separator + subDirs[i].getName();
+                        }
+                    }
+                }
+            }
+            return "c:\\Program Files\\R";
+        }
+        //We are on a non-windows-system
+        if (OS.contains("mac")) {
             //We are on a mac
             return "/Library/Frameworks/R.framework/Resources";
-            }else{
+        } else {
             //we are probably on a linux like machine
-            //TODO find out the path in linux systems
             return "/usr";
-            }
         }
     }
 }
