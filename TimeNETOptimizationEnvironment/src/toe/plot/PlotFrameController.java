@@ -498,6 +498,10 @@ public class PlotFrameController extends javax.swing.JFrame implements nativePro
                 support.del(new File(rScriptFilePath));
                 writer = new PrintWriter("rscript.r", "UTF-8");
                 writer.println("options(warn=-1)");
+                writer.println("list.of.packages <- c(\"plot3D\", \"rglwidget\", \"rgl\")");
+                writer.println("new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,\"Package\"])]");
+                writer.println("if(length(new.packages)) {");
+                writer.println("install.packages(new.packages, repos=\"http://cran.us.r-project.org\")}");
                 writer.println("library(plot3D)");
             } else {
                 //append to existing script (hold is checked)
@@ -649,8 +653,28 @@ public class PlotFrameController extends javax.swing.JFrame implements nativePro
 
     /**
      * Converts a path to a String which is compatible with R-paths in scripts
+     *
+     * @param standardPath Path to be converted to R-compatible String
+     * @return R-compatible Path-String
      */
     public String getRCompatiblePathFromStandardPath(String standardPath) {
+        //Path shall not contain "."
+        //Path shall exists as directory
+        if (standardPath.contains(".")) {
+            support.log("Path to export webgl contains \".\"(period). R does not like that!", typeOfLogLevel.ERROR);
+        }
+        File testDir = new File(standardPath);
+
+        if (!testDir.isDirectory()) {
+            support.log("Path \" standardPath \" to export webgl is no directory. R does not like that!", typeOfLogLevel.INFO);
+            try {
+                testDir.mkdir();
+                support.log("Created Dir \" standardPath \" to export webgl.", typeOfLogLevel.INFO);
+            } catch (Exception e) {
+                support.log("Tried to create the export dir \" standardPath \" but failed.", typeOfLogLevel.ERROR);
+            }
+        }
+
         String pattern = Pattern.quote(System.getProperty("file.separator"));
         String tmpString[] = standardPath.split(pattern);
         String resultString = "";
@@ -697,10 +721,8 @@ public class PlotFrameController extends javax.swing.JFrame implements nativePro
         }
         if (this.possiblePlot == typedef.typeOfPossiblePlot.Plot3D && typedef.typeOf3DPlot.valueOf(jComboBoxTypeOf3DPlot.getSelectedItem().toString()) == typedef.typeOf3DPlot.Perspective) {
             //3d-Plot was rendered to webgl
-        } else {
-            if (!error) {
-                plotFrame.showImage(imageFilePath);
-            }
+        } else if (!error) {
+            plotFrame.showImage(imageFilePath);
         }
         support.setStatusText("");
         this.JButtonPlot.setEnabled(true);
