@@ -21,7 +21,7 @@ import toe.typedef.typeOfLogLevel;
  */
 public class OptimizerSimAnnealing extends OptimizerHill implements Runnable, Optimizer {
 
-    private int accepted=0, generated = 0;
+    private int accepted = 0, generated = 0;
     private double D;
     private double c;
     double actualTempParameter = 1;
@@ -56,7 +56,7 @@ public class OptimizerSimAnnealing extends OptimizerHill implements Runnable, Op
      */
     @Override
     protected boolean isOptimized(double actualDistance, double nextDistance) {
-    //If next Solution is better then take it as actual best solution
+        //If next Solution is better then take it as actual best solution
 
         //Inc Simulationcounter
         generated++;
@@ -96,7 +96,7 @@ public class OptimizerSimAnnealing extends OptimizerHill implements Runnable, Op
         support.log("Actual Temp for Parameters: " + actualTempParameter, typeOfLogLevel.INFO);
         support.log("Actual Temp for Cost: " + actualTempCost, typeOfLogLevel.INFO);
         //Eject if Temperature is lower then Epsilon
-        if (actualTempCost <= support.getOptimizerPreferences().getPref_Epsilon() || actualTempParameter <= support.getOptimizerPreferences().getPref_Epsilon()) {
+        if (support.round2(actualTempCost) <= support.getOptimizerPreferences().getPref_Epsilon() || support.round2(actualTempParameter) <= support.getOptimizerPreferences().getPref_Epsilon()) {
             //Set currentsolution=bestsolution so it will be printed as optimum
             currentSolution = bestSolution;
             this.optimized = true;
@@ -149,7 +149,7 @@ public class OptimizerSimAnnealing extends OptimizerHill implements Runnable, Op
 
                 sign = Math.signum(r);
 
-            //Calculation of Standard nextValue
+                //Calculation of Standard nextValue
                 //nextValue = p.getValue() + sign * actualTempParameter *(Math.pow(1+(1/actualTempParameter),Math.abs(2*r-1) )) * distanceMax;
                 nextValue = p.getValue() + sign * actualTempParameter * (Math.pow(1 + (1 / actualTempParameter), Math.abs(2 * r) - 1)) * distanceMax;
                 support.log("Min:" + p.getStartValue() + " Max:" + p.getEndValue() + " NextValue:" + nextValue, typeOfLogLevel.INFO);
@@ -163,7 +163,7 @@ public class OptimizerSimAnnealing extends OptimizerHill implements Runnable, Op
                  support.log("d:"+distanceMax);
                  support.log("NextValue:"+nextValue);
                  */
-                /*try{
+ /*try{
                  Thread.sleep(80);
                  }catch(Exception e){}
                  */

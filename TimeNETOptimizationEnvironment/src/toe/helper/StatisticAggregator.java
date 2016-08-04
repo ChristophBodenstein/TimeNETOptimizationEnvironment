@@ -259,7 +259,7 @@ public class StatisticAggregator {
                     + "&averageNumberOfSimulations "
                     + "&averageCPUTimeTotal "
                     + "&averageCacheRatio*100", typeOfLogLevel.RESULT);
-            support.log(p.getPref_WrongSimulationsUntilBreak() + "   & " + p.getPref_SizeOfNeighborhood() + "\\%     &" + p.getPref_WrongSimulationsPerDirection() + "      &" + support.round(averageDistanceToOptimumInValueRange) + "\\%     &" + support.round(averageDistanceToOptimumInDefinitionRange) + "\\%    &" + averageNumberOfSimulations + "    &" + averageCPUTimeTotal + "     &" + support.round(averageCacheRatio) * 100 + "\\%  \\\\  \\hline", typeOfLogLevel.RESULT);
+            support.log(p.getPref_WrongSimulationsUntilBreak() + "   & " + p.getPref_SizeOfNeighborhood() + "\\%     &" + p.getPref_WrongSimulationsPerDirection() + "      &" + support.round3(averageDistanceToOptimumInValueRange) + "\\%     &" + support.round3(averageDistanceToOptimumInDefinitionRange) + "\\%    &" + averageNumberOfSimulations + "    &" + averageCPUTimeTotal + "     &" + support.round3(averageCacheRatio) * 100 + "\\%  \\\\  \\hline", typeOfLogLevel.RESULT);
             support.log("NeighborhoodType: " + p.getPref_NeighborhoodType().toString(), typeOfLogLevel.RESULT);
             support.log("Optimizer: " + support.getChosenOptimizerType().toString(), typeOfLogLevel.RESULT);
             support.log("Simulator: " + support.getChosenSimulatorType().toString(), typeOfLogLevel.RESULT);

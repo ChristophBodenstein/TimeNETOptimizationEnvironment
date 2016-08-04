@@ -98,7 +98,7 @@ public class SimulationCache {
                             double tmpValue2 = support.getDouble(listOfStringLines.get(line + 1)[column]);
                             //TODO: Make this a setting in prefernces frame, how many digits to be used!
                             tmpValue2 = (Math.abs(tmpValue - tmpValue2));
-                            tmpValue2 = support.round(tmpValue2);
+                            tmpValue2 = support.round3(tmpValue2);
                             if (tmpValue2 > 0) {
                                 listOfCachedParameterStepping[i] = Math.min(tmpValue2, listOfCachedParameterStepping[i]);
                                 //support.log("Result of round: "+tmpValue2);
@@ -190,14 +190,14 @@ public class SimulationCache {
                             column = i1 + 7;
                             parameter tmpParameter = new parameter();
                             tmpParameter.setName(support.translateParameterNameFromLogFileToTable(listOfCachedParameterNames[i1]));
-                            tmpParameter.setEndValue(support.round(listOfCachedParameterMax[i1]));
-                            tmpParameter.setStartValue(support.round(listOfCachedParameterMin[i1]));
-                            tmpParameter.setStepping(support.round(listOfCachedParameterStepping[i1]));
+                            tmpParameter.setEndValue(support.round3(listOfCachedParameterMax[i1]));
+                            tmpParameter.setStartValue(support.round3(listOfCachedParameterMin[i1]));
+                            tmpParameter.setStepping(support.round3(listOfCachedParameterStepping[i1]));
                             //Get and save Value of this Parameter
                             //It is in the correct Column of the actual line
                             //We did not change the order of Parameters (it`s the same like in the raw file)
                             //tmpParameter.setValue(support.translateParameterNameFromLogFileToTable(listOfStringLines.get(lineNumber)[column]));
-                            tmpParameter.setValue(support.round(support.getDouble(listOfStringLines.get(lineNumber)[column])));
+                            tmpParameter.setValue(support.round3(support.getDouble(listOfStringLines.get(lineNumber)[column])));
 
                             tmpParameterList.add(tmpParameter);
                         }
@@ -441,7 +441,7 @@ public class SimulationCache {
                 return false;
             }
             //Parameter found, now check the values of this parameter
-            if (support.round(support.getDouble(tmpParameterA.getValue())) != support.round(support.getDouble(tmpParameterB.getValue()))) {
+            if (support.round3(support.getDouble(tmpParameterA.getValue())) != support.round3(support.getDouble(tmpParameterB.getValue()))) {
                 //support.log("Parameter Values differ.");
                 return false;
             }

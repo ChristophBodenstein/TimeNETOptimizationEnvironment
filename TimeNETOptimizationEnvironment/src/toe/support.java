@@ -427,13 +427,23 @@ public class support {
     }
 
     /**
-     * Rounds a float value to x digits
+     * Rounds a float value to 3 digits
      *
-     * @param valueToRound The input Vlaue to be round
-     * @return round Value with x precise digits TODO x is not defined
+     * @param valueToRound The input Value to be round
+     * @return round Value with 3 precise digits
      */
-    public static double round(double valueToRound) {
+    public static double round3(double valueToRound) {
         return (double) Math.round(valueToRound * 1000) / 1000;
+    }
+
+    /**
+     * Rounds a float value to 2 digits
+     *
+     * @param valueToRound The input Value to be round
+     * @return round Value with 2 precise digits
+     */
+    public static double round2(double valueToRound) {
+        return (double) Math.round(valueToRound * 100) / 100;
     }
 
     /**
