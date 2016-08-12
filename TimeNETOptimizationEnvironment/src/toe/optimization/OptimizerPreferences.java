@@ -163,6 +163,8 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         jSpinnerEpsilon = new javax.swing.JSpinner();
         jLabel9 = new javax.swing.JLabel();
         jComboBoxCoolingMethod = new javax.swing.JComboBox();
+        jSpinnerEstSASimulationCount = new javax.swing.JSpinner();
+        jLabelEstSASimulationCount = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
         jComboBoxCoolingMethod1 = new javax.swing.JComboBox();
@@ -307,7 +309,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             }
         });
 
-        jSpinnerWrongSolutionsPerDirectionUntilBreak.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
+        jSpinnerWrongSolutionsPerDirectionUntilBreak.setModel(new javax.swing.SpinnerNumberModel(1, 1, null, 1));
         jSpinnerWrongSolutionsPerDirectionUntilBreak.setToolTipText("This should always be lower than Wrong Solutions until break");
         jSpinnerWrongSolutionsPerDirectionUntilBreak.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -320,7 +322,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             }
         });
 
-        jSpinnerWrongSolutionsUntilBreak.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(2), Integer.valueOf(1), null, Integer.valueOf(1)));
+        jSpinnerWrongSolutionsUntilBreak.setModel(new javax.swing.SpinnerNumberModel(2, 1, null, 1));
         jSpinnerWrongSolutionsUntilBreak.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 jSpinnerWrongSolutionsUntilBreakStateChanged(evt);
@@ -418,11 +420,21 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
         jSpinnerMaxTemperatureParameters.setModel(new javax.swing.SpinnerNumberModel(1.0d, 0.0d, 1.0d, 0.01d));
         jSpinnerMaxTemperatureParameters.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerMaxTemperatureParameters, "#.##"));
+        jSpinnerMaxTemperatureParameters.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinnerMaxTemperatureParametersStateChanged(evt);
+            }
+        });
         jPanelSimAnnealing.add(jSpinnerMaxTemperatureParameters);
         jSpinnerMaxTemperatureParameters.setBounds(260, 110, 90, 28);
 
         jSpinnerMaxTemperatureCost.setModel(new javax.swing.SpinnerNumberModel(1.0d, 0.0d, 1.0d, 0.01d));
         jSpinnerMaxTemperatureCost.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerMaxTemperatureCost, "#.##"));
+        jSpinnerMaxTemperatureCost.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinnerMaxTemperatureCostStateChanged(evt);
+            }
+        });
         jPanelSimAnnealing.add(jSpinnerMaxTemperatureCost);
         jSpinnerMaxTemperatureCost.setBounds(260, 140, 90, 28);
 
@@ -452,9 +464,14 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         jPanelSimAnnealing.add(jLabel5);
         jLabel5.setBounds(20, 180, 210, 16);
 
-        jSpinnerEpsilon.setModel(new javax.swing.SpinnerNumberModel(0.01d, 0.0d, 1.0d, 0.01d));
-        jSpinnerEpsilon.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerEpsilon, "#.##"));
+        jSpinnerEpsilon.setModel(new javax.swing.SpinnerNumberModel(0.001d, 0.0d, 1.0d, 0.001d));
+        jSpinnerEpsilon.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerEpsilon, "#.###"));
         jSpinnerEpsilon.setValue(0.01);
+        jSpinnerEpsilon.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinnerEpsilonStateChanged(evt);
+            }
+        });
         jPanelSimAnnealing.add(jSpinnerEpsilon);
         jSpinnerEpsilon.setBounds(260, 180, 90, 28);
 
@@ -463,8 +480,23 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         jLabel9.setBounds(20, 20, 100, 16);
 
         jComboBoxCoolingMethod.setModel(new DefaultComboBoxModel(typeOfAnnealing.values()));
+        jComboBoxCoolingMethod.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jComboBoxCoolingMethodItemStateChanged(evt);
+            }
+        });
         jPanelSimAnnealing.add(jComboBoxCoolingMethod);
         jComboBoxCoolingMethod.setBounds(200, 20, 230, 27);
+
+        jSpinnerEstSASimulationCount.setModel(new javax.swing.SpinnerNumberModel(100L, 0L, null, 10L));
+        jSpinnerEstSASimulationCount.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerEstSASimulationCount, "#"));
+        jSpinnerEstSASimulationCount.setValue(0.01);
+        jPanelSimAnnealing.add(jSpinnerEstSASimulationCount);
+        jSpinnerEstSASimulationCount.setBounds(260, 220, 90, 28);
+
+        jLabelEstSASimulationCount.setText("Estimated # of Simulations");
+        jPanelSimAnnealing.add(jLabelEstSASimulationCount);
+        jLabelEstSASimulationCount.setBounds(20, 230, 210, 16);
 
         jTabbedPane1.addTab("Simulated Annealing", jPanelSimAnnealing);
 
@@ -689,7 +721,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
         jLabelGeneticMutationChance.setText("Mutation Chance %");
 
-        jSpinnerGeneticPopulationSize.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
+        jSpinnerGeneticPopulationSize.setModel(new javax.swing.SpinnerNumberModel(1, 1, null, 1));
         jSpinnerGeneticPopulationSize.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 jSpinnerGeneticPopulationSizePropertyChange(evt);
@@ -710,7 +742,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             }
         });
 
-        jSpinnerGeneticMaxOptiRunsWithoutImprovement.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
+        jSpinnerGeneticMaxOptiRunsWithoutImprovement.setModel(new javax.swing.SpinnerNumberModel(1, 1, null, 1));
 
         jLabel27.setText("Maximum Optiruns without improvment");
 
@@ -728,7 +760,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
         jLabel30.setText("Kind of crossing");
 
-        jSpinnerGeneticMaxNumberOfCrossings.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
+        jSpinnerGeneticMaxNumberOfCrossings.setModel(new javax.swing.SpinnerNumberModel(1, 1, null, 1));
 
         jLabel31.setText("Number of crossings per generation");
 
@@ -789,7 +821,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Genetic", jPanel3);
 
-        jSpinnerCSSPopulationSize.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
+        jSpinnerCSSPopulationSize.setModel(new javax.swing.SpinnerNumberModel(1, 1, null, 1));
         jSpinnerCSSPopulationSize.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 jSpinnerCSSPopulationSizePropertyChange(evt);
@@ -838,7 +870,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Charged System Search", jPanel4);
 
-        jSpinnerABCNumEmployedBees.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
+        jSpinnerABCNumEmployedBees.setModel(new javax.swing.SpinnerNumberModel(1, 1, null, 1));
         jSpinnerABCNumEmployedBees.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 jSpinnerABCNumEmployedBeesPropertyChange(evt);
@@ -847,21 +879,21 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
         jLabelABCNumEmployedBees.setText("Employed Bees");
 
-        jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
+        jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
         jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovementPropertyChange(evt);
             }
         });
 
-        jSpinnerABCNumScoutBees.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
+        jSpinnerABCNumScoutBees.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
         jSpinnerABCNumScoutBees.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 jSpinnerABCNumScoutBeesPropertyChange(evt);
             }
         });
 
-        jSpinnerABCNumOnlookerBees.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
+        jSpinnerABCNumOnlookerBees.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
         jSpinnerABCNumOnlookerBees.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 jSpinnerABCNumOnlookerBeesPropertyChange(evt);
@@ -926,7 +958,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Artifical Bee Colony", jPanel5);
 
-        jSpinnerMVMOStartingPop.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(2), Integer.valueOf(1), null, Integer.valueOf(1)));
+        jSpinnerMVMOStartingPop.setModel(new javax.swing.SpinnerNumberModel(2, 1, null, 1));
         jSpinnerMVMOStartingPop.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 jSpinnerMVMOStartingPopPropertyChange(evt);
@@ -937,7 +969,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
         jLabelMVMOMaximumPopulation.setText("Maximum Population:");
 
-        jSpinnerMVMOMaxPop.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(70), Integer.valueOf(1), null, Integer.valueOf(1)));
+        jSpinnerMVMOMaxPop.setModel(new javax.swing.SpinnerNumberModel(70, 1, null, 1));
         jSpinnerMVMOMaxPop.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 jSpinnerMVMOMaxPopPropertyChange(evt);
@@ -946,14 +978,14 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
         jLabelMVMOScalingFactor.setText("Scaling-Factor:");
 
-        jSpinnerMVMOScalingFactor.setModel(new javax.swing.SpinnerNumberModel(Double.valueOf(1.0d), Double.valueOf(0.0d), null, Double.valueOf(1.0d)));
+        jSpinnerMVMOScalingFactor.setModel(new javax.swing.SpinnerNumberModel(1.0d, 0.0d, null, 1.0d));
         jSpinnerMVMOScalingFactor.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 jSpinnerMVMOScalingFactorPropertyChange(evt);
             }
         });
 
-        jSpinnerMVMOAsymmetryFactor.setModel(new javax.swing.SpinnerNumberModel(Double.valueOf(1.0d), Double.valueOf(0.0d), null, Double.valueOf(1.0d)));
+        jSpinnerMVMOAsymmetryFactor.setModel(new javax.swing.SpinnerNumberModel(1.0d, 0.0d, null, 1.0d));
         jSpinnerMVMOAsymmetryFactor.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 jSpinnerMVMOAsymmetryFactorPropertyChange(evt);
@@ -962,7 +994,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
         jLabelMVMOAsymmetryFactor.setText("Asymmetry-Factor:");
 
-        jSpinnerMVMOsd.setModel(new javax.swing.SpinnerNumberModel(Double.valueOf(75.0d), Double.valueOf(0.0d), null, Double.valueOf(1.0d)));
+        jSpinnerMVMOsd.setModel(new javax.swing.SpinnerNumberModel(75.0d, 0.0d, null, 1.0d));
         jSpinnerMVMOsd.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 jSpinnerMVMOsdPropertyChange(evt);
@@ -1414,6 +1446,22 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         this.savePreferences();
     }//GEN-LAST:event_formWindowLostFocus
 
+    private void jSpinnerEpsilonStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerEpsilonStateChanged
+        updateNumberOfEstimatedSASimulations();
+    }//GEN-LAST:event_jSpinnerEpsilonStateChanged
+
+    private void jSpinnerMaxTemperatureCostStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerMaxTemperatureCostStateChanged
+        updateNumberOfEstimatedSASimulations();
+    }//GEN-LAST:event_jSpinnerMaxTemperatureCostStateChanged
+
+    private void jSpinnerMaxTemperatureParametersStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerMaxTemperatureParametersStateChanged
+        updateNumberOfEstimatedSASimulations();
+    }//GEN-LAST:event_jSpinnerMaxTemperatureParametersStateChanged
+
+    private void jComboBoxCoolingMethodItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxCoolingMethodItemStateChanged
+        updateNumberOfEstimatedSASimulations();
+    }//GEN-LAST:event_jComboBoxCoolingMethodItemStateChanged
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonDelAllPrefs;
@@ -1472,6 +1520,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     private javax.swing.JLabel jLabelABCNumScoutBees;
     private javax.swing.JLabel jLabelCSSMaxAttraction;
     private javax.swing.JLabel jLabelCSSPopulationSize;
+    private javax.swing.JLabel jLabelEstSASimulationCount;
     private javax.swing.JLabel jLabelGeneticMutationChance;
     private javax.swing.JLabel jLabelGeneticPopulationSize;
     private javax.swing.JLabel jLabelMVMOAsymmetryFactor;
@@ -1505,6 +1554,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     private javax.swing.JSpinner jSpinnerConfidenceIntervallStart;
     private javax.swing.JSpinner jSpinnerEpsilon;
     private javax.swing.JSpinner jSpinnerEpsilon1;
+    private javax.swing.JSpinner jSpinnerEstSASimulationCount;
     private javax.swing.JSpinner jSpinnerGeneticMaxNumberOfCrossings;
     private javax.swing.JSpinner jSpinnerGeneticMaxOptiRunsWithoutImprovement;
     private javax.swing.JSpinner jSpinnerGeneticMutationChance;
@@ -2476,5 +2526,39 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     public void setNumberOfActualOptimizationAnalysis(Integer numberOfActualOptimizationAnalysis) {
         this.numberOfActualOptimizationAnalysis = numberOfActualOptimizationAnalysis;
         this.jButtonSavePrefs.setText("Save [" + (this.getNumberOfActualOptimizationAnalysis() + 1) + "]");
+    }
+
+    /**
+     * Calculates the estimated number of Simulations based on chosen cooling
+     * funntion and its parametervalues
+     */
+    private void updateNumberOfEstimatedSASimulations() {
+        long numberOfSimulations = 10;
+
+        typeOfAnnealing tmpType = getPref_Cooling();
+        double T0 = getPref_MaxTempParameter();
+        double epsilon = getPref_Epsilon();
+        switch (tmpType) {
+            case Boltzmann:
+                numberOfSimulations = Math.round(Math.exp(T0 / epsilon));
+                break;
+            case FastAnnealing:
+                numberOfSimulations = Math.round(T0 / epsilon);
+                break;
+            case VeryFastAnnealing:
+                double d = (double) 1;
+                try {
+                    d = support.getListOfChangableParameters(support.getMainFrame().getParameterBase()).size();
+                } catch (Exception e) {
+                }
+                double c = -Math.log(getPref_TRatioScale()) * Math.exp(-(Math.log(getPref_TAnnealScale()) / d));
+                numberOfSimulations = Math.round(Math.pow(-Math.log(epsilon / T0) / c, (1 / d)));
+
+                break;
+            default:
+                break;
+        }
+
+        this.jSpinnerEstSASimulationCount.setValue(numberOfSimulations);
     }
 }
