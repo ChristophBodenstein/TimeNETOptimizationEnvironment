@@ -2584,6 +2584,13 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         typeOfAnnealing tmpType = getPref_Cooling();
         double T0 = getPref_MaxTempParameter();
         double epsilon = getPref_Epsilon();
+        double d = (double) 1;
+        try {
+            d = Math.max(support.getListOfChangableParameters(support.getMainFrame().getParameterBase()).size(), d);
+        } catch (Exception e) {
+        }
+        jLabelDimensionNumber.setText(Integer.toString((int) d));
+
         switch (tmpType) {
             case Boltzmann:
                 numberOfSimulations = Math.round(Math.exp(T0 / epsilon));
@@ -2592,12 +2599,6 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
                 numberOfSimulations = Math.round(T0 / epsilon);
                 break;
             case VeryFastAnnealing:
-                double d = (double) 1;
-                try {
-                    d = Math.max(support.getListOfChangableParameters(support.getMainFrame().getParameterBase()).size(), d);
-                } catch (Exception e) {
-                }
-                jLabelDimensionNumber.setText(Integer.toString((int) d));
                 double c = -Math.log(getPref_TRatioScale()) * Math.exp(-(Math.log(getPref_TAnnealScale() / d)));
                 numberOfSimulations = Math.round(Math.pow(-Math.log(epsilon / T0) / c, d));
                 break;
@@ -2619,6 +2620,13 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         typeOfAnnealing tmpType = getPref_Cooling();
         double T0 = getPref_MaxTempParameter();
         double epsilon = getPref_Epsilon();
+        double d = (double) 1;
+        try {
+            d = Math.max(support.getListOfChangableParameters(support.getMainFrame().getParameterBase()).size(), d);
+        } catch (Exception e) {
+        }
+        jLabelDimensionNumber.setText(Integer.toString((int) d));
+
         switch (tmpType) {
             case Boltzmann:
                 epsilon = (1 / (Math.log(numberOfSimulations))) * T0;
@@ -2627,12 +2635,6 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
                 epsilon = (1 / (double) numberOfSimulations) * T0;
                 break;
             case VeryFastAnnealing:
-                double d = (double) 1;
-                try {
-                    d = Math.max(support.getListOfChangableParameters(support.getMainFrame().getParameterBase()).size(), d);
-                } catch (Exception e) {
-                }
-                jLabelDimensionNumber.setText(Integer.toString((int) d));
                 double c = -Math.log(getPref_TRatioScale()) * Math.exp(-(Math.log(getPref_TAnnealScale() / d)));
                 epsilon = Math.exp(-c * Math.pow((double) numberOfSimulations, 1 / d)) * T0;
                 break;
