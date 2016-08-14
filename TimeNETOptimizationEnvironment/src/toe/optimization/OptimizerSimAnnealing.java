@@ -36,7 +36,7 @@ public class OptimizerSimAnnealing extends OptimizerHill implements Runnable, Op
         super();
         D = support.getListOfChangableParameters(support.getMainFrame().getParameterBase()).size();//Number of changeable parameters
         c = -Math.log(support.getOptimizerPreferences().getPref_TRatioScale());
-        c = c * Math.exp(-Math.log(support.getOptimizerPreferences().getPref_TAnnealScale()) / this.D);
+        c = c * Math.exp(-Math.log(support.getOptimizerPreferences().getPref_TAnnealScale() / this.D));
         actualTempCost = support.getOptimizerPreferences().getPref_MaxTempCost();
         actualTempParameter = support.getOptimizerPreferences().getPref_MaxTempParameter();
         nameOfdummyLogfile = this.logFileName;

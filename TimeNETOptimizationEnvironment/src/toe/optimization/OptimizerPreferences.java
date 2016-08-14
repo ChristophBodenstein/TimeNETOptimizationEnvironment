@@ -169,6 +169,8 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         jComboBoxCoolingMethod = new javax.swing.JComboBox();
         jSpinnerEstSASimulationCount = new javax.swing.JSpinner();
         jLabelEstSASimulationCount = new javax.swing.JLabel();
+        jLabelDimensionDescription = new javax.swing.JLabel();
+        jLabelDimensionNumber = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
         jComboBoxCoolingMethod1 = new javax.swing.JComboBox();
@@ -516,6 +518,17 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         jLabelEstSASimulationCount.setText("Estimated # of Simulations");
         jPanelSimAnnealing.add(jLabelEstSASimulationCount);
         jLabelEstSASimulationCount.setBounds(20, 220, 210, 16);
+
+        jLabelDimensionDescription.setText("Calculated problem dimension:");
+        jPanelSimAnnealing.add(jLabelDimensionDescription);
+        jLabelDimensionDescription.setBounds(20, 260, 240, 16);
+
+        jLabelDimensionNumber.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
+        jLabelDimensionNumber.setForeground(new java.awt.Color(204, 0, 51));
+        jLabelDimensionNumber.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabelDimensionNumber.setText("1");
+        jPanelSimAnnealing.add(jLabelDimensionNumber);
+        jLabelDimensionNumber.setBounds(263, 260, 70, 16);
 
         jTabbedPane1.addTab("Simulated Annealing", jPanelSimAnnealing);
 
@@ -1551,6 +1564,8 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     private javax.swing.JLabel jLabelABCNumScoutBees;
     private javax.swing.JLabel jLabelCSSMaxAttraction;
     private javax.swing.JLabel jLabelCSSPopulationSize;
+    private javax.swing.JLabel jLabelDimensionDescription;
+    private javax.swing.JLabel jLabelDimensionNumber;
     private javax.swing.JLabel jLabelEstSASimulationCount;
     private javax.swing.JLabel jLabelGeneticMutationChance;
     private javax.swing.JLabel jLabelGeneticPopulationSize;
@@ -2579,14 +2594,12 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             case VeryFastAnnealing:
                 double d = (double) 1;
                 try {
-                    d = Math.max(support.getListOfChangableParameters(support.getMainFrame().getParameterBase()).size(),d);
+                    d = Math.max(support.getListOfChangableParameters(support.getMainFrame().getParameterBase()).size(), d);
                 } catch (Exception e) {
                 }
-                double c = -Math.log(getPref_TRatioScale()) * Math.exp(-(Math.log(getPref_TAnnealScale()) / d));
-                numberOfSimulations = Math.round(Math.pow(-Math.log(epsilon / T0) / c, (1 / d)));
-                support.log("VeryFast Annelaing: Dimension-D: " + Double.toString(d), typeOfLogLevel.INFO);
-                support.log("VeryFast Annelaing: Exponent-c: " + Double.toString(c), typeOfLogLevel.INFO);
-                support.log("VeryFast Annelaing: # of Simulations: " + Long.toString(numberOfSimulations), typeOfLogLevel.INFO);
+                jLabelDimensionNumber.setText(Integer.toString((int) d));
+                double c = -Math.log(getPref_TRatioScale()) * Math.exp(-(Math.log(getPref_TAnnealScale() / d)));
+                numberOfSimulations = Math.round(Math.pow(-Math.log(epsilon / T0) / c, d));
                 break;
             default:
                 break;
@@ -2616,10 +2629,11 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             case VeryFastAnnealing:
                 double d = (double) 1;
                 try {
-                    d = Math.max(support.getListOfChangableParameters(support.getMainFrame().getParameterBase()).size(),d);
+                    d = Math.max(support.getListOfChangableParameters(support.getMainFrame().getParameterBase()).size(), d);
                 } catch (Exception e) {
                 }
-                double c = -Math.log(getPref_TRatioScale()) * Math.exp(-(Math.log(getPref_TAnnealScale()) / d));
+                jLabelDimensionNumber.setText(Integer.toString((int) d));
+                double c = -Math.log(getPref_TRatioScale()) * Math.exp(-(Math.log(getPref_TAnnealScale() / d)));
                 epsilon = Math.exp(-c * Math.pow((double) numberOfSimulations, 1 / d)) * T0;
                 break;
             default:
