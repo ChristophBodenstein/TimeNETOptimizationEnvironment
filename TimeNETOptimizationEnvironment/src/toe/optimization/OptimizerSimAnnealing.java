@@ -88,7 +88,7 @@ public class OptimizerSimAnnealing extends OptimizerHill implements Runnable, Op
 
             case VeryFastAnnealing:
                 actualTempParameter = Math.exp(-c * Math.pow((double) generated, 1 / D)) * support.getOptimizerPreferences().getPref_MaxTempParameter();
-                actualTempCost = Math.exp(-c * Math.pow((double) generated, 1 / D)) * support.getOptimizerPreferences().getPref_MaxTempCost();
+                actualTempCost = Math.exp(-c * Math.pow((double) accepted, 1 / D)) * support.getOptimizerPreferences().getPref_MaxTempCost();
 
                 break;
         }
@@ -96,7 +96,7 @@ public class OptimizerSimAnnealing extends OptimizerHill implements Runnable, Op
         support.log("Actual Temp for Parameters: " + actualTempParameter, typeOfLogLevel.INFO);
         support.log("Actual Temp for Cost: " + actualTempCost, typeOfLogLevel.INFO);
         //Eject if Temperature is lower then Epsilon
-        if (support.round2(actualTempCost) <= support.getOptimizerPreferences().getPref_Epsilon() || support.round2(actualTempParameter) <= support.getOptimizerPreferences().getPref_Epsilon()) {
+        if (support.round3(actualTempCost) <= support.getOptimizerPreferences().getPref_Epsilon() || support.round3(actualTempParameter) <= support.getOptimizerPreferences().getPref_Epsilon()) {
             //Set currentsolution=bestsolution so it will be printed as optimum
             currentSolution = bestSolution;
             this.optimized = true;
