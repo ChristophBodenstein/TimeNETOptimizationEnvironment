@@ -427,23 +427,19 @@ public class support {
     }
 
     /**
-     * Rounds a float value to 3 digits
+     * Rounds a double to the number of decimals
      *
-     * @param valueToRound The input Value to be round
-     * @return round Value with 3 precise digits
+     * @param valueToRound The input value to be rounded
+     * @param decimals Number of decimals for the return value
+     * @return Rounded Value with requested number of decimals
      */
-    public static double round3(double valueToRound) {
-        return (double) Math.round(valueToRound * 1000) / 1000;
-    }
+    public static double round(double valueToRound, int decimals) {
+        double multiplier = 10;
+        decimals = Math.max(decimals, 1);
 
-    /**
-     * Rounds a float value to 2 digits
-     *
-     * @param valueToRound The input Value to be round
-     * @return round Value with 2 precise digits
-     */
-    public static double round2(double valueToRound) {
-        return (double) Math.round(valueToRound * 100) / 100;
+        multiplier = Math.round(Math.pow(10, (double) decimals));
+        return (double) Math.round(valueToRound * multiplier) / multiplier;
+
     }
 
     /**

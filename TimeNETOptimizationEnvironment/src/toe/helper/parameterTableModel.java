@@ -120,7 +120,7 @@ public class parameterTableModel extends AbstractTableModel {
     public double getDoubleValueAt(int row, int col) {
         double result = support.DEFAULT_DOUBLE_VALUE;
         try {
-            result = support.round3(support.getDouble(parameterArray[row][col]));
+            result = support.round(support.getDouble(parameterArray[row][col]), 3);
         } catch (Exception e) {
             support.log("Poblem reading float value from table.", typeOfLogLevel.ERROR);
             setValueAt(Double.toString(result), row, col);

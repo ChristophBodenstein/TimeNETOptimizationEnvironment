@@ -1594,7 +1594,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
 
                 for (int i = 0; i < endCounter; i++) {
                     usedValue = start + (double) i * step;
-                    usedValue = support.round3(usedValue);
+                    usedValue = support.round(usedValue, 3);
                     ArrayList<parameter> nextParameterSet = new ArrayList<>();
                     //Get copy of parameterset
                     for (parameter lastParameterSet1 : lastParameterSet) {
