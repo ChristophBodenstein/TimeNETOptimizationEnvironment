@@ -1870,6 +1870,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
             }
         }
         support.getOptimizerPreferences().setPossibleInternalParameters(resultParameterList);
+        support.getOptimizerPreferences().updateDimension();
     }
 
     /**
