@@ -2635,7 +2635,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
                 break;
         }
         if (!preventUpdateEpsilonBasedOnNumberOfSimulations) {
-            jSpinnerEpsilon.setValue(epsilon);
+            jSpinnerEpsilon.setValue(support.round(epsilon, 3));
         }
     }
 
