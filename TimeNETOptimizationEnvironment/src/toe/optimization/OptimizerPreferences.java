@@ -36,13 +36,6 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     private int pref_SizeOfNeighborhood;
 
 // parameters for Simulated Annealing
-    private typeOfAnnealing pref_Cooling;
-    private double pref_TRatioScale;
-    private double pref_TAnnealScale;
-    private double pref_MaxTempParameter;//-->Distance for parameters (Stepwidth)
-    private double pref_MaxTempCost;//-->Probability of acceptance of bad solutions
-    private double pref_Epsilon;//Abort-Temperature for Simmulated Annealing
-    private typeOfAnnealingParameterCalculation pref_CalculationOfNextParameterset;//Calc of next params for Sim Anealing
     private final SpinnerNumberModel TRatioScaleSpinnerModel;
     private boolean preventUpdateEpsilonBasedOnNumberOfSimulations = false;
     private int dimension = (int) 1;
@@ -100,8 +93,10 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         this.setPref_WrongSimulationsUntilBreak(support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW);
         this.setPref_WrongSimulationsPerDirection(support.DEFAULT_WRONG_SOLUTION_PER_DIRECTION);
         this.setPref_SizeOfNeighborhood(support.DEFAULT_SIZE_OF_NEIGHBORHOOD);
-        this.setPref_Cooling(support.DEFAULT_TYPE_OF_ANNEALING);
-        this.setPref_CalculationOfNextParameterset(support.DEFAULT_CALC_NEXT_PARAMETER);
+        this.setPref_Cooling(support.DEFAULT_TYPE_OF_ANNEALING, 0);
+        this.setPref_Cooling(support.DEFAULT_TYPE_OF_ANNEALING, 1);
+        this.setPref_CalculationOfNextParameterset(support.DEFAULT_CALC_NEXT_PARAMETER, 0);
+        this.setPref_CalculationOfNextParameterset(support.DEFAULT_CALC_NEXT_PARAMETER, 1);
 
         this.jSpinnerSizeOfNeighborhoodInPercent.setModel(new SpinnerNumberModel(1, 1, 100, 1));
         ((DefaultEditor) this.jSpinnerSizeOfNeighborhoodInPercent.getEditor()).getTextField().setEditable(false);
@@ -188,6 +183,8 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         jLabel16 = new javax.swing.JLabel();
         jSpinnerEpsilon1 = new javax.swing.JSpinner();
         jLabel17 = new javax.swing.JLabel();
+        jSpinnerEstSASimulationCount1 = new javax.swing.JSpinner();
+        jLabelEstSASimulationCount1 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel18 = new javax.swing.JLabel();
         jComboBoxNumberOfPhases = new javax.swing.JComboBox();
@@ -541,12 +538,22 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         jLabel10.setBounds(20, 60, 100, 16);
 
         jComboBoxCoolingMethod1.setModel(new DefaultComboBoxModel(typeOfAnnealing.values()));
+        jComboBoxCoolingMethod1.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jComboBoxCoolingMethod1ItemStateChanged(evt);
+            }
+        });
         jPanel1.add(jComboBoxCoolingMethod1);
         jComboBoxCoolingMethod1.setBounds(230, 60, 200, 27);
 
         jSpinnerTRatioScale1.setModel(TRatioScaleSpinnerModel);
         jSpinnerTRatioScale1.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerTRatioScale1, "#.#####"));
         jSpinnerTRatioScale1.setValue(0.00001);
+        jSpinnerTRatioScale1.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinnerTRatioScale1StateChanged(evt);
+            }
+        });
         jPanel1.add(jSpinnerTRatioScale1);
         jSpinnerTRatioScale1.setBounds(580, 60, 100, 28);
 
@@ -554,7 +561,12 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         jPanel1.add(jLabel11);
         jLabel11.setBounds(480, 70, 80, 16);
 
-        jSpinnerTAnnealScale1.setModel(new javax.swing.SpinnerNumberModel(100.0d, 0.0d, 10000.0d, 1.0d));
+        jSpinnerTAnnealScale1.setModel(new javax.swing.SpinnerNumberModel(100.0d, 0.0d, 10000.0d, 10.0d));
+        jSpinnerTAnnealScale1.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinnerTAnnealScale1StateChanged(evt);
+            }
+        });
         jPanel1.add(jSpinnerTAnnealScale1);
         jSpinnerTAnnealScale1.setBounds(580, 100, 100, 28);
 
@@ -576,6 +588,11 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
         jSpinnerMaxTemperatureParameters1.setModel(new javax.swing.SpinnerNumberModel(1.0d, 0.0d, 1.0d, 0.01d));
         jSpinnerMaxTemperatureParameters1.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerMaxTemperatureParameters1, "#.##"));
+        jSpinnerMaxTemperatureParameters1.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinnerMaxTemperatureParameters1StateChanged(evt);
+            }
+        });
         jPanel1.add(jSpinnerMaxTemperatureParameters1);
         jSpinnerMaxTemperatureParameters1.setBounds(260, 150, 90, 28);
 
@@ -585,6 +602,11 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
         jSpinnerMaxTemperatureCost1.setModel(new javax.swing.SpinnerNumberModel(1.0d, 0.0d, 1.0d, 0.01d));
         jSpinnerMaxTemperatureCost1.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerMaxTemperatureCost1, "#.##"));
+        jSpinnerMaxTemperatureCost1.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinnerMaxTemperatureCost1StateChanged(evt);
+            }
+        });
         jPanel1.add(jSpinnerMaxTemperatureCost1);
         jSpinnerMaxTemperatureCost1.setBounds(260, 180, 90, 28);
 
@@ -592,16 +614,36 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         jPanel1.add(jLabel16);
         jLabel16.setBounds(20, 220, 210, 16);
 
-        jSpinnerEpsilon1.setModel(new javax.swing.SpinnerNumberModel(0.01d, 0.0d, 1.0d, 0.01d));
-        jSpinnerEpsilon1.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerEpsilon1, "#.##"));
+        jSpinnerEpsilon1.setModel(new javax.swing.SpinnerNumberModel(0.011d, 0.0d, 1.0d, 0.001d));
+        jSpinnerEpsilon1.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerEpsilon1, "#.###"));
         jSpinnerEpsilon1.setValue(0.01);
+        jSpinnerEpsilon1.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinnerEpsilon1StateChanged(evt);
+            }
+        });
         jPanel1.add(jSpinnerEpsilon1);
         jSpinnerEpsilon1.setBounds(260, 220, 90, 28);
 
         jLabel17.setFont(new java.awt.Font("Lucida Grande", 1, 16)); // NOI18N
-        jLabel17.setText("Parameters for second Phase are taken from Standard-Panel (Simulated Annealing)!!!");
+        jLabel17.setText("Parameters for first Phase are taken from Standard-Panel (Simulated Annealing)!!!");
         jPanel1.add(jLabel17);
         jLabel17.setBounds(20, 28, 787, 20);
+
+        jSpinnerEstSASimulationCount1.setModel(new javax.swing.SpinnerNumberModel(100L, 0L, null, 10L));
+        jSpinnerEstSASimulationCount1.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerEstSASimulationCount1, "#"));
+        jSpinnerEstSASimulationCount1.setValue(0.01);
+        jSpinnerEstSASimulationCount1.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinnerEstSASimulationCount1StateChanged(evt);
+            }
+        });
+        jPanel1.add(jSpinnerEstSASimulationCount1);
+        jSpinnerEstSASimulationCount1.setBounds(210, 250, 140, 28);
+
+        jLabelEstSASimulationCount1.setText("Estimated # of Simulations");
+        jPanel1.add(jLabelEstSASimulationCount1);
+        jLabelEstSASimulationCount1.setBounds(20, 260, 210, 16);
 
         jTabbedPane1.addTab("Two-Phase", jPanel1);
 
@@ -1481,36 +1523,64 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowLostFocus
 
     private void jSpinnerEpsilonStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerEpsilonStateChanged
-        updateNumberOfEstimatedSASimulations();
+        updateNumberOfEstimatedSASimulations(0);
     }//GEN-LAST:event_jSpinnerEpsilonStateChanged
 
     private void jSpinnerMaxTemperatureCostStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerMaxTemperatureCostStateChanged
-        updateNumberOfEstimatedSASimulations();
+        updateNumberOfEstimatedSASimulations(0);
     }//GEN-LAST:event_jSpinnerMaxTemperatureCostStateChanged
 
     private void jSpinnerMaxTemperatureParametersStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerMaxTemperatureParametersStateChanged
-        updateNumberOfEstimatedSASimulations();
+        updateNumberOfEstimatedSASimulations(0);
     }//GEN-LAST:event_jSpinnerMaxTemperatureParametersStateChanged
 
     private void jComboBoxCoolingMethodItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxCoolingMethodItemStateChanged
-        updateNumberOfEstimatedSASimulations();
+        updateNumberOfEstimatedSASimulations(0);
     }//GEN-LAST:event_jComboBoxCoolingMethodItemStateChanged
 
     private void jSpinnerTRatioScaleStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerTRatioScaleStateChanged
-        updateNumberOfEstimatedSASimulations();
+        updateNumberOfEstimatedSASimulations(0);
     }//GEN-LAST:event_jSpinnerTRatioScaleStateChanged
 
     private void jSpinnerTAnnealScaleStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerTAnnealScaleStateChanged
-        updateNumberOfEstimatedSASimulations();
+        updateNumberOfEstimatedSASimulations(0);
     }//GEN-LAST:event_jSpinnerTAnnealScaleStateChanged
 
     private void jSpinnerEstSASimulationCountStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerEstSASimulationCountStateChanged
-        updateEpsilonBasedOnNumberOfSimulations();
+        updateEpsilonBasedOnNumberOfSimulations(0);
     }//GEN-LAST:event_jSpinnerEstSASimulationCountStateChanged
 
     private void formWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowGainedFocus
         updateDimension();
     }//GEN-LAST:event_formWindowGainedFocus
+
+    private void jSpinnerEstSASimulationCount1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerEstSASimulationCount1StateChanged
+        updateEpsilonBasedOnNumberOfSimulations(1);
+    }//GEN-LAST:event_jSpinnerEstSASimulationCount1StateChanged
+
+    private void jComboBoxCoolingMethod1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxCoolingMethod1ItemStateChanged
+        updateNumberOfEstimatedSASimulations(1);
+    }//GEN-LAST:event_jComboBoxCoolingMethod1ItemStateChanged
+
+    private void jSpinnerMaxTemperatureParameters1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerMaxTemperatureParameters1StateChanged
+        updateNumberOfEstimatedSASimulations(1);
+    }//GEN-LAST:event_jSpinnerMaxTemperatureParameters1StateChanged
+
+    private void jSpinnerMaxTemperatureCost1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerMaxTemperatureCost1StateChanged
+        updateNumberOfEstimatedSASimulations(1);
+    }//GEN-LAST:event_jSpinnerMaxTemperatureCost1StateChanged
+
+    private void jSpinnerEpsilon1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerEpsilon1StateChanged
+        updateNumberOfEstimatedSASimulations(1);
+    }//GEN-LAST:event_jSpinnerEpsilon1StateChanged
+
+    private void jSpinnerTRatioScale1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerTRatioScale1StateChanged
+        updateNumberOfEstimatedSASimulations(1);
+    }//GEN-LAST:event_jSpinnerTRatioScale1StateChanged
+
+    private void jSpinnerTAnnealScale1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerTAnnealScale1StateChanged
+        updateNumberOfEstimatedSASimulations(1);
+    }//GEN-LAST:event_jSpinnerTAnnealScale1StateChanged
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1573,6 +1643,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     private javax.swing.JLabel jLabelDimensionDescription;
     private javax.swing.JLabel jLabelDimensionNumber;
     private javax.swing.JLabel jLabelEstSASimulationCount;
+    private javax.swing.JLabel jLabelEstSASimulationCount1;
     private javax.swing.JLabel jLabelGeneticMutationChance;
     private javax.swing.JLabel jLabelGeneticPopulationSize;
     private javax.swing.JLabel jLabelMVMOAsymmetryFactor;
@@ -1607,6 +1678,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     private javax.swing.JSpinner jSpinnerEpsilon;
     private javax.swing.JSpinner jSpinnerEpsilon1;
     private javax.swing.JSpinner jSpinnerEstSASimulationCount;
+    private javax.swing.JSpinner jSpinnerEstSASimulationCount1;
     private javax.swing.JSpinner jSpinnerGeneticMaxNumberOfCrossings;
     private javax.swing.JSpinner jSpinnerGeneticMaxOptiRunsWithoutImprovement;
     private javax.swing.JSpinner jSpinnerGeneticMutationChance;
@@ -1672,26 +1744,49 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             this.setPref_NeighborhoodType(typeOfNeighborhoodEnum.valueOf(auto.getProperty("pref_NeighborhoodType", support.DEFAULT_TYPE_OF_NEIGHBORHOOD.toString())));
             support.log("Loaded Neighborhoodtype is " + getPref_NeighborhoodType(), typeOfLogLevel.INFO);
 
-            this.setPref_Cooling(typeOfAnnealing.valueOf(auto.getProperty("pref_Cooling", support.DEFAULT_TYPE_OF_ANNEALING.toString())));
-            support.log("Loaded Annealing method is " + getPref_Cooling(), typeOfLogLevel.INFO);
+            //Loading parameters for Simulated Annealing (first phase)
+            this.setPref_Cooling(typeOfAnnealing.valueOf(auto.getProperty("pref_Cooling", support.DEFAULT_TYPE_OF_ANNEALING.toString())), 0);
+            support.log("Loaded Annealing method is " + getPref_Cooling(0), typeOfLogLevel.INFO);
 
-            this.setPref_TScaleRatio(support.loadDoubleFromProperties("pref_TScaleRatio", support.DEFAULT_T_RATIO_SCALE, auto));
-            support.log("Loaded TRatioScale is " + getPref_TRatioScale(), typeOfLogLevel.INFO);
+            this.setPref_TRatioScale(support.loadDoubleFromProperties("pref_TRatioScale", support.DEFAULT_T_RATIO_SCALE, auto), 0);
+            support.log("Loaded TRatioScale is " + getPref_TRatioScale(0), typeOfLogLevel.INFO);
 
-            this.setPref_TAnnealScale(support.loadDoubleFromProperties("pref_TAnnealScale", support.DEFAULT_T_ANNEAL_SCALE, auto));
-            support.log("Loaded TAnnealScale is " + getPref_TAnnealScale(), typeOfLogLevel.INFO);
+            this.setPref_TAnnealScale(support.loadDoubleFromProperties("pref_TAnnealScale", support.DEFAULT_T_ANNEAL_SCALE, auto), 0);
+            support.log("Loaded TAnnealScale is " + getPref_TAnnealScale(0), typeOfLogLevel.INFO);
 
-            this.setPref_MaxTempParameter(support.loadDoubleFromProperties("pref_MaxTempParameter", support.DEFAULT_MAXTEMP_PARAMETER, auto));
-            support.log("Loaded MaxTempParameter is " + getPref_MaxTempParameter(), typeOfLogLevel.INFO);
+            this.setPref_MaxTempParameter(support.loadDoubleFromProperties("pref_MaxTempParameter", support.DEFAULT_MAXTEMP_PARAMETER, auto), 0);
+            support.log("Loaded MaxTempParameter is " + getPref_MaxTempParameter(0), typeOfLogLevel.INFO);
 
-            this.setPref_MaxTempCost(support.loadDoubleFromProperties("pref_MaxTempCost", support.DEFAULT_MAXTEMP_COST, auto));
-            support.log("Loaded MaxTempCost is " + getPref_MaxTempCost(), typeOfLogLevel.INFO);
+            this.setPref_MaxTempCost(support.loadDoubleFromProperties("pref_MaxTempCost", support.DEFAULT_MAXTEMP_COST, auto), 0);
+            support.log("Loaded MaxTempCost is " + getPref_MaxTempCost(0), typeOfLogLevel.INFO);
 
-            this.setPref_Epsilon(support.loadDoubleFromProperties("pref_Epsilon", support.DEFAULT_EPSILON, auto));
-            support.log("Loaded Epsilon is " + getPref_Epsilon(), typeOfLogLevel.INFO);
+            this.setPref_Epsilon(support.loadDoubleFromProperties("pref_Epsilon", support.DEFAULT_EPSILON, auto), 0);
+            support.log("Loaded Epsilon is " + getPref_Epsilon(0), typeOfLogLevel.INFO);
 
-            this.setPref_CalculationOfNextParameterset(typeOfAnnealingParameterCalculation.valueOf(auto.getProperty("pref_CalculationOfNextParameterset", support.DEFAULT_CALC_NEXT_PARAMETER.toString())));
-            support.log("Loaded Calculation of next Parameterset is " + this.getPref_CalculationOfNextParameterset().toString(), typeOfLogLevel.INFO);
+            this.setPref_CalculationOfNextParameterset(typeOfAnnealingParameterCalculation.valueOf(auto.getProperty("pref_CalculationOfNextParameterset", support.DEFAULT_CALC_NEXT_PARAMETER.toString())), 0);
+            support.log("Loaded Calculation of next Parameterset is " + this.getPref_CalculationOfNextParameterset(0).toString(), typeOfLogLevel.INFO);
+
+            //Loading parameters for Simulated Annealing (second phase)
+            this.setPref_Cooling(typeOfAnnealing.valueOf(auto.getProperty("pref_Cooling1", support.DEFAULT_TYPE_OF_ANNEALING.toString())), 1);
+            support.log("*2 Loaded Annealing method is " + getPref_Cooling(1), typeOfLogLevel.INFO);
+
+            this.setPref_TRatioScale(support.loadDoubleFromProperties("pref_TRatioScale1", support.DEFAULT_T_RATIO_SCALE, auto), 1);
+            support.log("*2 Loaded TRatioScale is " + getPref_TRatioScale(1), typeOfLogLevel.INFO);
+
+            this.setPref_TAnnealScale(support.loadDoubleFromProperties("pref_TAnnealScale1", support.DEFAULT_T_ANNEAL_SCALE, auto), 1);
+            support.log("*2 Loaded TAnnealScale is " + getPref_TAnnealScale(1), typeOfLogLevel.INFO);
+
+            this.setPref_MaxTempParameter(support.loadDoubleFromProperties("pref_MaxTempParameter1", support.DEFAULT_MAXTEMP_PARAMETER, auto), 1);
+            support.log("*2 Loaded MaxTempParameter is " + getPref_MaxTempParameter(1), typeOfLogLevel.INFO);
+
+            this.setPref_MaxTempCost(support.loadDoubleFromProperties("pref_MaxTempCost1", support.DEFAULT_MAXTEMP_COST, auto), 1);
+            support.log("*2 Loaded MaxTempCost is " + getPref_MaxTempCost(1), typeOfLogLevel.INFO);
+
+            this.setPref_Epsilon(support.loadDoubleFromProperties("pref_Epsilon1", support.DEFAULT_EPSILON, auto), 1);
+            support.log("*2 Loaded Epsilon is " + getPref_Epsilon(1), typeOfLogLevel.INFO);
+
+            this.setPref_CalculationOfNextParameterset(typeOfAnnealingParameterCalculation.valueOf(auto.getProperty("pref_CalculationOfNextParameterset1", support.DEFAULT_CALC_NEXT_PARAMETER.toString())), 1);
+            support.log("*2 Loaded Calculation of next Parameterset is " + this.getPref_CalculationOfNextParameterset(1).toString(), typeOfLogLevel.INFO);
 
             this.setPref_LogFileAddon(auto.getProperty("pref_LogFileAddon", ""));
             support.log("Loaded Optimizer_Logfile-Addon is " + this.jTextFieldLogFileAddon.getText(), typeOfLogLevel.INFO);
@@ -1782,12 +1877,20 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             auto.setProperty("pref_NeighborhoodType", getPref_NeighborhoodType().toString());
 
             //Setting Parameters of Simulated Annealing
-            auto.setProperty("pref_Cooling", getPref_Cooling().toString());
-            auto.setProperty("pref_TScaleRatio", support.getString(this.getPref_TRatioScale()));
-            auto.setProperty("pref_TAnnealScale", support.getString(this.getPref_TAnnealScale()));
-            auto.setProperty("pref_MaxTempParameter", support.getString(this.getPref_MaxTempParameter()));
-            auto.setProperty("pref_MaxTempCost", support.getString(this.getPref_MaxTempCost()));
-            auto.setProperty("pref_Epsilon", Double.toString(getPref_Epsilon()));
+            auto.setProperty("pref_Cooling", getPref_Cooling(0).toString());
+            auto.setProperty("pref_TRatioScale", support.getString(this.getPref_TRatioScale(0)));
+            auto.setProperty("pref_TAnnealScale", support.getString(this.getPref_TAnnealScale(0)));
+            auto.setProperty("pref_MaxTempParameter", support.getString(this.getPref_MaxTempParameter(0)));
+            auto.setProperty("pref_MaxTempCost", support.getString(this.getPref_MaxTempCost(0)));
+            auto.setProperty("pref_Epsilon", Double.toString(getPref_Epsilon(0)));
+
+            //Setting Parameters of Simulated Annealing - Second phase
+            auto.setProperty("pref_Cooling1", getPref_Cooling(1).toString());
+            auto.setProperty("pref_TRatioScale1", support.getString(this.getPref_TRatioScale(1)));
+            auto.setProperty("pref_TAnnealScale1", support.getString(this.getPref_TAnnealScale(1)));
+            auto.setProperty("pref_MaxTempParameter1", support.getString(this.getPref_MaxTempParameter(1)));
+            auto.setProperty("pref_MaxTempCost1", support.getString(this.getPref_MaxTempCost(1)));
+            auto.setProperty("pref_Epsilon1", Double.toString(getPref_Epsilon(1)));
 
             //Setting Parameters of MultiPhase Optimization
             auto.setProperty("pref_NumberOfPhases", Integer.toString(this.getPref_NumberOfPhases()));
@@ -1801,7 +1904,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             auto.setProperty("pref_KeepDesignSpaceAndResolution", Boolean.toString(this.getPref_KeepDesignSpaceAndResolution()));
 
             auto.setProperty("pref_LogFileAddon", this.jTextFieldLogFileAddon.getText());
-            auto.setProperty("pref_CalculationOfNextParameterset", this.getPref_CalculationOfNextParameterset().toString());
+            auto.setProperty("pref_CalculationOfNextParameterset", this.getPref_CalculationOfNextParameterset(0).toString());
 
             //setting parameters for genetic optimization
             auto.setProperty("pref_GeneticPopulationSize", Integer.toString(this.getPref_GeneticPopulationSize()));
@@ -1880,12 +1983,12 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
                     break;
                 case SimAnnealing:
                     addonString += "_StartAt_" + this.jComboBoxTypeOfStartValue.getSelectedItem();
-                    addonString += "_TAnnealScale_" + this.getPref_TAnnealScale();
-                    addonString += "_TRatioScale_" + this.getPref_TRatioScale();
-                    addonString += "_Epsilon_" + this.getPref_Epsilon();
-                    addonString += "_Cooling_" + this.getPref_Cooling();
-                    addonString += "_MaxTempPara_" + this.getPref_MaxTempParameter();
-                    addonString += "_MaxTempCost_" + this.getPref_MaxTempCost();
+                    addonString += "_TAnnealScale_" + this.getPref_TAnnealScale(0);
+                    addonString += "_TRatioScale_" + this.getPref_TRatioScale(0);
+                    addonString += "_Epsilon_" + this.getPref_Epsilon(0);
+                    addonString += "_Cooling_" + this.getPref_Cooling(0);
+                    addonString += "_MaxTempPara_" + this.getPref_MaxTempParameter(0);
+                    addonString += "_MaxTempCost_" + this.getPref_MaxTempCost(0);
                     break;
                 case MultiPhase:
                     addonString += "_ChosenAlg_" + this.getPref_typeOfUsedMultiPhaseOptimization();
@@ -1893,6 +1996,15 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
                     break;
 
                 case TwoPhase:
+                    for (int i = 0; i <= 1; i++) {
+                        addonString += "Phase: " + i + "_StartAt_" + this.jComboBoxTypeOfStartValue.getSelectedItem();
+                        addonString += "Phase: " + i + "_TAnnealScale_" + this.getPref_TAnnealScale(i);
+                        addonString += "Phase: " + i + "_TRatioScale_" + this.getPref_TRatioScale(i);
+                        addonString += "Phase: " + i + "_Epsilon_" + this.getPref_Epsilon(i);
+                        addonString += "Phase: " + i + "_Cooling_" + this.getPref_Cooling(i);
+                        addonString += "Phase: " + i + "_MaxTempPara_" + this.getPref_MaxTempParameter(i);
+                        addonString += "Phase: " + i + "_MaxTempCost_" + this.getPref_MaxTempCost(i);
+                    }
                     break;
 
                 case Genetic:
@@ -1940,6 +2052,8 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     }
 
     /**
+     * Returns the type of neighborhood for Hill Climbing
+     *
      * @return the pref_NeighborhoodType
      */
     public typeOfNeighborhoodEnum getPref_NeighborhoodType() {
@@ -1948,6 +2062,8 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     }
 
     /**
+     * Sets the type of neighborhood for Hill Climbing
+     *
      * @param pref_NeighborhoodType the pref_NeighborhoodType to set
      */
     public void setPref_NeighborhoodType(typeOfNeighborhoodEnum pref_NeighborhoodType) {
@@ -1956,6 +2072,8 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     }
 
     /**
+     * Returns the size of neighborhood for Hill Climbing
+     *
      * @return the pref_SizeOfNeighborhood
      */
     public int getPref_SizeOfNeighborhood() {
@@ -1964,6 +2082,8 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     }
 
     /**
+     * Sets the size of neighborhood for Hill Climbing
+     *
      * @param pref_SizeOfNeighborhood the pref_SizeOfNeighborhood to set
      */
     public void setPref_SizeOfNeighborhood(int pref_SizeOfNeighborhood) {
@@ -1972,116 +2092,285 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     }
 
     /**
-     * @return the pref_Cooling, the Type of Annealing
+     * Returns the chosen cooling type for Simulated Annealing
+     *
+     * @param phase Number of Opti-Phase, can be 0..1
+     * @return the pref_Cooling, the Type of Annealing Phase
      */
-    public typeOfAnnealing getPref_Cooling() {
-        this.pref_Cooling = (typeOfAnnealing) this.jComboBoxCoolingMethod.getSelectedItem();
-        return pref_Cooling;
+    public typeOfAnnealing getPref_Cooling(int phase) {
+        switch (phase) {
+            case 0:
+                return (typeOfAnnealing) this.jComboBoxCoolingMethod.getSelectedItem();
+            case 1:
+                return (typeOfAnnealing) this.jComboBoxCoolingMethod1.getSelectedItem();
+            default:
+                return (typeOfAnnealing) this.jComboBoxCoolingMethod.getSelectedItem();
+        }
+        //this.pref_Cooling = (typeOfAnnealing) this.jComboBoxCoolingMethod.getSelectedItem();
+        //return pref_Cooling;
     }
 
     /**
+     * Sets the chosen cooling type for Simulated Annealing
+     *
      * @param pref_Cooling the pref_Cooling to set
+     * @param phase Number of Opti-Phase, can be 0..1
      */
-    public void setPref_Cooling(typeOfAnnealing pref_Cooling) {
-        this.jComboBoxCoolingMethod.setSelectedItem(pref_Cooling);
-        this.pref_Cooling = pref_Cooling;
+    public void setPref_Cooling(typeOfAnnealing pref_Cooling, int phase) {
+        switch (phase) {
+            case 0:
+                this.jComboBoxCoolingMethod.setSelectedItem(pref_Cooling);
+                break;
+            case 1:
+                this.jComboBoxCoolingMethod1.setSelectedItem(pref_Cooling);
+                break;
+        }
+
+        //this.pref_Cooling = pref_Cooling;
     }
 
     /**
-     * @return the pref_TRatioScale
+     * Gets the TRatioScale for Simulated Annealing
+     *
+     * @param phase Number of Opti-Phase, can be 0..1
+     * @return the pref_TRatioScale Phase 2 in 2-Phase Simulated
+     *
      */
-    public double getPref_TRatioScale() {
-        this.pref_TRatioScale = (Double) this.jSpinnerTRatioScale.getValue();
-        return pref_TRatioScale;
+    public double getPref_TRatioScale(int phase) {
+        switch (phase) {
+            case 0:
+                return (Double) this.jSpinnerTRatioScale.getValue();
+            case 1:
+                return (Double) this.jSpinnerTRatioScale1.getValue();
+            default:
+                return (Double) this.jSpinnerTRatioScale.getValue();
+        }
+        //this.pref_TRatioScale = (Double) this.jSpinnerTRatioScale.getValue();
+        //return pref_TRatioScale;
     }
 
     /**
-     * @param pref_TScaleRatio
+     * Sets the TScaleRatio for standard SA
+     *
+     * @param pref_TRatioScale the TRatioScale to set
+     * @param phase Number of Opti-Phase, can be 0..1
      */
-    public void setPref_TScaleRatio(double pref_TScaleRatio) {
-        this.jSpinnerTRatioScale.setValue(pref_TScaleRatio);
-        this.pref_TRatioScale = pref_TScaleRatio;
+    public void setPref_TRatioScale(double pref_TRatioScale, int phase) {
+        switch (phase) {
+            case 0:
+                this.jSpinnerTRatioScale.setValue(pref_TRatioScale);
+                break;
+            case 1:
+                this.jSpinnerTRatioScale1.setValue(pref_TRatioScale);
+                break;
+            default:
+                this.jSpinnerTRatioScale.setValue(pref_TRatioScale);
+                break;
+        }
+        //this.jSpinnerTRatioScale.setValue(pref_TRatioScale);
+        //this.pref_TRatioScale = pref_TRatioScale;
     }
 
     /**
+     * Gets TAnnealScale for standard SA
+     *
      * @return the pref_TAnnealScale
+     * @param phase Number of Opti-Phase, can be 0..1
      */
-    public double getPref_TAnnealScale() {
-        this.pref_TAnnealScale = (Double) (this.jSpinnerTAnnealScale.getValue());
-        return pref_TAnnealScale;
+    public double getPref_TAnnealScale(int phase) {
+        switch (phase) {
+            case 0:
+                return (Double) (this.jSpinnerTAnnealScale.getValue());
+            case 1:
+                return (Double) (this.jSpinnerTAnnealScale1.getValue());
+            default:
+                return (Double) (this.jSpinnerTAnnealScale.getValue());
+        }
+        //this.pref_TAnnealScale = (Double) (this.jSpinnerTAnnealScale.getValue());
+        //return pref_TAnnealScale;
     }
 
     /**
-     * @param pref_TAnnealScale the pref_TAnnealScale to set
+     * Sets TAnnealScale for standard SA
+     *
+     * @param pref_TAnnealScale the pref_TAnnealScale to set Simulated
+     * @param phase Number of Opti-Phase, can be 0..1
      */
-    public void setPref_TAnnealScale(double pref_TAnnealScale) {
-        this.jSpinnerTAnnealScale.setValue(pref_TAnnealScale);
-        this.pref_TAnnealScale = pref_TAnnealScale;
+    public void setPref_TAnnealScale(double pref_TAnnealScale, int phase) {
+        switch (phase) {
+            case 0:
+                this.jSpinnerTAnnealScale.setValue(pref_TAnnealScale);
+                break;
+            case 1:
+                this.jSpinnerTAnnealScale1.setValue(pref_TAnnealScale);
+                break;
+            default:
+                this.jSpinnerTAnnealScale.setValue(pref_TAnnealScale);
+                break;
+        }
+        //this.jSpinnerTAnnealScale.setValue(pref_TAnnealScale);
+        //this.pref_TAnnealScale = pref_TAnnealScale;
     }
 
     /**
+     * Gets Max Temperature for standard Simulated Annealing
+     *
      * @return the pref_MaxTempParameter
+     * @param phase Number of Opti-Phase, can be 0..1
      */
-    public double getPref_MaxTempParameter() {
-        this.pref_MaxTempParameter = (Double) this.jSpinnerMaxTemperatureParameters.getValue();
-        return pref_MaxTempParameter;
+    public double getPref_MaxTempParameter(int phase) {
+        switch (phase) {
+            case 0:
+                return (Double) this.jSpinnerMaxTemperatureParameters.getValue();
+            case 1:
+                return (Double) this.jSpinnerMaxTemperatureParameters1.getValue();
+            default:
+                return (Double) this.jSpinnerMaxTemperatureParameters.getValue();
+        }
+        //this.pref_MaxTempParameter = (Double) this.jSpinnerMaxTemperatureParameters.getValue();
+        //return pref_MaxTempParameter;
     }
 
     /**
      * @param pref_MaxTempParameter the pref_MaxTempParameter to set
+     * @param phase Number of Opti-Phase, can be 0..1
      */
-    public void setPref_MaxTempParameter(double pref_MaxTempParameter) {
-        this.jSpinnerMaxTemperatureParameters.setValue(pref_MaxTempParameter);
-        this.pref_MaxTempParameter = pref_MaxTempParameter;
+    public void setPref_MaxTempParameter(double pref_MaxTempParameter, int phase) {
+        switch (phase) {
+            case 0:
+                this.jSpinnerMaxTemperatureParameters.setValue(pref_MaxTempParameter);
+                break;
+            case 1:
+                this.jSpinnerMaxTemperatureParameters1.setValue(pref_MaxTempParameter);
+                break;
+            default:
+                this.jSpinnerMaxTemperatureParameters.setValue(pref_MaxTempParameter);
+                break;
+        }
+        //this.jSpinnerMaxTemperatureParameters.setValue(pref_MaxTempParameter);
+        //this.pref_MaxTempParameter = pref_MaxTempParameter;
     }
 
     /**
      * @return the pref_MaxTempCost
+     * @param phase Number of Opti-Phase, can be 0..1
      */
-    public double getPref_MaxTempCost() {
-        this.pref_MaxTempCost = (Double) jSpinnerMaxTemperatureCost.getValue();
-        return pref_MaxTempCost;
+    public double getPref_MaxTempCost(int phase) {
+        switch (phase) {
+            case 0:
+                return (Double) jSpinnerMaxTemperatureCost.getValue();
+            case 1:
+                return (Double) jSpinnerMaxTemperatureCost1.getValue();
+            default:
+                return (Double) jSpinnerMaxTemperatureCost.getValue();
+        }
+        //this.pref_MaxTempCost = (Double) jSpinnerMaxTemperatureCost.getValue();
+        //return pref_MaxTempCost;
     }
 
     /**
      * @param pref_MaxTempCost the pref_MaxTempCost to set
+     * @param phase Number of Opti-Phase, can be 0..1
      */
-    public void setPref_MaxTempCost(double pref_MaxTempCost) {
-        this.jSpinnerMaxTemperatureCost.setValue(pref_MaxTempCost);
-        this.pref_MaxTempCost = pref_MaxTempCost;
+    public void setPref_MaxTempCost(double pref_MaxTempCost, int phase) {
+        switch (phase) {
+            case 0:
+                this.jSpinnerMaxTemperatureCost.setValue(pref_MaxTempCost);
+                break;
+            case 1:
+                this.jSpinnerMaxTemperatureCost1.setValue(pref_MaxTempCost);
+                break;
+            default:
+                this.jSpinnerMaxTemperatureCost.setValue(pref_MaxTempCost);
+                break;
+        }
+        //this.jSpinnerMaxTemperatureCost.setValue(pref_MaxTempCost);
+        //this.pref_MaxTempCost = pref_MaxTempCost;
     }
 
     /**
+     * Get the epsilon value (break condition) for Simulated Annealing
+     *
      * @return the pref_Epsilon
+     * @param phase Number of Opti-Phase, can be 0..1
      */
-    public double getPref_Epsilon() {
-        this.pref_Epsilon = (Double) jSpinnerEpsilon.getValue();
-        return pref_Epsilon;
+    public double getPref_Epsilon(int phase) {
+        switch (phase) {
+            case 0:
+                return (Double) jSpinnerEpsilon.getValue();
+            case 1:
+                return (Double) jSpinnerEpsilon1.getValue();
+            default:
+                return (Double) jSpinnerEpsilon.getValue();
+        }
+        //this.pref_Epsilon = (Double) jSpinnerEpsilon.getValue();
+        //return pref_Epsilon;
     }
 
     /**
+     * Set the epsilon value (break condition) for Simulated Annealing
+     *
      * @param pref_Epsilon the pref_Epsilon to set
+     * @param phase Number of Opti-Phase, can be 0..1
      */
-    public void setPref_Epsilon(double pref_Epsilon) {
-        this.jSpinnerEpsilon.setValue(pref_Epsilon);
-        this.pref_Epsilon = pref_Epsilon;
+    public void setPref_Epsilon(double pref_Epsilon, int phase) {
+        switch (phase) {
+            case 0:
+                this.jSpinnerEpsilon.setValue(pref_Epsilon);
+                break;
+            case 1:
+                this.jSpinnerEpsilon1.setValue(pref_Epsilon);
+                break;
+            default:
+                this.jSpinnerEpsilon.setValue(pref_Epsilon);
+                break;
+        }
+        //this.jSpinnerEpsilon.setValue(pref_Epsilon);
+        //this.pref_Epsilon = pref_Epsilon;
     }
 
     /**
+     * Returns how the next parameterset is calculated when Simulated Annealing
+     * is used
+     *
      * @return the pref_CalculationOfNextParameterset
+     * @param phase Number of Opti-Phase, can be 0..1
      */
-    public typeOfAnnealingParameterCalculation getPref_CalculationOfNextParameterset() {
-        pref_CalculationOfNextParameterset = (typeOfAnnealingParameterCalculation) this.jComboBoxCalculationOfNextParameterset.getSelectedItem();
-        return pref_CalculationOfNextParameterset;
+    public typeOfAnnealingParameterCalculation getPref_CalculationOfNextParameterset(int phase) {
+        switch (phase) {
+            case 0:
+                return (typeOfAnnealingParameterCalculation) this.jComboBoxCalculationOfNextParameterset.getSelectedItem();
+            case 1:
+                return (typeOfAnnealingParameterCalculation) this.jComboBoxCalculationOfNextParameterset1.getSelectedItem();
+            default:
+                return (typeOfAnnealingParameterCalculation) this.jComboBoxCalculationOfNextParameterset.getSelectedItem();
+        }
+        //pref_CalculationOfNextParameterset = (typeOfAnnealingParameterCalculation) this.jComboBoxCalculationOfNextParameterset.getSelectedItem();
+        //return pref_CalculationOfNextParameterset;
     }
 
     /**
+     * Set how the next parameterset is calculated when Simulated Annealing is
+     * used
+     *
      * @param pref_CalculationOfNextParameterset the
      * pref_CalculationOfNextParameterset to set
+     * @param phase Number of Opti-Phase, can be 0..1
      */
-    public void setPref_CalculationOfNextParameterset(typeOfAnnealingParameterCalculation pref_CalculationOfNextParameterset) {
-        this.jComboBoxCalculationOfNextParameterset.setSelectedItem(pref_CalculationOfNextParameterset);
-        this.pref_CalculationOfNextParameterset = pref_CalculationOfNextParameterset;
+    public void setPref_CalculationOfNextParameterset(typeOfAnnealingParameterCalculation pref_CalculationOfNextParameterset, int phase) {
+        switch (phase) {
+            case 0:
+                this.jComboBoxCalculationOfNextParameterset.setSelectedItem(pref_CalculationOfNextParameterset);
+                break;
+            case 1:
+                this.jComboBoxCalculationOfNextParameterset1.setSelectedItem(pref_CalculationOfNextParameterset);
+                break;
+            default:
+                this.jComboBoxCalculationOfNextParameterset.setSelectedItem(pref_CalculationOfNextParameterset);
+                break;
+        }
+        //this.jComboBoxCalculationOfNextParameterset.setSelectedItem(pref_CalculationOfNextParameterset);
+        //this.pref_CalculationOfNextParameterset = pref_CalculationOfNextParameterset;
     }
 
     /**
@@ -2583,13 +2872,15 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     /**
      * Calculates the estimated number of Simulations based on chosen cooling
      * funntion and its parametervalues
+     *
+     * @param phase Number of Opti-Phase, can be 0..1
      */
-    private void updateNumberOfEstimatedSASimulations() {
+    private void updateNumberOfEstimatedSASimulations(int phase) {
         long numberOfSimulations = 10;
 
-        typeOfAnnealing tmpType = getPref_Cooling();
-        double T0 = getPref_MaxTempParameter();
-        double epsilon = getPref_Epsilon();
+        typeOfAnnealing tmpType = getPref_Cooling(phase);
+        double T0 = getPref_MaxTempParameter(phase);
+        double epsilon = getPref_Epsilon(phase);
 
         switch (tmpType) {
             case Boltzmann:
@@ -2599,26 +2890,47 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
                 numberOfSimulations = Math.round(T0 / epsilon);
                 break;
             case VeryFastAnnealing:
-                double c = -Math.log(getPref_TRatioScale()) * Math.exp(-(Math.log(getPref_TAnnealScale() / (double) dimension)));
+                double c = -Math.log(getPref_TRatioScale(phase)) * Math.exp(-(Math.log(getPref_TAnnealScale(phase) / (double) dimension)));
                 numberOfSimulations = Math.round(Math.pow(-Math.log(epsilon / T0) / c, (double) dimension));
                 break;
             default:
                 break;
         }
         preventUpdateEpsilonBasedOnNumberOfSimulations = true;
-        this.jSpinnerEstSASimulationCount.setValue(numberOfSimulations);
+        //default will be case 0
+        switch (phase) {
+            case 1:
+                this.jSpinnerEstSASimulationCount1.setValue(numberOfSimulations);
+                break;
+            default:
+            case 0:
+                this.jSpinnerEstSASimulationCount.setValue(numberOfSimulations);
+                break;
+        }
+
         preventUpdateEpsilonBasedOnNumberOfSimulations = false;
     }
 
     /**
      * Calculates a new epsilon value fo the given Number of Simulations If new
      * Epsilon smaller than 0.001 it will be marked red
+     *
+     * @param phase Number of Opti-Phase, can be 0..1
      */
-    private void updateEpsilonBasedOnNumberOfSimulations() {
-        long numberOfSimulations = (long) jSpinnerEstSASimulationCount.getValue();
-        typeOfAnnealing tmpType = getPref_Cooling();
-        double T0 = getPref_MaxTempParameter();
-        double epsilon = getPref_Epsilon();
+    private void updateEpsilonBasedOnNumberOfSimulations(int phase) {
+        long numberOfSimulations = 10;
+        switch (phase) {
+            case 1:
+                numberOfSimulations = (long) jSpinnerEstSASimulationCount1.getValue();
+                break;
+            default:
+            case 0:
+                numberOfSimulations = (long) jSpinnerEstSASimulationCount.getValue();
+                break;
+        }
+        typeOfAnnealing tmpType = getPref_Cooling(phase);
+        double T0 = getPref_MaxTempParameter(phase);
+        double epsilon = getPref_Epsilon(phase);
 
         switch (tmpType) {
             case Boltzmann:
@@ -2628,14 +2940,22 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
                 epsilon = (1 / (double) numberOfSimulations) * T0;
                 break;
             case VeryFastAnnealing:
-                double c = -Math.log(getPref_TRatioScale()) * Math.exp(-(Math.log(getPref_TAnnealScale() / (double) dimension)));
+                double c = -Math.log(getPref_TRatioScale(phase)) * Math.exp(-(Math.log(getPref_TAnnealScale(phase) / (double) dimension)));
                 epsilon = Math.exp(-c * Math.pow((double) numberOfSimulations, 1 / (double) dimension)) * T0;
                 break;
             default:
                 break;
         }
         if (!preventUpdateEpsilonBasedOnNumberOfSimulations) {
-            jSpinnerEpsilon.setValue(support.round(epsilon, 3));
+            switch (phase) {
+                case 1:
+                    jSpinnerEpsilon1.setValue(support.round(epsilon, 3));
+                    break;
+                default:
+                case 0:
+                    jSpinnerEpsilon.setValue(support.round(epsilon, 3));
+                    break;
+            }
         }
     }
 
@@ -2656,6 +2976,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         } catch (Exception e) {
             jLabelDimensionNumber.setText("No Dimension!");
         }
-        updateNumberOfEstimatedSASimulations();
+        updateNumberOfEstimatedSASimulations(0);
+        updateNumberOfEstimatedSASimulations(1);
     }
 }

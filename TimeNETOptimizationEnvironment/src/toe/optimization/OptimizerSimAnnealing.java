@@ -27,6 +27,7 @@ public class OptimizerSimAnnealing extends OptimizerHill implements Runnable, Op
     double actualTempParameter = 1;
     double actualTempCost = 1;
     String nameOfdummyLogfile;
+    int phase = 0; //Phase of Simulated Annealing in Two-Phase-Mode (0..1)
 
     /**
      * Constructor
@@ -35,10 +36,10 @@ public class OptimizerSimAnnealing extends OptimizerHill implements Runnable, Op
     public OptimizerSimAnnealing() {
         super();
         D = support.getListOfChangableParameters(support.getMainFrame().getParameterBase()).size();//Number of changeable parameters
-        c = -Math.log(support.getOptimizerPreferences().getPref_TRatioScale());
-        c = c * Math.exp(-Math.log(support.getOptimizerPreferences().getPref_TAnnealScale() / this.D));
-        actualTempCost = support.getOptimizerPreferences().getPref_MaxTempCost();
-        actualTempParameter = support.getOptimizerPreferences().getPref_MaxTempParameter();
+        c = -Math.log(support.getOptimizerPreferences().getPref_TRatioScale(phase));
+        c = c * Math.exp(-Math.log(support.getOptimizerPreferences().getPref_TAnnealScale(phase) / this.D));
+        actualTempCost = support.getOptimizerPreferences().getPref_MaxTempCost(phase);
+        actualTempParameter = support.getOptimizerPreferences().getPref_MaxTempParameter(phase);
         nameOfdummyLogfile = this.logFileName;
         nameOfdummyLogfile = support.removeExtention(nameOfdummyLogfile) + "_SA_Temperatures.csv";
         support.addLinesToLogFileFromListOfParser(null, nameOfdummyLogfile);
@@ -62,33 +63,33 @@ public class OptimizerSimAnnealing extends OptimizerHill implements Runnable, Op
         generated++;
 
         //Calculate the new Temperatures
-        switch (support.getOptimizerPreferences().getPref_Cooling()) {
+        switch (support.getOptimizerPreferences().getPref_Cooling(phase)) {
             default:
             case Boltzmann:
                 double denominator = (Math.log((double) generated));
                 if (denominator <= 0.0) {
                     denominator = 0.1;
                 }
-                actualTempParameter = (1 / denominator) * support.getOptimizerPreferences().getPref_MaxTempParameter();
-                if (actualTempParameter > support.getOptimizerPreferences().getPref_MaxTempParameter()) {
-                    actualTempParameter = support.getOptimizerPreferences().getPref_MaxTempParameter();
+                actualTempParameter = (1 / denominator) * support.getOptimizerPreferences().getPref_MaxTempParameter(phase);
+                if (actualTempParameter > support.getOptimizerPreferences().getPref_MaxTempParameter(phase)) {
+                    actualTempParameter = support.getOptimizerPreferences().getPref_MaxTempParameter(phase);
                 }
 
-                actualTempCost = (1 / denominator) * support.getOptimizerPreferences().getPref_MaxTempCost();
-                if (actualTempCost > support.getOptimizerPreferences().getPref_MaxTempCost()) {
-                    actualTempCost = support.getOptimizerPreferences().getPref_MaxTempCost();
+                actualTempCost = (1 / denominator) * support.getOptimizerPreferences().getPref_MaxTempCost(phase);
+                if (actualTempCost > support.getOptimizerPreferences().getPref_MaxTempCost(phase)) {
+                    actualTempCost = support.getOptimizerPreferences().getPref_MaxTempCost(phase);
                 }
 
                 break;
 
             case FastAnnealing:
-                actualTempParameter = (1 / (double) generated) * support.getOptimizerPreferences().getPref_MaxTempParameter();
-                actualTempCost = (1 / (double) generated) * support.getOptimizerPreferences().getPref_MaxTempCost();
+                actualTempParameter = (1 / (double) generated) * support.getOptimizerPreferences().getPref_MaxTempParameter(phase);
+                actualTempCost = (1 / (double) generated) * support.getOptimizerPreferences().getPref_MaxTempCost(phase);
                 break;
 
             case VeryFastAnnealing:
-                actualTempParameter = Math.exp(-c * Math.pow((double) generated, 1 / D)) * support.getOptimizerPreferences().getPref_MaxTempParameter();
-                actualTempCost = Math.exp(-c * Math.pow((double) accepted, 1 / D)) * support.getOptimizerPreferences().getPref_MaxTempCost();
+                actualTempParameter = Math.exp(-c * Math.pow((double) generated, 1 / D)) * support.getOptimizerPreferences().getPref_MaxTempParameter(phase);
+                actualTempCost = Math.exp(-c * Math.pow((double) accepted, 1 / D)) * support.getOptimizerPreferences().getPref_MaxTempCost(phase);
 
                 break;
         }
@@ -96,7 +97,7 @@ public class OptimizerSimAnnealing extends OptimizerHill implements Runnable, Op
         support.log("Actual Temp for Parameters: " + actualTempParameter, typeOfLogLevel.INFO);
         support.log("Actual Temp for Cost: " + actualTempCost, typeOfLogLevel.INFO);
         //Eject if Temperature is lower then Epsilon
-        if (support.round(actualTempCost, 3) <= support.getOptimizerPreferences().getPref_Epsilon() || support.round(actualTempParameter, 3) <= support.getOptimizerPreferences().getPref_Epsilon()) {
+        if (support.round(actualTempCost, 3) <= support.getOptimizerPreferences().getPref_Epsilon(phase) || support.round(actualTempParameter, 3) <= support.getOptimizerPreferences().getPref_Epsilon(phase)) {
             //Set currentsolution=bestsolution so it will be printed as optimum
             currentSolution = bestSolution;
             this.optimized = true;
@@ -172,7 +173,7 @@ public class OptimizerSimAnnealing extends OptimizerHill implements Runnable, Op
                 double range = (p.getEndValue() - p.getStartValue());
                 simpleValue = Math.round(Math.random() * range * actualTempParameter);
 
-                switch (support.getOptimizerPreferences().getPref_CalculationOfNextParameterset()) {
+                switch (support.getOptimizerPreferences().getPref_CalculationOfNextParameterset(phase)) {
                     default:
                         //Do nothing
                         break;
