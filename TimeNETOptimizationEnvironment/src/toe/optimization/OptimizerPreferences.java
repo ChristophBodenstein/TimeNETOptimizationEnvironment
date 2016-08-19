@@ -37,7 +37,6 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     private int pref_SizeOfNeighborhood;
 
 // parameters for Simulated Annealing
-    private final SpinnerNumberModel TRatioScaleSpinnerModel;
     private boolean preventUpdateEpsilonBasedOnNumberOfSimulations = false;
     private int dimension = (int) 1;
 
@@ -90,7 +89,6 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
      * Creates new form OptimizerHillPreferences
      */
     public OptimizerPreferences() {
-        TRatioScaleSpinnerModel = new SpinnerNumberModel(0.00001, 0.0, 100.0, 0.00001);
 
         initComponents();
         this.setPref_WrongSimulationsUntilBreak(support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW);
@@ -460,7 +458,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         jPanelSimAnnealing.add(jLabel8);
         jLabel8.setBounds(480, 60, 100, 16);
 
-        jSpinnerTRatioScale.setModel(TRatioScaleSpinnerModel);
+        jSpinnerTRatioScale.setModel(new SpinnerNumberModel(0.00001, 0.0, 100.0, 0.00001));
         jSpinnerTRatioScale.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerTRatioScale, "#.#####"));
         jSpinnerTRatioScale.setValue(0.00001);
         jSpinnerTRatioScale.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -560,7 +558,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         jPanel1.add(jComboBoxCoolingMethod1);
         jComboBoxCoolingMethod1.setBounds(230, 60, 200, 27);
 
-        jSpinnerTRatioScale1.setModel(TRatioScaleSpinnerModel);
+        jSpinnerTRatioScale1.setModel(new SpinnerNumberModel(0.00001, 0.0, 100.0, 0.00001));
         jSpinnerTRatioScale1.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerTRatioScale1, "#.#####"));
         jSpinnerTRatioScale1.setValue(0.00001);
         jSpinnerTRatioScale1.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -2335,19 +2333,22 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
                 tmpSpinner = jSpinnerEpsilon;
                 break;
         }
-        tmpSpinner.setValue(support.round(pref_Epsilon, 3));
+
         javax.swing.JSpinner.DefaultEditor editor = (javax.swing.JSpinner.DefaultEditor) tmpSpinner.getEditor();
         if (pref_Epsilon < epsilon_min) {
             tmpSpinner.setToolTipText("Calculated Epsilon is to small!");
             tmpSpinner.setBackground(Color.RED);
             editor.getTextField().setBackground(Color.red);
+            pref_Epsilon = epsilon_min;
         } else if (pref_Epsilon > epsilon_max) {
             tmpSpinner.setToolTipText("Calculated Epsilon is to big!");
             editor.getTextField().setBackground(Color.red);
+            pref_Epsilon = epsilon_max;
         } else {
             tmpSpinner.setToolTipText("");
             editor.getTextField().setBackground(Color.white);
         }
+        tmpSpinner.setValue(support.round(pref_Epsilon, 3));
     }
 
     /**
@@ -3000,8 +3001,8 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         setPref_CalculationOfNextParameterset(getPref_CalculationOfNextParameterset(FROM), TO);
         setPref_MaxTempParameter(getPref_MaxTempParameter(FROM), TO);
         setPref_MaxTempCost(getPref_MaxTempCost(FROM), TO);
-        setPref_Epsilon(getPref_Epsilon(FROM), TO);
         setPref_TAnnealScale(getPref_TAnnealScale(FROM), TO);
         setPref_TRatioScale(getPref_TRatioScale(FROM), TO);
+        setPref_Epsilon(getPref_Epsilon(FROM), TO);
     }
 }
