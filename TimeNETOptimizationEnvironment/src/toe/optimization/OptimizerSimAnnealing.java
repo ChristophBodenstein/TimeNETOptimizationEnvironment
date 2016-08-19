@@ -104,7 +104,7 @@ public class OptimizerSimAnnealing extends OptimizerHill implements Runnable, Op
             return true;
         }
 
-        //If new cost is lower then repvious then break and accept new solution
+        //If new cost is lower then previous then break and accept new solution
         if (getActualDistance(nextSolution) < getActualDistance(bestSolution)) {
             bestSolution = nextSolution;
 

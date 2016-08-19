@@ -10,6 +10,9 @@ import toe.helper.StatisticAggregator;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.concurrent.CountDownLatch;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 import toe.MainFrame;
@@ -100,14 +103,16 @@ public class OptimizerHill implements Runnable, Optimizer {
 
         mySimulator.initSimulator(getParametersetAsArrayList(getFirstParameterset()), false);
         //Wait until Simulator has ended
-        //support.waitForEndOfSimulator(mySimulator, getSimulationCounter(), support.DEFAULT_TIMEOUT);
-        synchronized (mySimulator) {
+        support.waitForEndOfSimulator(mySimulator, support.DEFAULT_TIMEOUT);
+        
+        /*synchronized (mySimulator) {
             try {
                 mySimulator.wait();
             } catch (InterruptedException ex) {
                 support.log("Problem waiting for end of non-cache-simulator.", typeOfLogLevel.ERROR);
             }
-        }
+        }*/
+        
         support.addLinesToLogFileFromListOfParser(mySimulator.getListOfCompletedSimulationParsers(), logFileName);
         this.historyOfParsers = support.appendListOfParsers(historyOfParsers, mySimulator.getListOfCompletedSimulationParsers());
         currentSolution = mySimulator.getListOfCompletedSimulationParsers().get(0);
@@ -125,14 +130,14 @@ public class OptimizerHill implements Runnable, Optimizer {
 
             stuckInCacheCounter = support.DEFAULT_CACHE_STUCK;//Reset Stuck-Counter
             mySimulator.initSimulator(newParameterset, false);
-            //support.waitForEndOfSimulator(mySimulator, getSimulationCounter(), support.DEFAULT_TIMEOUT);
-            synchronized (mySimulator) {
+            support.waitForEndOfSimulator(mySimulator, support.DEFAULT_TIMEOUT);
+            /*synchronized (mySimulator) {
                 try {
                     mySimulator.wait();
                 } catch (InterruptedException ex) {
                     support.log("Problem waiting for end of non-cache-simulator.", typeOfLogLevel.ERROR);
                 }
-            }
+            }*/
             listOfCompletedSimulations = mySimulator.getListOfCompletedSimulationParsers();
             support.log("List of Simulation results is: " + listOfCompletedSimulations.size() + " elements big.", typeOfLogLevel.INFO);
             //Shrink to first element of List

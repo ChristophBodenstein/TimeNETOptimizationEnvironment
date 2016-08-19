@@ -8,6 +8,7 @@ package toe.simulation;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.concurrent.CountDownLatch;
 import toe.datamodel.parameter;
 import toe.datamodel.SimulationType;
 import toe.datamodel.MeasureType;
@@ -156,9 +157,11 @@ public class SimulatorBenchmark implements Simulator, Runnable {
             support.addLinesToLogFileFromListOfParser(myListOfSimulations, logFileName);
         }
         this.status = 100;
-        synchronized (this) {
-            notify();
-        }
+        //synchronized (this) {
+        //    notify();
+        //}/
+        //CountDownLatch latch = new CountDownLatch(3);
+        //latch.countDown();
     }
 
     /**

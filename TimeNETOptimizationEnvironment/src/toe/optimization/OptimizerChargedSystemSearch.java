@@ -105,14 +105,14 @@ public class OptimizerChargedSystemSearch extends OptimizerPopulationBased imple
 
         Simulator mySimulator = SimOptiFactory.getSimulator();
         mySimulator.initSimulator(getNextParameterSetAsArrayList(), false);
-        //support.waitForEndOfSimulator(mySimulator, optiCycleCounter, support.DEFAULT_TIMEOUT);
-        synchronized (mySimulator) {
+        support.waitForEndOfSimulator(mySimulator, support.DEFAULT_TIMEOUT);
+        /*synchronized (mySimulator) {
             try {
                 mySimulator.wait();
             } catch (InterruptedException ex) {
                 support.log("Problem waiting for end of non-cache-simulator.", typeOfLogLevel.ERROR);
             }
-        }
+        }*/
         ArrayList<SimulationType> simulationResults = mySimulator.getListOfCompletedSimulationParsers();
         population = getPopulationFromSimulationResults(simulationResults);
 
@@ -133,14 +133,14 @@ public class OptimizerChargedSystemSearch extends OptimizerPopulationBased imple
             //System.out.println("Number of Parameters in: " + parameterList.get(0).size());
             mySimulator = SimOptiFactory.getSimulator();
             mySimulator.initSimulator(parameterList, false);
-            //support.waitForEndOfSimulator(mySimulator, simulationCounter, support.DEFAULT_TIMEOUT);
-            synchronized (mySimulator) {
+            support.waitForEndOfSimulator(mySimulator, support.DEFAULT_TIMEOUT);
+            /*synchronized (mySimulator) {
                 try {
                     mySimulator.wait();
                 } catch (InterruptedException ex) {
                     support.log("Problem waiting for end of non-cache-simulator.", typeOfLogLevel.ERROR);
                 }
-            }
+            }*/
             simulationResults = mySimulator.getListOfCompletedSimulationParsers();
             support.addLinesToLogFileFromListOfParser(simulationResults, logFileName);
             population = getPopulationFromSimulationResults(simulationResults);
