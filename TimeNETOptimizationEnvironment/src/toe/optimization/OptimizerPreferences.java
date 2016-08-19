@@ -170,6 +170,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         jLabelEstSASimulationCount = new javax.swing.JLabel();
         jLabelDimensionDescription = new javax.swing.JLabel();
         jLabelDimensionNumber = new javax.swing.JLabel();
+        jButtonCopySA1ToSA0 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
         jComboBoxCoolingMethod1 = new javax.swing.JComboBox();
@@ -188,6 +189,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         jLabel17 = new javax.swing.JLabel();
         jSpinnerEstSASimulationCount1 = new javax.swing.JSpinner();
         jLabelEstSASimulationCount1 = new javax.swing.JLabel();
+        jButtonCopySA1ToSA1 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel18 = new javax.swing.JLabel();
         jComboBoxNumberOfPhases = new javax.swing.JComboBox();
@@ -532,6 +534,15 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         jPanelSimAnnealing.add(jLabelDimensionNumber);
         jLabelDimensionNumber.setBounds(223, 260, 110, 16);
 
+        jButtonCopySA1ToSA0.setText("Copy all prefs from second phase");
+        jButtonCopySA1ToSA0.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonCopySA1ToSA0ActionPerformed(evt);
+            }
+        });
+        jPanelSimAnnealing.add(jButtonCopySA1ToSA0);
+        jButtonCopySA1ToSA0.setBounds(20, 310, 250, 29);
+
         jTabbedPane1.addTab("Simulated Annealing", jPanelSimAnnealing);
 
         jPanel1.setLayout(null);
@@ -647,6 +658,15 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         jLabelEstSASimulationCount1.setText("Estimated # of Simulations");
         jPanel1.add(jLabelEstSASimulationCount1);
         jLabelEstSASimulationCount1.setBounds(20, 260, 210, 16);
+
+        jButtonCopySA1ToSA1.setText("Copy all prefs from first phase");
+        jButtonCopySA1ToSA1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonCopySA1ToSA1ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButtonCopySA1ToSA1);
+        jButtonCopySA1ToSA1.setBounds(20, 310, 250, 29);
 
         jTabbedPane1.addTab("Two-Phase", jPanel1);
 
@@ -1585,8 +1605,18 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         updateNumberOfEstimatedSASimulations(1);
     }//GEN-LAST:event_jSpinnerTAnnealScale1StateChanged
 
+    private void jButtonCopySA1ToSA0ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCopySA1ToSA0ActionPerformed
+        copySAParameters(1, 0);
+    }//GEN-LAST:event_jButtonCopySA1ToSA0ActionPerformed
+
+    private void jButtonCopySA1ToSA1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCopySA1ToSA1ActionPerformed
+        copySAParameters(0, 1);
+    }//GEN-LAST:event_jButtonCopySA1ToSA1ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonCopySA1ToSA0;
+    private javax.swing.JButton jButtonCopySA1ToSA1;
     private javax.swing.JButton jButtonDelAllPrefs;
     private javax.swing.JButton jButtonNextPrefs;
     private javax.swing.JButton jButtonPrevPrefs;
@@ -2109,8 +2139,6 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             default:
                 return (typeOfAnnealing) this.jComboBoxCoolingMethod.getSelectedItem();
         }
-        //this.pref_Cooling = (typeOfAnnealing) this.jComboBoxCoolingMethod.getSelectedItem();
-        //return pref_Cooling;
     }
 
     /**
@@ -2128,8 +2156,6 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
                 this.jComboBoxCoolingMethod1.setSelectedItem(pref_Cooling);
                 break;
         }
-
-        //this.pref_Cooling = pref_Cooling;
     }
 
     /**
@@ -2148,8 +2174,6 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             default:
                 return (Double) this.jSpinnerTRatioScale.getValue();
         }
-        //this.pref_TRatioScale = (Double) this.jSpinnerTRatioScale.getValue();
-        //return pref_TRatioScale;
     }
 
     /**
@@ -2170,8 +2194,6 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
                 this.jSpinnerTRatioScale.setValue(pref_TRatioScale);
                 break;
         }
-        //this.jSpinnerTRatioScale.setValue(pref_TRatioScale);
-        //this.pref_TRatioScale = pref_TRatioScale;
     }
 
     /**
@@ -2189,8 +2211,6 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             default:
                 return (Double) (this.jSpinnerTAnnealScale.getValue());
         }
-        //this.pref_TAnnealScale = (Double) (this.jSpinnerTAnnealScale.getValue());
-        //return pref_TAnnealScale;
     }
 
     /**
@@ -2211,8 +2231,6 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
                 this.jSpinnerTAnnealScale.setValue(pref_TAnnealScale);
                 break;
         }
-        //this.jSpinnerTAnnealScale.setValue(pref_TAnnealScale);
-        //this.pref_TAnnealScale = pref_TAnnealScale;
     }
 
     /**
@@ -2230,8 +2248,6 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             default:
                 return (Double) this.jSpinnerMaxTemperatureParameters.getValue();
         }
-        //this.pref_MaxTempParameter = (Double) this.jSpinnerMaxTemperatureParameters.getValue();
-        //return pref_MaxTempParameter;
     }
 
     /**
@@ -2250,8 +2266,6 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
                 this.jSpinnerMaxTemperatureParameters.setValue(pref_MaxTempParameter);
                 break;
         }
-        //this.jSpinnerMaxTemperatureParameters.setValue(pref_MaxTempParameter);
-        //this.pref_MaxTempParameter = pref_MaxTempParameter;
     }
 
     /**
@@ -2267,8 +2281,6 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             default:
                 return (Double) jSpinnerMaxTemperatureCost.getValue();
         }
-        //this.pref_MaxTempCost = (Double) jSpinnerMaxTemperatureCost.getValue();
-        //return pref_MaxTempCost;
     }
 
     /**
@@ -2287,8 +2299,6 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
                 this.jSpinnerMaxTemperatureCost.setValue(pref_MaxTempCost);
                 break;
         }
-        //this.jSpinnerMaxTemperatureCost.setValue(pref_MaxTempCost);
-        //this.pref_MaxTempCost = pref_MaxTempCost;
     }
 
     /**
@@ -2306,8 +2316,6 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             default:
                 return (Double) jSpinnerEpsilon.getValue();
         }
-        //this.pref_Epsilon = (Double) jSpinnerEpsilon.getValue();
-        //return pref_Epsilon;
     }
 
     /**
@@ -2317,19 +2325,29 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
      * @param phase Number of Opti-Phase, can be 0..1
      */
     public void setPref_Epsilon(double pref_Epsilon, int phase) {
+        javax.swing.JSpinner tmpSpinner;
         switch (phase) {
-            case 0:
-                this.jSpinnerEpsilon.setValue(pref_Epsilon);
-                break;
             case 1:
-                this.jSpinnerEpsilon1.setValue(pref_Epsilon);
+                tmpSpinner = jSpinnerEpsilon1;
                 break;
             default:
-                this.jSpinnerEpsilon.setValue(pref_Epsilon);
+            case 0:
+                tmpSpinner = jSpinnerEpsilon;
                 break;
         }
-        //this.jSpinnerEpsilon.setValue(pref_Epsilon);
-        //this.pref_Epsilon = pref_Epsilon;
+        tmpSpinner.setValue(support.round(pref_Epsilon, 3));
+        javax.swing.JSpinner.DefaultEditor editor = (javax.swing.JSpinner.DefaultEditor) tmpSpinner.getEditor();
+        if (pref_Epsilon < epsilon_min) {
+            tmpSpinner.setToolTipText("Calculated Epsilon is to small!");
+            tmpSpinner.setBackground(Color.RED);
+            editor.getTextField().setBackground(Color.red);
+        } else if (pref_Epsilon > epsilon_max) {
+            tmpSpinner.setToolTipText("Calculated Epsilon is to big!");
+            editor.getTextField().setBackground(Color.red);
+        } else {
+            tmpSpinner.setToolTipText("");
+            editor.getTextField().setBackground(Color.white);
+        }
     }
 
     /**
@@ -2348,8 +2366,6 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             default:
                 return (typeOfAnnealingParameterCalculation) this.jComboBoxCalculationOfNextParameterset.getSelectedItem();
         }
-        //pref_CalculationOfNextParameterset = (typeOfAnnealingParameterCalculation) this.jComboBoxCalculationOfNextParameterset.getSelectedItem();
-        //return pref_CalculationOfNextParameterset;
     }
 
     /**
@@ -2372,8 +2388,6 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
                 this.jComboBoxCalculationOfNextParameterset.setSelectedItem(pref_CalculationOfNextParameterset);
                 break;
         }
-        //this.jComboBoxCalculationOfNextParameterset.setSelectedItem(pref_CalculationOfNextParameterset);
-        //this.pref_CalculationOfNextParameterset = pref_CalculationOfNextParameterset;
     }
 
     /**
@@ -2950,29 +2964,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
                 break;
         }
         if (!preventUpdateEpsilonBasedOnNumberOfSimulations) {
-            javax.swing.JSpinner tmpSpinner;
-            switch (phase) {
-                case 1:
-                    tmpSpinner = jSpinnerEpsilon1;
-                    break;
-                default:
-                case 0:
-                    tmpSpinner = jSpinnerEpsilon;
-                    break;
-            }
-            tmpSpinner.setValue(support.round(epsilon, 3));
-            javax.swing.JSpinner.DefaultEditor editor = (javax.swing.JSpinner.DefaultEditor) tmpSpinner.getEditor();
-            if (epsilon < epsilon_min) {
-                tmpSpinner.setToolTipText("Calculated Epsilon is to small!");
-                tmpSpinner.setBackground(Color.RED);
-                editor.getTextField().setBackground(Color.red);
-            } else if (epsilon > epsilon_max) {
-                tmpSpinner.setToolTipText("Calculated Epsilon is to big!");
-                editor.getTextField().setBackground(Color.red);
-            } else {
-                tmpSpinner.setToolTipText("");
-                editor.getTextField().setBackground(Color.white);
-            }
+            setPref_Epsilon(epsilon, phase);
         }
     }
 
@@ -2995,5 +2987,21 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         }
         updateNumberOfEstimatedSASimulations(0);
         updateNumberOfEstimatedSASimulations(1);
+    }
+
+    /**
+     * Copy all parameters from one SA phase the another
+     *
+     * @param TO Target phase the parameters shall be copied to
+     * @param FROM The pashe were the paramaters are copied from
+     */
+    private void copySAParameters(int FROM, int TO) {
+        setPref_Cooling(getPref_Cooling(FROM), TO);
+        setPref_CalculationOfNextParameterset(getPref_CalculationOfNextParameterset(FROM), TO);
+        setPref_MaxTempParameter(getPref_MaxTempParameter(FROM), TO);
+        setPref_MaxTempCost(getPref_MaxTempCost(FROM), TO);
+        setPref_Epsilon(getPref_Epsilon(FROM), TO);
+        setPref_TAnnealScale(getPref_TAnnealScale(FROM), TO);
+        setPref_TRatioScale(getPref_TRatioScale(FROM), TO);
     }
 }
