@@ -6,6 +6,7 @@
  */
 package toe.optimization;
 
+import java.awt.Color;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -49,6 +50,8 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     private int pref_InternalParameterStart;
     private int pref_InternalParameterEnd;
     private boolean pref_KeepDesignSpaceAndResolution;
+    private double epsilon_min = 0.001;
+    private double epsilon_max = 1;
 
 //parameters for genetic Optimization
     private int pref_GeneticPopulationSize;
@@ -2947,14 +2950,28 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
                 break;
         }
         if (!preventUpdateEpsilonBasedOnNumberOfSimulations) {
+            javax.swing.JSpinner tmpSpinner;
             switch (phase) {
                 case 1:
-                    jSpinnerEpsilon1.setValue(support.round(epsilon, 3));
+                    tmpSpinner = jSpinnerEpsilon1;
                     break;
                 default:
                 case 0:
-                    jSpinnerEpsilon.setValue(support.round(epsilon, 3));
+                    tmpSpinner = jSpinnerEpsilon;
                     break;
+            }
+            tmpSpinner.setValue(support.round(epsilon, 3));
+            javax.swing.JSpinner.DefaultEditor editor = (javax.swing.JSpinner.DefaultEditor) tmpSpinner.getEditor();
+            if (epsilon < epsilon_min) {
+                tmpSpinner.setToolTipText("Calculated Epsilon is to small!");
+                tmpSpinner.setBackground(Color.RED);
+                editor.getTextField().setBackground(Color.red);
+            } else if (epsilon > epsilon_max) {
+                tmpSpinner.setToolTipText("Calculated Epsilon is to big!");
+                editor.getTextField().setBackground(Color.red);
+            } else {
+                tmpSpinner.setToolTipText("");
+                editor.getTextField().setBackground(Color.white);
             }
         }
     }
