@@ -49,8 +49,8 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     private int pref_InternalParameterStart;
     private int pref_InternalParameterEnd;
     private boolean pref_KeepDesignSpaceAndResolution;
-    private double epsilon_min = 0.001;
-    private double epsilon_max = 1;
+    private final double epsilon_min = 0.001;
+    private final double epsilon_max = 1;
 
 //parameters for genetic Optimization
     private int pref_GeneticPopulationSize;
