@@ -18,7 +18,7 @@ import toe.datamodel.SimulationType;
 public interface Simulator {
 
     /**
-     * Iits the simulator with all necessary varibales and starts the Thread So
+     * Inits the simulator with all necessary varibales and starts the Thread So
      * the simulator-thread don`t need to be started external!
      *
      * @param listOfParameterSetsTMP ArrayList of parametersets (ArrayList) to
