@@ -19,7 +19,7 @@ import toe.typedef.typeOfLogLevel;
  *
  * @author Christoph Bodenstein
  */
-public class SimulatorCachedLocal extends SimulatorCached implements Runnable {
+public class SimulatorCachedLocal extends SimulatorCached {
 
     private ArrayList<SimulationType> myListOfSimulationParsers = null;
     private int status;

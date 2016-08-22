@@ -8,7 +8,6 @@ package toe.simulation;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.concurrent.CountDownLatch;
 import toe.datamodel.parameter;
 import toe.datamodel.SimulationType;
 import toe.datamodel.MeasureType;
@@ -22,7 +21,7 @@ import toe.typedef.typeOfLogLevel;
  *
  * @author Christoph Bodenstein
  */
-public class SimulatorBenchmark implements Simulator, Runnable {
+public class SimulatorBenchmark extends Thread implements Simulator {
 
     private SimulationCache mySimulationCache = null;
     private ArrayList<SimulationType> myListOfSimulations = null;

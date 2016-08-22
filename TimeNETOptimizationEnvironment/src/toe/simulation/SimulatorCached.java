@@ -20,7 +20,7 @@ import toe.typedef.typeOfLogLevel;
  *
  * @author Christoph Bodenstein
  */
-public class SimulatorCached implements Simulator {
+public class SimulatorCached extends Thread implements Simulator {
 
     SimulationCache mySimulationCache = null;
     ArrayList<SimulationType> myListOfSimulations = null;

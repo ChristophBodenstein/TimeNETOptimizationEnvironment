@@ -29,7 +29,7 @@ import toe.typedef.typeOfLogLevel;
  *
  * @author Christoph Bodenstein
  */
-public class SimulatorLocal implements Runnable, Simulator, nativeProcessCallbacks {
+public class SimulatorLocal extends Thread implements Simulator, nativeProcessCallbacks {
 
     ArrayList< ArrayList<parameter>> listOfParameterSets;
     ArrayList<SimulationType> listOfCompletedSimulationParsers;

@@ -45,7 +45,7 @@ import toe.typedef.typeOfLogLevel;
  *
  * @author Christoph Bodenstein & ...
  */
-public class SimulatorDistributed implements Runnable, Simulator {
+public class SimulatorDistributed extends Thread implements Simulator {
 
     String logFileName = "";
     ArrayList< ArrayList<parameter>> listOfParameterSets;

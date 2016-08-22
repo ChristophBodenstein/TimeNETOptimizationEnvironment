@@ -33,7 +33,7 @@ import toe.typedef.typeOfLogLevel;
  *
  * @author Group studies, Christoph Bodenstein
  */
-public class SimulatorWebSlave implements Runnable {
+public class SimulatorWebSlave extends Thread {
 
     private boolean shouldEnd = false;
     String pathToTimeNet;

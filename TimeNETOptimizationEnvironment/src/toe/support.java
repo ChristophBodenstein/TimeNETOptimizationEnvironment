@@ -1146,9 +1146,10 @@ public class support {
         //Shortcut for benchmark-Simulators
         try {
             //Thread.sleep(10);
-            support.waitSingleThreaded(10);
+            ((Thread)mySimulator).join(10);
+            //support.waitSingleThreaded(10);
         } catch (Exception ex) {
-            support.log("InterruptedException in main loop of optimization. Optimization aborted.", typeOfLogLevel.ERROR);
+            support.log("Exception while waiting for end of Simulator.", typeOfLogLevel.ERROR);
         }
         if (mySimulator.getStatus() >= 100) {
             return true;
@@ -1157,7 +1158,8 @@ public class support {
         setStatusText("Simulations started.");
         while (mySimulator.getStatus() < 100) {
             try {
-                support.waitSingleThreaded(1000);
+                //support.waitSingleThreaded(1000);
+                ((Thread)mySimulator).join(1000);
             } catch (Exception ex) {
                 support.log("InterruptedException in main loop of optimization. Optimization aborted.", typeOfLogLevel.ERROR);
                 statusLabel.setText("Aborted / Error");
