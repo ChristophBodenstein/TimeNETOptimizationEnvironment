@@ -1752,7 +1752,7 @@ public class support {
     }
 
     /**
-     * Padding of String to Right
+     * Padding of String to Left
      *
      * @return padded String
      * @param s String to be padded
