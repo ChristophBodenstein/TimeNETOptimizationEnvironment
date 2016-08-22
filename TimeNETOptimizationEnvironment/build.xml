@@ -71,7 +71,7 @@
     nbproject/build-impl.xml file. 
 
     -->
-      <target name="package-for-store" depends="jar">
+    <target name="package-for-store" depends="jar">
 
         <!-- Change the value of this property to be the name of your JAR,
              minus the .jar extension. It should not have spaces.
@@ -101,10 +101,66 @@
 
         <zip destfile="${store.jar}">
             <zipfileset src="${store.dir}/temp_final.jar"
-            excludes="META-INF/*.SF, META-INF/*.DSA, META-INF/*.RSA"/>
+                        excludes="META-INF/*.SF, META-INF/*.DSA, META-INF/*.RSA"/>
         </zip>
 
         <delete file="${store.dir}/temp_final.jar"/>
 
+    </target>
+    
+    
+    <!-- 
+    Some targets to get the git version information 
+    This was proudly presented by:
+    http://llbit.se/?p=1876
+    -->
+    
+    <!-- this target is only run if the 'version' property is undefined -->
+    <target name="update-version-string" depends="-timestamp" unless="version">
+        <property name="res.dir" value="src/toe"/>
+        
+        <!-- get a new version string using git describe if possible -->
+        <echo message="Updating version string..."/>
+        <exec executable="git" outputproperty="version"
+              failifexecutionfails="false">
+            <arg value="describe"/>
+            <arg value="--tags"/>
+        </exec>
+        <antcall target="-store-version-string"/>
+        <!-- ensure version is defined even if git was not available -->
+        <property file="${res.dir}/Version.properties"/>
+    </target>
+    
+    <target name="-timestamp">
+        <tstamp>
+            <format property="timestamp" pattern="yyyy-MM-dd'T'HH:mm'Z'"/>
+            <format property="build.date" pattern="yyyy-MM-dd"/>
+        </tstamp>
+    </target>
+    
+    <target name="-store-version-string" depends="-timestamp" if="version">
+        <property name="res.dir" value="src/toe"/>
+        <!-- store the new  version string in the correct property file -->
+        <echo message="version=${version}"/>
+        <propertyfile file="${res.dir}/Version.properties">
+            <entry key="version" value="${version}"/>
+            <entry key="timestamp" value="${timestamp}"/>
+            <entry key="build.date" value="${build.date}"/>
+        </propertyfile>
+        
+        <property name="absolute.path" location="${res.dir}/Version.properties"/>
+        <exec executable="git">
+            <arg value="update-index"/>
+            <arg value="--assume-unchanged"/>
+            <arg value="${absolute.path}"/>
+        </exec>
+        
+    </target>
+
+    <target name="-pre-compile" depends="update-version-string">
+    </target>
+    
+    <target name="-post-init" depends="update-version-string">
+        <property name="res.dir" value="src/toe"/>
     </target>
 </project>

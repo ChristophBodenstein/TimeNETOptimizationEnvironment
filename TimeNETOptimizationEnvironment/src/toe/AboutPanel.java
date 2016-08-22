@@ -8,11 +8,13 @@
 package toe;
 
 import java.awt.Desktop;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Properties;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import toe.typedef.*;
@@ -33,10 +35,18 @@ public class AboutPanel extends javax.swing.JPanel implements HyperlinkListener 
         creditsText += "RPlot-Plugin: Bastian Maurer & Simon Niebler" + System.getProperty("line.separator");
         creditsText += "Distributed Simulation: Hassan Yousef + Veeranna Sulikeri";
 
+        Properties versionInformation = new Properties();
+        try {
+            InputStream ddlStream = this.getClass().getClassLoader().getResourceAsStream("toe/Version.properties");
+            versionInformation.load(ddlStream);
+            ddlStream.close();
+            this.jLabelVersion.setText("Version: " + versionInformation.getProperty("version", ""));
+        } catch (Exception e) {
+            support.log("Could not load Version.properties.", typeOfLogLevel.ERROR);
+        }
+
         this.jTextPaneCredits.setText(creditsText);
         this.jTextPaneCredits.setEditable(false);
-
-        this.jLabelVersion.setText("Version: " + support.VERSION);
 
         try {
             URL file = getClass().getResource("SystemRequirements.html");
