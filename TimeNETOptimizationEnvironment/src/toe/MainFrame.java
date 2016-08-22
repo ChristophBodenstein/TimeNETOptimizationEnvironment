@@ -6,6 +6,9 @@
  */
 package toe;
 
+import com.apple.eawt.Application;
+import com.apple.eawt.ApplicationEvent;
+import com.apple.eawt.ApplicationListener;
 import toe.simulation.SimulationCache;
 import toe.simulation.Simulator;
 import toe.simulation.SimulatorWebSlave;
@@ -317,6 +320,48 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
             }
 
         }
+
+        // About menu handler
+        Application macApplication = Application.getApplication();
+        macApplication.addApplicationListener(new ApplicationListener() {
+            @Override
+            public void handleAbout(ApplicationEvent ae) {
+                ae.setHandled(true);
+                aboutDialog.setVisible(true);
+            }
+
+            @Override
+            public void handleOpenApplication(ApplicationEvent ae) {
+            }
+
+            @Override
+            public void handleOpenFile(ApplicationEvent ae) {
+                jButtonOpenSCPNActionPerformed(new java.awt.event.ActionEvent(this, 1, "Fake Button click."));
+            }
+
+            @Override
+            public void handlePreferences(ApplicationEvent ae) {
+                support.getOptimizerPreferences().setVisible(true);
+            }
+
+            @Override
+            public void handlePrintFile(ApplicationEvent ae) {
+            }
+
+            @Override
+            public void handleQuit(ApplicationEvent ae) {
+                System.exit(0);
+            }
+
+            @Override
+            public void handleReOpenApplication(ApplicationEvent ae) {
+            }
+        });
+
+        // need to enable the preferences option manually
+        macApplication.setEnabledPreferencesMenu(true);
+        macApplication.setPrintFileHandler(null);
+
     }
 
     /**
