@@ -39,9 +39,6 @@ import toe.typedef.typeOfProcessFeedback;
  */
 public class support {
 
-//This Version of TimeNetExperimentGenerator
-    public static final String VERSION = "2016-08-12";
-
 //Define some program-wide default values
     public static final double DEFAULT_STEPPING = 1.0;
     public static final long DEFAULT_TIMEOUT = 10000;
@@ -1146,7 +1143,7 @@ public class support {
         //Shortcut for benchmark-Simulators
         try {
             //Thread.sleep(10);
-            ((Thread)mySimulator).join(10);
+            ((Thread) mySimulator).join(10);
             //support.waitSingleThreaded(10);
         } catch (Exception ex) {
             support.log("Exception while waiting for end of Simulator.", typeOfLogLevel.ERROR);
@@ -1159,7 +1156,7 @@ public class support {
         while (mySimulator.getStatus() < 100) {
             try {
                 //support.waitSingleThreaded(1000);
-                ((Thread)mySimulator).join(1000);
+                ((Thread) mySimulator).join(1000);
             } catch (Exception ex) {
                 support.log("InterruptedException in main loop of optimization. Optimization aborted.", typeOfLogLevel.ERROR);
                 statusLabel.setText("Aborted / Error");
