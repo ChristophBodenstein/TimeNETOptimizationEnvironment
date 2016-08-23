@@ -1355,12 +1355,15 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
             jButtonEnterURLToSimServer.setText("RESET URL of Sim.-Server");
             this.saveProperties();
             jButtonEnterURLToSimServer.setEnabled(true);
+            jCheckBoxSlaveSimulator.setEnabled(true);
         } else {
             jButtonEnterURLToSimServer.setBackground(Color.RED);
             jButtonEnterURLToSimServer.setOpaque(true);
             jButtonEnterURLToSimServer.setBorderPainted(false);
             jButtonEnterURLToSimServer.setText("Enter URL of Sim.-Server");
             jButtonEnterURLToSimServer.setEnabled(true);
+            jCheckBoxSlaveSimulator.setSelected(false);
+            jCheckBoxSlaveSimulator.setEnabled(false);
         }
     }
 
@@ -2350,7 +2353,8 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                 listOfUIStates.set(3, false);
                 listOfUIStates.set(5, false);
                 listOfUIStates.set(6, false);
-                //Deactivate Benchmark JCombobox if no benchmark-simulator is chosen        
+                //Deactivate Benchmark JCombobox if no benchmark-simulator is chosen
+                listOfUIStates.set(15, support.isDistributedSimulationAvailable());
                 listOfUIStates.set(16, jComboBoxSimulationType.getSelectedItem().equals(typeOfSimulator.Benchmark) || jComboBoxSimulationType.getSelectedItem().equals(typeOfSimulator.Cached_Benchmark));
                 listOfUIStates.set(21, support.getMySimulationCache().getCacheSize() >= 1);
                 break;
