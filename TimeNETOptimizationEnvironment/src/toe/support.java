@@ -431,10 +431,9 @@ public class support {
      * @return Rounded Value with requested number of decimals
      */
     public static double round(double valueToRound, int decimals) {
-        double multiplier = 10;
         decimals = Math.max(decimals, 1);
 
-        multiplier = Math.round(Math.pow(10, (double) decimals));
+        double multiplier = Math.round(Math.pow(10, (double) decimals));
         return (double) Math.round(valueToRound * multiplier) / multiplier;
 
     }
@@ -911,24 +910,19 @@ public class support {
      *
      * @param address url to simulation server
      */
-    public static void setRemoteAddress(String address) throws IOException {
+    public static void setRemoteAddress(String address) {
         remoteAddress = address;
-        //Check if address is correct.
-        //distributedSimulationAvailable = checkRemoteAddress(address);
-        //mainFrame.updateComboBoxSimulationType();        
-        //If Address is correct, set distributedSimulationAvailable to TRUE!
-        //e.i. call the method checkRemoteAddress(String ere)
-        //After that, please call updateComboBoxSimulationType() in MainFrame.java
     }
 
     /**
      * Checks, if the given remoteAddress (URL to Sim.-Server) is correct TODO:
-     * Chek if server is a real distribution server
+     * Check if server is a real distribution server
      *
      * @param urlString The URL as String to be checked, if this is the
      * available Sim.-Server
      * @return True if URL is correct and server is working, else false To be
      * modified by: Group studies 2014
+     * @throws java.io.IOException
      */
     public static boolean checkRemoteAddress(String urlString) throws IOException {
         support.log("Given remote-URL: " + urlString, typeOfLogLevel.INFO);
@@ -1081,7 +1075,7 @@ public class support {
      * @return array of parameters, the copy of input
      */
     public static ArrayList<parameter> getCopyOfParameterSet(ArrayList<parameter> parameterBase) {
-        ArrayList<parameter> newParameterSet = new ArrayList<parameter>();
+        ArrayList<parameter> newParameterSet = new ArrayList<>();
         for (int i = 0; i < parameterBase.size(); i++) {
 
             parameter p = new parameter();
@@ -1330,6 +1324,7 @@ public class support {
      *
      * @param name Name of the property to be loaded
      * @param defaultValue The default to be returned, if error occurs
+     * @param auto Properties object to load the value from
      * @return double value of property
      */
     public static int loadIntFromProperties(String name, int defaultValue, Properties auto) {
@@ -1434,7 +1429,7 @@ public class support {
 
         //TODO If Internal Precision-Parameter is chosen and Multiphase is active, then dont put precisionparameter in list!
         //ArrayList<parameter> parameterset = support.getCopyOfParameterSet(sourceList);
-        ArrayList<parameter> listOfChangableParameters = new ArrayList<parameter>();
+        ArrayList<parameter> listOfChangableParameters = new ArrayList<>();
         //Count the number of changable parameters
         //this.numberOfChangableParameters=0;
         for (int i = 0; i < sourceList.size(); i++) {
@@ -1539,7 +1534,6 @@ public class support {
      * Shows a little spinning indicator in a given JLabel useful to show, that
      * something is going on...
      *
-     * @param l JLabel to show the spinning characters
      */
     public static void spinInLabel() {
         mainFrame.jLabelSpinning.setText(getNextSpinningChar(mainFrame.jLabelSpinning.getText()));
@@ -1925,6 +1919,8 @@ public class support {
 
     /**
      * Returns default Path to R for different systems
+     *
+     * @return Default path of R-Installation depending on OS
      */
     public static String getDefaultPathToR() {
         //Determine System
