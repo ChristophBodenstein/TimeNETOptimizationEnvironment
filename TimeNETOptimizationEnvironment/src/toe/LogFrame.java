@@ -30,7 +30,7 @@ public class LogFrame extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextAreaLog = new javax.swing.JTextArea();
         jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu2 = new javax.swing.JMenu();
+        jMenuEdit = new javax.swing.JMenu();
         jMenuItemClearLogWindow = new javax.swing.JMenuItem();
 
         setTitle("Log Viewer");
@@ -48,7 +48,7 @@ public class LogFrame extends javax.swing.JFrame {
 
         getContentPane().add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
-        jMenu2.setText("Edit");
+        jMenuEdit.setText("Edit");
 
         jMenuItemClearLogWindow.setText("Clear");
         jMenuItemClearLogWindow.addActionListener(new java.awt.event.ActionListener() {
@@ -56,9 +56,9 @@ public class LogFrame extends javax.swing.JFrame {
                 jMenuItemClearLogWindowActionPerformed(evt);
             }
         });
-        jMenu2.add(jMenuItemClearLogWindow);
+        jMenuEdit.add(jMenuItemClearLogWindow);
 
-        jMenuBar1.add(jMenu2);
+        jMenuBar1.add(jMenuEdit);
 
         setJMenuBar(jMenuBar1);
 
@@ -73,8 +73,8 @@ public class LogFrame extends javax.swing.JFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenu jMenuEdit;
     private javax.swing.JMenuItem jMenuItemClearLogWindow;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextAreaLog;
