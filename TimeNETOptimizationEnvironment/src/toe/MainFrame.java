@@ -117,6 +117,14 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         } catch (IOException e) {
             // IOException
         }
+        //Load Loglevel settings
+        this.setLogLevelActivated_ERROR(Boolean.parseBoolean(auto.getProperty("LOGLEVEL_ERROR", "true")));
+        this.setLogLevelActivated_INFO(Boolean.parseBoolean(auto.getProperty("LOGLEVEL_INFO", "true")));
+        this.setLogLevelActivated_RESULT(Boolean.parseBoolean(auto.getProperty("LOGLEVEL_RESULT", "true")));
+        this.setLogLevelActivated_VERBOSE(Boolean.parseBoolean(auto.getProperty("LOGLEVEL_VERBOSE", "true")));
+
+        this.setLogToWindow(Boolean.parseBoolean(auto.getProperty("LOGTOWINDOW", "true")));
+        this.setLogToFile(Boolean.parseBoolean(auto.getProperty("LOGTOFILE", "true")));
 
         //Install default scpn file
         File defaultSCPN = new File(support.NAME_OF_DEFAULT_SCPN);
@@ -518,6 +526,11 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(675, 600));
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         jButtonOpenSCPN.setText("Open SCPN");
         jButtonOpenSCPN.setToolTipText("Open TimeNET SCPN (xml-file)");
@@ -1319,13 +1332,11 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
 
         //If a string was returned, say so.
         if ((s != null) && (s.length() > 0)) {
-            try {
+
                 support.log("URL of Simulation-Server as given from user is " + s + "!", typeOfLogLevel.INFO);
                 support.setRemoteAddress(s);
                 this.checkIfURLIsCorrect();
-            } catch (IOException ex) {
-                support.log("Problem setting the url to distributed simulation server.", typeOfLogLevel.INFO);
-            }
+            
         } else {
             support.log("URL of Simulation-Server was not entered!", typeOfLogLevel.INFO);
         }
@@ -1342,7 +1353,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         try {
             checksuccessful = support.checkRemoteAddress(tmpURL);
         } catch (IOException ex) {
-            support.log("Problem checking the URL to disctributed simulation.", typeOfLogLevel.ERROR);
+            support.log("Problem checking the URL to distributed simulation.", typeOfLogLevel.ERROR);
         }
 
         support.log("Checking URL of distributed simulation server.", typeOfLogLevel.INFO);
@@ -1576,6 +1587,10 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
             support.setChosenSimulatorType(typeOfSimulator.Cached_Benchmark);
         }
     }//GEN-LAST:event_jButtonEmptyCacheActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        saveProperties();
+    }//GEN-LAST:event_formWindowClosing
 
     /**
      * Calculates the design space, number of all permutations of parameters
@@ -2143,6 +2158,14 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                 support.log("No tmp-path yet given. Please do so.", typeOfLogLevel.ERROR);
             }
 
+            auto.setProperty("LOGLEVEL_ERROR", Boolean.toString(getLogLevelActivated_ERROR()));
+            auto.setProperty("LOGLEVEL_INFO", Boolean.toString(getLogLevelActivated_INFO()));
+            auto.setProperty("LOGLEVEL_RESULT", Boolean.toString(getLogLevelActivated_RESULT()));
+            auto.setProperty("LOGLEVEL_VERBOSE", Boolean.toString(getLogLevelActivated_VERBOSE()));
+
+            auto.setProperty("LOGTOWINDOW", Boolean.toString(getLogToWindow()));
+            auto.setProperty("LOGTOFILE", Boolean.toString(getLogToFile()));
+
             File parserprops = new File(support.NAME_OF_PREFERENCES_FILE);
             auto.store(new FileOutputStream(parserprops), "ExperimentGenerator-Properties");
         } catch (IOException e) {
@@ -2661,4 +2684,125 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         }
         return resultList;
     }
+
+    /**
+     * Get boolean info whether Messages of Loglevel Error will be logged to
+     * chosen target
+     *
+     * @return True if Loglevel Error is active
+     */
+    public boolean getLogLevelActivated_ERROR() {
+        return this.jCheckBoxMenuItemError.isSelected();
+    }
+
+    /**
+     * Activate/Deactivate messages of Loglevel Error to be logged to chosen
+     * target
+     *
+     * @param active Loglevel Error is active/not active
+     */
+    public void setLogLevelActivated_ERROR(boolean active) {
+        this.jCheckBoxMenuItemError.setSelected(active);
+    }
+
+    /**
+     * Get boolean info whether Messages of Loglevel Info will be logged to
+     * chosen target
+     *
+     * @return True if Loglevel Info is active
+     */
+    public boolean getLogLevelActivated_INFO() {
+        return this.jCheckBoxMenuItemInfo.isSelected();
+    }
+
+    /**
+     * Activate/Deactivate messages of Loglevel Info to be logged to chosen
+     * target
+     *
+     * @param active Loglevel Info is active/not active
+     */
+    public void setLogLevelActivated_INFO(boolean active) {
+        this.jCheckBoxMenuItemInfo.setSelected(active);
+    }
+
+    /**
+     * Get boolean info whether Messages of Loglevel Result will be logged to
+     * chosen target
+     *
+     * @return True if Loglevel Result is active
+     */
+    public boolean getLogLevelActivated_RESULT() {
+        return this.jCheckBoxMenuItemResult.isSelected();
+    }
+
+    /**
+     * Activate/Deactivate messages of Loglevel Result to be logged to chosen
+     * target
+     *
+     * @param active Loglevel Result is active/not active
+     */
+    public void setLogLevelActivated_RESULT(boolean active) {
+        this.jCheckBoxMenuItemResult.setSelected(active);
+    }
+
+    /**
+     * Get boolean info whether Messages of Loglevel Verbose will be logged to
+     * chosen target
+     *
+     * @return True if Loglevel Verbose is active
+     */
+    public boolean getLogLevelActivated_VERBOSE() {
+        return this.jCheckBoxMenuItemVerbose.isSelected();
+    }
+
+    /**
+     * Activate/Deactivate messages of Loglevel Verbose to be logged to chosen
+     * target
+     *
+     * @param active Loglevel Verbose is active/not active
+     */
+    public void setLogLevelActivated_VERBOSE(boolean active) {
+        this.jCheckBoxMenuItemVerbose.setSelected(active);
+    }
+
+    /**
+     * Get info whether logging to log-window is active
+     *
+     * @return true if logging to window is active
+     */
+    public boolean getLogToWindow() {
+        return this.jCheckBoxMenuItemLogToWindow.isSelected();
+
+    }
+
+    /**
+     * Activate/Deactivate logging to window
+     *
+     * @param active true to activate, else deactivate
+     */
+    public void setLogToWindow(boolean active) {
+        this.jCheckBoxMenuItemLogToWindow.setSelected(active);
+        support.setLogToWindow(active);
+    }
+
+    /**
+     * Get info whether logging to log-file is active
+     *
+     * @return true if logging to file is active
+     */
+    public boolean getLogToFile() {
+        return this.jCheckBoxMenuItemLogToFile.isSelected();
+
+    }
+
+    /**
+     * Activate/Deactivate logging to file
+     *
+     * @param active true to activate, else deactivate
+     */
+    public void setLogToFile(boolean active) {
+        this.jCheckBoxMenuItemLogToFile.setSelected(active);
+        support.setLogToFile(active);
+    }
+
 }
