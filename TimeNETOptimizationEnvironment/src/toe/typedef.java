@@ -145,7 +145,7 @@ public class typedef {
         SimAnnealing,
         /**
          * Standard Two-Phase Alogithm. Use different configurations of sim
-         * annelaing
+         * annealing
          */
         TwoPhase,
         /**
@@ -157,7 +157,7 @@ public class typedef {
          */
         Genetic,
         /**
-         * ABC-Algorithm (Andy Seidl)
+         * ABC-Algorithm (Andy Seidel)
          */
         ABC,
         /**
