@@ -104,7 +104,7 @@ public class OptimizerHill implements Runnable, Optimizer {
         mySimulator.initSimulator(getParametersetAsArrayList(getFirstParameterset()), false);
         //Wait until Simulator has ended
         support.waitForEndOfSimulator(mySimulator, support.DEFAULT_TIMEOUT);
-        
+        support.log("Performed % of simulations: "+mySimulator.getStatus(), typeOfLogLevel.INFO);
         /*synchronized (mySimulator) {
             try {
                 mySimulator.wait();
