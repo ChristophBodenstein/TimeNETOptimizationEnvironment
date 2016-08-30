@@ -1136,7 +1136,7 @@ public class support {
         support.log("Wait for Simulator has 100% completed.", typeOfLogLevel.INFO);
         //Shortcut for benchmark-Simulators
         try {
-            //Thread.sleep(10);
+            Thread.sleep(10);
             ((Thread) mySimulator).join(10);
             //support.waitSingleThreaded(10);
         } catch (Exception ex) {
