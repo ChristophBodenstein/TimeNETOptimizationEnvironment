@@ -1214,6 +1214,8 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                 //start Optimization via extra method, set number of multiple optimizations before
                 support.setNumberOfOptiRunsToGo((Integer) this.jSpinnerNumberOfOptimizationRuns.getValue());
                 support.getOptimizerPreferences().setNumberOfActualOptimizationAnalysis(0);
+                support.getOptimizerPreferences().loadPreferences();
+                
                 startOptimizationAgain();
                 
             } else {
