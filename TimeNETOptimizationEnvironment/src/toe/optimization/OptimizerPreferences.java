@@ -1874,11 +1874,22 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             support.log("Loaded pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement is " + this.getPref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement(), typeOfLogLevel.INFO);
 
             //load settings for MVMO Optimization
-            this.setPref_MVMO_StartingPop(support.loadIntFromProperties("setPref_MVMO_StartingPop", support.DEFAULT_MVMO_STARTING_POPULATION, auto));
-            support.log("Loaded pref__MVMO_StartingPop is" + this.getPref_MVMO_StartingPop(), typeOfLogLevel.INFO);
-            this.setPref_MVMO_MaxPop(support.loadIntFromProperties("setPref_MVMO_MaxPop", support.DEFAULT_MVMO_MAX_POPULATION, auto));
-            support.log("Loaded setPref_MVMO_MaxPop is" + this.getPref_MVMO_MaxPop(), typeOfLogLevel.INFO);
+            this.setPref_MVMO_StartingPop(support.loadIntFromProperties("pref_MVMO_StartingPop", support.DEFAULT_MVMO_STARTING_POPULATION, auto));
+            support.log("Loaded MVMO_StartingPop is" + this.getPref_MVMO_StartingPop(), typeOfLogLevel.INFO);
+            this.setPref_MVMO_MaxPop(support.loadIntFromProperties("pref_MVMO_MaxPop", support.DEFAULT_MVMO_MAX_POPULATION, auto));
+            support.log("Loaded MVMO_MaxPop is" + this.getPref_MVMO_MaxPop(), typeOfLogLevel.INFO);
 
+            this.setPref_MVMO_AsymmetryFactor(support.loadDoubleFromProperties("MVMO_AsymmetryFactor", support.DEFAULT_MVMO_ASYMMETRY_FACTOR, auto));
+            support.log("Loaded MVMO_AsymmetryFactor is" + this.getPref_MVMO_AsymmetryFactor(), typeOfLogLevel.INFO);
+            this.setPref_MVMO_ScalingFactor(support.loadDoubleFromProperties("MVMO_ScalingFactor", support.DEFAULT_MVMO_SCALING_FACTOR, auto));
+            support.log("Loaded MVMO_ScalingFactor is" + this.getPref_MVMO_ScalingFactor(), typeOfLogLevel.INFO);
+            this.setPref_MVMO_mutationSelection(typeOfMVMOMutationSelection.valueOf(auto.getProperty("MVMO_mutationSelection", support.DEFAULT_MVMO_MUTATION_STRATEGY.toString())));
+            support.log("Loaded MVMO_mutationSelection is" + this.getPref_MVMO_mutationSelection(), typeOfLogLevel.INFO);
+            this.setPref_MVMO_ParentSelection(typeOfMVMOParentSelection.valueOf(auto.getProperty("MVMO_parentSelection", support.DEFAULT_MVMO_PARENT_SELECTION.toString())));
+            support.log("Loaded MVMO_parentSelection is" + this.getPref_MVMO_parentSelection(), typeOfLogLevel.INFO);
+            this.setPref_MVMO_sd(support.loadDoubleFromProperties("MVMO_sd", support.DEFAULT_MVMO_SD, auto));
+            support.log("Loaded MVMO_sd is" + this.getPref_MVMO_sd(), typeOfLogLevel.INFO);
+            
         } catch (IOException e) {
             // Exception bearbeiten
             support.log("Error while loading Optimizer-Properties.", typeOfLogLevel.ERROR);
@@ -1955,6 +1966,15 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             auto.setProperty("pref_ABC_NumScoutBees", Integer.toString(this.getPref_ABC_NumScoutBees()));
             auto.setProperty("pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement", Integer.toString(this.getPref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement()));
 
+            //save settings for MVMO Optimization
+            auto.setProperty("pref_MVMO_StartingPop", Integer.toString(this.getPref_MVMO_StartingPop()));
+            auto.setProperty("pref_MVMO_MaxPop", Integer.toString(this.getPref_MVMO_MaxPop()));
+            auto.setProperty("MVMO_AsymmetryFactor", Double.toString(this.getPref_MVMO_AsymmetryFactor()));
+            auto.setProperty("MVMO_ScalingFactor",Double.toString(this.getPref_MVMO_ScalingFactor()));
+            auto.setProperty("MVMO_mutationSelection",this.getPref_MVMO_mutationSelection().toString());
+            auto.setProperty("MVMO_parentSelection", this.getPref_MVMO_parentSelection().toString());        
+            auto.setProperty("MVMO_sd", Double.toString(this.getPref_MVMO_sd()));  
+                                    
             File parserprops = new File(filename);
             auto.store(new FileOutputStream(parserprops), "ExperimentGenerator-Properties");
         } catch (IOException e) {
@@ -2745,7 +2765,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         return this.pref_MVMO_sd;
     }
 
-    private void getPref_MVMO_sd(double Pref_MVMO_sd) {
+    private void setPref_MVMO_sd(double Pref_MVMO_sd) {
         jSpinnerMVMOsd.setValue(Pref_MVMO_sd);
         this.pref_MVMO_sd = Pref_MVMO_sd;
     }
@@ -2755,7 +2775,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         return this.pref_MVMO_parentSelection;
     }
 
-    private void setPrefMVMOParentSelection(typeOfMVMOParentSelection PrefMVMOParentSelection) {
+    private void setPref_MVMO_ParentSelection(typeOfMVMOParentSelection PrefMVMOParentSelection) {
         jComboBoxTypeOfMVMOMutationSelection.setSelectedItem(PrefMVMOParentSelection);
         this.pref_MVMO_parentSelection = PrefMVMOParentSelection;
     }
