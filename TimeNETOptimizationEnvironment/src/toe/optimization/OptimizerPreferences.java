@@ -641,7 +641,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         jPanel1.add(jLabel17);
         jLabel17.setBounds(20, 28, 787, 20);
 
-        jSpinnerEstSASimulationCount1.setModel(new javax.swing.SpinnerNumberModel(100, 0, null, 10));
+        jSpinnerEstSASimulationCount1.setModel(new javax.swing.SpinnerNumberModel(100L, 0L, null, 10L));
         jSpinnerEstSASimulationCount1.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerEstSASimulationCount1, "#"));
         jSpinnerEstSASimulationCount1.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {

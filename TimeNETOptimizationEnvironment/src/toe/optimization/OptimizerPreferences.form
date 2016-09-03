@@ -773,7 +773,7 @@
             <Component class="javax.swing.JSpinner" name="jSpinnerEstSASimulationCount1">
               <Properties>
                 <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-                  <SpinnerModel initial="100" minimum="0" numberType="java.lang.Integer" stepSize="10" type="number"/>
+                  <SpinnerModel initial="100" minimum="0" numberType="java.lang.Long" stepSize="10" type="number"/>
                 </Property>
                 <Property name="editor" type="javax.swing.JComponent" editor="org.netbeans.modules.form.editors.SpinnerEditorEditor">
                   <SpinnerEditor format="#" type="3"/>
