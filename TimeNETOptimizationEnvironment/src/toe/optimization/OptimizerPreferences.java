@@ -1873,20 +1873,20 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
             //load settings for MVMO Optimization
             this.setPref_MVMO_StartingPop(support.loadIntFromProperties("pref_MVMO_StartingPop", support.DEFAULT_MVMO_STARTING_POPULATION, auto));
-            support.log("Loaded MVMO_StartingPop is" + this.getPref_MVMO_StartingPop(), typeOfLogLevel.INFO);
+            support.log("Loaded MVMO_StartingPop is " + this.getPref_MVMO_StartingPop(), typeOfLogLevel.INFO);
             this.setPref_MVMO_MaxPop(support.loadIntFromProperties("pref_MVMO_MaxPop", support.DEFAULT_MVMO_MAX_POPULATION, auto));
-            support.log("Loaded MVMO_MaxPop is" + this.getPref_MVMO_MaxPop(), typeOfLogLevel.INFO);
+            support.log("Loaded MVMO_MaxPop is " + this.getPref_MVMO_MaxPop(), typeOfLogLevel.INFO);
 
             this.setPref_MVMO_AsymmetryFactor(support.loadDoubleFromProperties("MVMO_AsymmetryFactor", support.DEFAULT_MVMO_ASYMMETRY_FACTOR, auto));
-            support.log("Loaded MVMO_AsymmetryFactor is" + this.getPref_MVMO_AsymmetryFactor(), typeOfLogLevel.INFO);
+            support.log("Loaded MVMO_AsymmetryFactor is " + this.getPref_MVMO_AsymmetryFactor(), typeOfLogLevel.INFO);
             this.setPref_MVMO_ScalingFactor(support.loadDoubleFromProperties("MVMO_ScalingFactor", support.DEFAULT_MVMO_SCALING_FACTOR, auto));
-            support.log("Loaded MVMO_ScalingFactor is" + this.getPref_MVMO_ScalingFactor(), typeOfLogLevel.INFO);
+            support.log("Loaded MVMO_ScalingFactor is " + this.getPref_MVMO_ScalingFactor(), typeOfLogLevel.INFO);
             this.setPref_MVMO_mutationSelection(typeOfMVMOMutationSelection.valueOf(auto.getProperty("MVMO_mutationSelection", support.DEFAULT_MVMO_MUTATION_STRATEGY.toString())));
-            support.log("Loaded MVMO_mutationSelection is" + this.getPref_MVMO_mutationSelection(), typeOfLogLevel.INFO);
+            support.log("Loaded MVMO_mutationSelection is " + this.getPref_MVMO_mutationSelection(), typeOfLogLevel.INFO);
             this.setPref_MVMO_ParentSelection(typeOfMVMOParentSelection.valueOf(auto.getProperty("MVMO_parentSelection", support.DEFAULT_MVMO_PARENT_SELECTION.toString())));
-            support.log("Loaded MVMO_parentSelection is" + this.getPref_MVMO_parentSelection(), typeOfLogLevel.INFO);
+            support.log("Loaded MVMO_parentSelection is " + this.getPref_MVMO_parentSelection(), typeOfLogLevel.INFO);
             this.setPref_MVMO_sd(support.loadDoubleFromProperties("MVMO_sd", support.DEFAULT_MVMO_SD, auto));
-            support.log("Loaded MVMO_sd is" + this.getPref_MVMO_sd(), typeOfLogLevel.INFO);
+            support.log("Loaded MVMO_sd is " + this.getPref_MVMO_sd(), typeOfLogLevel.INFO);
             
         } catch (IOException e) {
             // Exception bearbeiten
