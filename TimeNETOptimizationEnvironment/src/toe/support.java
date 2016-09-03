@@ -695,6 +695,14 @@ public class support {
         }
     }
 
+    /**
+     * Add lines to logfile from parserlist, same like addLinesToLogFileFromListOfParser
+     * but with number of runs. Only used in old version of OptimizerABC
+     * @param pList
+     * @param numRunList
+     * @param numCachedSimulations
+     * @param logFileName
+     */
     public static void addLinesToLogFileFromListOfSimulationBatchesIncludingNumRuns(
             ArrayList<SimulationType> pList,
             ArrayList<Integer> numRunList,
