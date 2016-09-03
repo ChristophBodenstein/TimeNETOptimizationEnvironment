@@ -692,6 +692,8 @@ public class support {
             fw.close();
         } catch (Exception e) {
             support.log("Exception while writing things to summary log-file.", typeOfLogLevel.ERROR);
+            support.log("Name of logfile: "+logFileName, typeOfLogLevel.ERROR);
+            support.log("Trace: "+e.getMessage(), typeOfLogLevel.ERROR);
         }
     }
 
