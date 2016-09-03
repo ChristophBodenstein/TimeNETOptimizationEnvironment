@@ -1146,11 +1146,11 @@ public class support {
         support.log("Wait for Simulator has 100% completed.", typeOfLogLevel.INFO);
         //Shortcut for benchmark-Simulators
         try {
-            Thread.sleep(10);
-            ((Thread) mySimulator).join(10);
-            //support.waitSingleThreaded(10);
+            //((Thread) mySimulator).join(10);
+            support.waitSingleThreaded(10);
         } catch (Exception ex) {
             support.log("Exception while waiting for end of Simulator.", typeOfLogLevel.ERROR);
+            ex.printStackTrace();
         }
         if (mySimulator.getStatus() >= 100) {
             return true;
@@ -1159,8 +1159,8 @@ public class support {
         setStatusText("Simulations started.");
         while (mySimulator.getStatus() < 100) {
             try {
-                //support.waitSingleThreaded(1000);
-                ((Thread) mySimulator).join(1000);
+                support.waitSingleThreaded(1000);
+                //((Thread) mySimulator).join(1000);
             } catch (Exception ex) {
                 support.log("InterruptedException in main loop of optimization. Optimization aborted.", typeOfLogLevel.ERROR);
                 statusLabel.setText("Aborted / Error");
@@ -1170,7 +1170,7 @@ public class support {
             timeoutCounter--;
             //Break if timeout is reached
             if (timeoutCounter <= 1) {
-                support.log("Timeout for simulation reached. Aborting simulation.", typeOfLogLevel.INFO);
+                support.log("Timeout for simulation reached. Aborting simulation.", typeOfLogLevel.ERROR);
                 return false;
             }
 
