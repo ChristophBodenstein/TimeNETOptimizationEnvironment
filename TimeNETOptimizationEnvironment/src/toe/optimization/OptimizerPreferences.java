@@ -434,7 +434,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             }
         });
         jPanelSimAnnealing.add(jSpinnerMaxTemperatureParameters);
-        jSpinnerMaxTemperatureParameters.setBounds(260, 110, 90, 28);
+        jSpinnerMaxTemperatureParameters.setBounds(260, 110, 90, 26);
 
         jSpinnerMaxTemperatureCost.setModel(new javax.swing.SpinnerNumberModel(1.0d, 0.0d, 1.0d, 0.01d));
         jSpinnerMaxTemperatureCost.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerMaxTemperatureCost, "#.##"));
@@ -444,7 +444,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             }
         });
         jPanelSimAnnealing.add(jSpinnerMaxTemperatureCost);
-        jSpinnerMaxTemperatureCost.setBounds(260, 140, 90, 28);
+        jSpinnerMaxTemperatureCost.setBounds(260, 140, 90, 26);
 
         jLabel6.setText("Max. Temp. for Cost(T-0-cost)");
         jPanelSimAnnealing.add(jLabel6);
@@ -467,7 +467,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             }
         });
         jPanelSimAnnealing.add(jSpinnerTRatioScale);
-        jSpinnerTRatioScale.setBounds(580, 20, 100, 28);
+        jSpinnerTRatioScale.setBounds(580, 20, 100, 26);
 
         jSpinnerTAnnealScale.setModel(new javax.swing.SpinnerNumberModel(100.0d, 0.0d, 1000000.0d, 10.0d));
         jSpinnerTAnnealScale.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -476,7 +476,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             }
         });
         jPanelSimAnnealing.add(jSpinnerTAnnealScale);
-        jSpinnerTAnnealScale.setBounds(580, 60, 100, 28);
+        jSpinnerTAnnealScale.setBounds(580, 60, 100, 26);
 
         jLabel5.setText("Epsilon (Abort-Temperature)");
         jPanelSimAnnealing.add(jLabel5);
@@ -491,7 +491,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             }
         });
         jPanelSimAnnealing.add(jSpinnerEpsilon);
-        jSpinnerEpsilon.setBounds(260, 180, 90, 28);
+        jSpinnerEpsilon.setBounds(260, 180, 90, 26);
 
         jLabel9.setText("Cooling Method");
         jPanelSimAnnealing.add(jLabel9);
@@ -508,14 +508,13 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
         jSpinnerEstSASimulationCount.setModel(new javax.swing.SpinnerNumberModel(100L, 0L, null, 10L));
         jSpinnerEstSASimulationCount.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerEstSASimulationCount, "#"));
-        jSpinnerEstSASimulationCount.setValue(0.01);
         jSpinnerEstSASimulationCount.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 jSpinnerEstSASimulationCountStateChanged(evt);
             }
         });
         jPanelSimAnnealing.add(jSpinnerEstSASimulationCount);
-        jSpinnerEstSASimulationCount.setBounds(210, 210, 140, 28);
+        jSpinnerEstSASimulationCount.setBounds(210, 210, 140, 26);
 
         jLabelEstSASimulationCount.setText("Estimated # of Simulations");
         jPanelSimAnnealing.add(jLabelEstSASimulationCount);
@@ -567,7 +566,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             }
         });
         jPanel1.add(jSpinnerTRatioScale1);
-        jSpinnerTRatioScale1.setBounds(580, 60, 100, 28);
+        jSpinnerTRatioScale1.setBounds(580, 60, 100, 26);
 
         jLabel11.setText("TRatioScale");
         jPanel1.add(jLabel11);
@@ -580,7 +579,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             }
         });
         jPanel1.add(jSpinnerTAnnealScale1);
-        jSpinnerTAnnealScale1.setBounds(580, 100, 100, 28);
+        jSpinnerTAnnealScale1.setBounds(580, 100, 100, 26);
 
         jLabel12.setText("TAnnealScale");
         jPanel1.add(jLabel12);
@@ -606,7 +605,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             }
         });
         jPanel1.add(jSpinnerMaxTemperatureParameters1);
-        jSpinnerMaxTemperatureParameters1.setBounds(260, 150, 90, 28);
+        jSpinnerMaxTemperatureParameters1.setBounds(260, 150, 90, 26);
 
         jLabel15.setText("Max. Temp. for Cost(T-0-cost)");
         jPanel1.add(jLabel15);
@@ -620,7 +619,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             }
         });
         jPanel1.add(jSpinnerMaxTemperatureCost1);
-        jSpinnerMaxTemperatureCost1.setBounds(260, 180, 90, 28);
+        jSpinnerMaxTemperatureCost1.setBounds(260, 180, 90, 26);
 
         jLabel16.setText("Epsilon (Abort-Temperature)");
         jPanel1.add(jLabel16);
@@ -635,23 +634,22 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             }
         });
         jPanel1.add(jSpinnerEpsilon1);
-        jSpinnerEpsilon1.setBounds(260, 220, 90, 28);
+        jSpinnerEpsilon1.setBounds(260, 220, 90, 26);
 
         jLabel17.setFont(new java.awt.Font("Lucida Grande", 1, 16)); // NOI18N
         jLabel17.setText("Parameters for first Phase are taken from Standard-Panel (Simulated Annealing)!!!");
         jPanel1.add(jLabel17);
         jLabel17.setBounds(20, 28, 787, 20);
 
-        jSpinnerEstSASimulationCount1.setModel(new javax.swing.SpinnerNumberModel(100L, 0L, null, 10L));
+        jSpinnerEstSASimulationCount1.setModel(new javax.swing.SpinnerNumberModel(100, 0, null, 10));
         jSpinnerEstSASimulationCount1.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerEstSASimulationCount1, "#"));
-        jSpinnerEstSASimulationCount1.setValue(0.01);
         jSpinnerEstSASimulationCount1.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 jSpinnerEstSASimulationCount1StateChanged(evt);
             }
         });
         jPanel1.add(jSpinnerEstSASimulationCount1);
-        jSpinnerEstSASimulationCount1.setBounds(210, 250, 140, 28);
+        jSpinnerEstSASimulationCount1.setBounds(210, 250, 140, 26);
 
         jLabelEstSASimulationCount1.setText("Estimated # of Simulations");
         jPanel1.add(jLabelEstSASimulationCount1);
@@ -706,19 +704,19 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
         jSpinnerConfidenceIntervallStart.setModel(new javax.swing.SpinnerNumberModel(85, 85, 99, 1));
         jPanel2.add(jSpinnerConfidenceIntervallStart);
-        jSpinnerConfidenceIntervallStart.setBounds(260, 110, 70, 28);
+        jSpinnerConfidenceIntervallStart.setBounds(260, 110, 70, 26);
 
         jSpinnerConfidenceIntervallEnd.setModel(new javax.swing.SpinnerNumberModel(99, 85, 99, 1));
         jPanel2.add(jSpinnerConfidenceIntervallEnd);
-        jSpinnerConfidenceIntervallEnd.setBounds(260, 140, 70, 28);
+        jSpinnerConfidenceIntervallEnd.setBounds(260, 140, 70, 26);
 
         jSpinnerMaxRelErrorEnd.setModel(new javax.swing.SpinnerNumberModel(1, 1, 15, 1));
         jPanel2.add(jSpinnerMaxRelErrorEnd);
-        jSpinnerMaxRelErrorEnd.setBounds(260, 210, 70, 28);
+        jSpinnerMaxRelErrorEnd.setBounds(260, 210, 70, 26);
 
         jSpinnerMaxRelErrorStart.setModel(new javax.swing.SpinnerNumberModel(5, 1, 15, 1));
         jPanel2.add(jSpinnerMaxRelErrorStart);
-        jSpinnerMaxRelErrorStart.setBounds(260, 180, 70, 28);
+        jSpinnerMaxRelErrorStart.setBounds(260, 180, 70, 26);
 
         jCheckBoxKeepDesignspaceAndResolution.setText("Keep Designspace and Resolution");
         jPanel2.add(jCheckBoxKeepDesignspaceAndResolution);
