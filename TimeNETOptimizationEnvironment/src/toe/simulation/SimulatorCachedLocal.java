@@ -131,9 +131,9 @@ public class SimulatorCachedLocal extends SimulatorCached {
     }
 
     /**
-     * Returns the actual status of all simulations
+     * Returns the current status of all simulations
      *
-     * @return % of simulatiions that are finished
+     * @return % of simulations that are finished
      */
     @Override
     public int getStatus() {
