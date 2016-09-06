@@ -156,11 +156,9 @@ public class SimulatorBenchmark extends Thread implements Simulator {
             support.addLinesToLogFileFromListOfParser(myListOfSimulations, logFileName);
         }
         this.status = 100;
-        //synchronized (this) {
-        //    notify();
-        //}/
-        //CountDownLatch latch = new CountDownLatch(3);
-        //latch.countDown();
+        synchronized (this) {
+            notify();
+        }
     }
 
     /**

@@ -94,15 +94,16 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
         population = createRandomPopulation(startPopulationSize, false);
 
         Simulator mySimulator = SimOptiFactory.getSimulator();
-        mySimulator.initSimulator(getNextParameterSetAsArrayList(), false);
-        support.waitForEndOfSimulator(mySimulator, support.DEFAULT_TIMEOUT);
-        /*synchronized (mySimulator) {
+
+        //support.waitForEndOfSimulator(mySimulator, support.DEFAULT_TIMEOUT);
+        synchronized (mySimulator) {
             try {
+                mySimulator.initSimulator(getNextParameterSetAsArrayList(), false);
                 mySimulator.wait();
             } catch (InterruptedException ex) {
                 support.log("Problem waiting for end of non-cache-simulator.", typeOfLogLevel.ERROR);
             }
-        }*/
+        }
         ArrayList<SimulationType> simulationResults = mySimulator.getListOfCompletedSimulationParsers();
         population = getPopulationFromSimulationResults(simulationResults);
         population = normalize(population);
@@ -135,16 +136,15 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
                 pArray = roundToStepping(pArray);
             }
 
-            mySimulator.initSimulator(parameterList, false);
-            support.waitForEndOfSimulator(mySimulator, support.DEFAULT_TIMEOUT);
-            /*synchronized (mySimulator) {
+            //support.waitForEndOfSimulator(mySimulator, support.DEFAULT_TIMEOUT);
+            synchronized (mySimulator) {
                 try {
+                    mySimulator.initSimulator(parameterList, false);
                     mySimulator.wait();
                 } catch (InterruptedException ex) {
                     support.log("Problem waiting for end of non-cache-simulator.", typeOfLogLevel.INFO);
                 }
             }
-             */
             simulationResults = mySimulator.getListOfCompletedSimulationParsers();
             support.addLinesToLogFileFromListOfParser(simulationResults, logFileName);
             population = tryAddCandidate(population, simulationResults);

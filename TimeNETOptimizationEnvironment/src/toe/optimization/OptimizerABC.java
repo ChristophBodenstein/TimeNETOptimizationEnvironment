@@ -170,16 +170,17 @@ public class OptimizerABC extends OptimizerPopulationBased implements Runnable, 
         }
 
         Simulator mySimulator = SimOptiFactory.getSimulator();
-        mySimulator.initSimulator(getNextParameterSetAsArrayList(), false);
-        support.waitForEndOfSimulator(mySimulator, support.DEFAULT_TIMEOUT);
-        /*synchronized (mySimulator) {
+
+        //support.waitForEndOfSimulator(mySimulator, support.DEFAULT_TIMEOUT);
+        synchronized (mySimulator) {
             try {
+                mySimulator.initSimulator(getNextParameterSetAsArrayList(), false);
                 mySimulator.wait();
             } catch (InterruptedException ex) {
                 support.log("Problem waiting for end of non-cache-simulator.", typeOfLogLevel.ERROR);
             }
         }
-         */
+
         ArrayList<SimulationType> simulationResults = mySimulator.getListOfCompletedSimulationParsers();
         population = getPopulationFromSimulationResults(simulationResults);
 
@@ -195,15 +196,16 @@ public class OptimizerABC extends OptimizerPopulationBased implements Runnable, 
 
             for (int fs = 0; fs < population.size(); ++fs) {
                 ArrayList<SimulationType> source = population.get(fs);
-                mySimulator.initSimulator(getNextParameterSetAsArrayList(source), false);
-                support.waitForEndOfSimulator(mySimulator, support.DEFAULT_TIMEOUT);
-                /*synchronized (mySimulator) {
+
+                //support.waitForEndOfSimulator(mySimulator, support.DEFAULT_TIMEOUT);
+                synchronized (mySimulator) {
                     try {
+                        mySimulator.initSimulator(getNextParameterSetAsArrayList(source), false);
                         mySimulator.wait();
                     } catch (InterruptedException ex) {
                         support.log("Problem waiting for end of non-cache-simulator.", typeOfLogLevel.ERROR);
                     }
-                }*/
+                }
                 source = mySimulator.getListOfCompletedSimulationParsers();
                 population.set(fs, source);
                 support.addLinesToLogFileFromListOfParser(source, logFileName);

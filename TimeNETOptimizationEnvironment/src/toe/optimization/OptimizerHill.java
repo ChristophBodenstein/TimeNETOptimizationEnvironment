@@ -98,18 +98,19 @@ public class OptimizerHill implements Runnable, Optimizer {
         //Simulator init with initial parameterset
         Simulator mySimulator = SimOptiFactory.getSimulator();
 
-        mySimulator.initSimulator(getParametersetAsArrayList(getFirstParameterset()), false);
         //Wait until Simulator has ended
-        support.waitForEndOfSimulator(mySimulator, support.DEFAULT_TIMEOUT);
-        support.log("Performed % of simulations: "+mySimulator.getStatus(), typeOfLogLevel.INFO);
-        /*synchronized (mySimulator) {
+        //support.waitSingleThreaded(100);
+        //support.waitForEndOfSimulator(mySimulator, support.DEFAULT_TIMEOUT);
+        //support.log("Performed % of simulations: "+mySimulator.getStatus(), typeOfLogLevel.INFO);
+        synchronized (mySimulator) {
             try {
+                mySimulator.initSimulator(getParametersetAsArrayList(getFirstParameterset()), false);
                 mySimulator.wait();
             } catch (InterruptedException ex) {
                 support.log("Problem waiting for end of non-cache-simulator.", typeOfLogLevel.ERROR);
             }
-        }*/
-        
+        }
+
         support.addLinesToLogFileFromListOfParser(mySimulator.getListOfCompletedSimulationParsers(), logFileName);
         this.historyOfParsers = support.appendListOfParsers(historyOfParsers, mySimulator.getListOfCompletedSimulationParsers());
         currentSolution = mySimulator.getListOfCompletedSimulationParsers().get(0);
@@ -126,15 +127,16 @@ public class OptimizerHill implements Runnable, Optimizer {
             newParameterset = getNextParametersetAsArrayList(lastParameterset);
 
             stuckInCacheCounter = support.DEFAULT_CACHE_STUCK;//Reset Stuck-Counter
-            mySimulator.initSimulator(newParameterset, false);
-            support.waitForEndOfSimulator(mySimulator, support.DEFAULT_TIMEOUT);
-            /*synchronized (mySimulator) {
+
+            //support.waitForEndOfSimulator(mySimulator, support.DEFAULT_TIMEOUT);
+            synchronized (mySimulator) {
                 try {
+                    mySimulator.initSimulator(newParameterset, false);
                     mySimulator.wait();
                 } catch (InterruptedException ex) {
                     support.log("Problem waiting for end of non-cache-simulator.", typeOfLogLevel.ERROR);
                 }
-            }*/
+            }
             listOfCompletedSimulations = mySimulator.getListOfCompletedSimulationParsers();
             support.log("List of Simulation results is: " + listOfCompletedSimulations.size() + " elements big.", typeOfLogLevel.INFO);
             //Shrink to first element of List
@@ -538,19 +540,14 @@ public class OptimizerHill implements Runnable, Optimizer {
             activeMeasure.setTargetValue(activeMeasureFromInterface.getTargetValue(), activeMeasureFromInterface.getTargetTypeOf());
             if (activeMeasure.getTargetTypeOf().equals(typedef.typeOfTarget.value)) {
                 distance = activeMeasure.getDistanceFromTarget();
-            } else {
-                if (activeMeasure.getTargetTypeOf().equals(typedef.typeOfTarget.min)) {
-                    distance = activeMeasure.getMeanValue();
-                } else {
-                    if (activeMeasure.getTargetTypeOf().equals(typedef.typeOfTarget.max)) {
-                        distance = 0 - activeMeasure.getMeanValue();
-                    }
-                }
+            } else if (activeMeasure.getTargetTypeOf().equals(typedef.typeOfTarget.min)) {
+                distance = activeMeasure.getMeanValue();
+            } else if (activeMeasure.getTargetTypeOf().equals(typedef.typeOfTarget.max)) {
+                distance = 0 - activeMeasure.getMeanValue();
             }
         }
         return distance;
     }
-
 
     /**
      * Returns the found optmium (SimulationType) If optimum is not found or
