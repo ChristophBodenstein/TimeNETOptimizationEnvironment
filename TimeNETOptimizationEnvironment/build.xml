@@ -126,6 +126,15 @@
             <arg value="describe"/>
             <arg value="--tags"/>
         </exec>
+        
+        <echo message="getting shorthash..."/>
+        <exec executable="git" outputproperty="shorthash"
+              failifexecutionfails="false">
+            <arg value="log"/>
+            <arg value="--pretty=format:%h"/>
+            <arg value="-n 1"/>
+        </exec>
+        
         <antcall target="-store-version-string"/>
         <!-- ensure version is defined even if git was not available -->
         <property file="${res.dir}/Version.properties"/>
@@ -146,6 +155,7 @@
             <entry key="version" value="${version}"/>
             <entry key="timestamp" value="${timestamp}"/>
             <entry key="build.date" value="${build.date}"/>
+            <entry key="shorthash" value="${shorthash}"/>
         </propertyfile>
         
         <property name="absolute.path" location="${res.dir}/Version.properties"/>
