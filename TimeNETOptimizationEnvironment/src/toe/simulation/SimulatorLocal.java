@@ -259,15 +259,12 @@ public class SimulatorLocal extends Thread implements Simulator, nativeProcessCa
 
             // Start new process
             timeStamp = Calendar.getInstance().getTimeInMillis();
-
             nativeProcess myNativeProcess = new nativeProcess(processBuilder, this);
-
-            //We wait until the process is ended or aborted
-            //TODO: Use thread synchronization with timeout!
-            while (myNativeProcess.isRunning()) {
-                Thread.sleep(500);
-                if ((Calendar.getInstance().getTimeInMillis() - timeStamp) / 1000 >= maxTime) {
-                    support.log("Simulation took longer than given MaxTime! Will be aborted! " + " MaxTime was:" + maxTime.toString(), typeOfLogLevel.ERROR);
+            synchronized (myNativeProcess) {
+                try {
+                    myNativeProcess.wait(maxTime * 1000);
+                } catch (Exception e) {
+                    support.log("Simulation may took longer than given MaxTime! Will be aborted! " + " MaxTime was:" + maxTime.toString(), typeOfLogLevel.ERROR);
                     myNativeProcess.setKillProcess(true);
                 }
             }
