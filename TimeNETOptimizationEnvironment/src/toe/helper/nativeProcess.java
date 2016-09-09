@@ -74,7 +74,9 @@ public class nativeProcess extends Thread {
         } else {
             support.log("No PlotFrameController given, will not show image.", typeOfLogLevel.ERROR);
         }
-
+        synchronized (this) {
+            notify();
+        }
     }
 
     /**
