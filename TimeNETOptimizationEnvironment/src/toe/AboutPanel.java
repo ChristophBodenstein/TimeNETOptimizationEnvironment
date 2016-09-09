@@ -8,7 +8,6 @@
 package toe;
 
 import java.awt.Desktop;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -24,6 +23,8 @@ import toe.typedef.*;
  * @author Christoph Bodenstein
  */
 public class AboutPanel extends javax.swing.JPanel implements HyperlinkListener {
+
+    String linkToVersion = "https://github.com/ChristophBodenstein/TimeNETOptimizationEnvironment/commit/";
 
     /**
      * Creates new form AboutPanel
@@ -41,6 +42,7 @@ public class AboutPanel extends javax.swing.JPanel implements HyperlinkListener 
             versionInformation.load(ddlStream);
             ddlStream.close();
             this.jLabelVersion.setText("Version: " + versionInformation.getProperty("version", ""));
+            this.linkToVersion+=versionInformation.getProperty("shorthash", "");
         } catch (Exception e) {
             support.log("Could not load Version.properties.", typeOfLogLevel.ERROR);
         }
@@ -111,6 +113,12 @@ public class AboutPanel extends javax.swing.JPanel implements HyperlinkListener 
 
         jLabelVersion.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabelVersion.setText("Version: x.x.xxx");
+        jLabelVersion.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jLabelVersion.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabelVersionMouseClicked(evt);
+            }
+        });
 
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel3.setText("A Tool for exploring SCPN Designspaces and doing Optimization runs within.");
@@ -151,6 +159,14 @@ public class AboutPanel extends javax.swing.JPanel implements HyperlinkListener 
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jLabelVersionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabelVersionMouseClicked
+        try {
+            Desktop.getDesktop().browse(new URL(this.linkToVersion).toURI());
+        } catch (Exception ex) {
+            support.log("Could not open link to current version on Github.", typeOfLogLevel.ERROR);
+        }
+    }//GEN-LAST:event_jLabelVersionMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JEditorPane jEditorPaneRequirments;
