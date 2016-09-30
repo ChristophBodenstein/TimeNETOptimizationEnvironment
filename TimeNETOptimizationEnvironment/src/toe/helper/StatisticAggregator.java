@@ -15,6 +15,8 @@ import toe.datamodel.MeasureType;
 import toe.datamodel.SimulationType;
 import toe.support;
 import toe.plot.RPlugin;
+import toe.typedef;
+import toe.typedef.typeOfLogLevel;
 
 /**
  *
@@ -73,7 +75,7 @@ public class StatisticAggregator {
     public static void printAllStatistics() {
 
         if ((listOfStatistics == null) || (listOfStatistics.size() < 1)) {
-            support.log("No Statistics Available!");
+            support.log("No Statistics Available!", typeOfLogLevel.ERROR);
             return;
         }
 
@@ -98,7 +100,7 @@ public class StatisticAggregator {
      */
     public static void printLastStatistic() {
         if ((listOfStatistics == null) || (listOfStatistics.size() < 1)) {
-            support.log("No Statistics Available!");
+            support.log("No Statistics Available!", typeOfLogLevel.ERROR);
         } else {
             listOfStatistics.get(listOfStatistics.size() - 1).printStatisticToLog();
         }
@@ -189,13 +191,13 @@ public class StatisticAggregator {
                     }
                 } else {
                     //No Calculated Optimum exists
-                    support.log("Calculated optimum does not exist. So some statistics are not available.");
+                    support.log("Calculated optimum does not exist. So some statistics are not available.", typeOfLogLevel.RESULT);
                 }
 
             }
         }
         numberOfAllOptimizationRuns = optiSimulationList.size();
-        support.log("Number of optimizations: " + numberOfAllOptimizationRuns);
+        support.log("Number of optimizations: " + numberOfAllOptimizationRuns, typeOfLogLevel.RESULT);
         if (numberOfAllOptimizationRuns >= 1) {
             averageDistanceToOptimumAbsolute = averageDistanceToOptimumAbsolute / numberOfAllOptimizationRuns;
             averageDistanceToOptimumInValueRange = averageDistanceToOptimumInValueRange / numberOfAllOptimizationRuns;
@@ -216,18 +218,18 @@ public class StatisticAggregator {
 
             MeasureType targetMeasure = support.getOptimizationMeasure();
 
-            support.log("++++ Start of Optimization Statistics ++++");
-            support.log("Number of Optimization runs: " + numberOfAllOptimizationRuns);
-            support.log("Average distance to target value (" + targetMeasure.getTargetValue() + "/" + targetMeasure.getTargetTypeOf() + "): " + averageDistanceToOptimumAbsolute);
+            support.log("++++ Start of Optimization Statistics ++++", typeOfLogLevel.RESULT);
+            support.log("Number of Optimization runs: " + numberOfAllOptimizationRuns, typeOfLogLevel.RESULT);
+            support.log("Average distance to target value (" + targetMeasure.getTargetValue() + "/" + targetMeasure.getTargetTypeOf() + "): " + averageDistanceToOptimumAbsolute, typeOfLogLevel.RESULT);
 
-            support.log("Average number of Simulations: " + averageNumberOfSimulations + " ( " + averageNumberOfSimulationsLocal + " | " + averageNumberOfSimulationsWeb + " | " + averageNumberOfSimulationsCache + " )" + "  (Local|Web|Cache)");
-            support.log("Average CPU Time used: " + averageCPUTimeTotal + " ( " + averageCPUTimeLocal + " | " + averageCPUTimeWeb + " | " + averageCPUTimeCache + " )" + "  (Local|Web|Cache)");
-            support.log("Average Simulation Steps: " + averageSimulationTimeTotal + " ( " + averageSimulationTimeFromLocal + " | " + averageSimulationTimeFromWeb + " | " + averageSimulationTimeFromCache + " )" + "  (Local|Web|Cache)");
-            support.log("Average Cache Ratio (All/Total): " + averageCacheRatio);
+            support.log("Average number of Simulations: " + averageNumberOfSimulations + " ( " + averageNumberOfSimulationsLocal + " | " + averageNumberOfSimulationsWeb + " | " + averageNumberOfSimulationsCache + " )" + "  (Local|Web|Cache)", typeOfLogLevel.RESULT);
+            support.log("Average CPU Time used: " + averageCPUTimeTotal + " ( " + averageCPUTimeLocal + " | " + averageCPUTimeWeb + " | " + averageCPUTimeCache + " )" + "  (Local|Web|Cache)", typeOfLogLevel.RESULT);
+            support.log("Average Simulation Steps: " + averageSimulationTimeTotal + " ( " + averageSimulationTimeFromLocal + " | " + averageSimulationTimeFromWeb + " | " + averageSimulationTimeFromCache + " )" + "  (Local|Web|Cache)", typeOfLogLevel.RESULT);
+            support.log("Average Cache Ratio (All/Total): " + averageCacheRatio, typeOfLogLevel.RESULT);
 
             if (tmpRelativeDistanceInValueRange < 101) {
-                support.log("Average relative distance to calculated optimum in value range: " + averageDistanceToOptimumInValueRange + " %");
-                support.log("Average relative ("+support.getChosenTypeOfRelativeDistanceCalculation().toString()+") distance to calculated optimum in definition range " + averageDistanceToOptimumInDefinitionRange + " %");
+                support.log("Average relative distance to calculated optimum in value range: " + averageDistanceToOptimumInValueRange + " %", typeOfLogLevel.RESULT);
+                support.log("Average relative (" + support.getChosenTypeOfRelativeDistanceCalculation().toString() + ") distance to calculated optimum in definition range " + averageDistanceToOptimumInDefinitionRange + " %", typeOfLogLevel.RESULT);
                 String tmpOutHead = "Radius:    ";
                 String tmpOutValue = "Values:    ";
                 String tmpOutDSValue = "DS-Values: ";
@@ -239,14 +241,33 @@ public class StatisticAggregator {
                     //support.log("# of Optima within DS-Radius of " +(i*100/support.DEFAULT_NUMBER_OF_OPTI_PROB_CLASSES)+" around Calculated Optimum: "+ numberOfFoundOptimaWithinRangeClassDS[i-1] +" --  "+(numberOfFoundOptimaWithinRangeClassDS[i-1]*100/numberOfAllOptimizationRuns)+"%");        
                     tmpOutDSValue += "| " + support.padLeft(numberOfFoundOptimaWithinRangeClassDS[i - 1] + "--" + (numberOfFoundOptimaWithinRangeClassDS[i - 1] * 100 / numberOfAllOptimizationRuns) + "%", 10);
                 }
-                support.log(tmpOutHead);
-                support.log(tmpOutValue);
-                support.log(tmpOutDSValue);
+                support.log(tmpOutHead, typeOfLogLevel.RESULT);
+                support.log(tmpOutValue, typeOfLogLevel.RESULT);
+                support.log(tmpOutDSValue, typeOfLogLevel.RESULT);
             }
             //Latex-Friendly output
-            support.log("Sim#, Distance, DistancsDS, CPU-Time");
-            support.log("&"+averageNumberOfSimulations+"    &"+averageDistanceToOptimumInValueRange+"\\%  &"+averageDistanceToOptimumInDefinitionRange+"\\% &"+averageCPUTimeTotal);
-            support.log("++++ End of Optimization Statistics ++++");
+            //support.log("Sim#, Distance, DistancsDS, CPU-Time");
+            //support.log("&"+averageNumberOfSimulations+"    &"+averageDistanceToOptimumInValueRange+"\\%  &"+averageDistanceToOptimumInDefinitionRange+"\\% &"+averageCPUTimeTotal);
+            support.log("WrongSolutionInARow, WrongSolutionsPerDir, Distance, DistancsEUKLID, Sim#, CPU-Time, CHR", typeOfLogLevel.RESULT);
+            toe.optimization.OptimizerPreferences p = support.getOptimizerPreferences();
+            support.log("Outputting Optimization Config: "
+                    + "WrongSimulationsUntilBreak   "
+                    + "SizeOfNeighborhood \\%"
+                    + "&WrongSimulationsPerDirection "
+                    + "&averageDistanceToOptimumInValueRange\\%     "
+                    + "&averageDistanceToOptimumInDefinitionRange\\%    "
+                    + "&averageNumberOfSimulations "
+                    + "&averageCPUTimeTotal "
+                    + "&averageCacheRatio*100", typeOfLogLevel.RESULT);
+            support.log(p.getPref_WrongSimulationsUntilBreak() + "   & " + p.getPref_SizeOfNeighborhood() + "\\%     &" + p.getPref_WrongSimulationsPerDirection() + "      &" + support.round(averageDistanceToOptimumInValueRange, 3) + "\\%     &" + support.round(averageDistanceToOptimumInDefinitionRange, 3) + "\\%    &" + averageNumberOfSimulations + "    &" + averageCPUTimeTotal + "     &" + support.round(averageCacheRatio, 3) * 100 + "\\%  \\\\  \\hline", typeOfLogLevel.RESULT);
+            support.log("NeighborhoodType: " + p.getPref_NeighborhoodType().toString(), typeOfLogLevel.RESULT);
+            support.log("Optimizer: " + support.getChosenOptimizerType().toString(), typeOfLogLevel.RESULT);
+            support.log("Simulator: " + support.getChosenSimulatorType().toString(), typeOfLogLevel.RESULT);
+            if (support.getChosenSimulatorType().equals(typedef.typeOfSimulator.Benchmark)) {
+                support.log("Benchmarkfunction: " + support.getChosenBenchmarkFunction().toString(), typeOfLogLevel.RESULT);
+            }
+
+            support.log("++++ End of Optimization Statistics ++++", typeOfLogLevel.RESULT);
         }
         support.setLogToWindow(logToWindow);//Set Window-logging to original value
     }

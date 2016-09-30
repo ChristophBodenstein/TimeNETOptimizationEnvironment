@@ -2,9 +2,15 @@
 
 <Form version="1.6" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
   <NonVisualComponents>
+    <Component class="javax.swing.JCheckBoxMenuItem" name="jCheckBoxMenuItem3">
+      <Properties>
+        <Property name="selected" type="boolean" value="true"/>
+        <Property name="text" type="java.lang.String" value="jCheckBoxMenuItem3"/>
+      </Properties>
+    </Component>
     <Menu class="javax.swing.JMenuBar" name="jMenuBar1">
       <SubComponents>
-        <Menu class="javax.swing.JMenu" name="jMenu1">
+        <Menu class="javax.swing.JMenu" name="jMenuFile">
           <Properties>
             <Property name="text" type="java.lang.String" value="File"/>
           </Properties>
@@ -36,12 +42,7 @@
             </MenuItem>
           </SubComponents>
         </Menu>
-        <Menu class="javax.swing.JMenu" name="jMenu2">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Edit"/>
-          </Properties>
-        </Menu>
-        <Menu class="javax.swing.JMenu" name="jMenu3">
+        <Menu class="javax.swing.JMenu" name="jMenuLog">
           <Properties>
             <Property name="text" type="java.lang.String" value="Log"/>
           </Properties>
@@ -99,6 +100,34 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem2ActionPerformed"/>
               </Events>
             </MenuItem>
+            <Menu class="javax.swing.JMenu" name="jMenu4">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="LogLevel"/>
+              </Properties>
+              <SubComponents>
+                <MenuItem class="javax.swing.JCheckBoxMenuItem" name="jCheckBoxMenuItemResult">
+                  <Properties>
+                    <Property name="selected" type="boolean" value="true"/>
+                    <Property name="text" type="java.lang.String" value="Results"/>
+                  </Properties>
+                </MenuItem>
+                <MenuItem class="javax.swing.JCheckBoxMenuItem" name="jCheckBoxMenuItemInfo">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Info"/>
+                  </Properties>
+                </MenuItem>
+                <MenuItem class="javax.swing.JCheckBoxMenuItem" name="jCheckBoxMenuItemVerbose">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Verbose"/>
+                  </Properties>
+                </MenuItem>
+                <MenuItem class="javax.swing.JCheckBoxMenuItem" name="jCheckBoxMenuItemError">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Error"/>
+                  </Properties>
+                </MenuItem>
+              </SubComponents>
+            </Menu>
           </SubComponents>
         </Menu>
       </SubComponents>
@@ -116,6 +145,9 @@
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
     <SyntheticProperty name="generateCenter" type="boolean" value="false"/>
   </SyntheticProperties>
+  <Events>
+    <EventHandler event="windowClosing" listener="java.awt.event.WindowListener" parameters="java.awt.event.WindowEvent" handler="formWindowClosing"/>
+  </Events>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
@@ -142,7 +174,7 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="jTextFieldSCPNFile" max="32767" attributes="0"/>
                           <Group type="102" attributes="0">
-                              <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                   <Group type="102" attributes="0">
                                       <Component id="jButtonPathToR" min="-2" pref="192" max="-2" attributes="0"/>
                                       <EmptySpace type="separate" max="-2" attributes="0"/>
@@ -160,6 +192,7 @@
                                       <EmptySpace type="separate" max="-2" attributes="0"/>
                                       <Component id="jButton1" min="-2" pref="100" max="-2" attributes="0"/>
                                   </Group>
+                                  <Component id="jLabelDesignspaceSize" alignment="0" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           </Group>
@@ -180,39 +213,25 @@
                           </Group>
                           <Component id="jButtonGenerateListOfExperiments" alignment="0" max="32767" attributes="1"/>
                           <Component id="jSeparator3" alignment="0" max="32767" attributes="1"/>
-                          <Component id="jButtonLoadCacheFile" alignment="1" max="32767" attributes="0"/>
                           <Component id="jButtonStartBatchSimulation" alignment="0" max="32767" attributes="1"/>
                           <Group type="102" alignment="1" attributes="0">
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="jLabelExportStatus" min="-2" pref="265" max="-2" attributes="0"/>
-                                  <Group type="102" attributes="0">
-                                      <Component id="jLabelMemoryUsage" min="-2" pref="110" max="-2" attributes="0"/>
-                                      <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="jProgressBarMemoryUsage" min="-2" pref="152" max="-2" attributes="0"/>
-                                  </Group>
-                              </Group>
-                              <EmptySpace max="32767" attributes="0"/>
-                              <Component id="jLabelSpinning" min="-2" pref="18" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="23" max="-2" attributes="0"/>
-                          </Group>
-                          <Group type="102" alignment="1" attributes="0">
                               <Group type="103" groupAlignment="1" attributes="0">
-                                  <Group type="102" attributes="0">
-                                      <Component id="jButtonStartOptimization" min="-2" pref="219" max="-2" attributes="1"/>
-                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                      <Component id="jSpinnerNumberOfOptimizationRuns" min="-2" pref="95" max="-2" attributes="0"/>
+                                  <Group type="102" alignment="1" attributes="0">
+                                      <Component id="jButtonLoadCacheFile" min="-2" pref="227" max="-2" attributes="0"/>
+                                      <EmptySpace max="32767" attributes="0"/>
+                                      <Component id="jButtonEmptyCache" min="-2" pref="106" max="-2" attributes="0"/>
                                   </Group>
                                   <Group type="102" attributes="0">
-                                      <Group type="103" groupAlignment="1" attributes="0">
-                                          <Group type="102" attributes="0">
-                                              <Component id="jComboBoxSimulationType" max="32767" attributes="0"/>
-                                              <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
-                                          </Group>
-                                          <Group type="102" alignment="1" attributes="0">
-                                              <Component id="jComboBoxBenchmarkFunction" max="32767" attributes="0"/>
-                                              <EmptySpace max="-2" attributes="0"/>
-                                          </Group>
+                                      <Component id="jButtonStartOptimization" max="32767" attributes="1"/>
+                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                      <Component id="jSpinnerNumberOfOptimizationRuns" min="-2" pref="115" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" attributes="0">
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="jComboBoxBenchmarkFunction" max="32767" attributes="0"/>
+                                          <Component id="jComboBoxSimulationType" max="32767" attributes="0"/>
                                       </Group>
+                                      <EmptySpace max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                           <Component id="jButtonOptiOptions" max="32767" attributes="1"/>
                                           <Component id="jComboBoxOptimizationType" alignment="0" pref="121" max="32767" attributes="1"/>
@@ -220,6 +239,27 @@
                                   </Group>
                               </Group>
                               <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="jLabelExportStatus" min="-2" pref="265" max="-2" attributes="0"/>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="jLabelMemoryUsage" min="-2" pref="110" max="-2" attributes="0"/>
+                                          <Component id="jLabelTotalSimCount" min="-2" max="-2" attributes="0"/>
+                                          <Component id="jLabelCacheSize" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="jLabelSimulationCountIndicator" alignment="0" min="-2" pref="152" max="-2" attributes="0"/>
+                                          <Component id="jProgressBarMemoryUsage" min="-2" pref="152" max="-2" attributes="0"/>
+                                          <Component id="jLabelCachSizeIndicator" alignment="0" min="-2" pref="152" max="-2" attributes="0"/>
+                                      </Group>
+                                  </Group>
+                              </Group>
+                              <EmptySpace max="32767" attributes="0"/>
+                              <Component id="jLabelSpinning" min="-2" pref="18" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="23" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>
@@ -256,7 +296,10 @@
                       <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
                       <Component id="jTabbedPaneOptiTargets" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
-                      <Component id="jButtonLoadCacheFile" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="jButtonLoadCacheFile" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jButtonEmptyCache" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
                       <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jComboBoxSimulationType" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -273,7 +316,9 @@
                       <Component id="jScrollPane1" pref="0" max="32767" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
+              <Component id="jLabelDesignspaceSize" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jButtonStartOptimization" alignment="3" min="-2" pref="32" max="-2" attributes="0"/>
                   <Component id="jSpinnerNumberOfOptimizationRuns" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -289,12 +334,27 @@
                   </Group>
               </Group>
               <EmptySpace min="-2" pref="1" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="jButtonEnterURLToSimServer" alignment="3" min="-2" pref="20" max="-2" attributes="0"/>
-                  <Component id="jButton1" alignment="3" min="-2" pref="22" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="1" attributes="0">
+                  <Group type="102" alignment="1" attributes="0">
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="jButtonEnterURLToSimServer" alignment="3" min="-2" pref="20" max="-2" attributes="0"/>
+                          <Component id="jButton1" alignment="3" min="-2" pref="22" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                      <Component id="jCheckBoxSlaveSimulator" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="1" attributes="0">
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="jLabelCachSizeIndicator" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabelCacheSize" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="jLabelSimulationCountIndicator" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabelTotalSimCount" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
               </Group>
-              <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
-              <Component id="jCheckBoxSlaveSimulator" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
@@ -312,16 +372,21 @@
     <Component class="javax.swing.JButton" name="jButtonOpenSCPN">
       <Properties>
         <Property name="text" type="java.lang.String" value="Open SCPN"/>
+        <Property name="toolTipText" type="java.lang.String" value="Open TimeNET SCPN (xml-file)"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonOpenSCPNActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="jTextFieldSCPNFile">
+      <Properties>
+        <Property name="toolTipText" type="java.lang.String" value="Path lo loaded SCPN-file"/>
+      </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="jButtonReload">
       <Properties>
         <Property name="text" type="java.lang.String" value="Reload"/>
+        <Property name="toolTipText" type="java.lang.String" value="Reload the chosen SCPN-file"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonReloadActionPerformed"/>
@@ -398,6 +463,7 @@
     <Component class="javax.swing.JButton" name="jButtonExport">
       <Properties>
         <Property name="text" type="java.lang.String" value="Export Experiments"/>
+        <Property name="toolTipText" type="java.lang.String" value=""/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonExportActionPerformed"/>
@@ -406,6 +472,7 @@
     <Component class="javax.swing.JButton" name="jButtonCancel">
       <Properties>
         <Property name="text" type="java.lang.String" value="Cancel"/>
+        <Property name="toolTipText" type="java.lang.String" value="Abort every running operation"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonCancelActionPerformed"/>
@@ -438,6 +505,9 @@
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout"/>
       <SubComponents>
         <Component class="toe.MeasurementForm" name="measurementForm1">
+          <Properties>
+            <Property name="toolTipText" type="java.lang.String" value="Choose your Target Measurement (defined in SCPN)"/>
+          </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
               <JTabbedPaneConstraints tabName="Target">
@@ -486,6 +556,7 @@
     <Component class="javax.swing.JButton" name="jButtonLoadCacheFile">
       <Properties>
         <Property name="text" type="java.lang.String" value="Load Cached Simulation Results"/>
+        <Property name="toolTipText" type="java.lang.String" value="Load simulation results from csv-file"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonLoadCacheFileActionPerformed"/>
@@ -523,6 +594,7 @@
     <Component class="javax.swing.JCheckBox" name="jCheckBoxSlaveSimulator">
       <Properties>
         <Property name="text" type="java.lang.String" value="be a Slave"/>
+        <Property name="toolTipText" type="java.lang.String" value=""/>
       </Properties>
       <Events>
         <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="jCheckBoxSlaveSimulatorItemStateChanged"/>
@@ -575,6 +647,9 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabelMemoryUsage">
       <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Lucida Grande" size="13" style="1"/>
+        </Property>
         <Property name="text" type="java.lang.String" value="Memory Usage"/>
       </Properties>
     </Component>
@@ -591,6 +666,7 @@
         <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
           <SpinnerModel initial="1" minimum="1" numberType="java.lang.Integer" stepSize="1" type="number"/>
         </Property>
+        <Property name="toolTipText" type="java.lang.String" value="How many optimizations will be run with the same settings"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="jButton1">
@@ -609,6 +685,48 @@
       <Events>
         <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="jCheckBoxDeleteTmpFilesItemStateChanged"/>
       </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="jButtonEmptyCache">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Empty Cache"/>
+        <Property name="toolTipText" type="java.lang.String" value="Clear local cache"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonEmptyCacheActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabelSimulationCountIndicator">
+      <Properties>
+        <Property name="horizontalAlignment" type="int" value="4"/>
+        <Property name="text" type="java.lang.String" value="SimCount"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabelTotalSimCount">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Lucida Grande" size="13" style="1"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Total Sim#"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabelCachSizeIndicator">
+      <Properties>
+        <Property name="horizontalAlignment" type="int" value="4"/>
+        <Property name="text" type="java.lang.String" value="CacheSize"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabelCacheSize">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Lucida Grande" size="13" style="1"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Cache Size"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabelDesignspaceSize">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Designspace size:"/>
+      </Properties>
     </Component>
   </SubComponents>
 </Form>

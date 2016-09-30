@@ -11,6 +11,7 @@ package toe.helper;
 import toe.datamodel.MeasureType;
 import toe.datamodel.SimulationType;
 import toe.support;
+import toe.typedef.typeOfLogLevel;
 
 /**
  *
@@ -82,7 +83,7 @@ public class Statistic {
      * the distance
      */
     public void addFoundOptimum(SimulationType foundOptimum, SimulationType calculatedOptimum) {
-        support.log("Adding found and calculated optimum (if exists) to List of Statistics.");
+        support.log("Adding found and calculated optimum (if exists) to List of Statistics.", typeOfLogLevel.INFO);
         this.foundOptimum = foundOptimum;
         this.calculatedOptimum = calculatedOptimum;
         if (this.foundOptimum != null) {
@@ -95,11 +96,11 @@ public class Statistic {
      */
     public void printOptimizerStatisticsToLog() {
         if (isOptimization() && this.calculatedOptimum != null) {
-            support.log("****Start*Optimization-Statistics****");
+            support.log("****Start*Optimization-Statistics****", typeOfLogLevel.RESULT);
             //support.log("Distance to Optimum: "+this.getDistanceToTargetValue());
-            support.log("Distance to Optimum in Definition range: " + this.getRelativeDistanceToOptimumInDefinitionRange() + " %");
-            support.log("Distance to Optimum in Value range: " + this.getRelativeDistanceToOptimumInValueRange() + " %");
-            support.log("****End*Optimization-Statistics****");
+            support.log("Distance to Optimum in Definition range: " + this.getRelativeDistanceToOptimumInDefinitionRange() + " %", typeOfLogLevel.RESULT);
+            support.log("Distance to Optimum in Value range: " + this.getRelativeDistanceToOptimumInValueRange() + " %", typeOfLogLevel.RESULT);
+            support.log("****End*Optimization-Statistics****", typeOfLogLevel.RESULT);
         }
     }
 
@@ -149,21 +150,21 @@ public class Statistic {
      * Prints all relevant statistic data to support.log
      */
     public void printStatisticToLog() {
-        support.log("-----Statistics of Simulation: " + this.getName() + " ----- Start -----");
-        support.log("Total Number of Simulations: " + this.getNumberOfSimulationsTotal());
-        support.log("Number of Cached Simulations: " + this.getNumberOfSimulationsFromCache());
-        support.log("Number of Web-Based Simulations: " + this.getNumberOfSimulationsFromWeb());
-        support.log("Number of local Simulations: " + this.getNumberOfSimulationsFromLocal());
-        support.log("Ratio of Cached Simulations (Cache/Total): " + ((double) this.getNumberOfSimulationsFromCache() / (double) this.getNumberOfSimulationsTotal()));
-        support.log("Theoretical used CPU-Time: " + (this.getCPUTimeFromCache() + this.getCPUTimeFromLocal() + this.getCPUTimeFromWeb()));
-        support.log("Local used CPU-Time: " + this.getCPUTimeFromLocal());
-        support.log("Web-Based CPU-Time: " + this.getCPUTimeFromWeb());
-        support.log("Cache CPU-Time: " + this.getCPUTimeFromCache());
-        support.log("Total needed SimulationTime: " + this.getSimulationTimeTotal());
-        support.log("SimulationTime from Web: " + this.getSimulationTimeFromWeb());
-        support.log("SimulationTime from Cache: " + this.getSimulationTimeFromCache());
-        support.log("SimulationTime from Local: " + this.getSimulationTimeFromLocal());
-        support.log("-----Statistics of Simulation: " + this.getName() + " ----- End -----");
+        support.log("-----Statistics of Simulation: " + this.getName() + " ----- Start -----", typeOfLogLevel.RESULT);
+        support.log("Total Number of Simulations: " + this.getNumberOfSimulationsTotal(), typeOfLogLevel.RESULT);
+        support.log("Number of Cached Simulations: " + this.getNumberOfSimulationsFromCache(), typeOfLogLevel.RESULT);
+        support.log("Number of Web-Based Simulations: " + this.getNumberOfSimulationsFromWeb(), typeOfLogLevel.RESULT);
+        support.log("Number of local Simulations: " + this.getNumberOfSimulationsFromLocal(), typeOfLogLevel.RESULT);
+        support.log("Ratio of Cached Simulations (Cache/Total): " + ((double) this.getNumberOfSimulationsFromCache() / (double) this.getNumberOfSimulationsTotal()), typeOfLogLevel.RESULT);
+        support.log("Theoretical used CPU-Time: " + (this.getCPUTimeFromCache() + this.getCPUTimeFromLocal() + this.getCPUTimeFromWeb()), typeOfLogLevel.RESULT);
+        support.log("Local used CPU-Time: " + this.getCPUTimeFromLocal(), typeOfLogLevel.RESULT);
+        support.log("Web-Based CPU-Time: " + this.getCPUTimeFromWeb(), typeOfLogLevel.RESULT);
+        support.log("Cache CPU-Time: " + this.getCPUTimeFromCache(), typeOfLogLevel.RESULT);
+        support.log("Total needed SimulationTime: " + this.getSimulationTimeTotal(), typeOfLogLevel.RESULT);
+        support.log("SimulationTime from Web: " + this.getSimulationTimeFromWeb(), typeOfLogLevel.RESULT);
+        support.log("SimulationTime from Cache: " + this.getSimulationTimeFromCache(), typeOfLogLevel.RESULT);
+        support.log("SimulationTime from Local: " + this.getSimulationTimeFromLocal(), typeOfLogLevel.RESULT);
+        support.log("-----Statistics of Simulation: " + this.getName() + " ----- End -----", typeOfLogLevel.RESULT);
         printOptimizerStatisticsToLog();
     }
 

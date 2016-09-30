@@ -13,6 +13,7 @@ import toe.datamodel.SimulationType;
 import toe.datamodel.MeasureType;
 import toe.support;
 import toe.typedef.typeOfBenchmarkFunction;
+import toe.typedef.typeOfLogLevel;
 
 /**
  * Class to simulate real SCPN-Simulation. It uses the SimulationCache with read
@@ -20,11 +21,10 @@ import toe.typedef.typeOfBenchmarkFunction;
  *
  * @author Christoph Bodenstein
  */
-public class SimulatorBenchmark implements Simulator, Runnable {
+public class SimulatorBenchmark extends Thread implements Simulator {
 
     private SimulationCache mySimulationCache = null;
     private ArrayList<SimulationType> myListOfSimulations = null;
-//private int simulationCounter=0;
     private final String logFileName;
     private typeOfBenchmarkFunction benchmarkFunction = typeOfBenchmarkFunction.Sphere;
     int status = 0;
@@ -37,26 +37,22 @@ public class SimulatorBenchmark implements Simulator, Runnable {
     public SimulatorBenchmark() {
         this.benchmarkFunction = support.getChosenBenchmarkFunction();
         logFileName = support.getTmpPath() + File.separator + "SimLog_Benchmark_" + benchmarkFunction.toString() + "_" + Calendar.getInstance().getTimeInMillis() + ".csv";
-        support.log("LogfileName:" + logFileName);
+        support.log("LogfileName:" + logFileName, typeOfLogLevel.INFO);
     }
 
     /**
      * inits and starts the simulation, this is neccessary and must be
-     * implemented 
-     * In Benchmark we don`t use a local cache 
-     * Ackley, Rosenbrock, Schwefel, Rastrigin: source from Le Minh Nghia, NTU-Singapore Parts of
+     * implemented In Benchmark we don`t use a local cache Ackley, Rosenbrock,
+     * Schwefel, Rastrigin: source from Le Minh Nghia, NTU-Singapore Parts of
      * other functions are isp. by http://fossies.org/dox/cilib-0.7.6
      *
      * @param listOfParameterSetsTMP List of Parametersets to be simulated
-     * @param simulationCounterTMP actual Number of simulation, will be
-     * increased with every simulation-run
      * @param log write special log file for this simulator. true: write log
      * file, false: dont write log file
      */
     @Override
-    public void initSimulator(ArrayList<ArrayList<parameter>> listOfParameterSetsTMP, int simulationCounterTMP, boolean log) {
+    public void initSimulator(ArrayList<ArrayList<parameter>> listOfParameterSetsTMP, boolean log) {
         this.log = log;
-        //this.simulationCounter=simulationCounterTMP;
         this.listOfParameterSetsTMP = listOfParameterSetsTMP;
         this.status = 0;
         new Thread(this).start();
@@ -70,16 +66,6 @@ public class SimulatorBenchmark implements Simulator, Runnable {
     @Override
     public int getStatus() {
         return this.status;
-    }
-
-    /**
-     * Returns the actual simulation Counter
-     *
-     * @return actual simulation counter
-     */
-    @Override
-    public int getSimulationCounter() {
-        return support.getGlobalSimulationCounter();
     }
 
     /**
@@ -157,19 +143,22 @@ public class SimulatorBenchmark implements Simulator, Runnable {
     @Override
     public void run() {
         myListOfSimulations = new ArrayList<>();
-        support.log("Number of Benchmark-Simulations to do: " + listOfParameterSetsTMP.size());
+        support.log("Number of Benchmark-Simulations to do: " + listOfParameterSetsTMP.size(), typeOfLogLevel.INFO);
         for (int i = 0; i < this.listOfParameterSetsTMP.size(); i++) {
             support.setStatusText("Simulating: " + (i + 1) + "/" + listOfParameterSetsTMP.size());
             support.incGlobalSimulationCounter();
             this.status = (100 / listOfParameterSetsTMP.size()) * i;
             myListOfSimulations.add(BenchmarkFactory.getBenchmarkFunction().getSimulationResult(listOfParameterSetsTMP.get(i)));
         }
-        support.log("Number of done simulations: " + myListOfSimulations.size());
+        support.log("Number of done simulations: " + myListOfSimulations.size(), typeOfLogLevel.INFO);
         if (log) {
             //Print out a log file
             support.addLinesToLogFileFromListOfParser(myListOfSimulations, logFileName);
         }
-        this.status = 100;   
+        this.status = 100;
+        synchronized (this) {
+            notify();
+        }
     }
 
     /**

@@ -7,9 +7,6 @@
  */
 package toe.simulation;
 
-import toe.datamodel.MeasureType;
-import toe.datamodel.SimulationType;
-
 /**
  *
  * @author Christoph Bodenstein
@@ -27,15 +24,4 @@ public class SimulatorCachedDistributed extends SimulatorCachedLocal {
         return new SimulatorDistributed();
     }
     
-    /**
-     * Returns the calculated optimimum For Benchmark-Functions this can be
-     * calculated. For other simulators, this must be given by user.
-     *
-     * @param targetMeasure Measure to be optimized.
-     * @return caluclated optimum. Not possible in Web-Simulator so returns null
-     */
-    @Override
-    public SimulationType getCalculatedOptimum(MeasureType targetMeasure){
-    return new SimulatorDistributed().getCalculatedOptimum(targetMeasure);
-    }
 }

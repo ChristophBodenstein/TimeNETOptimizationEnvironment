@@ -35,9 +35,19 @@ You can use any other server port, just enter it in you clients.
 
 __Warning__: The networking stuff is really beta. It works, but no authentication, authorization or any safety/security issues are handled.
 
+Additionally you should take care of the mongodb.log. It can can get pretty big. Workaround can be a cronjob to delete it (sudo rm /var/log/mongodb/mongodb.log).
+
 ## Server side Requirements
 * node.js
 * mongoDB
 
-See ValueTools tool introduction:
-http://eudl.eu/pdf/10.4108/icst.valuetools.2014.258193
+## See 
+
+Tool introduction:
+[http://eudl.eu/pdf/10.4108/icst.valuetools.2014.258193](https://www.tu-ilmenau.de/fileadmin/public/sse/Veroeffentlichungen/2014/Valuetools2014.pdf)
+
+Multiphase introduction:
+[http://ieeexplore.ieee.org/xpl/articleDetails.jsp?reload=true&arnumber=7116742](https://www.tu-ilmenau.de/fileadmin/public/sse/Veroeffentlichungen/2015/SysCon2015Bod.pdf)
+
+Multiphase validation with benchmark functions:
+[http://www.scitepress.org/DigitalLibrary/PublicationsDetail.aspx?ID=t+AXD5JJD04=&t=1](https://www.tu-ilmenau.de/fileadmin/public/sse/Veroeffentlichungen/2015/Simultech2015.pdf)

@@ -6,6 +6,7 @@
  */
 package toe.optimization;
 
+import java.awt.Color;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -28,19 +29,16 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     private final Properties auto = new Properties();
 
     private String pref_LogFileAddon = "";
+// parameters for Hill Climbing
     private int pref_WrongSimulationsUntilBreak;
     private int pref_WrongSimulationsPerDirection;
     private typeOfStartValueEnum pref_StartValue;
     private typeOfNeighborhoodEnum pref_NeighborhoodType;
     private int pref_SizeOfNeighborhood;
-    private typeOfAnnealing pref_Cooling;
-    private double pref_TRatioScale;
-    private double pref_TAnnealScale;
-    private double pref_MaxTempParameter;//-->Distance for parameters (Stepwidth)
-    private double pref_MaxTempCost;//-->Probability of acceptance of bad solutions
-    private double pref_Epsilon;//Abort-Temperature for Simmulated Annealing
-    private typeOfAnnealingParameterCalculation pref_CalculationOfNextParameterset;//Calc of next params for Sim Anealing
-    private final SpinnerNumberModel TRatioScaleSpinnerModel;
+
+// parameters for Simulated Annealing
+    private boolean preventUpdateEpsilonBasedOnNumberOfSimulations = false;
+    private int dimension = (int) 1;
 
     private int pref_NumberOfPhases;
     private typeOfOptimization pref_typeOfUsedMultiPhaseOptimization;
@@ -51,6 +49,8 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     private int pref_InternalParameterStart;
     private int pref_InternalParameterEnd;
     private boolean pref_KeepDesignSpaceAndResolution;
+    private final double epsilon_min = 0.001;
+    private final double epsilon_max = 1;
 
 //parameters for genetic Optimization
     private int pref_GeneticPopulationSize;
@@ -69,7 +69,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     private int pref_ABC_NumOnlookerBees;
     private int pref_ABC_NumScoutBees;
     private int pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement;
-    
+
 //parameters for MVMO Optimization
     private int pref_MVMO_StartingPop;
     private int pref_MVMO_MaxPop;
@@ -83,18 +83,21 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
     final String noParameterString = "No parameter";
 
+    private Integer numberOfActualOptimizationAnalysis = 0;//We start counting the pref-files from 0. But file #0 is without appended number, it`s the original.
+
     /**
      * Creates new form OptimizerHillPreferences
      */
     public OptimizerPreferences() {
-        TRatioScaleSpinnerModel = new SpinnerNumberModel(0.00001, 0.0, 100.0, 0.00001);
 
         initComponents();
         this.setPref_WrongSimulationsUntilBreak(support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW);
         this.setPref_WrongSimulationsPerDirection(support.DEFAULT_WRONG_SOLUTION_PER_DIRECTION);
         this.setPref_SizeOfNeighborhood(support.DEFAULT_SIZE_OF_NEIGHBORHOOD);
-        this.setPref_Cooling(support.DEFAULT_TYPE_OF_ANNEALING);
-        this.setPref_CalculationOfNextParameterset(support.DEFAULT_CALC_NEXT_PARAMETER);
+        this.setPref_Cooling(support.DEFAULT_TYPE_OF_ANNEALING, 0);
+        this.setPref_Cooling(support.DEFAULT_TYPE_OF_ANNEALING, 1);
+        this.setPref_CalculationOfNextParameterset(support.DEFAULT_CALC_NEXT_PARAMETER, 0);
+        this.setPref_CalculationOfNextParameterset(support.DEFAULT_CALC_NEXT_PARAMETER, 1);
 
         this.jSpinnerSizeOfNeighborhoodInPercent.setModel(new SpinnerNumberModel(1, 1, 100, 1));
         ((DefaultEditor) this.jSpinnerSizeOfNeighborhoodInPercent.getEditor()).getTextField().setEditable(false);
@@ -114,7 +117,9 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         tmpVector.remove((typeOfOptimization) typeOfOptimization.TwoPhase);
         this.jComboBoxOptimizationType.setModel(new DefaultComboBoxModel(tmpVector.toArray()));
 
+        this.setNumberOfActualOptimizationAnalysis(0);
         this.loadPreferences();
+        updateNumberOfOptiPrefs();
 
     }
 
@@ -133,7 +138,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         jTextFieldLogFileAddon = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jCheckBoxAddPrefsToLogfilename = new javax.swing.JCheckBox();
-        jButton1 = new javax.swing.JButton();
+        jButtonSavePrefs = new javax.swing.JButton();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanelHillClimbing = new javax.swing.JPanel();
         jSpinnerWrongSolutionsPerDirectionUntilBreak = new javax.swing.JSpinner();
@@ -159,6 +164,11 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         jSpinnerEpsilon = new javax.swing.JSpinner();
         jLabel9 = new javax.swing.JLabel();
         jComboBoxCoolingMethod = new javax.swing.JComboBox();
+        jSpinnerEstSASimulationCount = new javax.swing.JSpinner();
+        jLabelEstSASimulationCount = new javax.swing.JLabel();
+        jLabelDimensionDescription = new javax.swing.JLabel();
+        jLabelDimensionNumber = new javax.swing.JLabel();
+        jButtonCopySA1ToSA0 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
         jComboBoxCoolingMethod1 = new javax.swing.JComboBox();
@@ -175,6 +185,9 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         jLabel16 = new javax.swing.JLabel();
         jSpinnerEpsilon1 = new javax.swing.JSpinner();
         jLabel17 = new javax.swing.JLabel();
+        jSpinnerEstSASimulationCount1 = new javax.swing.JSpinner();
+        jLabelEstSASimulationCount1 = new javax.swing.JLabel();
+        jButtonCopySA1ToSA1 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel18 = new javax.swing.JLabel();
         jComboBoxNumberOfPhases = new javax.swing.JComboBox();
@@ -240,6 +253,19 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         jLabel28 = new javax.swing.JLabel();
         jComboBoxTypeOfParentSelection = new javax.swing.JComboBox();
         jLabel29 = new javax.swing.JLabel();
+        jButtonNextPrefs = new javax.swing.JButton();
+        jButtonDelAllPrefs = new javax.swing.JButton();
+        jTextFieldNumberOfOptiPrefs = new javax.swing.JTextField();
+        jButtonPrevPrefs = new javax.swing.JButton();
+
+        addWindowFocusListener(new java.awt.event.WindowFocusListener() {
+            public void windowGainedFocus(java.awt.event.WindowEvent evt) {
+                formWindowGainedFocus(evt);
+            }
+            public void windowLostFocus(java.awt.event.WindowEvent evt) {
+                formWindowLostFocus(evt);
+            }
+        });
 
         jLabelStartvalueForParameters.setText("Startvalue for parameters");
 
@@ -284,13 +310,15 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         jCheckBoxAddPrefsToLogfilename.setSelected(true);
         jCheckBoxAddPrefsToLogfilename.setText("Add Prefs to Logfilename");
 
-        jButton1.setText("Save");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        jButtonSavePrefs.setText("Save");
+        jButtonSavePrefs.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                jButtonSavePrefsActionPerformed(evt);
             }
         });
 
+        jSpinnerWrongSolutionsPerDirectionUntilBreak.setModel(new javax.swing.SpinnerNumberModel(1, 1, null, 1));
+        jSpinnerWrongSolutionsPerDirectionUntilBreak.setToolTipText("This should always be lower than Wrong Solutions until break");
         jSpinnerWrongSolutionsPerDirectionUntilBreak.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 jSpinnerWrongSolutionsPerDirectionUntilBreakStateChanged(evt);
@@ -302,6 +330,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             }
         });
 
+        jSpinnerWrongSolutionsUntilBreak.setModel(new javax.swing.SpinnerNumberModel(2, 1, null, 1));
         jSpinnerWrongSolutionsUntilBreak.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 jSpinnerWrongSolutionsUntilBreakStateChanged(evt);
@@ -399,13 +428,23 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
         jSpinnerMaxTemperatureParameters.setModel(new javax.swing.SpinnerNumberModel(1.0d, 0.0d, 1.0d, 0.01d));
         jSpinnerMaxTemperatureParameters.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerMaxTemperatureParameters, "#.##"));
+        jSpinnerMaxTemperatureParameters.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinnerMaxTemperatureParametersStateChanged(evt);
+            }
+        });
         jPanelSimAnnealing.add(jSpinnerMaxTemperatureParameters);
-        jSpinnerMaxTemperatureParameters.setBounds(260, 110, 90, 28);
+        jSpinnerMaxTemperatureParameters.setBounds(260, 110, 90, 26);
 
         jSpinnerMaxTemperatureCost.setModel(new javax.swing.SpinnerNumberModel(1.0d, 0.0d, 1.0d, 0.01d));
         jSpinnerMaxTemperatureCost.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerMaxTemperatureCost, "#.##"));
+        jSpinnerMaxTemperatureCost.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinnerMaxTemperatureCostStateChanged(evt);
+            }
+        });
         jPanelSimAnnealing.add(jSpinnerMaxTemperatureCost);
-        jSpinnerMaxTemperatureCost.setBounds(260, 140, 90, 28);
+        jSpinnerMaxTemperatureCost.setBounds(260, 140, 90, 26);
 
         jLabel6.setText("Max. Temp. for Cost(T-0-cost)");
         jPanelSimAnnealing.add(jLabel6);
@@ -419,33 +458,87 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         jPanelSimAnnealing.add(jLabel8);
         jLabel8.setBounds(480, 60, 100, 16);
 
-        jSpinnerTRatioScale.setModel(TRatioScaleSpinnerModel);
+        jSpinnerTRatioScale.setModel(new SpinnerNumberModel(0.00001, 0.0, 100.0, 0.00001));
         jSpinnerTRatioScale.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerTRatioScale, "#.#####"));
         jSpinnerTRatioScale.setValue(0.00001);
+        jSpinnerTRatioScale.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinnerTRatioScaleStateChanged(evt);
+            }
+        });
         jPanelSimAnnealing.add(jSpinnerTRatioScale);
-        jSpinnerTRatioScale.setBounds(580, 20, 100, 28);
+        jSpinnerTRatioScale.setBounds(580, 20, 100, 26);
 
-        jSpinnerTAnnealScale.setModel(new javax.swing.SpinnerNumberModel(100.0d, 0.0d, 10000.0d, 1.0d));
+        jSpinnerTAnnealScale.setModel(new javax.swing.SpinnerNumberModel(100.0d, 0.0d, 1000000.0d, 10.0d));
+        jSpinnerTAnnealScale.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinnerTAnnealScaleStateChanged(evt);
+            }
+        });
         jPanelSimAnnealing.add(jSpinnerTAnnealScale);
-        jSpinnerTAnnealScale.setBounds(580, 60, 100, 28);
+        jSpinnerTAnnealScale.setBounds(580, 60, 100, 26);
 
         jLabel5.setText("Epsilon (Abort-Temperature)");
         jPanelSimAnnealing.add(jLabel5);
         jLabel5.setBounds(20, 180, 210, 16);
 
-        jSpinnerEpsilon.setModel(new javax.swing.SpinnerNumberModel(0.01d, 0.0d, 1.0d, 0.01d));
-        jSpinnerEpsilon.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerEpsilon, "#.##"));
+        jSpinnerEpsilon.setModel(new javax.swing.SpinnerNumberModel(0.001d, 0.001d, 1.0d, 0.001d));
+        jSpinnerEpsilon.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerEpsilon, "#.####"));
         jSpinnerEpsilon.setValue(0.01);
+        jSpinnerEpsilon.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinnerEpsilonStateChanged(evt);
+            }
+        });
         jPanelSimAnnealing.add(jSpinnerEpsilon);
-        jSpinnerEpsilon.setBounds(260, 180, 90, 28);
+        jSpinnerEpsilon.setBounds(260, 180, 90, 26);
 
         jLabel9.setText("Cooling Method");
         jPanelSimAnnealing.add(jLabel9);
         jLabel9.setBounds(20, 20, 100, 16);
 
         jComboBoxCoolingMethod.setModel(new DefaultComboBoxModel(typeOfAnnealing.values()));
+        jComboBoxCoolingMethod.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jComboBoxCoolingMethodItemStateChanged(evt);
+            }
+        });
         jPanelSimAnnealing.add(jComboBoxCoolingMethod);
         jComboBoxCoolingMethod.setBounds(200, 20, 230, 27);
+
+        jSpinnerEstSASimulationCount.setModel(new javax.swing.SpinnerNumberModel(100L, 0L, null, 10L));
+        jSpinnerEstSASimulationCount.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerEstSASimulationCount, "#"));
+        jSpinnerEstSASimulationCount.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinnerEstSASimulationCountStateChanged(evt);
+            }
+        });
+        jPanelSimAnnealing.add(jSpinnerEstSASimulationCount);
+        jSpinnerEstSASimulationCount.setBounds(210, 210, 140, 26);
+
+        jLabelEstSASimulationCount.setText("Estimated # of Simulations");
+        jPanelSimAnnealing.add(jLabelEstSASimulationCount);
+        jLabelEstSASimulationCount.setBounds(20, 220, 210, 16);
+
+        jLabelDimensionDescription.setText("Calculated problem dimension:");
+        jPanelSimAnnealing.add(jLabelDimensionDescription);
+        jLabelDimensionDescription.setBounds(20, 260, 240, 16);
+
+        jLabelDimensionNumber.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
+        jLabelDimensionNumber.setForeground(new java.awt.Color(204, 0, 51));
+        jLabelDimensionNumber.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabelDimensionNumber.setText("1");
+        jPanelSimAnnealing.add(jLabelDimensionNumber);
+        jLabelDimensionNumber.setBounds(223, 260, 110, 16);
+
+        jButtonCopySA1ToSA0.setText("Copy all prefs from second phase");
+        jButtonCopySA1ToSA0.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonCopySA1ToSA0ActionPerformed(evt);
+            }
+        });
+        jPanelSimAnnealing.add(jButtonCopySA1ToSA0);
+        jButtonCopySA1ToSA0.setBounds(20, 310, 250, 29);
 
         jTabbedPane1.addTab("Simulated Annealing", jPanelSimAnnealing);
 
@@ -456,22 +549,37 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         jLabel10.setBounds(20, 60, 100, 16);
 
         jComboBoxCoolingMethod1.setModel(new DefaultComboBoxModel(typeOfAnnealing.values()));
+        jComboBoxCoolingMethod1.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jComboBoxCoolingMethod1ItemStateChanged(evt);
+            }
+        });
         jPanel1.add(jComboBoxCoolingMethod1);
         jComboBoxCoolingMethod1.setBounds(230, 60, 200, 27);
 
-        jSpinnerTRatioScale1.setModel(TRatioScaleSpinnerModel);
+        jSpinnerTRatioScale1.setModel(new SpinnerNumberModel(0.00001, 0.0, 100.0, 0.00001));
         jSpinnerTRatioScale1.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerTRatioScale1, "#.#####"));
         jSpinnerTRatioScale1.setValue(0.00001);
+        jSpinnerTRatioScale1.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinnerTRatioScale1StateChanged(evt);
+            }
+        });
         jPanel1.add(jSpinnerTRatioScale1);
-        jSpinnerTRatioScale1.setBounds(580, 60, 100, 28);
+        jSpinnerTRatioScale1.setBounds(580, 60, 100, 26);
 
         jLabel11.setText("TRatioScale");
         jPanel1.add(jLabel11);
         jLabel11.setBounds(480, 70, 80, 16);
 
-        jSpinnerTAnnealScale1.setModel(new javax.swing.SpinnerNumberModel(100.0d, 0.0d, 10000.0d, 1.0d));
+        jSpinnerTAnnealScale1.setModel(new javax.swing.SpinnerNumberModel(100.0d, 0.0d, 10000.0d, 10.0d));
+        jSpinnerTAnnealScale1.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinnerTAnnealScale1StateChanged(evt);
+            }
+        });
         jPanel1.add(jSpinnerTAnnealScale1);
-        jSpinnerTAnnealScale1.setBounds(580, 100, 100, 28);
+        jSpinnerTAnnealScale1.setBounds(580, 100, 100, 26);
 
         jLabel12.setText("TAnnealScale");
         jPanel1.add(jLabel12);
@@ -491,8 +599,13 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
         jSpinnerMaxTemperatureParameters1.setModel(new javax.swing.SpinnerNumberModel(1.0d, 0.0d, 1.0d, 0.01d));
         jSpinnerMaxTemperatureParameters1.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerMaxTemperatureParameters1, "#.##"));
+        jSpinnerMaxTemperatureParameters1.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinnerMaxTemperatureParameters1StateChanged(evt);
+            }
+        });
         jPanel1.add(jSpinnerMaxTemperatureParameters1);
-        jSpinnerMaxTemperatureParameters1.setBounds(260, 150, 90, 28);
+        jSpinnerMaxTemperatureParameters1.setBounds(260, 150, 90, 26);
 
         jLabel15.setText("Max. Temp. for Cost(T-0-cost)");
         jPanel1.add(jLabel15);
@@ -500,23 +613,56 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
         jSpinnerMaxTemperatureCost1.setModel(new javax.swing.SpinnerNumberModel(1.0d, 0.0d, 1.0d, 0.01d));
         jSpinnerMaxTemperatureCost1.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerMaxTemperatureCost1, "#.##"));
+        jSpinnerMaxTemperatureCost1.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinnerMaxTemperatureCost1StateChanged(evt);
+            }
+        });
         jPanel1.add(jSpinnerMaxTemperatureCost1);
-        jSpinnerMaxTemperatureCost1.setBounds(260, 180, 90, 28);
+        jSpinnerMaxTemperatureCost1.setBounds(260, 180, 90, 26);
 
         jLabel16.setText("Epsilon (Abort-Temperature)");
         jPanel1.add(jLabel16);
         jLabel16.setBounds(20, 220, 210, 16);
 
-        jSpinnerEpsilon1.setModel(new javax.swing.SpinnerNumberModel(0.01d, 0.0d, 1.0d, 0.01d));
-        jSpinnerEpsilon1.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerEpsilon1, "#.##"));
+        jSpinnerEpsilon1.setModel(new javax.swing.SpinnerNumberModel(0.011d, 0.0d, 1.0d, 0.001d));
+        jSpinnerEpsilon1.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerEpsilon1, "#.###"));
         jSpinnerEpsilon1.setValue(0.01);
+        jSpinnerEpsilon1.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinnerEpsilon1StateChanged(evt);
+            }
+        });
         jPanel1.add(jSpinnerEpsilon1);
-        jSpinnerEpsilon1.setBounds(260, 220, 90, 28);
+        jSpinnerEpsilon1.setBounds(260, 220, 90, 26);
 
         jLabel17.setFont(new java.awt.Font("Lucida Grande", 1, 16)); // NOI18N
-        jLabel17.setText("Parameters for second Phase are taken from Standard-Panel (Simulated Annealing)!!!");
+        jLabel17.setText("Parameters for first Phase are taken from Standard-Panel (Simulated Annealing)!!!");
         jPanel1.add(jLabel17);
         jLabel17.setBounds(20, 28, 787, 20);
+
+        jSpinnerEstSASimulationCount1.setModel(new javax.swing.SpinnerNumberModel(100L, 0L, null, 10L));
+        jSpinnerEstSASimulationCount1.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerEstSASimulationCount1, "#"));
+        jSpinnerEstSASimulationCount1.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinnerEstSASimulationCount1StateChanged(evt);
+            }
+        });
+        jPanel1.add(jSpinnerEstSASimulationCount1);
+        jSpinnerEstSASimulationCount1.setBounds(210, 250, 140, 26);
+
+        jLabelEstSASimulationCount1.setText("Estimated # of Simulations");
+        jPanel1.add(jLabelEstSASimulationCount1);
+        jLabelEstSASimulationCount1.setBounds(20, 260, 210, 16);
+
+        jButtonCopySA1ToSA1.setText("Copy all prefs from first phase");
+        jButtonCopySA1ToSA1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonCopySA1ToSA1ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButtonCopySA1ToSA1);
+        jButtonCopySA1ToSA1.setBounds(20, 310, 250, 29);
 
         jTabbedPane1.addTab("Two-Phase", jPanel1);
 
@@ -558,19 +704,19 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
         jSpinnerConfidenceIntervallStart.setModel(new javax.swing.SpinnerNumberModel(85, 85, 99, 1));
         jPanel2.add(jSpinnerConfidenceIntervallStart);
-        jSpinnerConfidenceIntervallStart.setBounds(260, 110, 70, 28);
+        jSpinnerConfidenceIntervallStart.setBounds(260, 110, 70, 26);
 
         jSpinnerConfidenceIntervallEnd.setModel(new javax.swing.SpinnerNumberModel(99, 85, 99, 1));
         jPanel2.add(jSpinnerConfidenceIntervallEnd);
-        jSpinnerConfidenceIntervallEnd.setBounds(260, 140, 70, 28);
+        jSpinnerConfidenceIntervallEnd.setBounds(260, 140, 70, 26);
 
         jSpinnerMaxRelErrorEnd.setModel(new javax.swing.SpinnerNumberModel(1, 1, 15, 1));
         jPanel2.add(jSpinnerMaxRelErrorEnd);
-        jSpinnerMaxRelErrorEnd.setBounds(260, 210, 70, 28);
+        jSpinnerMaxRelErrorEnd.setBounds(260, 210, 70, 26);
 
         jSpinnerMaxRelErrorStart.setModel(new javax.swing.SpinnerNumberModel(5, 1, 15, 1));
         jPanel2.add(jSpinnerMaxRelErrorStart);
-        jSpinnerMaxRelErrorStart.setBounds(260, 180, 70, 28);
+        jSpinnerMaxRelErrorStart.setBounds(260, 180, 70, 26);
 
         jCheckBoxKeepDesignspaceAndResolution.setText("Keep Designspace and Resolution");
         jPanel2.add(jCheckBoxKeepDesignspaceAndResolution);
@@ -670,7 +816,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
         jLabelGeneticMutationChance.setText("Mutation Chance %");
 
-        jSpinnerGeneticPopulationSize.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
+        jSpinnerGeneticPopulationSize.setModel(new javax.swing.SpinnerNumberModel(1, 1, null, 1));
         jSpinnerGeneticPopulationSize.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 jSpinnerGeneticPopulationSizePropertyChange(evt);
@@ -691,7 +837,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             }
         });
 
-        jSpinnerGeneticMaxOptiRunsWithoutImprovement.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
+        jSpinnerGeneticMaxOptiRunsWithoutImprovement.setModel(new javax.swing.SpinnerNumberModel(1, 1, null, 1));
 
         jLabel27.setText("Maximum Optiruns without improvment");
 
@@ -709,7 +855,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
         jLabel30.setText("Kind of crossing");
 
-        jSpinnerGeneticMaxNumberOfCrossings.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
+        jSpinnerGeneticMaxNumberOfCrossings.setModel(new javax.swing.SpinnerNumberModel(1, 1, null, 1));
 
         jLabel31.setText("Number of crossings per generation");
 
@@ -760,16 +906,17 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
                     .addComponent(jComboBoxGeneticTypeOfGeneticCrossing, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel30))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jCheckBoxGeneticMutateTopSolution)
-                    .addComponent(jSpinnerGeneticMaxNumberOfCrossings, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel31))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel31)
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jCheckBoxGeneticMutateTopSolution)
+                        .addComponent(jSpinnerGeneticMaxNumberOfCrossings, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(260, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Genetic", jPanel3);
 
-        jSpinnerCSSPopulationSize.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
+        jSpinnerCSSPopulationSize.setModel(new javax.swing.SpinnerNumberModel(1, 1, null, 1));
         jSpinnerCSSPopulationSize.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 jSpinnerCSSPopulationSizePropertyChange(evt);
@@ -778,7 +925,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
         jLabelCSSPopulationSize.setText("Population Size");
 
-        jSpinnerCSSMaxAttraction.setModel(new javax.swing.SpinnerNumberModel(0, 0, 100, 1));
+        jSpinnerCSSMaxAttraction.setModel(new javax.swing.SpinnerNumberModel(0.0d, 0.0d, 100.0d, 1.0d));
         jSpinnerCSSMaxAttraction.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 jSpinnerCSSMaxAttractionPropertyChange(evt);
@@ -818,7 +965,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Charged System Search", jPanel4);
 
-        jSpinnerABCNumEmployedBees.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
+        jSpinnerABCNumEmployedBees.setModel(new javax.swing.SpinnerNumberModel(1, 1, null, 1));
         jSpinnerABCNumEmployedBees.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 jSpinnerABCNumEmployedBeesPropertyChange(evt);
@@ -827,21 +974,21 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
         jLabelABCNumEmployedBees.setText("Employed Bees");
 
-        jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
+        jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
         jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovementPropertyChange(evt);
             }
         });
 
-        jSpinnerABCNumScoutBees.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
+        jSpinnerABCNumScoutBees.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
         jSpinnerABCNumScoutBees.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 jSpinnerABCNumScoutBeesPropertyChange(evt);
             }
         });
 
-        jSpinnerABCNumOnlookerBees.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
+        jSpinnerABCNumOnlookerBees.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
         jSpinnerABCNumOnlookerBees.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 jSpinnerABCNumOnlookerBeesPropertyChange(evt);
@@ -906,7 +1053,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Artifical Bee Colony", jPanel5);
 
-        jSpinnerMVMOStartingPop.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(2), Integer.valueOf(1), null, Integer.valueOf(1)));
+        jSpinnerMVMOStartingPop.setModel(new javax.swing.SpinnerNumberModel(2, 1, null, 1));
         jSpinnerMVMOStartingPop.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 jSpinnerMVMOStartingPopPropertyChange(evt);
@@ -917,7 +1064,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
         jLabelMVMOMaximumPopulation.setText("Maximum Population:");
 
-        jSpinnerMVMOMaxPop.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(70), Integer.valueOf(1), null, Integer.valueOf(1)));
+        jSpinnerMVMOMaxPop.setModel(new javax.swing.SpinnerNumberModel(70, 1, null, 1));
         jSpinnerMVMOMaxPop.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 jSpinnerMVMOMaxPopPropertyChange(evt);
@@ -926,14 +1073,14 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
         jLabelMVMOScalingFactor.setText("Scaling-Factor:");
 
-        jSpinnerMVMOScalingFactor.setModel(new javax.swing.SpinnerNumberModel(Double.valueOf(1.0d), Double.valueOf(0.0d), null, Double.valueOf(1.0d)));
+        jSpinnerMVMOScalingFactor.setModel(new javax.swing.SpinnerNumberModel(1.0d, 0.0d, null, 1.0d));
         jSpinnerMVMOScalingFactor.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 jSpinnerMVMOScalingFactorPropertyChange(evt);
             }
         });
 
-        jSpinnerMVMOAsymmetryFactor.setModel(new javax.swing.SpinnerNumberModel(Double.valueOf(1.0d), Double.valueOf(0.0d), null, Double.valueOf(1.0d)));
+        jSpinnerMVMOAsymmetryFactor.setModel(new javax.swing.SpinnerNumberModel(1.0d, 0.0d, null, 1.0d));
         jSpinnerMVMOAsymmetryFactor.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 jSpinnerMVMOAsymmetryFactorPropertyChange(evt);
@@ -942,7 +1089,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
         jLabelMVMOAsymmetryFactor.setText("Asymmetry-Factor:");
 
-        jSpinnerMVMOsd.setModel(new javax.swing.SpinnerNumberModel(Double.valueOf(75.0d), Double.valueOf(0.0d), null, Double.valueOf(1.0d)));
+        jSpinnerMVMOsd.setModel(new javax.swing.SpinnerNumberModel(75.0d, 0.0d, null, 1.0d));
         jSpinnerMVMOsd.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 jSpinnerMVMOsdPropertyChange(evt);
@@ -1050,6 +1197,30 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("MVMO", jPanel6);
 
+        jButtonNextPrefs.setText(">> Next");
+        jButtonNextPrefs.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonNextPrefsActionPerformed(evt);
+            }
+        });
+
+        jButtonDelAllPrefs.setText("DelAllPrefs");
+        jButtonDelAllPrefs.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonDelAllPrefsActionPerformed(evt);
+            }
+        });
+
+        jTextFieldNumberOfOptiPrefs.setEditable(false);
+        jTextFieldNumberOfOptiPrefs.setText("0");
+
+        jButtonPrevPrefs.setText("Prev <<");
+        jButtonPrevPrefs.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonPrevPrefsActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -1066,16 +1237,25 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
                         .addComponent(jCheckBoxAddPrefsToLogfilename)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
                         .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jTextFieldLogFileAddon, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(454, 454, 454)
-                        .addComponent(jButton1))
+                        .addGap(18, 18, 18)
+                        .addComponent(jButtonPrevPrefs)
+                        .addGap(21, 21, 21)
+                        .addComponent(jButtonSavePrefs)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButtonNextPrefs)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButtonDelAllPrefs)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jTextFieldNumberOfOptiPrefs, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(17, 17, 17))
                     .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 987, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 32, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1092,7 +1272,11 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(jTextFieldLogFileAddon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1))
+                    .addComponent(jButtonSavePrefs)
+                    .addComponent(jButtonNextPrefs)
+                    .addComponent(jButtonDelAllPrefs)
+                    .addComponent(jTextFieldNumberOfOptiPrefs, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonPrevPrefs))
                 .addContainerGap())
         );
 
@@ -1123,9 +1307,9 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jTextFieldLogFileAddonKeyReleased
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void jButtonSavePrefsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSavePrefsActionPerformed
         this.savePreferences();
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_jButtonSavePrefsActionPerformed
 
     private void jSpinnerABCNumOnlookerBeesPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jSpinnerABCNumOnlookerBeesPropertyChange
         // TODO add your handling code here:
@@ -1259,9 +1443,180 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBoxGeneticTypeOfGeneticCrossingActionPerformed
 
+    private void jButtonNextPrefsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonNextPrefsActionPerformed
+        //Save a new opti-preferences-file in the default path
+        //Save the actual optPrefs
+        this.savePreferences();
+        //Increase number of optiPrefs
+        this.setNumberOfActualOptimizationAnalysis((Integer) (this.getNumberOfActualOptimizationAnalysis() + 1));
+        support.log("Next number of optiPrefs is " + this.getNumberOfActualOptimizationAnalysis().toString(), typeOfLogLevel.INFO);
+        //Load optiPrefs from given File
+        this.loadPreferences();
+        //Save again optiPrefs to next file
+        this.savePreferences();
+        updateNumberOfOptiPrefs();
+    }//GEN-LAST:event_jButtonNextPrefsActionPerformed
+
+    /**
+     * Returns the number of Opti-Pref-files in standard directory
+     *
+     * @return Number of Opti-Pref-Files
+     */
+    public int getNumberOfOptiPrefs() {
+        String standardFileName = support.NAME_OF_OPTIMIZER_PREFFERENCES_FILE;
+        String target_file;
+        int numberOfFoundOptiPrefs = 0;
+        File standardFile = new File(standardFileName);
+
+        File folderToScan = new File(standardFile.getParent());
+
+        File[] listOfFiles = folderToScan.listFiles();
+
+        if (listOfFiles != null) {
+            for (int i = 0; i < listOfFiles.length; i++) {
+                if (listOfFiles[i].isFile()) {
+                    target_file = listOfFiles[i].getName();
+                    if (target_file.startsWith(standardFile.getName())) {
+                        numberOfFoundOptiPrefs++;
+                    }
+                }
+            }
+        }
+        return numberOfFoundOptiPrefs;
+    }
+
+    /**
+     * Updates the label to show how many Optipreferences are stored in
+     * pref-folder
+     */
+    private void updateNumberOfOptiPrefs() {
+        this.jTextFieldNumberOfOptiPrefs.setText(Integer.toString(getNumberOfOptiPrefs()));
+    }
+
+    private void jButtonDelAllPrefsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDelAllPrefsActionPerformed
+        //Delete all Optimizerprefs and save the standard-version
+        String standardFileName = support.NAME_OF_OPTIMIZER_PREFFERENCES_FILE;
+        String target_file;
+        File standardFile = new File(standardFileName);
+        File folderToScan = new File(standardFile.getParent());
+
+        File[] listOfFiles = folderToScan.listFiles();
+        ArrayList listOfOptiPrefsToDelete = new ArrayList<>();
+
+        for (File chosenFile : listOfFiles) {
+            if (chosenFile.isFile()) {
+                target_file = chosenFile.getName();
+                if (target_file.startsWith(standardFile.getName())) {
+                    listOfOptiPrefsToDelete.add(chosenFile);
+                }
+            }
+        }
+
+        for (Object iterator : listOfOptiPrefsToDelete) {
+            File f = (File) iterator;
+            f.delete();
+        }
+        this.setNumberOfActualOptimizationAnalysis((Integer) 0);
+        this.savePreferences();
+        this.updateNumberOfOptiPrefs();
+
+    }//GEN-LAST:event_jButtonDelAllPrefsActionPerformed
+
+    private void jButtonPrevPrefsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPrevPrefsActionPerformed
+        //Save a new opti-preferences-file in the default path
+        //Save the actual optPrefs
+        this.savePreferences();
+        //Increase number of optiPrefs
+        this.setNumberOfActualOptimizationAnalysis((Integer) Math.max(this.getNumberOfActualOptimizationAnalysis() - 1, 0));
+        support.log("Next number of optiPrefs is " + this.getNumberOfActualOptimizationAnalysis().toString(), typeOfLogLevel.INFO);
+        //Load optiPrefs from given File
+        this.loadPreferences();
+        //Save again optiPrefs to next file
+        this.savePreferences();
+        updateNumberOfOptiPrefs();
+    }//GEN-LAST:event_jButtonPrevPrefsActionPerformed
+
+    private void formWindowLostFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowLostFocus
+        support.log("OptiWindow lost focus. Will save optiPrefs.", typeOfLogLevel.INFO);
+        this.savePreferences();
+    }//GEN-LAST:event_formWindowLostFocus
+
+    private void jSpinnerEpsilonStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerEpsilonStateChanged
+        updateNumberOfEstimatedSASimulations(0);
+    }//GEN-LAST:event_jSpinnerEpsilonStateChanged
+
+    private void jSpinnerMaxTemperatureCostStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerMaxTemperatureCostStateChanged
+        updateNumberOfEstimatedSASimulations(0);
+    }//GEN-LAST:event_jSpinnerMaxTemperatureCostStateChanged
+
+    private void jSpinnerMaxTemperatureParametersStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerMaxTemperatureParametersStateChanged
+        updateNumberOfEstimatedSASimulations(0);
+    }//GEN-LAST:event_jSpinnerMaxTemperatureParametersStateChanged
+
+    private void jComboBoxCoolingMethodItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxCoolingMethodItemStateChanged
+        updateNumberOfEstimatedSASimulations(0);
+    }//GEN-LAST:event_jComboBoxCoolingMethodItemStateChanged
+
+    private void jSpinnerTRatioScaleStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerTRatioScaleStateChanged
+        updateNumberOfEstimatedSASimulations(0);
+    }//GEN-LAST:event_jSpinnerTRatioScaleStateChanged
+
+    private void jSpinnerTAnnealScaleStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerTAnnealScaleStateChanged
+        updateNumberOfEstimatedSASimulations(0);
+    }//GEN-LAST:event_jSpinnerTAnnealScaleStateChanged
+
+    private void jSpinnerEstSASimulationCountStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerEstSASimulationCountStateChanged
+        updateEpsilonBasedOnNumberOfSimulations(0);
+    }//GEN-LAST:event_jSpinnerEstSASimulationCountStateChanged
+
+    private void formWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowGainedFocus
+        updateDimension();
+    }//GEN-LAST:event_formWindowGainedFocus
+
+    private void jSpinnerEstSASimulationCount1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerEstSASimulationCount1StateChanged
+        updateEpsilonBasedOnNumberOfSimulations(1);
+    }//GEN-LAST:event_jSpinnerEstSASimulationCount1StateChanged
+
+    private void jComboBoxCoolingMethod1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxCoolingMethod1ItemStateChanged
+        updateNumberOfEstimatedSASimulations(1);
+    }//GEN-LAST:event_jComboBoxCoolingMethod1ItemStateChanged
+
+    private void jSpinnerMaxTemperatureParameters1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerMaxTemperatureParameters1StateChanged
+        updateNumberOfEstimatedSASimulations(1);
+    }//GEN-LAST:event_jSpinnerMaxTemperatureParameters1StateChanged
+
+    private void jSpinnerMaxTemperatureCost1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerMaxTemperatureCost1StateChanged
+        updateNumberOfEstimatedSASimulations(1);
+    }//GEN-LAST:event_jSpinnerMaxTemperatureCost1StateChanged
+
+    private void jSpinnerEpsilon1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerEpsilon1StateChanged
+        updateNumberOfEstimatedSASimulations(1);
+    }//GEN-LAST:event_jSpinnerEpsilon1StateChanged
+
+    private void jSpinnerTRatioScale1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerTRatioScale1StateChanged
+        updateNumberOfEstimatedSASimulations(1);
+    }//GEN-LAST:event_jSpinnerTRatioScale1StateChanged
+
+    private void jSpinnerTAnnealScale1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerTAnnealScale1StateChanged
+        updateNumberOfEstimatedSASimulations(1);
+    }//GEN-LAST:event_jSpinnerTAnnealScale1StateChanged
+
+    private void jButtonCopySA1ToSA0ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCopySA1ToSA0ActionPerformed
+        copySAParameters(1, 0);
+    }//GEN-LAST:event_jButtonCopySA1ToSA0ActionPerformed
+
+    private void jButtonCopySA1ToSA1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCopySA1ToSA1ActionPerformed
+        copySAParameters(0, 1);
+    }//GEN-LAST:event_jButtonCopySA1ToSA1ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButtonCopySA1ToSA0;
+    private javax.swing.JButton jButtonCopySA1ToSA1;
+    private javax.swing.JButton jButtonDelAllPrefs;
+    private javax.swing.JButton jButtonNextPrefs;
+    private javax.swing.JButton jButtonPrevPrefs;
+    private javax.swing.JButton jButtonSavePrefs;
     private javax.swing.JCheckBox jCheckBoxAddPrefsToLogfilename;
     private javax.swing.JCheckBox jCheckBoxGeneticMutateTopSolution;
     private javax.swing.JCheckBox jCheckBoxKeepDesignspaceAndResolution;
@@ -1314,6 +1669,10 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     private javax.swing.JLabel jLabelABCNumScoutBees;
     private javax.swing.JLabel jLabelCSSMaxAttraction;
     private javax.swing.JLabel jLabelCSSPopulationSize;
+    private javax.swing.JLabel jLabelDimensionDescription;
+    private javax.swing.JLabel jLabelDimensionNumber;
+    private javax.swing.JLabel jLabelEstSASimulationCount;
+    private javax.swing.JLabel jLabelEstSASimulationCount1;
     private javax.swing.JLabel jLabelGeneticMutationChance;
     private javax.swing.JLabel jLabelGeneticPopulationSize;
     private javax.swing.JLabel jLabelMVMOAsymmetryFactor;
@@ -1347,6 +1706,8 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     private javax.swing.JSpinner jSpinnerConfidenceIntervallStart;
     private javax.swing.JSpinner jSpinnerEpsilon;
     private javax.swing.JSpinner jSpinnerEpsilon1;
+    private javax.swing.JSpinner jSpinnerEstSASimulationCount;
+    private javax.swing.JSpinner jSpinnerEstSASimulationCount1;
     private javax.swing.JSpinner jSpinnerGeneticMaxNumberOfCrossings;
     private javax.swing.JSpinner jSpinnerGeneticMaxOptiRunsWithoutImprovement;
     private javax.swing.JSpinner jSpinnerGeneticMutationChance;
@@ -1373,6 +1734,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     private javax.swing.JSpinner jSpinnerWrongSolutionsUntilBreak;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTextField jTextFieldLogFileAddon;
+    private javax.swing.JTextField jTextFieldNumberOfOptiPrefs;
     private toe.MeasurementForm measurementForm1;
     // End of variables declaration//GEN-END:variables
 
@@ -1380,111 +1742,155 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
      * Load Preferences from defined file
      */
     public void loadPreferences() {
+        String addonStringForFileName = this.getNumberOfActualOptimizationAnalysis().toString();
+        if (this.getNumberOfActualOptimizationAnalysis() <= 0) {
+            addonStringForFileName = "";
+        }
+        String filename = support.NAME_OF_OPTIMIZER_PREFFERENCES_FILE + addonStringForFileName;
+        //If file does not exist, create it by savingprefs with actual numberOfActualOptimizationprefs
+        File testFileHandle = new File(filename);
+        if (!testFileHandle.isFile()) {
+            this.savePreferences();
+        }
         try {
-            FileInputStream in = new FileInputStream(support.NAME_OF_OPTIMIZER_PREFFERENCES_FILE);
+            FileInputStream in = new FileInputStream(filename);
             auto.load(in);
             in.close();
 
             this.setPref_WrongSimulationsUntilBreak(support.loadIntFromProperties("pref_WrongSimulationsUntilBreak", support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW, auto));
             //support.log(Integer.toString(support.loadIntFromProperties("pref_WrongSimulationsUntilBreak", getPref_WrongSimulationsUntilBreak(), auto)));
-            support.log("Loaded pref_WrongSimulationsUntilBreak is " + getPref_WrongSimulationsUntilBreak());
+            support.log("Loaded pref_WrongSimulationsUntilBreak is " + getPref_WrongSimulationsUntilBreak(), typeOfLogLevel.INFO);
 
             this.setPref_WrongSimulationsPerDirection(support.loadIntFromProperties("pref_WrongSimulationsPerDirection", support.DEFAULT_WRONG_SOLUTION_PER_DIRECTION, auto));
-            support.log("Loaded pref_WrongSimulationsPerDirection is " + getPref_WrongSimulationsPerDirection());
+            support.log("Loaded pref_WrongSimulationsPerDirection is " + getPref_WrongSimulationsPerDirection(), typeOfLogLevel.INFO);
 
             this.setPref_SizeOfNeighborhood(support.loadIntFromProperties("pref_SizeOfNeighborhood", support.DEFAULT_SIZE_OF_NEIGHBORHOOD, auto));
-            support.log("Loaded Size of Neighborhood is " + getPref_SizeOfNeighborhood());
+            support.log("Loaded Size of Neighborhood is " + getPref_SizeOfNeighborhood(), typeOfLogLevel.INFO);
 
             this.setPref_StartValue(typeOfStartValueEnum.valueOf(auto.getProperty("pref_StartValue", support.DEFAULT_TYPE_OF_STARTVALUE.toString())));
-            support.log("Loaded StartValue is " + getPref_StartValue());
+            support.log("Loaded StartValue is " + getPref_StartValue(), typeOfLogLevel.INFO);
 
             this.setPref_NeighborhoodType(typeOfNeighborhoodEnum.valueOf(auto.getProperty("pref_NeighborhoodType", support.DEFAULT_TYPE_OF_NEIGHBORHOOD.toString())));
-            support.log("Loaded Neighborhoodtype is " + getPref_NeighborhoodType());
+            support.log("Loaded Neighborhoodtype is " + getPref_NeighborhoodType(), typeOfLogLevel.INFO);
 
-            this.setPref_Cooling(typeOfAnnealing.valueOf(auto.getProperty("pref_Cooling", support.DEFAULT_TYPE_OF_ANNEALING.toString())));
-            support.log("Loaded Annealing method is " + getPref_Cooling());
+            //Loading parameters for Simulated Annealing (first phase)
+            this.setPref_Cooling(typeOfAnnealing.valueOf(auto.getProperty("pref_Cooling", support.DEFAULT_TYPE_OF_ANNEALING.toString())), 0);
+            support.log("Loaded Annealing method is " + getPref_Cooling(0), typeOfLogLevel.INFO);
 
-            this.setPref_TScaleRatio(support.loadDoubleFromProperties("pref_TScaleRatio", support.DEFAULT_T_RATIO_SCALE, auto));
-            support.log("Loaded TRatioScale is " + getPref_TRatioScale());
+            this.setPref_TRatioScale(support.loadDoubleFromProperties("pref_TRatioScale", support.DEFAULT_T_RATIO_SCALE, auto), 0);
+            support.log("Loaded TRatioScale is " + getPref_TRatioScale(0), typeOfLogLevel.INFO);
 
-            this.setPref_TAnnealScale(support.loadDoubleFromProperties("pref_TAnnealScale", support.DEFAULT_T_ANNEAL_SCALE, auto));
-            support.log("Loaded TAnnealScale is " + getPref_TAnnealScale());
+            this.setPref_TAnnealScale(support.loadDoubleFromProperties("pref_TAnnealScale", support.DEFAULT_T_ANNEAL_SCALE, auto), 0);
+            support.log("Loaded TAnnealScale is " + getPref_TAnnealScale(0), typeOfLogLevel.INFO);
 
-            this.setPref_MaxTempParameter(support.loadDoubleFromProperties("pref_MaxTempParameter", support.DEFAULT_MAXTEMP_PARAMETER, auto));
-            support.log("Loaded MaxTempParameter is " + getPref_MaxTempParameter());
+            this.setPref_MaxTempParameter(support.loadDoubleFromProperties("pref_MaxTempParameter", support.DEFAULT_MAXTEMP_PARAMETER, auto), 0);
+            support.log("Loaded MaxTempParameter is " + getPref_MaxTempParameter(0), typeOfLogLevel.INFO);
 
-            this.setPref_MaxTempCost(support.loadDoubleFromProperties("pref_MaxTempCost", support.DEFAULT_MAXTEMP_COST, auto));
-            support.log("Loaded MaxTempCost is " + getPref_MaxTempCost());
+            this.setPref_MaxTempCost(support.loadDoubleFromProperties("pref_MaxTempCost", support.DEFAULT_MAXTEMP_COST, auto), 0);
+            support.log("Loaded MaxTempCost is " + getPref_MaxTempCost(0), typeOfLogLevel.INFO);
 
-            this.setPref_Epsilon(support.loadDoubleFromProperties("pref_Epsilon", support.DEFAULT_EPSILON, auto));
-            support.log("Loaded Epsilon is " + getPref_Epsilon());
+            this.setPref_Epsilon(support.loadDoubleFromProperties("pref_Epsilon", support.DEFAULT_EPSILON, auto), 0);
+            support.log("Loaded Epsilon is " + getPref_Epsilon(0), typeOfLogLevel.INFO);
 
-            this.setPref_CalculationOfNextParameterset(typeOfAnnealingParameterCalculation.valueOf(auto.getProperty("pref_CalculationOfNextParameterset", support.DEFAULT_CALC_NEXT_PARAMETER.toString())));
-            support.log("Loaded Calculation of next Parameterset is " + this.getPref_CalculationOfNextParameterset().toString());
+            this.setPref_CalculationOfNextParameterset(typeOfAnnealingParameterCalculation.valueOf(auto.getProperty("pref_CalculationOfNextParameterset", support.DEFAULT_CALC_NEXT_PARAMETER.toString())), 0);
+            support.log("Loaded Calculation of next Parameterset is " + this.getPref_CalculationOfNextParameterset(0).toString(), typeOfLogLevel.INFO);
+
+            //Loading parameters for Simulated Annealing (second phase)
+            this.setPref_Cooling(typeOfAnnealing.valueOf(auto.getProperty("pref_Cooling1", support.DEFAULT_TYPE_OF_ANNEALING.toString())), 1);
+            support.log("*2 Loaded Annealing method is " + getPref_Cooling(1), typeOfLogLevel.INFO);
+
+            this.setPref_TRatioScale(support.loadDoubleFromProperties("pref_TRatioScale1", support.DEFAULT_T_RATIO_SCALE, auto), 1);
+            support.log("*2 Loaded TRatioScale is " + getPref_TRatioScale(1), typeOfLogLevel.INFO);
+
+            this.setPref_TAnnealScale(support.loadDoubleFromProperties("pref_TAnnealScale1", support.DEFAULT_T_ANNEAL_SCALE, auto), 1);
+            support.log("*2 Loaded TAnnealScale is " + getPref_TAnnealScale(1), typeOfLogLevel.INFO);
+
+            this.setPref_MaxTempParameter(support.loadDoubleFromProperties("pref_MaxTempParameter1", support.DEFAULT_MAXTEMP_PARAMETER, auto), 1);
+            support.log("*2 Loaded MaxTempParameter is " + getPref_MaxTempParameter(1), typeOfLogLevel.INFO);
+
+            this.setPref_MaxTempCost(support.loadDoubleFromProperties("pref_MaxTempCost1", support.DEFAULT_MAXTEMP_COST, auto), 1);
+            support.log("*2 Loaded MaxTempCost is " + getPref_MaxTempCost(1), typeOfLogLevel.INFO);
+
+            this.setPref_Epsilon(support.loadDoubleFromProperties("pref_Epsilon1", support.DEFAULT_EPSILON, auto), 1);
+            support.log("*2 Loaded Epsilon is " + getPref_Epsilon(1), typeOfLogLevel.INFO);
+
+            this.setPref_CalculationOfNextParameterset(typeOfAnnealingParameterCalculation.valueOf(auto.getProperty("pref_CalculationOfNextParameterset1", support.DEFAULT_CALC_NEXT_PARAMETER.toString())), 1);
+            support.log("*2 Loaded Calculation of next Parameterset is " + this.getPref_CalculationOfNextParameterset(1).toString(), typeOfLogLevel.INFO);
 
             this.setPref_LogFileAddon(auto.getProperty("pref_LogFileAddon", ""));
-            support.log("Loaded Optimizer_Logfile-Addon is " + this.jTextFieldLogFileAddon.getText());
+            support.log("Loaded Optimizer_Logfile-Addon is " + this.jTextFieldLogFileAddon.getText(), typeOfLogLevel.INFO);
 
             this.setPref_NumberOfPhases(support.loadIntFromProperties("pref_NumberOfPhases", support.DEFAULT_NumberOfPhases, auto));
-            support.log("Loaded pref_NumberOfPhases is " + this.getPref_NumberOfPhases());
+            support.log("Loaded pref_NumberOfPhases is " + this.getPref_NumberOfPhases(), typeOfLogLevel.INFO);
             this.setPref_ConfidenceIntervallStart(support.loadIntFromProperties("pref_ConfidenceIntervallStart", support.DEFAULT_ConfidenceIntervallStart, auto));
-            support.log("Loaded pref_ConfidenceIntervallStart is " + this.getPref_ConfidenceIntervallStart());
+            support.log("Loaded pref_ConfidenceIntervallStart is " + this.getPref_ConfidenceIntervallStart(), typeOfLogLevel.INFO);
             this.setPref_ConfidenceIntervallEnd(support.loadIntFromProperties("pref_ConfidenceIntervallEnd", support.DEFAULT_ConfidenceIntervallEnd, auto));
-            support.log("Loaded pref_ConfidenceIntervallEnd is " + this.getPref_ConfidenceIntervallEnd());
+            support.log("Loaded pref_ConfidenceIntervallEnd is " + this.getPref_ConfidenceIntervallEnd(), typeOfLogLevel.INFO);
             this.setPref_MaxRelErrorStart(support.loadIntFromProperties("pref_MaxRelErrorStart", support.DEFAULT_MaxRelErrorStart, auto));
-            support.log("Loaded pref_MaxRelErrorStart is " + this.getPref_MaxRelErrorStart());
+            support.log("Loaded pref_MaxRelErrorStart is " + this.getPref_MaxRelErrorStart(), typeOfLogLevel.INFO);
             this.setPref_MaxRelErrorEnd(support.loadIntFromProperties("pref_MaxRelErrorEnd", support.DEFAULT_MaxRelErrorEnd, auto));
-            support.log("Loaded pref_MaxRelErrorEnd is " + this.getPref_MaxRelErrorEnd());
+            support.log("Loaded pref_MaxRelErrorEnd is " + this.getPref_MaxRelErrorEnd(), typeOfLogLevel.INFO);
             this.setPref_InternalParameterStart(support.loadIntFromProperties("pref_InternalParameterStart", support.DEFAULT_InternalParameterStart, auto));
-            support.log("Loaded pref_InternalParameterStart is " + this.getPref_InternalParameterStart());
+            support.log("Loaded pref_InternalParameterStart is " + this.getPref_InternalParameterStart(), typeOfLogLevel.INFO);
             this.setPref_InternalParameterEnd(support.loadIntFromProperties("pref_InternalParameterEnd", support.DEFAULT_InternalParameterEnd, auto));
-            support.log("Loaded pref_InternalParameterEnd is " + this.getPref_InternalParameterEnd());
+            support.log("Loaded pref_InternalParameterEnd is " + this.getPref_InternalParameterEnd(), typeOfLogLevel.INFO);
 
             this.setPref_typeOfUsedMultiPhaseOptimization(typeOfOptimization.valueOf(auto.getProperty("pref_typeOfUsedMultiPhaseOptimization", support.DEFAULT_typeOfUsedMultiPhaseOptimization.toString())));
-            support.log("Loaded pref_typeOfUsedMultiPhaseOptimization is " + this.getPref_typeOfUsedMultiPhaseOptimization().toString());
+            support.log("Loaded pref_typeOfUsedMultiPhaseOptimization is " + this.getPref_typeOfUsedMultiPhaseOptimization().toString(), typeOfLogLevel.INFO);
             this.setPref_KeepDesignSpaceAndResolution(Boolean.valueOf(auto.getProperty("pref_KeepDesignSpaceAndResolution", Boolean.toString(support.DEFAULT_KeepDesignSpaceAndResolution))));
-            support.log("Loaded pref_KeepDesignSpaceAndResolution is " + this.getPref_KeepDesignSpaceAndResolution());
+            support.log("Loaded pref_KeepDesignSpaceAndResolution is " + this.getPref_KeepDesignSpaceAndResolution(), typeOfLogLevel.INFO);
 
             //load settings for Genetic Optimization
             this.setPref_GeneticPopulationSize(support.loadIntFromProperties("pref_GeneticPopulationSize", support.DEFAULT_GENETIC_POPULATION_SIZE, auto));
-            support.log("Loaded pref_GeneticPopulationSize is " + this.getPref_GeneticPopulationSize());
+            support.log("Loaded pref_GeneticPopulationSize is " + this.getPref_GeneticPopulationSize(), typeOfLogLevel.INFO);
             this.setPref_GeneticMutationChance(support.loadDoubleFromProperties("pref_GeneticMutationChance", support.DEFAULT_GENETIC_MUTATION_CHANCE, auto));
-            support.log("Loaded pref_GeneticMutationChance is " + this.getPref_GeneticMutationChance());
+            support.log("Loaded pref_GeneticMutationChance is " + this.getPref_GeneticMutationChance(), typeOfLogLevel.INFO);
             this.setPref_GeneticMutateTopSolution(Boolean.valueOf(auto.getProperty("pref_GeneticMutateTopSolution", Boolean.toString(support.DEFAULT_GENETIC_MUTATE_TOP_SOLUTION))));
-            support.log("Loaded pref_GeneticMutateTopSolution is " + this.getPref_GeneticMutateTopSolution());
+            support.log("Loaded pref_GeneticMutateTopSolution is " + this.getPref_GeneticMutateTopSolution(), typeOfLogLevel.INFO);
             this.setPref_GeneticNumberOfCrossings(support.loadIntFromProperties("pref_GeneticNumberOfCrossings", support.DEFAULT_GENETIC_NUMBEROFCROSSINGS, auto));
-            
+
             this.setPref_GeneticMaximumOptirunsWithoutSolution(support.loadIntFromProperties("pref_GeneticMaxOptiRunsWithoutSolution", support.DEFAULT_GENETIC_MAXWRONGOPTIRUNS, auto));
-            support.log("Loaded pref_GeneticMaxOptiRunsWithoutSolution is "+ this.getPref_GeneticMaximumOptirunsWithoutSolution());
+            support.log("Loaded pref_GeneticMaxOptiRunsWithoutSolution is " + this.getPref_GeneticMaximumOptirunsWithoutSolution(), typeOfLogLevel.INFO);
             this.setPref_GeneticTypeOfCrossover(typeOfGeneticCrossover.valueOf(auto.getProperty("pref_GeneticTypeOfCrossover", support.DEFAULT_GENETIC_CROSSOVER.toString())));
-            support.log("Loaded pref_GeneticTypeOfCrossover is "+ this.getPref_GeneticTypeOfCrossover().toString());
-            
+            support.log("Loaded pref_GeneticTypeOfCrossover is " + this.getPref_GeneticTypeOfCrossover().toString(), typeOfLogLevel.INFO);
+
             //load settings for CSS Optimization
             this.setPref_CSS_PopulationSize(support.loadIntFromProperties("pref_CSS_PopulationSize", support.DEFAULT_CSS_POPULATION_SIZE, auto));
-            support.log("Loaded pref_CSS_PopulationSize is " + this.getPref_CSS_PopulationSize());
+            support.log("Loaded pref_CSS_PopulationSize is " + this.getPref_CSS_PopulationSize(), typeOfLogLevel.INFO);
             this.setPref_CSS_MaxAttraction(support.loadDoubleFromProperties("pref_CSS_MaxAttraction", support.DEFAULT_CSS_MAX_ATTRACTION, auto));
-            support.log("Loaded pref_CSS_MaxAttraction is " + this.getPref_CSS_MaxAttraction());
+            support.log("Loaded pref_CSS_MaxAttraction is " + this.getPref_CSS_MaxAttraction(), typeOfLogLevel.INFO);
 
             //load settings for ABC Optimization
             this.setPref_ABC_NumEmployedBees(support.loadIntFromProperties("pref_ABC_NumEmployedBees", support.DEFAULT_ABC_NumEmployedBees, auto));
-            support.log("Loaded pref_ABC_NumEmployedBees is " + this.getPref_ABC_NumEmployedBees());
+            support.log("Loaded pref_ABC_NumEmployedBees is " + this.getPref_ABC_NumEmployedBees(), typeOfLogLevel.INFO);
             this.setPref_ABC_NumOnlookerBees(support.loadIntFromProperties("pref_ABC_NumOnlookerBees", support.DEFAULT_ABC_NumOnlookerBees, auto));
-            support.log("Loaded pref_ABC_NumOnlookerBees is " + this.getPref_ABC_NumOnlookerBees());
+            support.log("Loaded pref_ABC_NumOnlookerBees is " + this.getPref_ABC_NumOnlookerBees(), typeOfLogLevel.INFO);
             this.setPref_ABC_NumScoutBees(support.loadIntFromProperties("pref_ABC_NumScoutBees", support.DEFAULT_ABC_NumScoutBees, auto));
-            support.log("Loaded pref_ABC_NumScoutBees is " + this.getPref_ABC_NumScoutBees());
+            support.log("Loaded pref_ABC_NumScoutBees is " + this.getPref_ABC_NumScoutBees(), typeOfLogLevel.INFO);
             this.setPref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement(support.loadIntFromProperties(
                     "pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement", support.DEFAULT_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement, auto));
-            support.log("Loaded pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement is " + this.getPref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement());
-            
-            //load settings for MVMO Optimization
-            this.setPref_MVMO_StartingPop(support.loadIntFromProperties("setPref_MVMO_StartingPop", support.DEFAULT_MVMO_STARTING_POPULATION, auto));
-            support.log("Loaded pref__MVMO_StartingPop is" + this.getPref_MVMO_StartingPop());
-            this.setPref_MVMO_MaxPop(support.loadIntFromProperties("setPref_MVMO_MaxPop", support.DEFAULT_MVMO_MAX_POPULATION, auto));
-            support.log("Loaded setPref_MVMO_MaxPop is" + this.getPref_MVMO_MaxPop());
+            support.log("Loaded pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement is " + this.getPref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement(), typeOfLogLevel.INFO);
 
+            //load settings for MVMO Optimization
+            this.setPref_MVMO_StartingPop(support.loadIntFromProperties("pref_MVMO_StartingPop", support.DEFAULT_MVMO_STARTING_POPULATION, auto));
+            support.log("Loaded MVMO_StartingPop is " + this.getPref_MVMO_StartingPop(), typeOfLogLevel.INFO);
+            this.setPref_MVMO_MaxPop(support.loadIntFromProperties("pref_MVMO_MaxPop", support.DEFAULT_MVMO_MAX_POPULATION, auto));
+            support.log("Loaded MVMO_MaxPop is " + this.getPref_MVMO_MaxPop(), typeOfLogLevel.INFO);
+
+            this.setPref_MVMO_AsymmetryFactor(support.loadDoubleFromProperties("MVMO_AsymmetryFactor", support.DEFAULT_MVMO_ASYMMETRY_FACTOR, auto));
+            support.log("Loaded MVMO_AsymmetryFactor is " + this.getPref_MVMO_AsymmetryFactor(), typeOfLogLevel.INFO);
+            this.setPref_MVMO_ScalingFactor(support.loadDoubleFromProperties("MVMO_ScalingFactor", support.DEFAULT_MVMO_SCALING_FACTOR, auto));
+            support.log("Loaded MVMO_ScalingFactor is " + this.getPref_MVMO_ScalingFactor(), typeOfLogLevel.INFO);
+            this.setPref_MVMO_mutationSelection(typeOfMVMOMutationSelection.valueOf(auto.getProperty("MVMO_mutationSelection", support.DEFAULT_MVMO_MUTATION_STRATEGY.toString())));
+            support.log("Loaded MVMO_mutationSelection is " + this.getPref_MVMO_mutationSelection(), typeOfLogLevel.INFO);
+            this.setPref_MVMO_ParentSelection(typeOfMVMOParentSelection.valueOf(auto.getProperty("MVMO_parentSelection", support.DEFAULT_MVMO_PARENT_SELECTION.toString())));
+            support.log("Loaded MVMO_parentSelection is " + this.getPref_MVMO_parentSelection(), typeOfLogLevel.INFO);
+            this.setPref_MVMO_sd(support.loadDoubleFromProperties("MVMO_sd", support.DEFAULT_MVMO_SD, auto));
+            support.log("Loaded MVMO_sd is " + this.getPref_MVMO_sd(), typeOfLogLevel.INFO);
+            
         } catch (IOException e) {
             // Exception bearbeiten
-            support.log("Error while loading Optimizer-Properties.");
+            support.log("Error while loading Optimizer-Properties.", typeOfLogLevel.ERROR);
         }
 
     }
@@ -1493,7 +1899,13 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
      * Save Preferences to defined file
      */
     public void savePreferences() {
-        support.log("Saving Properties of Optimization");
+        support.log("Saving Properties #" + this.getNumberOfActualOptimizationAnalysis().toString() + " of Optimization", typeOfLogLevel.INFO);
+        String addonStringForFileName = this.getNumberOfActualOptimizationAnalysis().toString();
+        if (this.getNumberOfActualOptimizationAnalysis() <= 0) {
+            addonStringForFileName = "";
+        }
+        String filename = support.NAME_OF_OPTIMIZER_PREFFERENCES_FILE + addonStringForFileName;
+
         try {
 
             //Setting Parameters of HillClimbing
@@ -1505,12 +1917,20 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             auto.setProperty("pref_NeighborhoodType", getPref_NeighborhoodType().toString());
 
             //Setting Parameters of Simulated Annealing
-            auto.setProperty("pref_Cooling", getPref_Cooling().toString());
-            auto.setProperty("pref_TScaleRatio", support.getString(this.getPref_TRatioScale()));
-            auto.setProperty("pref_TAnnealScale", support.getString(this.getPref_TAnnealScale()));
-            auto.setProperty("pref_MaxTempParameter", support.getString(this.getPref_MaxTempParameter()));
-            auto.setProperty("pref_MaxTempCost", support.getString(this.getPref_MaxTempCost()));
-            auto.setProperty("pref_Epsilon", Double.toString(getPref_Epsilon()));
+            auto.setProperty("pref_Cooling", getPref_Cooling(0).toString());
+            auto.setProperty("pref_TRatioScale", support.getString(this.getPref_TRatioScale(0)));
+            auto.setProperty("pref_TAnnealScale", support.getString(this.getPref_TAnnealScale(0)));
+            auto.setProperty("pref_MaxTempParameter", support.getString(this.getPref_MaxTempParameter(0)));
+            auto.setProperty("pref_MaxTempCost", support.getString(this.getPref_MaxTempCost(0)));
+            auto.setProperty("pref_Epsilon", Double.toString(getPref_Epsilon(0)));
+
+            //Setting Parameters of Simulated Annealing - Second phase
+            auto.setProperty("pref_Cooling1", getPref_Cooling(1).toString());
+            auto.setProperty("pref_TRatioScale1", support.getString(this.getPref_TRatioScale(1)));
+            auto.setProperty("pref_TAnnealScale1", support.getString(this.getPref_TAnnealScale(1)));
+            auto.setProperty("pref_MaxTempParameter1", support.getString(this.getPref_MaxTempParameter(1)));
+            auto.setProperty("pref_MaxTempCost1", support.getString(this.getPref_MaxTempCost(1)));
+            auto.setProperty("pref_Epsilon1", Double.toString(getPref_Epsilon(1)));
 
             //Setting Parameters of MultiPhase Optimization
             auto.setProperty("pref_NumberOfPhases", Integer.toString(this.getPref_NumberOfPhases()));
@@ -1524,7 +1944,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             auto.setProperty("pref_KeepDesignSpaceAndResolution", Boolean.toString(this.getPref_KeepDesignSpaceAndResolution()));
 
             auto.setProperty("pref_LogFileAddon", this.jTextFieldLogFileAddon.getText());
-            auto.setProperty("pref_CalculationOfNextParameterset", this.getPref_CalculationOfNextParameterset().toString());
+            auto.setProperty("pref_CalculationOfNextParameterset", this.getPref_CalculationOfNextParameterset(0).toString());
 
             //setting parameters for genetic optimization
             auto.setProperty("pref_GeneticPopulationSize", Integer.toString(this.getPref_GeneticPopulationSize()));
@@ -1533,7 +1953,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             auto.setProperty("pref_GeneticMaxOptiRunsWithoutSolution", Integer.toString(this.getPref_GeneticMaximumOptirunsWithoutSolution()));
             auto.setProperty("pref_GeneticTypeOfCrossover", this.getPref_GeneticTypeOfCrossover().toString());
             auto.setProperty("pref_GeneticNumberOfCrossings", Integer.toString(this.getPref_GeneticNumberOfCrossings()));
-            
+
             //setting parameters for CSS optimization
             auto.setProperty("pref_CSS_PopulationSize", Integer.toString(this.getPref_CSS_PopulationSize()));
             auto.setProperty("pref_CSS_MaxAttraction", Double.toString(this.getPref_CSS_MaxAttraction()));
@@ -1544,10 +1964,19 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             auto.setProperty("pref_ABC_NumScoutBees", Integer.toString(this.getPref_ABC_NumScoutBees()));
             auto.setProperty("pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement", Integer.toString(this.getPref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement()));
 
-            File parserprops = new File(support.NAME_OF_OPTIMIZER_PREFFERENCES_FILE);
+            //save settings for MVMO Optimization
+            auto.setProperty("pref_MVMO_StartingPop", Integer.toString(this.getPref_MVMO_StartingPop()));
+            auto.setProperty("pref_MVMO_MaxPop", Integer.toString(this.getPref_MVMO_MaxPop()));
+            auto.setProperty("MVMO_AsymmetryFactor", Double.toString(this.getPref_MVMO_AsymmetryFactor()));
+            auto.setProperty("MVMO_ScalingFactor",Double.toString(this.getPref_MVMO_ScalingFactor()));
+            auto.setProperty("MVMO_mutationSelection",this.getPref_MVMO_mutationSelection().toString());
+            auto.setProperty("MVMO_parentSelection", this.getPref_MVMO_parentSelection().toString());        
+            auto.setProperty("MVMO_sd", Double.toString(this.getPref_MVMO_sd()));  
+                                    
+            File parserprops = new File(filename);
             auto.store(new FileOutputStream(parserprops), "ExperimentGenerator-Properties");
         } catch (IOException e) {
-            support.log("Problem Saving the properties.");
+            support.log("Problem Saving the properties.", typeOfLogLevel.ERROR);
         }
 
     }
@@ -1603,12 +2032,12 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
                     break;
                 case SimAnnealing:
                     addonString += "_StartAt_" + this.jComboBoxTypeOfStartValue.getSelectedItem();
-                    addonString += "_TAnnealScale_" + this.getPref_TAnnealScale();
-                    addonString += "_TRatioScale_" + this.getPref_TRatioScale();
-                    addonString += "_Epsilon_" + this.getPref_Epsilon();
-                    addonString += "_Cooling_" + this.getPref_Cooling();
-                    addonString += "_MaxTempPara_" + this.getPref_MaxTempParameter();
-                    addonString += "_MaxTempCost_" + this.getPref_MaxTempCost();
+                    addonString += "_TAnnealScale_" + this.getPref_TAnnealScale(0);
+                    addonString += "_TRatioScale_" + this.getPref_TRatioScale(0);
+                    addonString += "_Epsilon_" + this.getPref_Epsilon(0);
+                    addonString += "_Cooling_" + this.getPref_Cooling(0);
+                    addonString += "_MaxTempPara_" + this.getPref_MaxTempParameter(0);
+                    addonString += "_MaxTempCost_" + this.getPref_MaxTempCost(0);
                     break;
                 case MultiPhase:
                     addonString += "_ChosenAlg_" + this.getPref_typeOfUsedMultiPhaseOptimization();
@@ -1616,14 +2045,23 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
                     break;
 
                 case TwoPhase:
+                    for (int i = 0; i <= 1; i++) {
+                        addonString += "Phase: " + i + "_StartAt_" + this.jComboBoxTypeOfStartValue.getSelectedItem();
+                        addonString += "Phase: " + i + "_TAnnealScale_" + this.getPref_TAnnealScale(i);
+                        addonString += "Phase: " + i + "_TRatioScale_" + this.getPref_TRatioScale(i);
+                        addonString += "Phase: " + i + "_Epsilon_" + this.getPref_Epsilon(i);
+                        addonString += "Phase: " + i + "_Cooling_" + this.getPref_Cooling(i);
+                        addonString += "Phase: " + i + "_MaxTempPara_" + this.getPref_MaxTempParameter(i);
+                        addonString += "Phase: " + i + "_MaxTempCost_" + this.getPref_MaxTempCost(i);
+                    }
                     break;
 
                 case Genetic:
-                    addonString += "_Popsize_"+this.getPref_GeneticPopulationSize();
-                    addonString += "_MutationChance_"+this.getPref_GeneticMutationChance();
-                    addonString += "_MutateTop_"+this.getPref_GeneticMutateTopSolution();
-                    addonString += "_MaxWrongOptiruns_"+this.getPref_GeneticMaximumOptirunsWithoutSolution();
-                    addonString += "_Crossover_"+this.getPref_GeneticTypeOfCrossover();
+                    addonString += "_Popsize_" + this.getPref_GeneticPopulationSize();
+                    addonString += "_MutationChance_" + this.getPref_GeneticMutationChance();
+                    addonString += "_MutateTop_" + this.getPref_GeneticMutateTopSolution();
+                    addonString += "_MaxWrongOptiruns_" + this.getPref_GeneticMaximumOptirunsWithoutSolution();
+                    addonString += "_Crossover_" + this.getPref_GeneticTypeOfCrossover();
                     break;
                 case ChargedSystemSearch:
                     //TODO Add Infos to this Algorithm here!
@@ -1663,6 +2101,8 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     }
 
     /**
+     * Returns the type of neighborhood for Hill Climbing
+     *
      * @return the pref_NeighborhoodType
      */
     public typeOfNeighborhoodEnum getPref_NeighborhoodType() {
@@ -1671,6 +2111,8 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     }
 
     /**
+     * Sets the type of neighborhood for Hill Climbing
+     *
      * @param pref_NeighborhoodType the pref_NeighborhoodType to set
      */
     public void setPref_NeighborhoodType(typeOfNeighborhoodEnum pref_NeighborhoodType) {
@@ -1679,6 +2121,8 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     }
 
     /**
+     * Returns the size of neighborhood for Hill Climbing
+     *
      * @return the pref_SizeOfNeighborhood
      */
     public int getPref_SizeOfNeighborhood() {
@@ -1687,6 +2131,8 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     }
 
     /**
+     * Sets the size of neighborhood for Hill Climbing
+     *
      * @param pref_SizeOfNeighborhood the pref_SizeOfNeighborhood to set
      */
     public void setPref_SizeOfNeighborhood(int pref_SizeOfNeighborhood) {
@@ -1695,116 +2141,272 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     }
 
     /**
-     * @return the pref_Cooling, the Type of Annealing
+     * Returns the chosen cooling type for Simulated Annealing
+     *
+     * @param phase Number of Opti-Phase, can be 0..1
+     * @return the pref_Cooling, the Type of Annealing Phase
      */
-    public typeOfAnnealing getPref_Cooling() {
-        this.pref_Cooling = (typeOfAnnealing) this.jComboBoxCoolingMethod.getSelectedItem();
-        return pref_Cooling;
+    public typeOfAnnealing getPref_Cooling(int phase) {
+        switch (phase) {
+            case 0:
+                return (typeOfAnnealing) this.jComboBoxCoolingMethod.getSelectedItem();
+            case 1:
+                return (typeOfAnnealing) this.jComboBoxCoolingMethod1.getSelectedItem();
+            default:
+                return (typeOfAnnealing) this.jComboBoxCoolingMethod.getSelectedItem();
+        }
     }
 
     /**
+     * Sets the chosen cooling type for Simulated Annealing
+     *
      * @param pref_Cooling the pref_Cooling to set
+     * @param phase Number of Opti-Phase, can be 0..1
      */
-    public void setPref_Cooling(typeOfAnnealing pref_Cooling) {
-        this.jComboBoxCoolingMethod.setSelectedItem(pref_Cooling);
-        this.pref_Cooling = pref_Cooling;
+    public void setPref_Cooling(typeOfAnnealing pref_Cooling, int phase) {
+        switch (phase) {
+            case 0:
+                this.jComboBoxCoolingMethod.setSelectedItem(pref_Cooling);
+                break;
+            case 1:
+                this.jComboBoxCoolingMethod1.setSelectedItem(pref_Cooling);
+                break;
+        }
     }
 
     /**
-     * @return the pref_TRatioScale
+     * Gets the TRatioScale for Simulated Annealing
+     *
+     * @param phase Number of Opti-Phase, can be 0..1
+     * @return the pref_TRatioScale Phase 2 in 2-Phase Simulated
+     *
      */
-    public double getPref_TRatioScale() {
-        this.pref_TRatioScale = (Double) this.jSpinnerTRatioScale.getValue();
-        return pref_TRatioScale;
+    public double getPref_TRatioScale(int phase) {
+        switch (phase) {
+            case 0:
+                return (Double) this.jSpinnerTRatioScale.getValue();
+            case 1:
+                return (Double) this.jSpinnerTRatioScale1.getValue();
+            default:
+                return (Double) this.jSpinnerTRatioScale.getValue();
+        }
     }
 
     /**
-     * @param pref_TScaleRatio
+     * Sets the TScaleRatio for standard SA
+     *
+     * @param pref_TRatioScale the TRatioScale to set
+     * @param phase Number of Opti-Phase, can be 0..1
      */
-    public void setPref_TScaleRatio(double pref_TScaleRatio) {
-        this.jSpinnerTRatioScale.setValue(pref_TScaleRatio);
-        this.pref_TRatioScale = pref_TScaleRatio;
+    public void setPref_TRatioScale(double pref_TRatioScale, int phase) {
+        switch (phase) {
+            case 0:
+                this.jSpinnerTRatioScale.setValue(pref_TRatioScale);
+                break;
+            case 1:
+                this.jSpinnerTRatioScale1.setValue(pref_TRatioScale);
+                break;
+            default:
+                this.jSpinnerTRatioScale.setValue(pref_TRatioScale);
+                break;
+        }
     }
 
     /**
+     * Gets TAnnealScale for standard SA
+     *
      * @return the pref_TAnnealScale
+     * @param phase Number of Opti-Phase, can be 0..1
      */
-    public double getPref_TAnnealScale() {
-        this.pref_TAnnealScale = (Double) (this.jSpinnerTAnnealScale.getValue());
-        return pref_TAnnealScale;
+    public double getPref_TAnnealScale(int phase) {
+        switch (phase) {
+            case 0:
+                return (Double) (this.jSpinnerTAnnealScale.getValue());
+            case 1:
+                return (Double) (this.jSpinnerTAnnealScale1.getValue());
+            default:
+                return (Double) (this.jSpinnerTAnnealScale.getValue());
+        }
     }
 
     /**
-     * @param pref_TAnnealScale the pref_TAnnealScale to set
+     * Sets TAnnealScale for standard SA
+     *
+     * @param pref_TAnnealScale the pref_TAnnealScale to set Simulated
+     * @param phase Number of Opti-Phase, can be 0..1
      */
-    public void setPref_TAnnealScale(double pref_TAnnealScale) {
-        this.jSpinnerTAnnealScale.setValue(pref_TAnnealScale);
-        this.pref_TAnnealScale = pref_TAnnealScale;
+    public void setPref_TAnnealScale(double pref_TAnnealScale, int phase) {
+        switch (phase) {
+            case 0:
+                this.jSpinnerTAnnealScale.setValue(pref_TAnnealScale);
+                break;
+            case 1:
+                this.jSpinnerTAnnealScale1.setValue(pref_TAnnealScale);
+                break;
+            default:
+                this.jSpinnerTAnnealScale.setValue(pref_TAnnealScale);
+                break;
+        }
     }
 
     /**
+     * Gets Max Temperature for standard Simulated Annealing
+     *
      * @return the pref_MaxTempParameter
+     * @param phase Number of Opti-Phase, can be 0..1
      */
-    public double getPref_MaxTempParameter() {
-        this.pref_MaxTempParameter = (Double) this.jSpinnerMaxTemperatureParameters.getValue();
-        return pref_MaxTempParameter;
+    public double getPref_MaxTempParameter(int phase) {
+        switch (phase) {
+            case 0:
+                return (Double) this.jSpinnerMaxTemperatureParameters.getValue();
+            case 1:
+                return (Double) this.jSpinnerMaxTemperatureParameters1.getValue();
+            default:
+                return (Double) this.jSpinnerMaxTemperatureParameters.getValue();
+        }
     }
 
     /**
      * @param pref_MaxTempParameter the pref_MaxTempParameter to set
+     * @param phase Number of Opti-Phase, can be 0..1
      */
-    public void setPref_MaxTempParameter(double pref_MaxTempParameter) {
-        this.jSpinnerMaxTemperatureParameters.setValue(pref_MaxTempParameter);
-        this.pref_MaxTempParameter = pref_MaxTempParameter;
+    public void setPref_MaxTempParameter(double pref_MaxTempParameter, int phase) {
+        switch (phase) {
+            case 0:
+                this.jSpinnerMaxTemperatureParameters.setValue(pref_MaxTempParameter);
+                break;
+            case 1:
+                this.jSpinnerMaxTemperatureParameters1.setValue(pref_MaxTempParameter);
+                break;
+            default:
+                this.jSpinnerMaxTemperatureParameters.setValue(pref_MaxTempParameter);
+                break;
+        }
     }
 
     /**
      * @return the pref_MaxTempCost
+     * @param phase Number of Opti-Phase, can be 0..1
      */
-    public double getPref_MaxTempCost() {
-        this.pref_MaxTempCost = (Double) jSpinnerMaxTemperatureCost.getValue();
-        return pref_MaxTempCost;
+    public double getPref_MaxTempCost(int phase) {
+        switch (phase) {
+            case 0:
+                return (Double) jSpinnerMaxTemperatureCost.getValue();
+            case 1:
+                return (Double) jSpinnerMaxTemperatureCost1.getValue();
+            default:
+                return (Double) jSpinnerMaxTemperatureCost.getValue();
+        }
     }
 
     /**
      * @param pref_MaxTempCost the pref_MaxTempCost to set
+     * @param phase Number of Opti-Phase, can be 0..1
      */
-    public void setPref_MaxTempCost(double pref_MaxTempCost) {
-        this.jSpinnerMaxTemperatureCost.setValue(pref_MaxTempCost);
-        this.pref_MaxTempCost = pref_MaxTempCost;
+    public void setPref_MaxTempCost(double pref_MaxTempCost, int phase) {
+        switch (phase) {
+            case 0:
+                this.jSpinnerMaxTemperatureCost.setValue(pref_MaxTempCost);
+                break;
+            case 1:
+                this.jSpinnerMaxTemperatureCost1.setValue(pref_MaxTempCost);
+                break;
+            default:
+                this.jSpinnerMaxTemperatureCost.setValue(pref_MaxTempCost);
+                break;
+        }
     }
 
     /**
+     * Get the epsilon value (break condition) for Simulated Annealing
+     *
      * @return the pref_Epsilon
+     * @param phase Number of Opti-Phase, can be 0..1
      */
-    public double getPref_Epsilon() {
-        this.pref_Epsilon = (Double) jSpinnerEpsilon.getValue();
-        return pref_Epsilon;
+    public double getPref_Epsilon(int phase) {
+        switch (phase) {
+            case 0:
+                return (Double) jSpinnerEpsilon.getValue();
+            case 1:
+                return (Double) jSpinnerEpsilon1.getValue();
+            default:
+                return (Double) jSpinnerEpsilon.getValue();
+        }
     }
 
     /**
+     * Set the epsilon value (break condition) for Simulated Annealing
+     *
      * @param pref_Epsilon the pref_Epsilon to set
+     * @param phase Number of Opti-Phase, can be 0..1
      */
-    public void setPref_Epsilon(double pref_Epsilon) {
-        this.jSpinnerEpsilon.setValue(pref_Epsilon);
-        this.pref_Epsilon = pref_Epsilon;
+    public void setPref_Epsilon(double pref_Epsilon, int phase) {
+        javax.swing.JSpinner tmpSpinner;
+        switch (phase) {
+            case 1:
+                tmpSpinner = jSpinnerEpsilon1;
+                break;
+            default:
+            case 0:
+                tmpSpinner = jSpinnerEpsilon;
+                break;
+        }
+
+        javax.swing.JSpinner.DefaultEditor editor = (javax.swing.JSpinner.DefaultEditor) tmpSpinner.getEditor();
+        if (pref_Epsilon < epsilon_min) {
+            tmpSpinner.setToolTipText("Calculated Epsilon is to small!");
+            tmpSpinner.setBackground(Color.RED);
+            editor.getTextField().setBackground(Color.red);
+            pref_Epsilon = epsilon_min;
+        } else if (pref_Epsilon > epsilon_max) {
+            tmpSpinner.setToolTipText("Calculated Epsilon is to big!");
+            editor.getTextField().setBackground(Color.red);
+            pref_Epsilon = epsilon_max;
+        } else {
+            tmpSpinner.setToolTipText("");
+            editor.getTextField().setBackground(Color.white);
+        }
+        tmpSpinner.setValue(support.round(pref_Epsilon, 3));
     }
 
     /**
+     * Returns how the next parameterset is calculated when Simulated Annealing
+     * is used
+     *
      * @return the pref_CalculationOfNextParameterset
+     * @param phase Number of Opti-Phase, can be 0..1
      */
-    public typeOfAnnealingParameterCalculation getPref_CalculationOfNextParameterset() {
-        pref_CalculationOfNextParameterset = (typeOfAnnealingParameterCalculation) this.jComboBoxCalculationOfNextParameterset.getSelectedItem();
-        return pref_CalculationOfNextParameterset;
+    public typeOfAnnealingParameterCalculation getPref_CalculationOfNextParameterset(int phase) {
+        switch (phase) {
+            case 0:
+                return (typeOfAnnealingParameterCalculation) this.jComboBoxCalculationOfNextParameterset.getSelectedItem();
+            case 1:
+                return (typeOfAnnealingParameterCalculation) this.jComboBoxCalculationOfNextParameterset1.getSelectedItem();
+            default:
+                return (typeOfAnnealingParameterCalculation) this.jComboBoxCalculationOfNextParameterset.getSelectedItem();
+        }
     }
 
     /**
+     * Set how the next parameterset is calculated when Simulated Annealing is
+     * used
+     *
      * @param pref_CalculationOfNextParameterset the
      * pref_CalculationOfNextParameterset to set
+     * @param phase Number of Opti-Phase, can be 0..1
      */
-    public void setPref_CalculationOfNextParameterset(typeOfAnnealingParameterCalculation pref_CalculationOfNextParameterset) {
-        this.jComboBoxCalculationOfNextParameterset.setSelectedItem(pref_CalculationOfNextParameterset);
-        this.pref_CalculationOfNextParameterset = pref_CalculationOfNextParameterset;
+    public void setPref_CalculationOfNextParameterset(typeOfAnnealingParameterCalculation pref_CalculationOfNextParameterset, int phase) {
+        switch (phase) {
+            case 0:
+                this.jComboBoxCalculationOfNextParameterset.setSelectedItem(pref_CalculationOfNextParameterset);
+                break;
+            case 1:
+                this.jComboBoxCalculationOfNextParameterset1.setSelectedItem(pref_CalculationOfNextParameterset);
+                break;
+            default:
+                this.jComboBoxCalculationOfNextParameterset.setSelectedItem(pref_CalculationOfNextParameterset);
+                break;
+        }
     }
 
     /**
@@ -2115,72 +2717,72 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         jSpinnerABCMaxNumberOfFoodUpdateCyclesWithoutImprovement.setValue(Pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement);
         this.pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement = Pref_ABC_MaxNumberOfFoodUpdateCyclesWithoutImprovement;
     }
-    
+
     public int getPref_MVMO_StartingPop() {
         this.pref_MVMO_StartingPop = (Integer) jSpinnerMVMOStartingPop.getValue();
         return pref_MVMO_StartingPop;
     }
-    
+
     public void setPref_MVMO_StartingPop(int Pref_MVMO_StartingPop) {
         jSpinnerMVMOStartingPop.setValue(Pref_MVMO_StartingPop);
         this.pref_MVMO_StartingPop = Pref_MVMO_StartingPop;
     }
-    
+
     public int getPref_MVMO_MaxPop() {
         this.pref_MVMO_MaxPop = (Integer) jSpinnerMVMOMaxPop.getValue();
         return pref_MVMO_MaxPop;
     }
-    
+
     private void setPref_MVMO_MaxPop(int Pref_MVMO_MaxPop) {
         jSpinnerMVMOMaxPop.setValue(Pref_MVMO_MaxPop);
         this.pref_MVMO_MaxPop = Pref_MVMO_MaxPop;
     }
-    
+
     private double getPref_MVMO_ScalingFactor() {
         this.pref_MVMO_ScalingFactor = (Double) jSpinnerMVMOScalingFactor.getValue();
         return pref_MVMO_ScalingFactor;
     }
-    
+
     private void setPref_MVMO_ScalingFactor(double Pref_MVMO_ScalingFactor) {
         jSpinnerMVMOScalingFactor.setValue(Pref_MVMO_ScalingFactor);
         this.pref_MVMO_ScalingFactor = Pref_MVMO_ScalingFactor;
     }
-    
+
     private double getPref_MVMO_AsymmetryFactor() {
         this.pref_MVMO_AsymmetryFactor = (Double) jSpinnerMVMOAsymmetryFactor.getValue();
         return pref_MVMO_AsymmetryFactor;
     }
-    
+
     private void setPref_MVMO_AsymmetryFactor(double Pref_MVMO_AsymmetryFactor) {
         jSpinnerMVMOAsymmetryFactor.setValue(Pref_MVMO_AsymmetryFactor);
         this.pref_MVMO_AsymmetryFactor = Pref_MVMO_AsymmetryFactor;
     }
-    
+
     private double getPref_MVMO_sd() {
         this.pref_MVMO_sd = (Double) jSpinnerMVMOsd.getValue();
         return this.pref_MVMO_sd;
     }
-    
-    private void getPref_MVMO_sd(double Pref_MVMO_sd) {
+
+    private void setPref_MVMO_sd(double Pref_MVMO_sd) {
         jSpinnerMVMOsd.setValue(Pref_MVMO_sd);
         this.pref_MVMO_sd = Pref_MVMO_sd;
     }
-    
+
     private typeOfMVMOParentSelection getPref_MVMO_parentSelection() {
-        this.pref_MVMO_parentSelection = (typeOfMVMOParentSelection)jComboBoxTypeOfParentSelection.getSelectedItem();
+        this.pref_MVMO_parentSelection = (typeOfMVMOParentSelection) jComboBoxTypeOfParentSelection.getSelectedItem();
         return this.pref_MVMO_parentSelection;
     }
-    
-    private void setPrefMVMOParentSelection(typeOfMVMOParentSelection PrefMVMOParentSelection) {
+
+    private void setPref_MVMO_ParentSelection(typeOfMVMOParentSelection PrefMVMOParentSelection) {
         jComboBoxTypeOfMVMOMutationSelection.setSelectedItem(PrefMVMOParentSelection);
         this.pref_MVMO_parentSelection = PrefMVMOParentSelection;
     }
-        
+
     private typeOfMVMOMutationSelection getPref_MVMO_mutationSelection() {
-        this.pref_MVMO_mutationSelection = (typeOfMVMOMutationSelection)jComboBoxTypeOfMVMOMutationSelection.getSelectedItem();
+        this.pref_MVMO_mutationSelection = (typeOfMVMOMutationSelection) jComboBoxTypeOfMVMOMutationSelection.getSelectedItem();
         return this.pref_MVMO_mutationSelection;
     }
-    
+
     private void setPref_MVMO_mutationSelection(typeOfMVMOMutationSelection Pref_MVMO_mutationSelection) {
         jComboBoxTypeOfMVMOMutationSelection.setSelectedItem(Pref_MVMO_mutationSelection);
         this.pref_MVMO_mutationSelection = Pref_MVMO_mutationSelection;
@@ -2241,12 +2843,13 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
      * @return the pref_GeneticMaximumOptirunsWithoutSolution
      */
     public int getPref_GeneticMaximumOptirunsWithoutSolution() {
-        this.pref_GeneticMaximumOptirunsWithoutSolution=(Integer)jSpinnerGeneticMaxOptiRunsWithoutImprovement.getValue();
+        this.pref_GeneticMaximumOptirunsWithoutSolution = (Integer) jSpinnerGeneticMaxOptiRunsWithoutImprovement.getValue();
         return pref_GeneticMaximumOptirunsWithoutSolution;
     }
 
     /**
-     * @param pref_GeneticMaximumOptirunsWithoutSolution the pref_GeneticMaximumOptirunsWithoutSolution to set
+     * @param pref_GeneticMaximumOptirunsWithoutSolution the
+     * pref_GeneticMaximumOptirunsWithoutSolution to set
      */
     public void setPref_GeneticMaximumOptirunsWithoutSolution(int pref_GeneticMaximumOptirunsWithoutSolution) {
         this.jSpinnerGeneticMaxOptiRunsWithoutImprovement.setValue(pref_GeneticMaximumOptirunsWithoutSolution);
@@ -2257,7 +2860,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
      * @return the pref_GeneticTypeOfCrossover
      */
     public typeOfGeneticCrossover getPref_GeneticTypeOfCrossover() {
-        this.pref_GeneticTypeOfCrossover=(typeOfGeneticCrossover)this.jComboBoxGeneticTypeOfGeneticCrossing.getSelectedItem();
+        this.pref_GeneticTypeOfCrossover = (typeOfGeneticCrossover) this.jComboBoxGeneticTypeOfGeneticCrossing.getSelectedItem();
         return pref_GeneticTypeOfCrossover;
     }
 
@@ -2273,15 +2876,151 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
      * @return the pref_GeneticNumberOfCrossings
      */
     public int getPref_GeneticNumberOfCrossings() {
-        pref_GeneticNumberOfCrossings=(Integer)jSpinnerGeneticMaxNumberOfCrossings.getValue();
+        pref_GeneticNumberOfCrossings = (Integer) jSpinnerGeneticMaxNumberOfCrossings.getValue();
         return pref_GeneticNumberOfCrossings;
     }
 
     /**
-     * @param pref_GeneticNumberOfCrossings the pref_GeneticNumberOfCrossings to set
+     * @param pref_GeneticNumberOfCrossings the pref_GeneticNumberOfCrossings to
+     * set
      */
     public void setPref_GeneticNumberOfCrossings(int pref_GeneticNumberOfCrossings) {
         jSpinnerGeneticMaxNumberOfCrossings.setValue(pref_GeneticNumberOfCrossings);
         this.pref_GeneticNumberOfCrossings = pref_GeneticNumberOfCrossings;
+    }
+
+    /**
+     * @return the numberOfActualOptimizationAnalysis
+     */
+    public Integer getNumberOfActualOptimizationAnalysis() {
+        return numberOfActualOptimizationAnalysis;
+    }
+
+    /**
+     * @param numberOfActualOptimizationAnalysis the
+     * numberOfActualOptimizationAnalysis to set
+     */
+    public void setNumberOfActualOptimizationAnalysis(Integer numberOfActualOptimizationAnalysis) {
+        this.numberOfActualOptimizationAnalysis = numberOfActualOptimizationAnalysis;
+        this.jButtonSavePrefs.setText("Save [" + (this.getNumberOfActualOptimizationAnalysis() + 1) + "]");
+    }
+
+    /**
+     * Calculates the estimated number of Simulations based on chosen cooling
+     * funntion and its parametervalues
+     *
+     * @param phase Number of Opti-Phase, can be 0..1
+     */
+    private void updateNumberOfEstimatedSASimulations(int phase) {
+        long numberOfSimulations = 10;
+
+        typeOfAnnealing tmpType = getPref_Cooling(phase);
+        double T0 = getPref_MaxTempParameter(phase);
+        double epsilon = getPref_Epsilon(phase);
+
+        switch (tmpType) {
+            case Boltzmann:
+                numberOfSimulations = Math.round(Math.exp(T0 / epsilon));
+                break;
+            case FastAnnealing:
+                numberOfSimulations = Math.round(T0 / epsilon);
+                break;
+            case VeryFastAnnealing:
+                double c = -Math.log(getPref_TRatioScale(phase)) * Math.exp(-(Math.log(getPref_TAnnealScale(phase) / (double) dimension)));
+                numberOfSimulations = Math.round(Math.pow(-Math.log(epsilon / T0) / c, (double) dimension));
+                break;
+            default:
+                break;
+        }
+        preventUpdateEpsilonBasedOnNumberOfSimulations = true;
+        //default will be case 0
+        switch (phase) {
+            case 1:
+                this.jSpinnerEstSASimulationCount1.setValue(numberOfSimulations);
+                break;
+            default:
+            case 0:
+                this.jSpinnerEstSASimulationCount.setValue(numberOfSimulations);
+                break;
+        }
+
+        preventUpdateEpsilonBasedOnNumberOfSimulations = false;
+    }
+
+    /**
+     * Calculates a new epsilon value fo the given Number of Simulations If new
+     * Epsilon smaller than 0.001 it will be marked red
+     *
+     * @param phase Number of Opti-Phase, can be 0..1
+     */
+    private void updateEpsilonBasedOnNumberOfSimulations(int phase) {
+        long numberOfSimulations = 10;
+        switch (phase) {
+            case 1:
+                numberOfSimulations = (long) jSpinnerEstSASimulationCount1.getValue();
+                break;
+            default:
+            case 0:
+                numberOfSimulations = (long) jSpinnerEstSASimulationCount.getValue();
+                break;
+        }
+        typeOfAnnealing tmpType = getPref_Cooling(phase);
+        double T0 = getPref_MaxTempParameter(phase);
+        double epsilon = getPref_Epsilon(phase);
+
+        switch (tmpType) {
+            case Boltzmann:
+                epsilon = (1 / (Math.log(numberOfSimulations))) * T0;
+                break;
+            case FastAnnealing:
+                epsilon = (1 / (double) numberOfSimulations) * T0;
+                break;
+            case VeryFastAnnealing:
+                double c = -Math.log(getPref_TRatioScale(phase)) * Math.exp(-(Math.log(getPref_TAnnealScale(phase) / (double) dimension)));
+                epsilon = Math.exp(-c * Math.pow((double) numberOfSimulations, 1 / (double) dimension)) * T0;
+                break;
+            default:
+                break;
+        }
+        if (!preventUpdateEpsilonBasedOnNumberOfSimulations) {
+            setPref_Epsilon(epsilon, phase);
+        }
+    }
+
+    /**
+     * Gets number of changeable parameters updates the local Dimension-variable
+     * & sets text in info-label
+     */
+    public void updateDimension() {
+        try {
+            dimension = 0;
+            dimension = Math.max(support.getListOfChangableParameters(support.getMainFrame().getParameterBase()).size(), dimension);
+            if (dimension < 1) {
+                jLabelDimensionNumber.setText("No Dimension!");
+                dimension = 1;
+            } else {
+                jLabelDimensionNumber.setText(Integer.toString((int) dimension));
+            }
+        } catch (Exception e) {
+            jLabelDimensionNumber.setText("No Dimension!");
+        }
+        updateNumberOfEstimatedSASimulations(0);
+        updateNumberOfEstimatedSASimulations(1);
+    }
+
+    /**
+     * Copy all parameters from one SA phase the another
+     *
+     * @param TO Target phase the parameters shall be copied to
+     * @param FROM The pashe were the paramaters are copied from
+     */
+    private void copySAParameters(int FROM, int TO) {
+        setPref_Cooling(getPref_Cooling(FROM), TO);
+        setPref_CalculationOfNextParameterset(getPref_CalculationOfNextParameterset(FROM), TO);
+        setPref_MaxTempParameter(getPref_MaxTempParameter(FROM), TO);
+        setPref_MaxTempCost(getPref_MaxTempCost(FROM), TO);
+        setPref_TAnnealScale(getPref_TAnnealScale(FROM), TO);
+        setPref_TRatioScale(getPref_TRatioScale(FROM), TO);
+        setPref_Epsilon(getPref_Epsilon(FROM), TO);
     }
 }

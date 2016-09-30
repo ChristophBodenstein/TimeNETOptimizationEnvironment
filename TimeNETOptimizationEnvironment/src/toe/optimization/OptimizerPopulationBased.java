@@ -13,6 +13,7 @@ import toe.datamodel.MeasureType;
 import toe.datamodel.SimulationType;
 import toe.datamodel.parameter;
 import toe.support;
+import toe.typedef.typeOfLogLevel;
 
 /**
  *
@@ -102,7 +103,7 @@ public abstract class OptimizerPopulationBased implements Runnable, Optimizer {
         this.parent = support.getMainFrame();// parentTMP;
         this.parameterBase = parent.getParameterBase();
         this.listOfMeasures = parent.getListOfActiveMeasureMentsToOptimize(); //((MeasurementForm)MeasureFormPane.getComponent(0)).getListOfMeasurements();
-        support.log("# of Measures to be optimized: " + this.listOfMeasures.size());
+        support.log("# of Measures to be optimized: " + this.listOfMeasures.size(), typeOfLogLevel.INFO);
 
         randomGenerator = new Random();
 
@@ -293,7 +294,7 @@ public abstract class OptimizerPopulationBased implements Runnable, Optimizer {
     public void printPopulationDistances() {
         for (int i = 0; i < population.size(); ++i) {
             String logString = "Distance " + i + " \t: " + population.get(i).get(0).getDistanceToTargetValue();
-            support.log(logString);
+            support.log(logString, typeOfLogLevel.INFO);
         }
     }
 
@@ -326,7 +327,6 @@ public abstract class OptimizerPopulationBased implements Runnable, Optimizer {
      *
      * @param name Name (path) of logfile
      */
-
     @Override
     public void setLogFileName(String name) {
         this.logFileName = name;

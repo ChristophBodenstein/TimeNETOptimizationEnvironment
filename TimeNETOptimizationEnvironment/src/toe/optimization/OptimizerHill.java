@@ -19,8 +19,8 @@ import toe.datamodel.parameter;
 import toe.datamodel.SimulationType;
 import toe.simulation.Simulator;
 import toe.support;
-import toe.simulation.SimulationCache;
 import toe.typedef;
+import toe.typedef.typeOfLogLevel;
 
 /**
  *
@@ -28,10 +28,9 @@ import toe.typedef;
  */
 public class OptimizerHill implements Runnable, Optimizer {
 
-    private double sizeOfNeighborhood;
-    private static final OptimizerPreferences myPreferences = new OptimizerPreferences();
+    private final double sizeOfNeighborhood;
+    private static final OptimizerPreferences myPreferences = support.getOptimizerPreferences();
 
-    private int simulationCounter = 0;
     SimulationType currentSolution;
     SimulationType nextSolution;
     SimulationType bestSolution;
@@ -40,10 +39,9 @@ public class OptimizerHill implements Runnable, Optimizer {
     String pathToTimeNet = "";
     MainFrame parent = null;
     JTabbedPane MeasureFormPane;
-    ArrayList<MeasureType> listOfMeasures = new ArrayList<MeasureType>();//Get List of all measures from MainFrame //Empty here
-    ArrayList<SimulationType> historyOfParsers = new ArrayList<SimulationType>();//History of all simulation runs
+    ArrayList<MeasureType> listOfMeasures = new ArrayList<>();//Get List of all measures from MainFrame //Empty here
+    ArrayList<SimulationType> historyOfParsers = new ArrayList<>();//History of all simulation runs
     ArrayList<parameter> parameterBase;//Base set of parameters, start/end-value, stepping, etc.
-    SimulationCache mySimulationCache = new SimulationCache();
     boolean optimized = false;//False until Optimization is ended
     JLabel infoLabel;
     double simulationTimeSum = 0;
@@ -62,7 +60,7 @@ public class OptimizerHill implements Runnable, Optimizer {
     public OptimizerHill() {
         this.sizeOfNeighborhood = myPreferences.getPref_SizeOfNeighborhood();
         logFileName = support.getTmpPath() + File.separator + this.getClass().getSimpleName() + "_" + Calendar.getInstance().getTimeInMillis() + myPreferences.getPref_LogFileAddon() + ".csv";
-        support.log("LogfileName:" + logFileName);
+        support.log("LogfileName:" + logFileName, typeOfLogLevel.INFO);
         this.wrongSolutionCounter = myPreferences.getPref_WrongSimulationsUntilBreak();
         myPreferences.setVisible(false);
     }
@@ -72,6 +70,7 @@ public class OptimizerHill implements Runnable, Optimizer {
      * support-class and starts optimization
      *
      */
+    @Override
     public void initOptimizer() {
         this.pathToTimeNet = support.getPathToTimeNet();// pathToTimeNetTMP;
         this.MeasureFormPane = support.getMeasureFormPane();//MeasureFormPaneTMP;
@@ -80,7 +79,7 @@ public class OptimizerHill implements Runnable, Optimizer {
         support.setParameterBase(parameterBase);
         this.optimized = false;
         this.listOfMeasures = parent.getListOfActiveMeasureMentsToOptimize(); //((MeasurementForm)MeasureFormPane.getComponent(0)).getListOfMeasurements();
-        support.log("# of Measures to be optimized: " + this.listOfMeasures.size());
+        support.log("# of Measures to be optimized: " + this.listOfMeasures.size(), typeOfLogLevel.INFO);
 
         this.filename = support.getOriginalFilename();// originalFilename;
 
@@ -92,79 +91,69 @@ public class OptimizerHill implements Runnable, Optimizer {
     /**
      * Main Routine for Thread. The Optimization runs here
      */
+    @Override
     public void run() {
         ArrayList<parameter> lastParameterset;
         ArrayList<ArrayList<parameter>> newParameterset;
         //Simulator init with initial parameterset
         Simulator mySimulator = SimOptiFactory.getSimulator();
 
-        mySimulator.initSimulator(getParametersetAsArrayList(getFirstParameterset()), getSimulationCounter(), false);
         //Wait until Simulator has ended
-        support.waitForEndOfSimulator(mySimulator, getSimulationCounter(), support.DEFAULT_TIMEOUT);
+        //support.waitSingleThreaded(100);
+        //support.waitForEndOfSimulator(mySimulator, support.DEFAULT_TIMEOUT);
+        //support.log("Performed % of simulations: "+mySimulator.getStatus(), typeOfLogLevel.INFO);
+        synchronized (mySimulator) {
+            try {
+                mySimulator.initSimulator(getParametersetAsArrayList(getFirstParameterset()), false);
+                mySimulator.wait();
+            } catch (InterruptedException ex) {
+                support.log("Problem waiting for end of non-cache-simulator.", typeOfLogLevel.ERROR);
+            }
+        }
+
         support.addLinesToLogFileFromListOfParser(mySimulator.getListOfCompletedSimulationParsers(), logFileName);
         this.historyOfParsers = support.appendListOfParsers(historyOfParsers, mySimulator.getListOfCompletedSimulationParsers());
         currentSolution = mySimulator.getListOfCompletedSimulationParsers().get(0);
-        //Fx=this.getActualDistance(currentSolution);
         nextSolution = currentSolution;
         bestSolution = currentSolution;
         ArrayList<SimulationType> listOfCompletedSimulations;
 
         lastParameterset = currentSolution.getListOfParametersFittedToBaseParameterset();
 
-        support.log("Start of Optimization-loop");
+        support.log("Start of Optimization-loop", typeOfLogLevel.INFO);
         while (!optimized && !support.isCancelEverything()) {
             support.spinInLabel();
 
             newParameterset = getNextParametersetAsArrayList(lastParameterset);
-            listOfCompletedSimulations = null;
-            //If result is already in cache, then count up corresponding counter
-            //Else start simulation
 
-            if (mySimulationCache.getListOfCompletedSimulationParsers(newParameterset, simulationCounter) != null) {
-                listOfCompletedSimulations = mySimulationCache.getListOfCompletedSimulationParsers(newParameterset, simulationCounter);
-                support.log("Getting List of Completed Simulations from Cache.");
+            stuckInCacheCounter = support.DEFAULT_CACHE_STUCK;//Reset Stuck-Counter
 
-                //Shrink to first element of List
-                listOfCompletedSimulations = support.shrinkArrayListToFirstMember(listOfCompletedSimulations);
-
-                //set all results to "cached", for statistics
-                for (int i = 0; i < listOfCompletedSimulations.size(); i++) {
-                    listOfCompletedSimulations.get(i).setIsFromCache(true);
+            //support.waitForEndOfSimulator(mySimulator, support.DEFAULT_TIMEOUT);
+            synchronized (mySimulator) {
+                try {
+                    mySimulator.initSimulator(newParameterset, false);
+                    mySimulator.wait();
+                } catch (InterruptedException ex) {
+                    support.log("Problem waiting for end of non-cache-simulator.", typeOfLogLevel.ERROR);
                 }
+            }
+            listOfCompletedSimulations = mySimulator.getListOfCompletedSimulationParsers();
+            support.log("List of Simulation results is: " + listOfCompletedSimulations.size() + " elements big.", typeOfLogLevel.INFO);
+            //Shrink to first element of List
+            listOfCompletedSimulations = support.shrinkArrayListToFirstMember(listOfCompletedSimulations);
 
-                //If last parameterset is double, then count up eject-counter for LastInCache
-                //TODO This only works if ONE parameterset is used. For Lists of Parameterset this will not work!
-                if (mySimulationCache.compareParameterList(lastParameterset, newParameterset.get(0))) {
-                    stuckInCacheCounter--;
-                }
-
-            } else {
-                support.log("Starting new Simulation, Parameterset not in Cache.");
-                stuckInCacheCounter = support.DEFAULT_CACHE_STUCK;//Reset Stuck-Counter
-                mySimulator.initSimulator(newParameterset, getSimulationCounter(), false);
-                support.waitForEndOfSimulator(mySimulator, getSimulationCounter(), support.DEFAULT_TIMEOUT);
-                this.setSimulationCounter(mySimulator.getSimulationCounter());
-                listOfCompletedSimulations = mySimulator.getListOfCompletedSimulationParsers();
-                support.log("List of Simulation results is: " + listOfCompletedSimulations.size() + " elements big.");
-                //Shrink to first element of List
-                listOfCompletedSimulations = support.shrinkArrayListToFirstMember(listOfCompletedSimulations);
-
-                //Fit all resulting Simulation-Parameterlists
-                for (int i1 = 0; i1 < listOfCompletedSimulations.size(); i1++) {
-                    listOfCompletedSimulations.get(i1).setListOfParameters(listOfCompletedSimulations.get(i1).getListOfParametersFittedToBaseParameterset());
-                }
-
-                //Add all Results to Cache
-                mySimulationCache.addListOfSimulationsToCache(listOfCompletedSimulations);
+            //Fit all resulting Simulation-Parameterlists
+            for (SimulationType listOfCompletedSimulation : listOfCompletedSimulations) {
+                listOfCompletedSimulation.setListOfParameters(listOfCompletedSimulation.getListOfParametersFittedToBaseParameterset());
             }
 
             if (listOfCompletedSimulations == null) {
-                support.log("Error. List of completed Simulations is NULL!");
+                support.log("Error. List of completed Simulations is NULL!", typeOfLogLevel.ERROR);
                 return;
             }
 
             if (listOfCompletedSimulations.size() < 1) {
-                support.log("Error. List of completed Simulations is 0. Will use last solution to provoke same simulation attempt.");
+                support.log("Error. List of completed Simulations is 0. Will use last solution to provoke same simulation attempt.", typeOfLogLevel.ERROR);
                 nextSolution = currentSolution;
                 listOfCompletedSimulations.add(currentSolution);
             } else {
@@ -186,18 +175,18 @@ public class OptimizerHill implements Runnable, Optimizer {
                 //End Optimization because we are stuck in cache in the last parameterset
                 optimized = true;
                 currentSolution = bestSolution;
-                support.log("End because we are stuck in temporary simulation cache.");
+                support.log("End because we are stuck in temporary simulation cache.", typeOfLogLevel.INFO);
             }
 
         }
-        support.log(this.getClass().getSimpleName() + " has ended, printing optimal value:");
+        support.log(this.getClass().getSimpleName() + " has ended, printing optimal value:", typeOfLogLevel.RESULT);
         support.addLinesToLogFile(currentSolution, logFileName);
         support.setStatusText("Optimization ended. See Log.");
         support.printOptimizedMeasures(currentSolution, this.listOfMeasures);
         StatisticAggregator.printStatistic(this.logFileName);
 
         if (support.isCancelEverything()) {
-            support.log("Optimization was canceled! Optimum might not found!");
+            support.log("Optimization was canceled! Optimum might not found!", typeOfLogLevel.INFO);
         }
 
     }
@@ -215,7 +204,7 @@ public class OptimizerHill implements Runnable, Optimizer {
     protected boolean isOptimized(double actualDistance, double nextDistance) {
         //If next Solution is better then take it as actual best solution
         if ((nextDistance < actualDistance)) {
-            support.log("Choosing next solution for " + this.getClass().getSimpleName());
+            support.log("Choosing next solution for " + this.getClass().getSimpleName(), typeOfLogLevel.INFO);
             currentSolution = nextSolution;//Set Global Solution Value
             bestSolution = currentSolution;//Set global best Solution Value
             //Reset wrong-solution-counter
@@ -226,10 +215,10 @@ public class OptimizerHill implements Runnable, Optimizer {
             nextSolution = null;
             //Count up the Solutions which are not taken
             //After X wrong solutions exit
-            support.log("Distance was higher, Solution not chosen. Counting up wrong-solution-counter.");
+            support.log("Distance was higher, Solution not chosen. Counting up wrong-solution-counter.", typeOfLogLevel.INFO);
             wrongSolutionCounter--;
             if (wrongSolutionCounter <= 1) {
-                support.log("There were " + myPreferences.getPref_WrongSimulationsUntilBreak() + " wrong solutions. Assume optimum is already found.");
+                support.log("There were " + myPreferences.getPref_WrongSimulationsUntilBreak() + " wrong solutions. Assume optimum is already found.", typeOfLogLevel.INFO);
                 return true;
             } else {
                 return false;
@@ -248,21 +237,19 @@ public class OptimizerHill implements Runnable, Optimizer {
         //calculate the first parameterset
         switch (myPreferences.getPref_StartValue()) {
             case start:
-                support.log("Taking Min-Values as Start for every Parameter.");
+                support.log("Taking Min-Values as Start for every Parameter.", typeOfLogLevel.INFO);
                 //Calculate first parameterset, set every parameter to start-value
                 //For this choosing strategy, the first element must be minimum
-                for (int i = 0; i < newParameterset.size(); i++) {
-                    parameter p = newParameterset.get(i);
+                for (parameter p : newParameterset) {
                     if (p.isIteratableAndIntern()) {
                         p.setValue(p.getStartValue());
                     }
                 }
                 break;
             case middle:
-                support.log("Taking Middle-Values as Start for every Parameter.");
+                support.log("Taking Middle-Values as Start for every Parameter.", typeOfLogLevel.INFO);
                 //Calulate first parameterset, the mean value of all parameters, with respect to stepping
-                for (int i = 0; i < newParameterset.size(); i++) {
-                    parameter p = newParameterset.get(i);
+                for (parameter p : newParameterset) {
                     if (p.isIteratableAndIntern()) {
                         double distance = p.getEndValue() - p.getStartValue();
                         distance = Math.round(0.5 * distance / p.getStepping()) * p.getStepping() + p.getStartValue();
@@ -271,21 +258,19 @@ public class OptimizerHill implements Runnable, Optimizer {
                 }
                 break;
             case end:
-                support.log("Taking Max-Values as Start for every Parameter.");
+                support.log("Taking Max-Values as Start for every Parameter.", typeOfLogLevel.INFO);
                 //Calculate first parameterset, set every parameter to end-value
                 //For this choosing strategy, the first element must be minimum
-                for (int i = 0; i < newParameterset.size(); i++) {
-                    parameter p = newParameterset.get(i);
+                for (parameter p : newParameterset) {
                     if (p.isIteratableAndIntern()) {
                         p.setValue(p.getEndValue());
                     }
                 }
                 break;
             case random:
-                support.log("Taking Random-Values as Start for every Parameter.");
+                support.log("Taking Random-Values as Start for every Parameter.", typeOfLogLevel.INFO);
                 //Calulate first parameterset, the random value of all parameters, with respect to stepping
-                for (int i = 0; i < newParameterset.size(); i++) {
-                    parameter p = newParameterset.get(i);
+                for (parameter p : newParameterset) {
                     if (p.isIteratableAndIntern()) {
                         double distance = p.getEndValue() - p.getStartValue();
                         double rnd = Math.random();
@@ -297,8 +282,8 @@ public class OptimizerHill implements Runnable, Optimizer {
             case preset:
                 //Nothing to to, Value is already set to the preferred start-Value
                 //But let`s make sure, set it to middle if something is wrong
-                for (int i = 0; i < newParameterset.size(); i++) {
-                    parameter p = newParameterset.get(i);
+                support.log("Taking Preset-Values as Start for every Parameter.", typeOfLogLevel.INFO);
+                for (parameter p : newParameterset) {
                     if (p.isIteratableAndIntern()) {
                         if ((p.getValue() < p.getStartValue()) || (p.getValue() > p.getEndValue())) {
                             double distance = p.getEndValue() - p.getStartValue();
@@ -351,15 +336,15 @@ public class OptimizerHill implements Runnable, Optimizer {
 
                 //Don't Sort the parameterlist!
                 //Collections.sort(lastParameterList);
-                support.log("Number of Parameters in List: " + lastParameterList.size());
+                support.log("Number of Parameters in List: " + lastParameterList.size(), typeOfLogLevel.INFO);
 
                 //For every Parameter check if it is iteratable and if it was changed last time
-                int i = 0;
+                int i;
                 numberOfLastParameter = -1;//Number of last parameter that was changed(in an Array of changable parameters)
                 for (i = 0; i < lastParameterList.size(); i++) {
                     if (lastParameterList.get(i).isIteratableAndIntern()) {
                         numberOfLastParameter++;
-                        support.log("Iteratable Parameter with number " + numberOfLastParameter + " found.");
+                        support.log("Iteratable Parameter with number " + numberOfLastParameter + " found.", typeOfLogLevel.INFO);
                         /*if it was changed, then break, and numberOfLastParameter contains the number of last changed parameter in array of changable parameters*/
                         if (lastParameterList.get(i) != actualParameterset.get(i)) {
                             break;
@@ -370,10 +355,10 @@ public class OptimizerHill implements Runnable, Optimizer {
                 //It numberOfLastParameter is -1 we set it to 0, this is in multiphase-opti needed
                 numberOfLastParameter = Math.max(numberOfLastParameter, 0);
                 // At this point, numberOfLastParameter contains the number of last changed parameter in an array of all changeable parameters
-                support.log("Number of Last changed Parameter is " + numberOfLastParameter);
+                support.log("Number of last changed Parameter is " + numberOfLastParameter, typeOfLogLevel.INFO);
 
                 if (nextSolution == null) {
-                    support.log("Last Solution was not better then overlast solution. Counting up Wrong Solutions in one direction.");
+                    support.log("Last Solution was not better then overlast solution. Counting up Wrong Solutions in one direction.", typeOfLogLevel.INFO);
                     wrongSolutionPerDirectionCounter--;
                 }
 
@@ -382,18 +367,18 @@ public class OptimizerHill implements Runnable, Optimizer {
                     //-->first change the direction, if already changed, choose next parameter
                     wrongSolutionPerDirectionCounter = myPreferences.getPref_WrongSimulationsPerDirection();
 
-                    support.log(myPreferences.getPref_WrongSimulationsPerDirection() + " wrong solutions in one direction.");
+                    support.log(myPreferences.getPref_WrongSimulationsPerDirection() + " wrong solutions in one direction.", typeOfLogLevel.INFO);
                     if (this.directionOfOptimization && myPreferences.getPref_NeighborhoodType() == typedef.typeOfNeighborhoodEnum.StepForwardBackRandom) {
                         //Switch direction of Optimization but change the same old parameter
                         //This only applies if StepForwardBackward
 
-                        support.log("Changing direction of Optimization to false(backwards).");
+                        support.log("Changing direction of Optimization to false(backwards).", typeOfLogLevel.INFO);
                         this.directionOfOptimization = false;
                         numberOfParameterToBeChanged = numberOfLastParameter;
                         //Exchange whole parameterset by the last best knwon solution
                         newParameterset = support.getCopyOfParameterSet(this.bestSolution.getListOfParameters());
                     } else {
-                        support.log("Changing direction of Optimization back to true(forward). Taking next parameter to change.");
+                        support.log("Changing direction of Optimization back to true(forward). Taking next parameter to change.", typeOfLogLevel.INFO);
                         this.directionOfOptimization = true;
                         //newParameterset=currentSolution.getListOfParameters();
                         //Exchange whole parameterset by the last best knwon solution
@@ -408,12 +393,12 @@ public class OptimizerHill implements Runnable, Optimizer {
                             this.wrongSolutionPerDirectionCounter = myPreferences.getPref_WrongSimulationsPerDirection();
 
                         }
-                        support.log("Last changed Parameter was: " + numberOfLastParameter + ", next Parameter to be changed is " + numberOfParameterToBeChanged);
-                        support.log("There are " + listOfChangableParameters.size() + " parameters in list to be changed.");
+                        support.log("Last changed Parameter was: " + numberOfLastParameter + ", next Parameter to be changed is " + numberOfParameterToBeChanged, typeOfLogLevel.INFO);
+                        support.log("There are " + listOfChangableParameters.size() + " parameters in list to be changed.", typeOfLogLevel.INFO);
                     }
                 } else {
                     //Select old parameter to be changed again
-                    support.log("Changing parameter " + numberOfLastParameter);
+                    support.log("Changing parameter " + numberOfLastParameter, typeOfLogLevel.INFO);
                     numberOfParameterToBeChanged = numberOfLastParameter;
                 }
 
@@ -425,8 +410,8 @@ public class OptimizerHill implements Runnable, Optimizer {
             //Get Parameter by name
             String nameOfParameterToBeChanged = listOfChangableParameters.get(numberOfParameterToBeChanged).getName();
             boolean incResult = false;
-            support.log("Number of Parameter to be changed " + numberOfParameterToBeChanged);
-            support.log("Name of Parameter to be changed: " + nameOfParameterToBeChanged);
+            support.log("Number of Parameter to be changed " + numberOfParameterToBeChanged, typeOfLogLevel.INFO);
+            support.log("Name of Parameter to be changed: " + nameOfParameterToBeChanged, typeOfLogLevel.INFO);
             switch (myPreferences.getPref_NeighborhoodType()) {
                 case StepForward://0 choose the next neighbor based on stepping forward
                     //Inc this parameter by standard-increment
@@ -438,9 +423,8 @@ public class OptimizerHill implements Runnable, Optimizer {
                     incResult = support.getParameterByName(newParameterset, nameOfParameterToBeChanged).incDecValue(this.directionOfOptimization);
                     break;
 
-                case StepForwardBackRandom://Step back and forward randomly based on stepping
-                    for (int i = 0; i < newParameterset.size(); i++) {
-                        parameter p = newParameterset.get(i);
+                case StepForwardBackRandom: //Step back and forward randomly based on stepping
+                    for (parameter p : newParameterset) {
                         if (p.isIteratableAndIntern()) {
                             double nextValue = 0.0;
                             if (Math.random() >= 0.5) {
@@ -448,17 +432,15 @@ public class OptimizerHill implements Runnable, Optimizer {
                             } else {
                                 incResult = support.getParameterByName(newParameterset, nameOfParameterToBeChanged).decValue();
                             }
-                            p.setValue(nextValue);
+                            //p.setValue(nextValue);
                         }
                     }
                     break;
-                case RandomStepInNeighborhood://Calculate neighborhood and choose next value randomly
-                    for (int i = 0; i < newParameterset.size(); i++) {
-                        parameter p = newParameterset.get(i);
+                case RandomStepInNeighborhood: //Calculate neighborhood and choose next value randomly
+                    for (parameter p : newParameterset) {
                         if (p.isIteratableAndIntern()) {
-                            double nextValue = 0.0;
                             double stepCount = (p.getEndValue() - p.getStartValue()) / p.getStepping();
-                            nextValue = p.getStepping() * Math.round(Math.random() * stepCount * this.sizeOfNeighborhood / 100);
+                            double nextValue = p.getStepping() * Math.round(Math.random() * stepCount * this.sizeOfNeighborhood / 100);
                             if (Math.random() >= 0.5) {
                                 nextValue = Math.min(p.getValue() + nextValue, p.getEndValue());
                             } else {
@@ -469,25 +451,21 @@ public class OptimizerHill implements Runnable, Optimizer {
                     }
                     incResult = true;
                     break;
-                case RandomStepInDesignspace://Choose Value randomly out of complete designspace
-                    for (int i = 0; i < newParameterset.size(); i++) {
-                        parameter p = newParameterset.get(i);
+                case RandomStepInDesignspace: //Choose Value randomly out of complete designspace
+                    for (parameter p : newParameterset) {
                         if (p.isIteratableAndIntern()) {
-                            double nextValue = 0.0;
                             double stepCount = (p.getEndValue() - p.getStartValue()) / p.getStepping();
-                            nextValue = p.getStartValue() + Math.round(Math.random() * stepCount);
+                            double nextValue = p.getStartValue() + Math.round(Math.random() * stepCount);
                             p.setValue(nextValue);
                         }
                     }
                     incResult = true;
                     break;
                 case RandomSteplessInNeighborhood: //Calculate neighborhood and choose next value randomly, Ignore Stepping!
-                    for (int i = 0; i < newParameterset.size(); i++) {
-                        parameter p = newParameterset.get(i);
+                    for (parameter p : newParameterset) {
                         if (p.isIteratableAndIntern()) {
-                            double nextValue = 0.0;
                             double range = (p.getEndValue() - p.getStartValue());
-                            nextValue = Math.round(Math.random() * range * this.sizeOfNeighborhood / 100);
+                            double nextValue = Math.round(Math.random() * range * this.sizeOfNeighborhood / 100);
                             if (Math.random() >= 0.5) {
                                 nextValue = Math.min(p.getValue() + nextValue, p.getEndValue());
                             } else {
@@ -509,9 +487,9 @@ public class OptimizerHill implements Runnable, Optimizer {
                 case StepForwardBackward:
                     parameter p = support.getParameterByName(newParameterset, nameOfParameterToBeChanged);
                     if (incResult) {
-                        support.log("Parameter " + p.getName() + " could be incremented.(or decremented)");
+                        support.log("Parameter " + p.getName() + " could be incremented.(or decremented)", typeOfLogLevel.INFO);
                     } else {
-                        support.log("Parameter " + p.getName() + " could NOT be incremented.(or decremented). Set WrongSolutionsPerDirectionCounter to 0 to change the direction next time.");
+                        support.log("Parameter " + p.getName() + " could NOT be incremented.(or decremented). Set WrongSolutionsPerDirectionCounter to 0 to change the direction next time.", typeOfLogLevel.INFO);
                         wrongSolutionPerDirectionCounter = 0;
                     }
                     break;
@@ -532,7 +510,7 @@ public class OptimizerHill implements Runnable, Optimizer {
      * @return ArrayList of Parametersets
      */
     private ArrayList< ArrayList<parameter>> getNextParametersetAsArrayList(ArrayList<parameter> actualParameterset) {
-        ArrayList< ArrayList<parameter>> myParametersetList = new ArrayList< ArrayList<parameter>>();
+        ArrayList< ArrayList<parameter>> myParametersetList = new ArrayList<>();
         myParametersetList.add(getNextParameterset(actualParameterset));
         return myParametersetList;
     }
@@ -541,7 +519,7 @@ public class OptimizerHill implements Runnable, Optimizer {
      * Wrapper, returns ArrayList of ArrayList of Parameters
      */
     private ArrayList< ArrayList<parameter>> getParametersetAsArrayList(ArrayList<parameter> actualParameterset) {
-        ArrayList< ArrayList<parameter>> myParametersetList = new ArrayList< ArrayList<parameter>>();
+        ArrayList< ArrayList<parameter>> myParametersetList = new ArrayList<>();
         myParametersetList.add(actualParameterset);
         return myParametersetList;
     }
@@ -556,37 +534,19 @@ public class OptimizerHill implements Runnable, Optimizer {
      */
     protected double getActualDistance(SimulationType p) {
         double distance = 0;
-        for (int measureCount = 0; measureCount < listOfMeasures.size(); measureCount++) {
-            MeasureType activeMeasure = p.getMeasureByName(listOfMeasures.get(measureCount).getMeasureName());
-            MeasureType activeMeasureFromInterface = listOfMeasures.get(measureCount);//Contains Optimization targets
+        for (MeasureType listOfMeasure : listOfMeasures) {
+            MeasureType activeMeasure = p.getMeasureByName(listOfMeasure.getMeasureName());
+            MeasureType activeMeasureFromInterface = listOfMeasure; //Contains Optimization targets
             activeMeasure.setTargetValue(activeMeasureFromInterface.getTargetValue(), activeMeasureFromInterface.getTargetTypeOf());
             if (activeMeasure.getTargetTypeOf().equals(typedef.typeOfTarget.value)) {
                 distance = activeMeasure.getDistanceFromTarget();
-            } else {
-                if (activeMeasure.getTargetTypeOf().equals(typedef.typeOfTarget.min)) {
-                    distance = activeMeasure.getMeanValue();
-                } else {
-                    if (activeMeasure.getTargetTypeOf().equals(typedef.typeOfTarget.max)) {
-                        distance = 0 - activeMeasure.getMeanValue();
-                    }
-                }
+            } else if (activeMeasure.getTargetTypeOf().equals(typedef.typeOfTarget.min)) {
+                distance = activeMeasure.getMeanValue();
+            } else if (activeMeasure.getTargetTypeOf().equals(typedef.typeOfTarget.max)) {
+                distance = 0 - activeMeasure.getMeanValue();
             }
         }
         return distance;
-    }
-
-    /**
-     * @return the simulationCounter
-     */
-    public int getSimulationCounter() {
-        return support.getGlobalSimulationCounter();// simulationCounter;
-    }
-
-    /**
-     * @param simulationCounter the simulationCounter to set
-     */
-    public void setSimulationCounter(int simulationCounter) {
-        this.simulationCounter = simulationCounter;
     }
 
     /**
@@ -595,9 +555,10 @@ public class OptimizerHill implements Runnable, Optimizer {
      *
      * @return null if optimization not yet ended, else Optimum
      */
+    @Override
     public SimulationType getOptimum() {
         if (this.optimized) {
-            support.log("Its optimized, so returning best solution.");
+            support.log("Its optimized, so returning best solution.", typeOfLogLevel.INFO);
             return this.bestSolution;
         } else {
             //support.log("Its NOT optimized, returning null.");
@@ -611,6 +572,7 @@ public class OptimizerHill implements Runnable, Optimizer {
      *
      * @param name Name (path) of logfile
      */
+    @Override
     public void setLogFileName(String name) {
         this.logFileName = name;
     }
@@ -620,6 +582,7 @@ public class OptimizerHill implements Runnable, Optimizer {
      *
      * @return name of logfile
      */
+    @Override
     public String getLogFileName() {
         return this.logFileName;
     }

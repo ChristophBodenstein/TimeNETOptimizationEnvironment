@@ -145,7 +145,7 @@ public class typedef {
         SimAnnealing,
         /**
          * Standard Two-Phase Alogithm. Use different configurations of sim
-         * annelaing
+         * annealing
          */
         TwoPhase,
         /**
@@ -157,7 +157,7 @@ public class typedef {
          */
         Genetic,
         /**
-         * ABC-Algorithm (Andy Seidl)
+         * ABC-Algorithm (Andy Seidel)
          */
         ABC,
         /**
@@ -487,5 +487,28 @@ public class typedef {
          * client can simulate Matlab models
          */
         MATLAB
+    }
+
+    /**
+     * Types of log (Verbose, Info, Error, Result)
+     */
+    public enum typeOfLogLevel {
+
+        /**
+         * Everything to be mentioned, which is less interesting
+         */
+        VERBOSE,
+        /**
+         * Everything which might be interesting
+         */
+        INFO,
+        /**
+         * Errors during runtime
+         */
+        ERROR,
+        /**
+         * Results of Optimization/Simulation, etc.
+         */
+        RESULT
     }
 }

@@ -15,10 +15,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Calendar;
-import java.util.Random;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -31,12 +27,13 @@ import org.apache.http.util.EntityUtils;
 import toe.HttpFactory;
 import toe.support;
 import toe.typedef;
+import toe.typedef.typeOfLogLevel;
 
 /**
  *
  * @author Group studies, Christoph Bodenstein
  */
-public class SimulatorWebSlave implements Runnable {
+public class SimulatorWebSlave extends Thread {
 
     private boolean shouldEnd = false;
     String pathToTimeNet;
@@ -65,61 +62,61 @@ public class SimulatorWebSlave implements Runnable {
     public void run() {
         support.setLogToWindow(false);//stop window-logging. this is not saved in properties
         this.pathToTimeNet = support.getPathToTimeNet();//  pathToTimeNetTMP;
-        clientID=String.valueOf(Math.random())+Long.toString(Calendar.getInstance().getTimeInMillis());
-        clientID=String.valueOf(Math.abs(clientID.hashCode()));
+        clientID = String.valueOf(Math.random()) + Long.toString(Calendar.getInstance().getTimeInMillis());
+        clientID = String.valueOf(Math.abs(clientID.hashCode()));
         //TODO set skill-string correctly!
-        clientSkills="";
-        if(support.checkTimeNetPath()){
-        clientSkills+="_"+typedef.typeOfClientSkills.TIMENET.toString()+"_";
+        clientSkills = "";
+        if (support.checkTimeNetPath()) {
+            clientSkills += "_" + typedef.typeOfClientSkills.TIMENET.toString() + "_";
         }
-        
-        while (!shouldEnd) { 
+
+        while (!shouldEnd) {
             //Request the server Api to get the Status Code and response body.
             // Getting the status code.
             client = HttpFactory.getHttpClient();
-            httpGet = HttpFactory.getGetRequest(support.getReMoteAddress() + "/rest/api/downloads/ND?ID="+clientID+"&SKILLS="+clientSkills);
+            httpGet = HttpFactory.getGetRequest(support.getReMoteAddress() + "/rest/api/downloads/ND?ID=" + clientID + "&SKILLS=" + clientSkills);
             HttpResponse response;
             String responseString;
             try {
                 response = client.execute(httpGet);
                 int statusCode = response.getStatusLine().getStatusCode();
-                support.log("Response for " + httpGet.toString() + "is " + statusCode);
+                support.log("Response for " + httpGet.toString() + "is " + statusCode, typeOfLogLevel.INFO);
                 if (statusCode == 200) {
                     responseString = new BasicResponseHandler().handleResponse(response);
                     FileWriter fileWriter;
                     String filename = response.getFirstHeader("filename").getValue();
                     simid = response.getFirstHeader("simid").getValue();
-                    support.log("Downloaded simulation filename=======" + filename);
+                    support.log("Downloaded simulation filename=======" + filename, typeOfLogLevel.INFO);
                     String exportFileName = support.getTmpPath() + File.separator + filename;
                     File newTextFile = new File(exportFileName);
                     fileWriter = new FileWriter(newTextFile);
                     fileWriter.write(responseString);
                     fileWriter.close();
-                    support.log("File written. Try to start simulation.");
+                    support.log("File written. Try to start simulation.", typeOfLogLevel.INFO);
                     startLocalSimulation(exportFileName);
 
                 }
                 //HttpClient client = new DefaultHttpClient() ;
                 //Verify response if any
                 if (response != null) {
-                    //System.out.println(response.getStatusLine().getStatusCode());
+                    support.log("Responsecode of task-request: " + Integer.toString(response.getStatusLine().getStatusCode()), typeOfLogLevel.INFO);
                     EntityUtils.consume(response.getEntity());
                 }
             } catch (Exception ex) {
-                support.log("IOException during HTTP-Request for simulations. Error msg: " + ex.getLocalizedMessage());
+                support.log("IOException during HTTP-Request for simulations. Error msg: " + ex.getLocalizedMessage(), typeOfLogLevel.ERROR);
             }
             try {
                 Thread.sleep(support.DEFAULT_SLEEPING_TIME);
 
             } catch (InterruptedException ex) {
-                support.log("Error while sleeping Thread of Slave Web simulator. Error msg: " + ex.getLocalizedMessage());
+                support.log("Error while sleeping Thread of Slave Web simulator. Error msg: " + ex.getLocalizedMessage(), typeOfLogLevel.ERROR);
             }
 
             support.spinInLabel();
             support.setStatusText("Waiting for simulation tasks.");
 
             if (this.shouldEnd) {
-                support.log("Slave Thread will end now.");
+                support.log("Slave Thread will end now.", typeOfLogLevel.INFO);
                 support.setStatusText("");
             }
         }
@@ -154,7 +151,7 @@ public class SimulatorWebSlave implements Runnable {
             // Execute command
             java.lang.ProcessBuilder processBuilder = new java.lang.ProcessBuilder("java", "-jar", "TimeNET.jar", exportFileName, "autostart=true", "autostop=true", "secmax=" + support.getIntStringValueFromFileName(exportFileName, "MaxTime"), "endtime=" + support.getIntStringValueFromFileName(exportFileName, "EndTime"), "seed=" + support.getIntStringValueFromFileName(exportFileName, "Seed"), "confidence=" + support.getIntStringValueFromFileName(exportFileName, "ConfidenceIntervall"), "epsmax=" + support.getValueFromFileName(exportFileName, "MaxRelError"));
             processBuilder.directory(new java.io.File(this.pathToTimeNet));
-            support.log("Command is: " + processBuilder.command().toString());
+            support.log("Command is: " + processBuilder.command().toString(), typeOfLogLevel.INFO);
 
             // Start new process
             long timeStamp = Calendar.getInstance().getTimeInMillis();
@@ -162,7 +159,7 @@ public class SimulatorWebSlave implements Runnable {
             java.lang.Process p = processBuilder.start();
 
             java.util.Scanner s = new java.util.Scanner(p.getInputStream()).useDelimiter("\\Z");//Scans output of process
-            support.log(s.next());//prints output of process into System.out
+            support.log(s.next(), typeOfLogLevel.INFO);//prints output of process into log
             boolean isRunning = true;
             while (isRunning) {
                 try {
@@ -182,12 +179,12 @@ public class SimulatorWebSlave implements Runnable {
             String sourceFile = support.removeExtention(exportFileName) + ".result" + File.separator + "results.log";
             String sinkFile = support.removeExtention(exportFileName) + "simTime_" + timeStamp + ".log";
             if (support.copyFile(sourceFile, sinkFile, false)) {
-                support.log("Coppied log-file. Now delete the directory and original log-file.");
+                support.log("Coppied log-file. Now delete the directory and original log-file.", typeOfLogLevel.INFO);
                 File tmpFile = new File(sourceFile);
                 tmpFile.delete();
                 tmpFile = new File(support.removeExtention(exportFileName) + ".result");
                 tmpFile.delete();
-                support.log("Deleted original Log-file and directory. Try to upload result.");
+                support.log("Deleted original Log-file and directory. Try to upload result.", typeOfLogLevel.INFO);
                 this.actualSimulationLogFile = sinkFile;
                 File logFile = new File(sinkFile);
                 executeMultiPartRequest(support.getReMoteAddress() + "/rest/log/upload", logFile, logFile.getName(), "File Uploaded :: WORDS", simid);
@@ -195,16 +192,16 @@ public class SimulatorWebSlave implements Runnable {
             File file = new File(exportFileName);
             String path = file.getAbsolutePath().substring(0, file.getAbsolutePath().lastIndexOf(File.separator)) + File.separator + nameOfTempDirectory;
 
-            support.log("Delete Path to tmp files: " + path);
+            support.log("Delete Path to tmp files: " + path, typeOfLogLevel.INFO);
             support.del(new File(path));
-            support.log("Delete local log-file.");
+            support.log("Delete local log-file.", typeOfLogLevel.INFO);
             support.del(new File(sinkFile));
-            support.log("Delete local xml-file.");
+            support.log("Delete local xml-file.", typeOfLogLevel.INFO);
             support.del(new File(exportFileName));
         } catch (IOException e) {
-            e.printStackTrace();
+            support.log(e.getLocalizedMessage(), typeOfLogLevel.ERROR);
         } catch (Exception ex) {
-            Logger.getLogger(SimulatorWebSlave.class.getName()).log(Level.SEVERE, null, ex);
+            support.log(ex.getLocalizedMessage(), typeOfLogLevel.ERROR);
         }
     }
 
@@ -241,12 +238,12 @@ public class SimulatorWebSlave implements Runnable {
 
             //Verify response if any
             if (response != null) {
-                System.out.println(response.getStatusLine().getStatusCode());
+                support.log("Responsecode of Upload-Request: " + Integer.toString(response.getStatusLine().getStatusCode()), typeOfLogLevel.INFO);
                 EntityUtils.consume(response.getEntity());
             }
 
         } catch (Exception ex) {
-            support.log("Exception while uploading logfile. msg: " + ex.getLocalizedMessage());
+            support.log("Exception while uploading logfile. msg: " + ex.getLocalizedMessage(), typeOfLogLevel.ERROR);
         }
     }
 }

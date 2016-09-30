@@ -17,6 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Properties;
+import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.JFileChooser;
@@ -37,9 +38,6 @@ import toe.typedef.typeOfProcessFeedback;
  * @author Christoph Bodenstein
  */
 public class support {
-
-//This Version of TimeNetExperimentGenerator
-    public static final String VERSION = "2015-04-07";
 
 //Define some program-wide default values
     public static final double DEFAULT_STEPPING = 1.0;
@@ -71,9 +69,9 @@ public class support {
     public static final int DEFAULT_GENETIC_POPULATION_SIZE = 10;
     public static final double DEFAULT_GENETIC_MUTATION_CHANCE = 20;
     public static final boolean DEFAULT_GENETIC_MUTATE_TOP_SOLUTION = false;
-    public static final int DEFAULT_GENETIC_MAXWRONGOPTIRUNS=5;
-    public static final typeOfGeneticCrossover DEFAULT_GENETIC_CROSSOVER=typeOfGeneticCrossover.SBX;
-    public static final int DEFAULT_GENETIC_NUMBEROFCROSSINGS=2;
+    public static final int DEFAULT_GENETIC_MAXWRONGOPTIRUNS = 5;
+    public static final typeOfGeneticCrossover DEFAULT_GENETIC_CROSSOVER = typeOfGeneticCrossover.SBX;
+    public static final int DEFAULT_GENETIC_NUMBEROFCROSSINGS = 2;
 
 //default values for CSS Optimization
     public static final int DEFAULT_CSS_POPULATION_SIZE = 10;
@@ -115,6 +113,7 @@ public class support {
     public static final String NAME_OF_LOGFILE = NAME_OF_PREF_DIR + "TimeNETLogFile.log";//the name of the program logfile, if logging to file is active
     public static final String NAME_OF_PREFERENCES_FILE = NAME_OF_PREF_DIR + "ApplicationPreferences.prop";//name of the pref-file for program-wide prefs
     public static final String NAME_OF_OPTIMIZER_PREFFERENCES_FILE = NAME_OF_PREF_DIR + "OptimizerPreferences.prop";//name of the pref file for optimization parameters
+    public static final String NAME_OF_DEFAULT_SCPN = NAME_OF_PREF_DIR + "default_SCPN.xml";//name of default scpn to be loaded at first start
 
     public static final boolean DEFAULT_LOG_TO_WINDOW = true;
     public static final boolean DEFAULT_LOG_TO_FILE = false;
@@ -136,6 +135,7 @@ public class support {
     private static SimulationCache mySimulationCache = null;
     private static boolean cachedSimulationAvailable = false;
     private static boolean distributedSimulationAvailable = true;
+    private static boolean localSimulationAvailable = false;
     private static boolean isRunningAsSlave = false;
     private static String remoteAddress = null;
     private static typedef.typeOfOptimization chosenOptimizerType = DEFAULT_TYPE_OF_OPTIMIZER;//0=Greedy, 1=?, 2=?
@@ -166,7 +166,7 @@ public class support {
     public static final double DEFAULT_Rastrigin_limitupper = 5;
 
 //Defaults for Opti-Statistics
-    public static final int DEFAULT_NUMBER_OF_OPTI_PROB_CLASSES = 100;
+    public static final int DEFAULT_NUMBER_OF_OPTI_PROB_CLASSES = 10;
 
     private static int globalSimulationCounter = 0;
 
@@ -366,16 +366,16 @@ public class support {
             if (tfile.isDirectory()) {
                 return absolutePath;
             } else {
-                support.log(absolutePath + " is a file, will return " + support.class.getProtectionDomain().getCodeSource().getLocation().getPath() + " as tmp path.");
+                support.log(absolutePath + " is a file, will return " + support.class.getProtectionDomain().getCodeSource().getLocation().getPath() + " as tmp path.", typeOfLogLevel.INFO);
                 return absolutePath;
             }
         } else {
-            support.log("Try to create tmp dir:" + absolutePath);
+            support.log("Try to create tmp dir:" + absolutePath, typeOfLogLevel.INFO);
             try {
                 tfile.mkdir();
             } catch (Exception e) {
                 //If dir-creation fails, show warning
-                support.log("Problem creting a tmp dir!");
+                support.log("Problem creating a tmp dir!", typeOfLogLevel.ERROR);
                 return null;
             }
             return absolutePath;
@@ -418,19 +418,24 @@ public class support {
             } else {
                 //outputDir=fileChooser.getCurrentDirectory().toString();
             }
-            support.log("choosen dir: " + outputDir);
+            support.log("choosen dir: " + outputDir, typeOfLogLevel.INFO);
         }
         return outputDir;
     }
 
     /**
-     * Rounds a float value to x digits
+     * Rounds a double to the number of decimals
      *
-     * @param valueToRound The input Vlaue to be round
-     * @return round Value with x precise digits
+     * @param valueToRound The input value to be rounded
+     * @param decimals Number of decimals for the return value
+     * @return Rounded Value with requested number of decimals
      */
-    public static double round(double valueToRound) {
-        return (double) Math.round(valueToRound * 1000) / 1000;
+    public static double round(double valueToRound, int decimals) {
+        decimals = Math.max(decimals, 1);
+
+        double multiplier = Math.round(Math.pow(10, (double) decimals));
+        return (double) Math.round(valueToRound * multiplier) / multiplier;
+
     }
 
     /**
@@ -549,7 +554,9 @@ public class support {
      * Creates a new Cache for all simulations Used to "emptyY the cache-Object
      */
     public static void emptyCache() {
+        log("Will clear cache.", typeOfLogLevel.INFO);
         mySimulationCache = new SimulationCache();
+        setCachedSimulationEnabled(false);
     }
 
     /**
@@ -575,16 +582,16 @@ public class support {
      */
     public static void printMeasureType(MeasureType m, String header, String footer) {
         if (m == null) {
-            support.log("Printing of Measure not possible. Measure is null.");
+            support.log("Printing of Measure not possible. Measure is null.", typeOfLogLevel.ERROR);
             return;
         }
-        support.log(header);
-        support.log("***** Start of Measure " + m.getMeasureName() + " ******");
-        support.log("Mean Value: " + support.getCommaFloat(m.getMeanValue()));
-        support.log("Variance: " + support.getCommaFloat(m.getVariance()));
-        support.log("Confidence-Min: " + support.getCommaFloat(m.getConfidenceInterval()[0]));
-        support.log("Confidence-Max: " + support.getCommaFloat(m.getConfidenceInterval()[1]));
-        support.log("Epsilon: " + support.getCommaFloat(m.getEpsilon()));
+        support.log(header, typeOfLogLevel.RESULT);
+        support.log("***** Start of Measure " + m.getMeasureName() + " ******", typeOfLogLevel.RESULT);
+        support.log("Mean Value: " + support.getCommaFloat(m.getMeanValue()), typeOfLogLevel.RESULT);
+        support.log("Variance: " + support.getCommaFloat(m.getVariance()), typeOfLogLevel.RESULT);
+        support.log("Confidence-Min: " + support.getCommaFloat(m.getConfidenceInterval()[0]), typeOfLogLevel.RESULT);
+        support.log("Confidence-Max: " + support.getCommaFloat(m.getConfidenceInterval()[1]), typeOfLogLevel.RESULT);
+        support.log("Epsilon: " + support.getCommaFloat(m.getEpsilon()), typeOfLogLevel.RESULT);
 
 //        if(m.getParameterList()!=null)
 //        {
@@ -595,9 +602,9 @@ public class support {
 //            }
 //        support.log("---End of parameterlist---");
 //        }
-        support.log("Used CPU-Time: " + m.getCPUTime());
-        support.log("***** End of Measure " + m.getMeasureName() + " ******");
-        support.log(footer);
+        support.log("Used CPU-Time: " + m.getCPUTime(), typeOfLogLevel.RESULT);
+        support.log("***** End of Measure " + m.getMeasureName() + " ******", typeOfLogLevel.RESULT);
+        support.log(footer, typeOfLogLevel.RESULT);
 
     }
 
@@ -619,11 +626,11 @@ public class support {
         dummyParameterForCPUTime.setEndValue(0.0);
 
         try {
-        //support.log("Number of Simulationtypes to add is "+pList.size());
+            //support.log("Number of Simulationtypes to add is "+pList.size());
 
             //Check if list is null, then exit
             if (pList == null) {
-                support.log("List of Simulations to add to logfile is null. Exit");
+                support.log("List of Simulations to add to logfile is null. Exit.", typeOfLogLevel.INFO);
                 return;
             }
 
@@ -650,7 +657,7 @@ public class support {
                     fw.write(line);
                     fw.append(System.getProperty("line.separator"));
                 } catch (IOException ex) {
-                    support.log("Error writing Header to Summary-log-file.");
+                    support.log("Error writing Header to Summary-log-file.", typeOfLogLevel.ERROR);
                 }
             }
 
@@ -677,17 +684,27 @@ public class support {
                         fw.append(System.getProperty("line.separator"));
                     }
                 } catch (IOException e) {
-                    support.log("IOException while appending lines to summary log-file.");
+                    support.log("IOException while appending lines to summary log-file.", typeOfLogLevel.ERROR);
                 }
 
             }
 
             fw.close();
         } catch (Exception e) {
-            support.log("Exception while writing things to summary log-file.");
+            support.log("Exception while writing things to summary log-file.", typeOfLogLevel.ERROR);
+            support.log("Name of logfile: "+logFileName, typeOfLogLevel.ERROR);
+            support.log("Trace: "+e.getMessage(), typeOfLogLevel.ERROR);
         }
     }
 
+    /**
+     * Add lines to logfile from parserlist, same like addLinesToLogFileFromListOfParser
+     * but with number of runs. Only used in old version of OptimizerABC
+     * @param pList
+     * @param numRunList
+     * @param numCachedSimulations
+     * @param logFileName
+     */
     public static void addLinesToLogFileFromListOfSimulationBatchesIncludingNumRuns(
             ArrayList<SimulationType> pList,
             ArrayList<Integer> numRunList,
@@ -703,11 +720,11 @@ public class support {
         dummyParameterForCPUTime.setEndValue(0.0);
 
         try {
-        //support.log("Number of Simulationtypes to add is "+pList.size());
+            //support.log("Number of Simulationtypes to add is "+pList.size());
 
             //Check if list is null, then exit
             if (pList == null) {
-                support.log("List of Simulations to add to logfile is null. Exit");
+                support.log("List of Simulations to add to logfile is null. Exit.", typeOfLogLevel.ERROR);
                 return;
             }
 
@@ -734,7 +751,7 @@ public class support {
                     fw.write(line);
                     fw.append(System.getProperty("line.separator"));
                 } catch (IOException ex) {
-                    support.log("Error writing Header to Summary-log-file.");
+                    support.log("Error writing Header to Summary-log-file.", typeOfLogLevel.ERROR);
                 }
             }
 
@@ -761,14 +778,14 @@ public class support {
                         fw.append(System.getProperty("line.separator"));
                     }
                 } catch (IOException e) {
-                    support.log("IOException while appending lines to summary log-file.");
+                    support.log("IOException while appending lines to summary log-file.", typeOfLogLevel.ERROR);
                 }
 
             }
 
             fw.close();
         } catch (Exception e) {
-            support.log("Exception while writing things to summary log-file.");
+            support.log("Exception while writing things to summary log-file.", typeOfLogLevel.ERROR);
         }
     }
 
@@ -780,7 +797,7 @@ public class support {
      * @param logFileName name of logfile, data will be appended
      */
     public static void addLinesToLogFile(SimulationType p, String logFileName) {
-        ArrayList<SimulationType> myParserList = new ArrayList<SimulationType>();
+        ArrayList<SimulationType> myParserList = new ArrayList<>();
         myParserList.add(p);
         addLinesToLogFileFromListOfParser(myParserList, logFileName);
     }
@@ -789,8 +806,24 @@ public class support {
      * logs the data either to file, System-log, etc.
      *
      * @param s String to be logged.
+     * @param level Loglevel of given String
      */
-    public static void log(String s) {
+    public static void log(String s, typeOfLogLevel level) {
+        int logCount = 0;
+        if (getMainFrame() != null) {
+            ArrayList logLevelList = getMainFrame().getListOfActivatedLogLevels();
+            if (logLevelList != null) {
+                for (Object logLevelList1 : logLevelList) {
+                    if (level == logLevelList1) {
+                        logCount++;
+                    }
+                }
+            }
+            if (logCount <= 0) {
+                return;
+            }
+        }
+
         String timeStamp = new SimpleDateFormat("yyyy:MM.dd_HH:mm:ss").format(Calendar.getInstance().getTime());
         s = timeStamp + ": " + s;
 
@@ -804,7 +837,7 @@ public class support {
                 fw.append(s + System.getProperty("line.separator"));
                 fw.close();
             } catch (IOException ex) {
-                log("Error while saving logfile.");
+                log("Error while saving logfile.", typeOfLogLevel.ERROR);
             }
         }
 
@@ -858,13 +891,13 @@ public class support {
             }
             in.close();
             out.close();
-            support.log("File copied.");
+            support.log("File copied.", typeOfLogLevel.INFO);
             return true;
         } catch (FileNotFoundException ex) {
-            support.log(ex.getMessage() + " in the specified directory.");
+            support.log(ex.getMessage() + " in the specified directory.", typeOfLogLevel.ERROR);
             return false;
         } catch (IOException e) {
-            support.log(e.getMessage());
+            support.log(e.getMessage(), typeOfLogLevel.ERROR);
             return false;
         }
     }
@@ -887,26 +920,22 @@ public class support {
      *
      * @param address url to simulation server
      */
-    public static void setRemoteAddress(String address) throws IOException {
+    public static void setRemoteAddress(String address) {
         remoteAddress = address;
-        //Check if address is correct.
-        //distributedSimulationAvailable = checkRemoteAddress(address);
-        //mainFrame.updateComboBoxSimulationType();        
-        //If Address is correct, set distributedSimulationAvailable to TRUE!
-        //e.i. call the method checkRemoteAddress(String ere)
-        //After that, please call updateComboBoxSimulationType() in MainFrame.java
     }
 
     /**
-     * Checks, if the given remoteAddress (URL to Sim.-Server) is correct
+     * Checks, if the given remoteAddress (URL to Sim.-Server) is correct TODO:
+     * Check if server is a real distribution server
      *
      * @param urlString The URL as String to be checked, if this is the
      * available Sim.-Server
      * @return True if URL is correct and server is working, else false To be
      * modified by: Group studies 2014
+     * @throws java.io.IOException
      */
     public static boolean checkRemoteAddress(String urlString) throws IOException {
-        support.log("Given remote-URL: " + urlString);
+        support.log("Given remote-URL: " + urlString, typeOfLogLevel.INFO);
         if (urlString.endsWith("/") || urlString.endsWith("\\")) {
             urlString = urlString.substring(0, urlString.length() - 1);
             remoteAddress = urlString;
@@ -919,40 +948,24 @@ public class support {
                 conn.setRequestMethod("GET");
                 conn.setReadTimeout(DEFAULT_CONNECTION_TIMEOUT);
                 conn.setConnectTimeout(DEFAULT_CONNECTION_TIMEOUT);
-                //System.out.println(String.format("Fetching %s ...", url));
 
                 int responseCode = conn.getResponseCode();
                 if (responseCode == 200 || responseCode == 500) {
-                    //System.out.println(String.format("Site is up, content length = %s", conn.getHeaderField("content-length")));
-                    support.log("URL seems correct. Distributed Simulation will be activated.");
+                    support.log("URL seems correct. Distributed Simulation will be activated.", typeOfLogLevel.INFO);
                     return true;
                 } else {
-                    //System.out.println(String.format("Site is up, but returns non-ok status = %d", responseCode));
-                    support.log("URL seems wrong or server is not available.");
+                    support.log("URL seems wrong or server is not available.", typeOfLogLevel.INFO);
                     return false;
                 }
 
             } catch (java.net.MalformedURLException e) {
-                support.log("Wrong URL format, maybe protocol is missing.");
+                support.log("Wrong URL format, maybe protocol is missing.", typeOfLogLevel.INFO);
             }
 
         } catch (Exception e) {
-            support.log("Site is down or network error.");
+            support.log("Site is down or network error.", typeOfLogLevel.INFO);
         }
         return false;
-    }
-
-    /**
-     * Checks, if the given remoteAddress (URL to Sim.-Server) is correct
-     *
-     * @param urlString The URL as String to be checked, if this is the
-     * available Sim.-Server
-     * @return True if URL is correct and server is working, else false To be
-     * modified by: Group studies 2014
-     */
-    public static boolean getRemoteAddress(String urlString) {
-        //TODO DISTRIBUTEDSERVER
-        return true;
     }
 
     /**
@@ -963,12 +976,8 @@ public class support {
      */
     public static boolean checkTimeNetPath() {
         File tmpFile = new File(pathToTimeNet + File.separator + "TimeNET.jar");
-        support.log("Check if Timenet is here:" + tmpFile.toString());
-        if (tmpFile.exists()) {
-            return true;
-        } else {
-            return false;
-        }
+        support.log("Check if Timenet is here:" + tmpFile.toString(), typeOfLogLevel.INFO);
+        return tmpFile.exists();
     }
 
     /**
@@ -1048,8 +1057,7 @@ public class support {
      */
     public static void setChosenSimulatorType(typeOfSimulator aChosenSimulatorType) {
         chosenSimulatorType = aChosenSimulatorType;
-        getMainFrame().setBenchmarkFunctionComboboxEnabled(chosenSimulatorType.equals(typeOfSimulator.Benchmark));
-
+        getMainFrame().setBenchmarkFunctionComboboxEnabled(chosenSimulatorType.equals(typeOfSimulator.Benchmark) || chosenSimulatorType.equals(typeOfSimulator.Cached_Benchmark));
     }
 
     /**
@@ -1077,7 +1085,7 @@ public class support {
      * @return array of parameters, the copy of input
      */
     public static ArrayList<parameter> getCopyOfParameterSet(ArrayList<parameter> parameterBase) {
-        ArrayList<parameter> newParameterSet = new ArrayList<parameter>();
+        ArrayList<parameter> newParameterSet = new ArrayList<>();
         for (int i = 0; i < parameterBase.size(); i++) {
 
             parameter p = new parameter();
@@ -1100,7 +1108,7 @@ public class support {
      * @return array of parameters, the copy of input
      */
     public static ArrayList< ArrayList<parameter>> getCopyOfArrayListOfParametersets(ArrayList< ArrayList<parameter>> oldArrayList) {
-        ArrayList< ArrayList<parameter>> result = new ArrayList< ArrayList<parameter>>();
+        ArrayList< ArrayList<parameter>> result = new ArrayList<>();
 
         for (int i = 0; i < oldArrayList.size(); i++) {
             result.add(getCopyOfParameterSet(oldArrayList.get(i)));
@@ -1130,19 +1138,19 @@ public class support {
      * Blocks the program and waits until the simulation has ended or timeout
      *
      * @param mySimulator Simulator to wait for
-     * @param simulationCounter Simulation counter to show in the info-label
      * @param timeout Timeout in Seconds!
      * @return true if simulation was sucessful. false if timeout
      */
-    public static boolean waitForEndOfSimulator(Simulator mySimulator, int simulationCounter, long timeout) {
+    public static boolean waitForEndOfSimulator(Simulator mySimulator, long timeout) {
         long timeoutCounter = timeout;
-        support.log("wait for Simulator has 100% completed.");
+        support.log("Wait for Simulator has 100% completed.", typeOfLogLevel.INFO);
         //Shortcut for benchmark-Simulators
         try {
-            //Thread.sleep(10);
+            //((Thread) mySimulator).join(10);
             support.waitSingleThreaded(10);
         } catch (Exception ex) {
-            support.log("InterruptedException in main loop of optimization. Optimization aborted.");
+            support.log("Exception while waiting for end of Simulator.", typeOfLogLevel.ERROR);
+            ex.printStackTrace();
         }
         if (mySimulator.getStatus() >= 100) {
             return true;
@@ -1151,11 +1159,10 @@ public class support {
         setStatusText("Simulations started.");
         while (mySimulator.getStatus() < 100) {
             try {
-                //TODO Timer verwenden statt sleep!
-                //Thread.sleep(1000);
                 support.waitSingleThreaded(1000);
+                //((Thread) mySimulator).join(1000);
             } catch (Exception ex) {
-                support.log("InterruptedException in main loop of optimization. Optimization aborted.");
+                support.log("InterruptedException in main loop of optimization. Optimization aborted.", typeOfLogLevel.ERROR);
                 statusLabel.setText("Aborted / Error");
             }
             //setStatusText("Done "+ mySimulator.getStatus() +"% ");
@@ -1163,19 +1170,16 @@ public class support {
             timeoutCounter--;
             //Break if timeout is reached
             if (timeoutCounter <= 1) {
-                support.log("Timeout for simulation reached. Aborting simulation.");
+                support.log("Timeout for simulation reached. Aborting simulation.", typeOfLogLevel.ERROR);
                 return false;
             }
 
             if (support.isCancelEverything()) {
-                support.log("Waiting for Simulator canceled by user.");
+                support.log("Waiting for Simulator canceled by user.", typeOfLogLevel.INFO);
                 return false;
             }
         }
-        simulationCounter = mySimulator.getSimulationCounter();
-        //getMainFrame().updateSimulationCounterLabel(simulationCounter);
-        //support.log("Simulation status:"+mySimulator.getStatus() +"%");
-        support.log("Simulation Counter: " + simulationCounter);
+        support.log("Simulation Counter: " + getGlobalSimulationCounter(), typeOfLogLevel.INFO);
         return true;
     }
 
@@ -1209,18 +1213,14 @@ public class support {
             activeMeasure.setTargetValue(activeMeasureFromInterface.getTargetValue(), activeMeasureFromInterface.getTargetTypeOf());
             if (activeMeasure.getTargetTypeOf().equals(typedef.typeOfTarget.value)) {
                 distance = activeMeasure.getDistanceFromTarget();
-            } else {
-                if (activeMeasure.getTargetTypeOf().equals(typedef.typeOfTarget.min)) {
-                    distance = activeMeasure.getMeanValue();
-                } else {
-                    if (activeMeasure.getTargetTypeOf().equals(typedef.typeOfTarget.max)) {
-                        distance = 0 - activeMeasure.getMeanValue();
-                    }
-                }
+            } else if (activeMeasure.getTargetTypeOf().equals(typedef.typeOfTarget.min)) {
+                distance = activeMeasure.getMeanValue();
+            } else if (activeMeasure.getTargetTypeOf().equals(typedef.typeOfTarget.max)) {
+                distance = 0 - activeMeasure.getMeanValue();
             }
             support.printMeasureType(activeMeasure, "**** Optimized Value for Measure is ****", "---------------------------");
         }
-        support.log("Whole remaining distance of all Measures is:" + distance);
+        support.log("Whole remaining distance of all Measures is:" + distance, typeOfLogLevel.RESULT);
     }
 
     /**
@@ -1243,7 +1243,7 @@ public class support {
      * @return the converted ArrayList
      */
     public static ArrayList<parameter> convertArrayToArrayList(parameter p[]) {
-        ArrayList<parameter> paraList = new ArrayList<parameter>();
+        ArrayList<parameter> paraList = new ArrayList<>();
         for (int i = 0; i < p.length; ++i) {
             paraList.add(p[i]);
         }
@@ -1284,12 +1284,14 @@ public class support {
      * Fits every Parameter in ArrayList to BaseParameterset Start-End-Value and
      * Stepping is set Name is changed if external parameter
      *
+     * @param pList List of Parameters to be fitted
+     * @return Parameterset with fitted values (start-end)
      */
     public static ArrayList<parameter> fitParametersetToBaseParameterset(ArrayList<parameter> pList) {
         ArrayList<parameter> baseList = getParameterBase();
 
         if (baseList == null) {
-            log("ParameterBase is NULL! Please set it before starting Optimization Algorithm.");
+            log("ParameterBase is NULL! Please set it before starting Optimization Algorithm.", typeOfLogLevel.ERROR);
             return null;
         }
 
@@ -1321,7 +1323,7 @@ public class support {
         try {
             return Double.valueOf(auto.getProperty(name));
         } catch (Exception e) {
-            support.log("Error loading property: " + name);
+            support.log("Error loading property: " + name, typeOfLogLevel.ERROR);
             return defaultValue;
         }
     }
@@ -1332,13 +1334,14 @@ public class support {
      *
      * @param name Name of the property to be loaded
      * @param defaultValue The default to be returned, if error occurs
+     * @param auto Properties object to load the value from
      * @return double value of property
      */
     public static int loadIntFromProperties(String name, int defaultValue, Properties auto) {
         try {
             return Integer.valueOf(auto.getProperty(name));
         } catch (Exception e) {
-            support.log("Error loading property: " + name + ". Setting to default Value: " + defaultValue);
+            support.log("Error loading property: " + name + ". Setting to default Value: " + defaultValue, typeOfLogLevel.ERROR);
             return defaultValue;
         }
     }
@@ -1347,12 +1350,12 @@ public class support {
      * @return the parameterBase
      */
     public static ArrayList<parameter> getParameterBase() {
-        if (parameterBase != null) {
-            return parameterBase;
-        } else {
-            setParameterBase(mainFrame.getParameterBase());
-            return parameterBase;
-        }
+        //if (parameterBase != null) {
+        //    return parameterBase;
+        //} else {
+        //    setParameterBase(mainFrame.getParameterBase());
+        return parameterBase;
+        //}
 
     }
 
@@ -1396,7 +1399,10 @@ public class support {
     }
 
     /**
-     * Shrink an ArrayList to it` first member needed by some Opti-Algorithms
+     * Shrink an ArrayList to it`s first member needed by some Opti-Algorithms
+     *
+     * @param l ArrayList to be shrinked
+     * @return ArrayList with one member
      */
     public static ArrayList shrinkArrayListToFirstMember(ArrayList l) {
         if (l == null) {
@@ -1413,6 +1419,9 @@ public class support {
 
     /**
      * Returns a list of Parameters that are intern and changable
+     *
+     * @param sourceList List of Parameter to be filtered
+     * @return List of Parameter which are intern and changable
      */
     public static ArrayList<parameter> getListOfChangableParameters(ArrayList<parameter> sourceList) {
 
@@ -1430,7 +1439,7 @@ public class support {
 
         //TODO If Internal Precision-Parameter is chosen and Multiphase is active, then dont put precisionparameter in list!
         //ArrayList<parameter> parameterset = support.getCopyOfParameterSet(sourceList);
-        ArrayList<parameter> listOfChangableParameters = new ArrayList<parameter>();
+        ArrayList<parameter> listOfChangableParameters = new ArrayList<>();
         //Count the number of changable parameters
         //this.numberOfChangableParameters=0;
         for (int i = 0; i < sourceList.size(); i++) {
@@ -1452,7 +1461,7 @@ public class support {
         listOfChangableParametersMultiphase = new ArrayList<parameter>();
         //Count the number of changable parameters
         //this.numberOfChangableParameters=0;
-        support.log("Setting Parameterlist for Multiphase-Opti.");
+        support.log("Setting Parameterlist for Multiphase-Opti.", typeOfLogLevel.INFO);
         for (int i = 0; i < sourceList.size(); i++) {
             parameter p = sourceList.get(i);
             if (p.isIteratableAndIntern()) {
@@ -1480,20 +1489,27 @@ public class support {
         long totalMemory = Runtime.getRuntime().totalMemory() / MegaBytes;
         long maxMemory = Runtime.getRuntime().maxMemory() / MegaBytes;
 
-        log("Memory usage: " + (maxMemory - freeMemory) * 100 / maxMemory + "% of " + maxMemory + " Mb . Init was " + totalMemory + " Mb.");
+        log("Memory usage: " + (maxMemory - freeMemory) * 100 / maxMemory + "% of " + maxMemory + " Mb . Init was " + totalMemory + " Mb.", typeOfLogLevel.INFO);
     }
 
     /**
      * Update an info label or spinner
      */
-    public static void updateMemoryPrograssbar() {
+    public static void updateMemoryProgressbar() {
         int MegaBytes = 1024 * 1024;
         long freeMemory = Runtime.getRuntime().freeMemory() / MegaBytes;
-        long totalMemory = Runtime.getRuntime().totalMemory() / MegaBytes;
         long maxMemory = Runtime.getRuntime().maxMemory() / MegaBytes;
 
         getMainFrame().setMemoryProgressbar((int) ((maxMemory - freeMemory) * 100 / maxMemory));
+        getMainFrame().setMemoryProgressbarTooltip((maxMemory - freeMemory) + " Mb of " + maxMemory + " Mb used.");
+    }
 
+    /**
+     * Updates the status labels for sim# and cachesize
+     */
+    public static void updateCountLabels() {
+        getMainFrame().setCacheSizeLabel(getMySimulationCache().getCacheSize());
+        getMainFrame().setSimCountLabel(getGlobalSimulationCounter());
     }
 
     /**
@@ -1528,7 +1544,6 @@ public class support {
      * Shows a little spinning indicator in a given JLabel useful to show, that
      * something is going on...
      *
-     * @param l JLabel to show the spinning characters
      */
     public static void spinInLabel() {
         mainFrame.jLabelSpinning.setText(getNextSpinningChar(mainFrame.jLabelSpinning.getText()));
@@ -1741,7 +1756,7 @@ public class support {
     }
 
     /**
-     * Padding of String to Right
+     * Padding of String to Left
      *
      * @return padded String
      * @param s String to be padded
@@ -1873,5 +1888,78 @@ public class support {
      */
     public static void setDeleteTmpSimulationFiles(boolean aDeleteTmpSimulationFiles) {
         deleteTmpSimulationFiles = aDeleteTmpSimulationFiles;
+    }
+
+    /**
+     * Dump a text-file into log
+     *
+     * @param filename File to drop into log
+     * @param logLevel Type of LogLevel to determine where to put the
+     * textfile-contents
+     */
+    public static void dumpTextFileToLog(String filename, typeOfLogLevel logLevel) {
+        try {
+            Scanner scanner = new Scanner(new FileInputStream(filename), "UTF-8");
+            try {
+                while (scanner.hasNextLine()) {
+                    support.log(scanner.nextLine(), logLevel);
+                }
+            } finally {
+                scanner.close();
+            }
+        } catch (FileNotFoundException ex) {
+            support.log("File: " + filename + " not found!", typeOfLogLevel.ERROR);
+        }
+    }
+
+    /**
+     * @return true if local Simulation is available / Path to TimeNET is
+     * correct
+     */
+    public static boolean isLocalSimulationAvailable() {
+        return localSimulationAvailable;
+    }
+
+    /**
+     * @param aLocalSimulationAvailable the localSimulationAvailable to set
+     */
+    public static void setLocalSimulationAvailable(boolean aLocalSimulationAvailable) {
+        localSimulationAvailable = aLocalSimulationAvailable;
+    }
+
+    /**
+     * Returns default Path to R for different systems
+     *
+     * @return Default path of R-Installation depending on OS
+     */
+    public static String getDefaultPathToR() {
+        //Determine System
+        //Return default String
+        String OS = System.getProperty("os.name").toLowerCase();
+        support.log("Operating system: " + OS, typeOfLogLevel.INFO);
+        if ((OS.contains("win"))) {
+            //We are on a windows-system
+            File parentDir = new File("c:\\Program Files\\R");
+            if (parentDir.isDirectory()) {
+                File[] subDirs = parentDir.listFiles();
+                for (int i = 0; i < subDirs.length; i++) {
+                    if (subDirs[i].isDirectory()) {
+                        if (subDirs[i].getName().charAt(0) == 'R') {
+                            support.log("Guessed name of R-Directory: " + parentDir.getAbsolutePath() + File.separator + subDirs[i].getName(), typeOfLogLevel.INFO);
+                            return parentDir.getAbsolutePath() + File.separator + subDirs[i].getName();
+                        }
+                    }
+                }
+            }
+            return "c:\\Program Files\\R";
+        }
+        //We are on a non-windows-system
+        if (OS.contains("mac")) {
+            //We are on a mac
+            return "/Library/Frameworks/R.framework/Resources";
+        } else {
+            //we are probably on a linux like machine
+            return "/usr";
+        }
     }
 }

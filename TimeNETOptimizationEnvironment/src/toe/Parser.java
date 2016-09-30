@@ -18,6 +18,7 @@ import org.w3c.dom.*;
 import toe.datamodel.MeasureType;
 import toe.datamodel.SimulationType;
 import toe.datamodel.parameter;
+import toe.typedef.*;
 
 /**
  *
@@ -75,51 +76,53 @@ public class Parser {
      */
     public SimulationType parse(String filename) {
         String xmlFilename;
-        ArrayList<parameter> tmpParameterList = new ArrayList<parameter>();
+        ArrayList<parameter> tmpParameterList = new ArrayList<>();
         String[] segs;
         SimulationType results = new SimulationType();
         parsingSuccessfullFinished = false;
 
         if (this.xmlFileName.equals("")) {
-            support.log("Searching corresponding xml-file for: " + filename);
+            support.log("Searching corresponding xml-file for: " + filename, typeOfLogLevel.INFO);
             String[] tmpFilenameArray = filename.split("simTime");
             xmlFilename = tmpFilenameArray[0] + ".xml";
-            support.log("XML-Filename is:" + xmlFilename);
+            support.log("XML-Filename is:" + xmlFilename, typeOfLogLevel.INFO);
         } else {
-            support.log("XML-Filename given: " + this.xmlFileName);
+            support.log("XML-Filename given: " + this.xmlFileName, typeOfLogLevel.INFO);
             xmlFilename = xmlFileName;
         }
 
         File xmlFile = new File(xmlFilename);
         if (!xmlFile.exists()) {
-            support.log("XML-File not found, eject.");
+            support.log("XML-File not found, eject.", typeOfLogLevel.ERROR);
             return null;
         }
-        support.log("Parsing XML-File: " + xmlFilename);
+        support.log("Parsing XML-File: " + xmlFilename, typeOfLogLevel.INFO);
         try {
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
             Document doc = docBuilder.parse(xmlFilename);
             NodeList parameterList = doc.getElementsByTagName("parameter");
-            support.log("***Start List of Available parameters in xml-file***");
+            support.log("***Start List of Available parameters in xml-file***", typeOfLogLevel.INFO);
             for (int i = 0; i < parameterList.getLength(); i++) {
                 parameter tmpParameter = new parameter();
 
-                support.log(parameterList.item(i).getAttributes().getNamedItem("name").getNodeValue());
+                support.log(parameterList.item(i).getAttributes().getNamedItem("name").getNodeValue(), typeOfLogLevel.INFO);
                 tmpParameter.setName(parameterList.item(i).getAttributes().getNamedItem("name").getNodeValue());
                 tmpParameter.setValue(support.getDouble(parameterList.item(i).getAttributes().getNamedItem("defaultValue").getNodeValue()));
+                tmpParameter.setStartValue(support.getParameterByName(support.getParameterBase(), tmpParameter.getName()).getStartValue());
+                tmpParameter.setEndValue(support.getParameterByName(support.getParameterBase(), tmpParameter.getName()).getEndValue());
                 tmpParameterList.add(tmpParameter);
             }
-            support.log("***End of List of Available parameters in xml-file***");
+            support.log("***End of List of Available parameters in xml-file***", typeOfLogLevel.INFO);
         } catch (Exception e) {
-            support.log("Error while parsing xml-file " + xmlFilename);
-            support.log("ErrorMsg: " + e.getLocalizedMessage());
+            support.log("Error while parsing xml-file " + xmlFilename, typeOfLogLevel.ERROR);
+            support.log("ErrorMsg: " + e.getLocalizedMessage(), typeOfLogLevel.ERROR);
         }
 
         this.logName = filename;
         File logFile = new File(this.logName);
         if (!logFile.exists()) {
-            support.log("Log-File not found, eject.");
+            support.log("Log-File not found, eject.", typeOfLogLevel.ERROR);
             return null;
         }
 
@@ -132,7 +135,7 @@ public class Parser {
             in.close();
         } catch (IOException e) {
             //e.printStackTrace();
-            support.log("Error while parsing log-file " + filename);
+            support.log("Error while parsing log-file " + filename, typeOfLogLevel.ERROR);
             return null;
         }
 
@@ -147,33 +150,34 @@ public class Parser {
             //support.log("SimulationTime: "+getSimulationTime().toString()+" seconds.");
             //Add all Parameters from logfile-name
             segs = logName.split("_");
+            ArrayList<parameter> pBase = support.getParameterBase();
             for (int i = 0; i < segs.length; i++) {
                 if (segs[i].equals("MaxTime")) {
-                    parameter tmpP = new parameter();
+                    parameter tmpP = (parameter) support.getParameterByName(pBase, "MaxTime").clone();
                     tmpP.setName("MaxTime");
                     tmpP.setValue(support.getDouble(segs[i + 1]));
                     tmpParameterList.add(tmpP);
                 }
                 if (segs[i].equals("EndTime")) {
-                    parameter tmpP = new parameter();
+                    parameter tmpP = (parameter) support.getParameterByName(pBase, "EndTime").clone();
                     tmpP.setName("EndTime");
                     tmpP.setValue(support.getDouble(segs[i + 1]));
                     tmpParameterList.add(tmpP);
                 }
                 if (segs[i].equals("Seed")) {
-                    parameter tmpP = new parameter();
+                    parameter tmpP = (parameter) support.getParameterByName(pBase, "Seed").clone();
                     tmpP.setName("Seed");
                     tmpP.setValue(support.getDouble(segs[i + 1]));
                     tmpParameterList.add(tmpP);
                 }
                 if (segs[i].equals("ConfidenceIntervall")) {
-                    parameter tmpP = new parameter();
+                    parameter tmpP = (parameter) support.getParameterByName(pBase, "ConfidenceIntervall").clone();
                     tmpP.setName("Configured-ConfidenceIntervall");
                     tmpP.setValue(support.getDouble(segs[i + 1]));
                     tmpParameterList.add(tmpP);
                 }
                 if (segs[i].equals("MaxRelError")) {
-                    parameter tmpP = new parameter();
+                    parameter tmpP = (parameter) support.getParameterByName(pBase, "MaxRelError").clone();
                     tmpP.setName("MaxRelError");
                     tmpP.setValue(support.getDouble(segs[i + 1]));
                     tmpParameterList.add(tmpP);
@@ -207,7 +211,7 @@ public class Parser {
                             tmpMeasure.setSimulationTime(localSimulationTime);
                             tmpMeasure.setMeasureName(tmpStrings.get(i).split(" ")[1]);
                             parseStatus = 1;//Measures found
-                            support.log("Measures found");
+                            support.log("Measures found", typeOfLogLevel.INFO);
                         }
                         break;
                     case 1://Measures found, name exists
@@ -227,7 +231,7 @@ public class Parser {
                             //tmpMeasure.setParameterList(tmpParameterList);
                             results.getMeasures().add(tmpMeasure);
                             parseStatus = 0;
-                            support.log("Measures " + tmpMeasure.getMeasureName() + " has Epsilon of " + tmpMeasure.getEpsilon() + " and Mean of " + tmpMeasure.getMeanValue());
+                            support.log("Measures " + tmpMeasure.getMeasureName() + " has Epsilon of " + tmpMeasure.getEpsilon() + " and Mean of " + tmpMeasure.getMeanValue(), typeOfLogLevel.INFO);
                         }
 
                         if (tmpStrings.get(i).contains("WARNING:")) {
@@ -245,7 +249,7 @@ public class Parser {
             this.parsingSuccessfullFinished = true;
             return results;
         } catch (Exception e) {
-            support.log("Error while parsing log-file, but after reading from file-system.");
+            support.log("Error while parsing log-file, but after reading from file-system.", typeOfLogLevel.ERROR);
             return null;
         }
     }

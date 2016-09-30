@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<net id="0" netclass="SCPN"
+  xmlns="http://pdv.cs.tu-berlin.de/TimeNET/schema/SCPN"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pdv.cs.tu-berlin.de/TimeNET/schema/SCPN etc/schemas/SCPN.xsd">
+  <place capacity="0" id="0.0" queue="FIFO" tokentype="bool" type="node" watch="false">
+    <graphics orientation="0" x="198" y="69"/>
+    <label id="0.0.0" text="P" type="text">
+      <graphics x="-10" y="-40"/>
+    </label>
+  </place>
+  <timedTransition id="0.1" serverType="ExclusiveServer"
+    specType="Automatic" takeFirst="false"
+    timeFunction="EXP(1.0/$Tsource)" type="node" watch="false">
+    <graphics orientation="0" x="58" y="69"/>
+    <label id="0.1.0" text="Source" type="text">
+      <graphics x="-10" y="-40"/>
+    </label>
+  </timedTransition>
+  <timedTransition globalGuard="#P>30" id="0.2"
+    serverType="ExclusiveServer" specType="Automatic" takeFirst="true"
+    timeFunction="EXP(1.0/$Tdrain)" type="node" watch="false">
+    <graphics orientation="0" x="338" y="69"/>
+    <label id="0.2.0" text="Drain" type="text">
+      <graphics x="-10" y="-40"/>
+    </label>
+  </timedTransition>
+  <immediateTransition globalGuard="#P>70" id="0.6" priority="1"
+    serverType="ExclusiveServer" specType="Automatic" takeFirst="false"
+    type="node" watch="false" weight="1.0E0">
+    <graphics orientation="-90" x="199" y="157"/>
+    <label id="0.6.0" text="T0" type="text">
+      <graphics x="32" y="-10"/>
+    </label>
+  </immediateTransition>
+  <arc fromNode="0.1" id="0.3" toNode="0.0" type="connector">
+    <inscription id="0.3.0" text="new(true)" type="inscriptionText">
+      <graphics x="-30" y="0"/>
+    </inscription>
+  </arc>
+  <arc fromNode="0.0" id="0.4" toNode="0.2" type="connector">
+    <inscription id="0.4.0" text="x" type="inscriptionText">
+      <graphics x="0" y="0"/>
+    </inscription>
+  </arc>
+  <arc fromNode="0.0" id="0.7" toNode="0.6" type="connector">
+    <inscription id="0.7.0" text="x" type="inscriptionText">
+      <graphics x="0" y="0"/>
+    </inscription>
+  </arc>
+  <measure eval="TimeAverage"
+    expression="1-((40&lt;=#P)&amp;&amp;(50>=#P))" id="0.5"
+    name="MeasureP" result="0.6408965" type="text" watch="true">
+    <graphics x="50" y="210"/>
+  </measure>
+  <parameter dataType="real" defaultValue="50" description="" name="Tdrain"/>
+  <parameter dataType="real" defaultValue="50" description="" name="Tsource"/>
+</net>

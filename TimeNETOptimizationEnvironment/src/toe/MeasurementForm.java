@@ -14,9 +14,9 @@ import toe.typedef.*;
  *
  * @author Christoph Bodenstein
  */
-public class MeasurementForm extends javax.swing.JPanel {
+public final class MeasurementForm extends javax.swing.JPanel {
 
-    private ArrayList<MeasureType> listOfMeasureMents = new ArrayList<MeasureType>();
+    private ArrayList<MeasureType> listOfMeasureMents = new ArrayList<>();
 
     /**
      * Creates new form MeasurementForm
@@ -44,7 +44,7 @@ public class MeasurementForm extends javax.swing.JPanel {
         jTextFieldCustomTargetValue = new javax.swing.JTextField();
         jCheckBoxEnableOptimizationForThisMeasurement = new javax.swing.JCheckBox();
 
-        jComboBoxMeasurementName.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Measurement1", "Measurement 2" }));
+        jComboBoxMeasurementName.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "No Measure available!" }));
         jComboBoxMeasurementName.setToolTipText("Chose Measurement to optimize");
 
         jComboBoxOptimizationTarget.setModel(new DefaultComboBoxModel(typeOfTarget.values()));
@@ -101,7 +101,7 @@ public class MeasurementForm extends javax.swing.JPanel {
     }//GEN-LAST:event_jCheckBoxEnableOptimizationForThisMeasurementItemStateChanged
 
     private void jComboBoxOptimizationTargetItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxOptimizationTargetItemStateChanged
-        this.jTextFieldCustomTargetValue.setEnabled(this.getOptimizationTarget().equals("value"));
+        this.jTextFieldCustomTargetValue.setEnabled(this.getOptimizationTarget().equals(typeOfTarget.value));
     }//GEN-LAST:event_jComboBoxOptimizationTargetItemStateChanged
 
 
@@ -133,7 +133,7 @@ public class MeasurementForm extends javax.swing.JPanel {
                 return listOfMeasureMent;
             }
         }
-        support.log("***Error: No MeasureMent chosen, wil return null!");
+        support.log("***Error: No Measurement chosen, will return null!", typeOfLogLevel.ERROR);
         return null;
     }
 

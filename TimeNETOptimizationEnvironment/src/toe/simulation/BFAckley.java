@@ -9,6 +9,7 @@ import toe.datamodel.SimulationType;
 import toe.datamodel.parameter;
 import toe.support;
 import toe.typedef;
+import toe.typedef.typeOfLogLevel;
 
 /**
  *
@@ -19,6 +20,7 @@ public class BFAckley implements BenchmarkFunction {
     double limitUpper = support.DEFAULT_ACKLEY_limitupper;
     double limitLower = support.DEFAULT_ACKLEY_limitLower;
 
+    @Override
     public SimulationType getSimulationResult(ArrayList<parameter> parameterList) {
         ArrayList<parameter> tmpParameterList = (parameterList);
         ArrayList<parameter> tmpListOfChangableParameter = support.getListOfChangableParameters(tmpParameterList);
@@ -48,13 +50,13 @@ public class BFAckley implements BenchmarkFunction {
         for (int d = 0; d < x.length; d++) {
             sum1 += (x[d] * x[d]);
             sum2 += (Math.cos(2 * Math.PI * x[d]));
-            }//end of for-d-loop
+        }//end of for-d-loop
         sum = (-20.0 * Math.exp(-0.2 * Math.sqrt(sum1 / ((double) x.length))) - Math.exp(sum2 / ((double) x.length)) + 20.0 + Math.E);
-        
+
         ArrayList<MeasureType> tmpListOfMeasurements = support.getMeasures();
         //All Measure will have the same result value
 
-        ArrayList<MeasureType> newListOfMeasurements = new ArrayList<MeasureType>();
+        ArrayList<MeasureType> newListOfMeasurements = new ArrayList<>();
 
         for (MeasureType tmpListOfMeasurement : tmpListOfMeasurements) {
             //make deep copy of old Measurement
@@ -73,6 +75,7 @@ public class BFAckley implements BenchmarkFunction {
         return tmpSimulation;
     }
 
+    @Override
     public SimulationType getOptimumSimulation() {
         ArrayList<parameter> optimumParameterlist = support.getCopyOfParameterSet(support.getOriginalParameterBase());
         ArrayList<parameter> optimumChangableParameterset = support.getListOfChangableParameters(optimumParameterlist);
@@ -80,27 +83,30 @@ public class BFAckley implements BenchmarkFunction {
         //Optimum is in the middle of each parameter, its exact at 0,0
         for (parameter p : optimumChangableParameterset) {
             p.setValue(p.getEndValue() - ((p.getEndValue() - p.getStartValue()) / 2));
-            support.log("P-Value for optimal solution (" + p.getName() + "): " + p.getValue());
+            support.log("P-Value for optimal solution (" + p.getName() + "): " + p.getValue(), typeOfLogLevel.INFO);
         }
         SimulationType tmpSimulation = this.getSimulationResult(optimumParameterlist);
-        support.log("Measurement-Values of optimal solution are:");
+        support.log("Measurement-Values of optimal solution are:", typeOfLogLevel.INFO);
 
         for (MeasureType m : tmpSimulation.getMeasures()) {
-            support.log(m.getMeasureName() + " has value: " + m.getMeanValue() + " with max: " + m.getMaxValue() + " and min: " + m.getMinValue());
+            support.log(m.getMeasureName() + " has value: " + m.getMeanValue() + " with max: " + m.getMaxValue() + " and min: " + m.getMinValue(), typeOfLogLevel.INFO);
         }
 
         return tmpSimulation;
 
     }
 
+    @Override
     public double getMinValue() {
         return 0.0;
     }
 
+    @Override
     public double getMaxValue() {
-        return 20 + Math.E - Math.pow(Math.E,(-0.2*Math.max(Math.abs(limitLower),Math.abs(limitUpper))));
+        return 20 + Math.E - Math.pow(Math.E, (-0.2 * Math.max(Math.abs(limitLower), Math.abs(limitUpper))));
     }
 
+    @Override
     public typedef.typeOfBenchmarkFunction getTypeOfBenchmarkFunction() {
         return typedef.typeOfBenchmarkFunction.Ackley;
     }

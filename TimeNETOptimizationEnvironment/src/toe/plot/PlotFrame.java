@@ -11,6 +11,7 @@ import javax.imageio.ImageIO;
 import java.io.File;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import toe.support;
+import toe.typedef.typeOfLogLevel;
 
 /**
  * @author Bastian Mauerer, Simon Niebler, Christoph Bodenstein
@@ -105,12 +106,12 @@ public class PlotFrame extends javax.swing.JFrame {
             g2.dispose();
             try {
                 ImageIO.write(bi, "jpg", new File(jFileChooser.getSelectedFile().getAbsolutePath()));
-                support.log(jFileChooser.getSelectedFile().getAbsolutePath() + " saved!");
+                support.log(jFileChooser.getSelectedFile().getAbsolutePath() + " saved!", typeOfLogLevel.INFO);
             } catch (Exception e) {
-                support.log("exception occured while saving image!");
+                support.log("Exception occured while saving image!", typeOfLogLevel.ERROR);
             }
         } else {
-            support.log("image not saved!");
+            support.log("Image not saved!", typeOfLogLevel.ERROR);
         }
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 

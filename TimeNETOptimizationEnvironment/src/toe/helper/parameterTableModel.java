@@ -8,13 +8,12 @@
 package toe.helper;
 
 import java.util.ArrayList;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 import org.w3c.dom.*;
 import toe.MainFrame;
 import toe.datamodel.parameter;
 import toe.support;
+import toe.typedef.typeOfLogLevel;
 
 /**
  *
@@ -106,12 +105,13 @@ public class parameterTableModel extends AbstractTableModel {
         return columnNames[col];
     }
 
+    @Override
     public Object getValueAt(int row, int col) {
         String result = Double.toString(support.DEFAULT_DOUBLE_VALUE);
         try {
             result = parameterArray[row][col];
         } catch (Exception e) {
-            support.log("Problem reading String value from table.");
+            support.log("Problem reading String value from table.", typeOfLogLevel.ERROR);
             setValueAt(result, row, col);
         }
         return result;
@@ -120,9 +120,9 @@ public class parameterTableModel extends AbstractTableModel {
     public double getDoubleValueAt(int row, int col) {
         double result = support.DEFAULT_DOUBLE_VALUE;
         try {
-            result = support.round(support.getDouble(parameterArray[row][col]));
+            result = support.round(support.getDouble(parameterArray[row][col]), 3);
         } catch (Exception e) {
-            support.log("Poblem reading float value from table.");
+            support.log("Poblem reading float value from table.", typeOfLogLevel.ERROR);
             setValueAt(Double.toString(result), row, col);
         }
         return result;
@@ -155,7 +155,7 @@ public class parameterTableModel extends AbstractTableModel {
             //Double conversion to get double-Strings (1.0)
             stringValue = support.getString(support.getDouble(value.toString()));
         } catch (Exception e) {
-            support.log("Error setting value in table.");
+            support.log("Error setting value in table.", typeOfLogLevel.ERROR);
             stringValue = "1.0";
         }
         parameterArray[row][col] = stringValue;

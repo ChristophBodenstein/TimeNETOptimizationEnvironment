@@ -15,6 +15,7 @@ import toe.datamodel.SimulationType;
 import toe.datamodel.parameter;
 import toe.simulation.Simulator;
 import toe.support;
+import toe.typedef.typeOfLogLevel;
 import toe.typedef.typeOfMVMOMutationSelection;
 import toe.typedef.typeOfMVMOParentSelection;
 
@@ -79,7 +80,7 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
             this.maxNumberOfOptiCyclesWithoutImprovement = newMaxNumberOfOptiCyclesWithoutImprovement;
         }
     }
-    
+
     /**
      * Contructor
      */
@@ -93,9 +94,16 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
         population = createRandomPopulation(startPopulationSize, false);
 
         Simulator mySimulator = SimOptiFactory.getSimulator();
-        mySimulator.initSimulator(getNextParameterSetAsArrayList(), optiCycleCounter, false);
-        support.waitForEndOfSimulator(mySimulator, optiCycleCounter, support.DEFAULT_TIMEOUT);
 
+        //support.waitForEndOfSimulator(mySimulator, support.DEFAULT_TIMEOUT);
+        synchronized (mySimulator) {
+            try {
+                mySimulator.initSimulator(getNextParameterSetAsArrayList(), false);
+                mySimulator.wait();
+            } catch (InterruptedException ex) {
+                support.log("Problem waiting for end of non-cache-simulator.", typeOfLogLevel.ERROR);
+            }
+        }
         ArrayList<SimulationType> simulationResults = mySimulator.getListOfCompletedSimulationParsers();
         population = getPopulationFromSimulationResults(simulationResults);
         population = normalize(population);
@@ -105,7 +113,7 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
         int numGenesToSelect = 1;
         while (optiCycleCounter < this.maxNumberOfOptiCycles) {
             if (currentNumberOfOptiCyclesWithoutImprovement >= maxNumberOfOptiCyclesWithoutImprovement) {
-                support.log("Too many optimization cycles without improvement. Ending optimization.");
+                support.log("Too many optimization cycles without improvement. Ending optimization.", typeOfLogLevel.INFO);
                 break;
             }
 
@@ -128,10 +136,15 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
                 pArray = roundToStepping(pArray);
             }
 
-            mySimulator.initSimulator(parameterList, simulationCounter, false);
-            support.waitForEndOfSimulator(mySimulator, simulationCounter, support.DEFAULT_TIMEOUT);
-            simulationCounter = mySimulator.getSimulationCounter();
-
+            //support.waitForEndOfSimulator(mySimulator, support.DEFAULT_TIMEOUT);
+            synchronized (mySimulator) {
+                try {
+                    mySimulator.initSimulator(parameterList, false);
+                    mySimulator.wait();
+                } catch (InterruptedException ex) {
+                    support.log("Problem waiting for end of non-cache-simulator.", typeOfLogLevel.INFO);
+                }
+            }
             simulationResults = mySimulator.getListOfCompletedSimulationParsers();
             support.addLinesToLogFileFromListOfParser(simulationResults, logFileName);
             population = tryAddCandidate(population, simulationResults);
@@ -142,7 +155,9 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
             }
 
             ++optiCycleCounter;
-            if(topMeasure.getDistanceToTargetValue()<=0)break;
+            if (topMeasure.getDistanceToTargetValue() <= 0) {
+                break;
+            }
         }
         this.optimized = true;
 
@@ -155,7 +170,7 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
             return population;
         }
         if (population.get(population.size() - 1).get(0).getDistanceToTargetValue() >= candidate.get(0).getDistanceToTargetValue()) {
-            support.log("Added new one to population");
+            support.log("Added new one to population", typeOfLogLevel.INFO);
             population.set(population.size() - 1, candidate);
             population = sortPopulation(population);
         }
@@ -173,7 +188,7 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
                 {
                     sum += population.get(populationIndex).get(0).getListOfParameters().get(parameterIndex).getValue();
                 } catch (IndexOutOfBoundsException e) {
-                    support.log(e.getMessage());
+                    support.log(e.getMessage(), typeOfLogLevel.ERROR);
                 }
             }
             meanValues.add(sum / population.size());
@@ -192,7 +207,7 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
                     double value = population.get(populationIndex).get(0).getListOfParameters().get(parameterIndex).getValue();
                     sum += (value - parameterMeanValues.get(parameterIndex)) * (value - parameterMeanValues.get(parameterIndex));
                 } catch (IndexOutOfBoundsException e) {
-                    support.log(e.getMessage());
+                    support.log(e.getMessage(), typeOfLogLevel.ERROR);
                 }
 
             }
@@ -273,10 +288,10 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
                         - transform(mean, si1, si2, 0);
                 if (x < 0) {
                     x = 0;
-                    support.log("Transformation value too low, forced to 0");
+                    support.log("Transformation value too low, forced to 0", typeOfLogLevel.INFO);
                 } else if (x > 1) {
                     x = 1;
-                    support.log("Transformation value too high, forced to 1");
+                    support.log("Transformation value too high, forced to 1", typeOfLogLevel.INFO);
                 }
                 //support.log("x: " + x);
                 p.setValue(x);

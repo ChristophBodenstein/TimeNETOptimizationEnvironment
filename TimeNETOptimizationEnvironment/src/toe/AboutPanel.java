@@ -13,14 +13,18 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Properties;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
+import toe.typedef.*;
 
 /**
  *
  * @author Christoph Bodenstein
  */
 public class AboutPanel extends javax.swing.JPanel implements HyperlinkListener {
+
+    String linkToVersion = "https://github.com/ChristophBodenstein/TimeNETOptimizationEnvironment/commit/";
 
     /**
      * Creates new form AboutPanel
@@ -32,14 +36,23 @@ public class AboutPanel extends javax.swing.JPanel implements HyperlinkListener 
         creditsText += "RPlot-Plugin: Bastian Maurer & Simon Niebler" + System.getProperty("line.separator");
         creditsText += "Distributed Simulation: Hassan Yousef + Veeranna Sulikeri";
 
+        Properties versionInformation = new Properties();
+        try {
+            InputStream ddlStream = this.getClass().getClassLoader().getResourceAsStream("toe/Version.properties");
+            versionInformation.load(ddlStream);
+            ddlStream.close();
+            this.jLabelVersion.setText("Version: " + versionInformation.getProperty("version", ""));
+            this.linkToVersion+=versionInformation.getProperty("shorthash", "");
+        } catch (Exception e) {
+            support.log("Could not load Version.properties.", typeOfLogLevel.ERROR);
+        }
+
         this.jTextPaneCredits.setText(creditsText);
         this.jTextPaneCredits.setEditable(false);
 
-        this.jLabelVersion.setText("Version: " + support.VERSION);
-
         try {
             URL file = getClass().getResource("SystemRequirements.html");
-            support.log("Path to file is:" + file.toString());
+            support.log("Path to file is:" + file.toString(), typeOfLogLevel.INFO);
             //Desktop.getDesktop().browse(file.toURI());
 
             InputStream in = file.openStream();
@@ -57,7 +70,7 @@ public class AboutPanel extends javax.swing.JPanel implements HyperlinkListener 
             this.jEditorPaneRequirments.setText(buff.toString());
 
         } catch (Exception ex) {
-            support.log("Failed to open SystemRequirements.html in default browser. Maybe you are using an old java-version.");
+            support.log("Failed to open SystemRequirements.html in default browser. Maybe you are using an old java-version.", typeOfLogLevel.ERROR);
         }
         //Add this listener to handle hyperlink clicks
         this.jEditorPaneRequirments.addHyperlinkListener(this);
@@ -100,6 +113,12 @@ public class AboutPanel extends javax.swing.JPanel implements HyperlinkListener 
 
         jLabelVersion.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabelVersion.setText("Version: x.x.xxx");
+        jLabelVersion.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jLabelVersion.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabelVersionMouseClicked(evt);
+            }
+        });
 
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel3.setText("A Tool for exploring SCPN Designspaces and doing Optimization runs within.");
@@ -141,6 +160,14 @@ public class AboutPanel extends javax.swing.JPanel implements HyperlinkListener 
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jLabelVersionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabelVersionMouseClicked
+        try {
+            Desktop.getDesktop().browse(new URL(this.linkToVersion).toURI());
+        } catch (Exception ex) {
+            support.log("Could not open link to current version on Github.", typeOfLogLevel.ERROR);
+        }
+    }//GEN-LAST:event_jLabelVersionMouseClicked
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JEditorPane jEditorPaneRequirments;
     private javax.swing.JLabel jLabel1;
@@ -158,6 +185,7 @@ public class AboutPanel extends javax.swing.JPanel implements HyperlinkListener 
      *
      * @param e Hyperlinkevent (click, Activated, etc.)
      */
+    @Override
     public void hyperlinkUpdate(HyperlinkEvent e) {
 
         if (e.getEventType().equals(HyperlinkEvent.EventType.ACTIVATED)) {
@@ -165,9 +193,9 @@ public class AboutPanel extends javax.swing.JPanel implements HyperlinkListener 
             try {
                 Desktop.getDesktop().browse(url.toURI());
             } catch (IOException ex) {
-                support.log("IOException while opening Link to " + url.toString());
+                support.log("IOException while opening Link to " + url.toString(), typeOfLogLevel.ERROR);
             } catch (URISyntaxException ex) {
-                support.log("URISyntaxException while opening Link to " + url.toString());
+                support.log("URISyntaxException while opening Link to " + url.toString(), typeOfLogLevel.ERROR);
             }
         }
     }

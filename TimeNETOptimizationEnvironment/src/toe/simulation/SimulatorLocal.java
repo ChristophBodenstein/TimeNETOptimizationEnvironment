@@ -23,12 +23,13 @@ import toe.datamodel.parameter;
 import toe.helper.nativeProcess;
 import toe.helper.nativeProcessCallbacks;
 import toe.support;
+import toe.typedef.typeOfLogLevel;
 
 /**
  *
  * @author Christoph Bodenstein
  */
-public class SimulatorLocal implements Runnable, Simulator, nativeProcessCallbacks {
+public class SimulatorLocal extends Thread implements Simulator, nativeProcessCallbacks {
 
     ArrayList< ArrayList<parameter>> listOfParameterSets;
     ArrayList<SimulationType> listOfCompletedSimulationParsers;
@@ -36,19 +37,20 @@ public class SimulatorLocal implements Runnable, Simulator, nativeProcessCallbac
     String pathToTimeNet;
     String tmpFilePath;
     private int status = 0; //Status of simulations, 0..100%
-    private int simulationCounter = 0;//Startvalue for count of simulations, will be in the filename of sim and log
     String logFileName;
     String actualSimulationLogFile = "";//actual log-file for one local simulation
     private final String nameOfTempDirectory = "14623786483530251523506521233052";
     boolean log = true;
     boolean keepSimulationFiles = false;
     long timeStamp = 0;//TimeStamp for measuring the runtime of one simulation
+    Integer maxTime = 600;
 
     /**
      * Constructor
      */
     public SimulatorLocal() {
-        logFileName = support.getTmpPath() + File.separator + "SimLog_LocalSimulation_without_Cache" + Calendar.getInstance().getTimeInMillis() + ".csv";
+        logFileName = support.getTmpPath() + File.separator + "SimLog_" + getClass().getSimpleName() + "_" + Calendar.getInstance().getTimeInMillis() + ".csv";
+        support.log("LogfileName:" + logFileName, typeOfLogLevel.INFO);
     }
 
     /**
@@ -56,19 +58,15 @@ public class SimulatorLocal implements Runnable, Simulator, nativeProcessCallbac
      * 0, the old value wil be used and continouusly increased
      *
      * @param listOfParameterSetsTMP List of Parameter-sets to be simulated
-     * @param simulationCounterTMP start value of simulation counter
      */
     @Override
-    public void initSimulator(ArrayList< ArrayList<parameter>> listOfParameterSetsTMP, int simulationCounterTMP, boolean log) {
+    public void initSimulator(ArrayList< ArrayList<parameter>> listOfParameterSetsTMP, boolean log) {
         this.status = 0;
         this.listOfParameterSets = listOfParameterSetsTMP;
         this.log = log;
         this.originalFilename = support.getOriginalFilename();//  originalFilenameTMP;
         this.pathToTimeNet = support.getPathToTimeNet();//  pathToTimeNetTMP;
         this.tmpFilePath = support.getTmpPath();// tmpFilePathTMP;
-        if (simulationCounterTMP >= 0) {
-            this.simulationCounter = simulationCounterTMP;
-        }
 
         //Start this thread
         new Thread(this).start();
@@ -86,19 +84,19 @@ public class SimulatorLocal implements Runnable, Simulator, nativeProcessCallbac
         int numberOfSimulations = 0;
         if (support.checkTimeNetPath()) {
             try {
-                support.log("Timenet-Path ok, starting local simulations.");
+                support.log("TimeNET-Path ok, starting local simulations.", typeOfLogLevel.INFO);
 
-                support.log("Logfilename is:" + logFileName);
+                support.log("Logfilename is:" + logFileName, typeOfLogLevel.INFO);
 
                 int simulationAttemptCounter;
 
                 if (listOfParameterSets.size() > 0) {
-                    support.log("Supposed to simulate " + listOfParameterSets.size() + " parametersets.");
+                    support.log("Supposed to simulate " + listOfParameterSets.size() + " parametersets.", typeOfLogLevel.INFO);
                     for (int i = 0; i < listOfParameterSets.size(); i++) {
 
-                        support.setStatusText("wating to start sim " + (i + 1) + "/" + listOfParameterSets.size());
+                        support.setStatusText("Waiting to start sim " + (i + 1) + "/" + listOfParameterSets.size());
                         //Wait for some Time. Maybe this is needed on some Systems
-                        Thread.sleep(support.DEFAULT_TIME_BETWEEN_LOCAL_SIMULATIONS);
+                        support.waitSingleThreaded(support.DEFAULT_TIME_BETWEEN_LOCAL_SIMULATIONS);//Wait to be (quite)sure system ressources are free
 
                         //Try every simulation several times if TimeNet crashs
                         //Reset Simulation-Attempt-Counter for next Parameterset
@@ -109,13 +107,13 @@ public class SimulatorLocal implements Runnable, Simulator, nativeProcessCallbac
                             support.setStatusText("Sim " + (i + 1) + "/" + listOfParameterSets.size() + " attempt " + (support.DEFAULT_LOCAL_SIMULATION_ATTEMPTS - simulationAttemptCounter + 1));
 
                             if (support.isCancelEverything()) {
-                                support.log("Local Simulation canceld by user.");
+                                support.log("Local Simulation canceld by user.", typeOfLogLevel.INFO);
                                 support.setStatusText("Operations canceled.");
                                 return;
                             }
                             ArrayList<parameter> actualParameterSet = listOfParameterSets.get(i);//get actual parameterset
                             String actualParameterFileName = createLocalSimulationFile(actualParameterSet, support.getGlobalSimulationCounter());//create actual SCPN xml-file and save it in tmp-folder
-                            support.log("Simulating file:" + actualParameterFileName);
+                            support.log("Simulating file:" + actualParameterFileName, typeOfLogLevel.INFO);
                             startLocalSimulation(actualParameterFileName);//Returns, when Simulation has ended
                             //SimulationType myResults=new SimulationType();//create new SimulationResults
                             //here the SimType has to get Data From Parser;
@@ -123,7 +121,7 @@ public class SimulatorLocal implements Runnable, Simulator, nativeProcessCallbac
                             SimulationType myResults = myParser.parse(actualSimulationLogFile);//parse Log-file and xml-file
 
                             if (myParser.isParsingSuccessfullFinished()) {
-                                support.log("Parsing successful.");
+                                support.log("Parsing successful.", typeOfLogLevel.INFO);
                                 //listOfCompletedSimulationParsers.add(myResults);
                                 if (this.log) {
                                     support.addLinesToLogFile(myResults, logFileName);
@@ -132,16 +130,16 @@ public class SimulatorLocal implements Runnable, Simulator, nativeProcessCallbac
                                 this.listOfCompletedSimulationParsers.add(myResults);//add parser to local list of completed simulations
 
                                 if (!keepSimulationFiles) {
-                                    support.log("Will delete XML-File and log-File.");
+                                    support.log("Will delete XML-File and log-File.", typeOfLogLevel.INFO);
                                     support.del(new File(actualParameterFileName));
                                     support.del(new File(actualSimulationLogFile));
                                 }
                                 simulationAttemptCounter = 0;
                             } else {
                                 simulationAttemptCounter--;
-                                support.log("Error Parsing the Simulation results. Maybe Simulation failure?");
+                                support.log("Error Parsing the Simulation results. Maybe Simulation failure?", typeOfLogLevel.ERROR);
                                 if (simulationAttemptCounter == 0) {
-                                    support.log("Will end local simulation because of " + support.DEFAULT_LOCAL_SIMULATION_ATTEMPTS + " failed simulation attempts");
+                                    support.log("Will end local simulation because of " + support.DEFAULT_LOCAL_SIMULATION_ATTEMPTS + " failed simulation attempts", typeOfLogLevel.INFO);
                                 }
                             }
                         }//End of whileloop for several simulatio attempts
@@ -150,20 +148,23 @@ public class SimulatorLocal implements Runnable, Simulator, nativeProcessCallbac
                         support.incGlobalSimulationCounter();
 
                         this.status = numberOfSimulations * 100 / listOfParameterSets.size(); //update status of local simulations (in %)
-                        this.simulationCounter++;//increment given global simulation counter, TODO : remove this
+                        support.incGlobalSimulationCounter();
 
                     }
 
                 }
 
             } catch (Exception e) {
-                support.log("Error while creating local simulation file or log-file.");
+                support.log("Error while creating local simulation file or log-file.", typeOfLogLevel.ERROR);
             }
 
         } else {
-            support.log("Timenet-Path NOT ok!");
+            support.log("Timenet-Path NOT ok!", typeOfLogLevel.INFO);
         }
         support.setStatusText("Local simulation finished.");
+        synchronized (this) {
+            notify();
+        }
         //Simple ending Callback to reactivate uer-interface
         support.simOptiOperationSuccessfull("The End");
     }
@@ -215,7 +216,7 @@ public class SimulatorLocal implements Runnable, Simulator, nativeProcessCallbac
             //Dateiname bilden
             String exportFileName = this.tmpFilePath + File.separator + support.removeExtention(f.getName()) + "_n_" + simulationNumber + "_MaxTime_" + MaxTime + "_EndTime_" + EndTime + "_Seed_" + Seed + "_ConfidenceIntervall_" + ConfidenceIntervall + "_MaxRelError_" + MaxRelError + "_.xml";
             //Exportieren
-            support.log("File to export: " + exportFileName);
+            support.log("File to export: " + exportFileName, typeOfLogLevel.INFO);
 
             TransformerFactory tFactory
                     = TransformerFactory.newInstance();
@@ -228,7 +229,7 @@ public class SimulatorLocal implements Runnable, Simulator, nativeProcessCallbac
             return exportFileName;
 
         } catch (Exception e) {
-            support.log("Error creating local simulation file. Msg: " + e.getLocalizedMessage());
+            support.log("Error creating local simulation file. Msg: " + e.getLocalizedMessage(), typeOfLogLevel.ERROR);
             return fileNameOfLocalSimulationFile;
         } finally {
         }
@@ -247,46 +248,48 @@ public class SimulatorLocal implements Runnable, Simulator, nativeProcessCallbac
 
             if (support.isDeleteTmpSimulationFiles()) {
                 //Clean up before simulation, in case an old sim used the same dir
-                support.log("Delete Path to tmp files: " + tmpPath);
+                support.log("Delete Path to tmp files: " + tmpPath, typeOfLogLevel.INFO);
                 support.del(new File(tmpPath));
             }
             // Execute command
-            java.lang.ProcessBuilder processBuilder = new java.lang.ProcessBuilder("java", "-jar", "TimeNET.jar", exportFileName, "autostart=true", "autostop=true", "secmax=" + support.getIntStringValueFromFileName(exportFileName, "MaxTime"), "endtime=" + support.getIntStringValueFromFileName(exportFileName, "EndTime"), "seed=" + support.getIntStringValueFromFileName(exportFileName, "Seed"), "confidence=" + support.getIntStringValueFromFileName(exportFileName, "ConfidenceIntervall"), "epsmax=" + support.getValueFromFileName(exportFileName, "MaxRelError"));
+            maxTime = new Integer(support.getIntStringValueFromFileName(exportFileName, "MaxTime"));
+            java.lang.ProcessBuilder processBuilder = new java.lang.ProcessBuilder("java", "-jar", "TimeNET.jar", exportFileName, "autostart=true", "autostop=true", "secmax=" + maxTime.toString(), "endtime=" + support.getIntStringValueFromFileName(exportFileName, "EndTime"), "seed=" + support.getIntStringValueFromFileName(exportFileName, "Seed"), "confidence=" + support.getIntStringValueFromFileName(exportFileName, "ConfidenceIntervall"), "epsmax=" + support.getValueFromFileName(exportFileName, "MaxRelError"));
             processBuilder.directory(new java.io.File(this.pathToTimeNet));
-            support.log("Command is: " + processBuilder.command().toString());
+            support.log("Command is: " + processBuilder.command().toString(), typeOfLogLevel.INFO);
 
             // Start new process
             timeStamp = Calendar.getInstance().getTimeInMillis();
-
             nativeProcess myNativeProcess = new nativeProcess(processBuilder, this);
-
-            //We wait until the process is ended or aborted
-            while (myNativeProcess.isRunning()) {
-                Thread.sleep(1000);
+            synchronized (myNativeProcess) {
+                try {
+                    myNativeProcess.wait(maxTime * 1000);
+                } catch (Exception e) {
+                    support.log("Simulation may took longer than given MaxTime! Will be aborted! " + " MaxTime was:" + maxTime.toString(), typeOfLogLevel.ERROR);
+                    myNativeProcess.setKillProcess(true);
+                }
             }
 
             timeStamp = (Calendar.getInstance().getTimeInMillis() - timeStamp) / 1000;//Time for calculation in seconds
-
             //Copy results.log
             String sourceFile = support.removeExtention(exportFileName) + ".result" + File.separator + "results.log";
             String sinkFile = support.removeExtention(exportFileName) + "simTime_" + timeStamp + ".log";
             if (support.copyFile(sourceFile, sinkFile, false)) {
-                support.log("Coppied log-file. Now delete the directory and original log-file.");
+                support.log("Coppied log-file. Now delete the directory and original log-file.", typeOfLogLevel.INFO);
                 File tmpFile = new File(sourceFile);
                 tmpFile.delete();
                 tmpFile = new File(support.removeExtention(exportFileName) + ".result");
                 tmpFile.delete();
-                support.log("Deleted original Log-file and directory.");
+                support.log("Deleted original Log-file and directory.", typeOfLogLevel.INFO);
                 this.actualSimulationLogFile = sinkFile;
             }
 
             if (support.isDeleteTmpSimulationFiles()) {
                 //Clean up after simulation
-                support.log("Delete Path to tmp files: " + tmpPath);
+                support.log("Delete Path to tmp files: " + tmpPath, typeOfLogLevel.INFO);
                 support.del(new File(tmpPath));
             }
         } catch (Exception e) {
-            support.log("Problem simulating local.");
+            support.log("Problem simulating local.", typeOfLogLevel.ERROR);
         }
     }
 
@@ -312,25 +315,6 @@ public class SimulatorLocal implements Runnable, Simulator, nativeProcessCallbac
     }
 
     /**
-     * Returns actual number of simulation
-     *
-     * @return number of actual simulation
-     */
-    @Override
-    public int getSimulationCounter() {
-        return this.simulationCounter;
-    }
-
-    /**
-     * sets the number of simulation to be started with
-     *
-     * @param i number of simulation for simulation counter
-     */
-    public void setSimulationCounter(int i) {
-        this.simulationCounter = i;
-    }
-
-    /**
      * Returns the status of simulations
      *
      * @return % of simulations that are finished
@@ -342,12 +326,12 @@ public class SimulatorLocal implements Runnable, Simulator, nativeProcessCallbac
 
     @Override
     public void processEnded() {
-        support.log("Local Simulation ended.");
+        support.log("Local Simulation ended.", typeOfLogLevel.INFO);
     }
 
     @Override
     public void errorOccured(String message) {
-        support.log("Error while local simulation.");
+        support.log("Error while local simulation.", typeOfLogLevel.INFO);
     }
 
     /**
@@ -356,7 +340,7 @@ public class SimulatorLocal implements Runnable, Simulator, nativeProcessCallbac
      */
     @Override
     public SimulationType getCalculatedOptimum(MeasureType targetMeasure) {
-        support.log("SimulatorLocal: Getting absolute optimum simulation from Cache. Will return null.");
+        support.log("SimulatorLocal: Getting absolute optimum simulation from Cache. Will return null.", typeOfLogLevel.INFO);
         return null;
     }
 
