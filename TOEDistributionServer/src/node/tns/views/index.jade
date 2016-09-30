@@ -9,6 +9,12 @@ block content
 
   #clientsrunning
     p #{clientsrunning} simulations distributed for simulation and not yet ended.
+
+  #opensimulations
+    p #{opensimulations} simulations waiting.
+
+  #donesimulations
+    p #{donesimulations} simulations done (current).
   
   div
     form(name="reset", action="/reset", method="post")
