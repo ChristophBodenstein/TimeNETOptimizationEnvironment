@@ -34,46 +34,47 @@ router.get('/', function (req, res) {
         } else {
 //console.log("Will try to count open simulations.");
             if (result != null) {
-                result.count(function (err, count){
+               result.count(function (err, count){
 					if(err){
 					console.log("Error counting open simulations.");
 					}	else{
 						openSimulations=count;
 						//console.log("Number of open Simulations is:"+openSimulations);
+
+							simlist.find({simulated: true}, function (err, result) {
+		        				if (err) {
+		            		console.log("Error finding done simulations in db.");
+		        				} else 	{
+											//console.log("Will try to count open simulations.");
+		            					if (result != null) {
+			                				result.count(function (err, count){
+												if(err){
+												console.log("Error counting done simulations.");
+												}	else	{
+															doneSimulations=count;
+															//console.log("Number of done Simulations is:"+doneSimulations);
+															
+															    removeOldClientsFromList(db, function (error) {
+															        res.render('index', {
+															            title: 'TimeNET distribution server',
+															            clientcount: Math.round(global.clientcount),
+															            clientsrunning: global.clientsrunning,
+																			opensimulations: openSimulations,
+																			donesimulations: doneSimulations,
+																			percentagedone: Math.round((doneSimulations *100)/(doneSimulations+openSimulations) ) || 0
+															        });
+															
+															    });															
+															}
+												});
+											}//End if
+								}//End else
+							});
 						}
 				});
 			}//End if
 			}//End else
 		});
-	simlist.find({simulated: true}, function (err, result) {
-        if (err) {
-            console.log("Error finding done simulations in db.");
-        } else {
-//console.log("Will try to count open simulations.");
-            if (result != null) {
-                result.count(function (err, count){
-					if(err){
-					console.log("Error counting done simulations.");
-					}	else{
-						doneSimulations=count;
-						//console.log("Number of done Simulations is:"+doneSimulations);
-						}
-				});
-			}//End if
-			}//End else
-		});
-
-    removeOldClientsFromList(db, function (error) {
-        res.render('index', {
-            title: 'TimeNET distribution server',
-            clientcount: Math.round(global.clientcount),
-            clientsrunning: global.clientsrunning,
-			opensimulations: openSimulations,
-			donesimulations: doneSimulations
-        });
-
-    });
-
 });
 
 
