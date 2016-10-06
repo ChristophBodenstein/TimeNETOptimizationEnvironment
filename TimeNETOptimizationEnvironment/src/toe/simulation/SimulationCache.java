@@ -485,6 +485,7 @@ public class SimulationCache {
             for (parameter myParameter : parameterSet) {
                 tmpParameterList.add(myParameter);
             }
+            support.spinInLabel();
             //Get local simulation results
             ArrayList<MeasureType> listOfMeasureWithGivenParameters = this.getAllMeasuresWithParameterList(tmpParameterList);
             //support.log("Size of ParameterList: "+ tmpParameterList.size() + " results in " +listOfMeasureWithGivenParameters.size()+ " Measurements.");
@@ -499,6 +500,9 @@ public class SimulationCache {
                 tmpParser.setListOfParameters(parameterSet);
                 myParserList.add(tmpParser);
                 simulationCounter++;
+            }
+            if (support.isCancelEverything()) {
+                return null;
             }
         }
         if (myParserList.isEmpty()) {
