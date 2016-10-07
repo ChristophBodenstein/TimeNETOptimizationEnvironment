@@ -481,13 +481,13 @@ public class SimulationCache {
 
         for (ArrayList<parameter> parameterSet : parameterSetList) {
             //Create Arraylist from array of parameters
-            ArrayList<parameter> tmpParameterList = new ArrayList<parameter>();
+            /*ArrayList<parameter> tmpParameterList = new ArrayList<parameter>();
             for (parameter myParameter : parameterSet) {
                 tmpParameterList.add(myParameter);
-            }
+            }*/
             support.spinInLabel();
             //Get local simulation results
-            ArrayList<MeasureType> listOfMeasureWithGivenParameters = this.getAllMeasuresWithParameterList(tmpParameterList);
+            ArrayList<MeasureType> listOfMeasureWithGivenParameters = this.getAllMeasuresWithParameterList(parameterSet);
             //support.log("Size of ParameterList: "+ tmpParameterList.size() + " results in " +listOfMeasureWithGivenParameters.size()+ " Measurements.");
             //append if listSize is > 0
             if (listOfMeasureWithGivenParameters.size() > 0) {
@@ -502,7 +502,7 @@ public class SimulationCache {
                 simulationCounter++;
             }
             if (support.isCancelEverything()) {
-                return null;
+                return myParserList;
             }
         }
         if (myParserList.isEmpty()) {
