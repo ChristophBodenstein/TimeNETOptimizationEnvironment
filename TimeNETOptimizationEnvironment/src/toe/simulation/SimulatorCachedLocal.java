@@ -97,7 +97,9 @@ public class SimulatorCachedLocal extends SimulatorCached {
             support.log("Size of Remaining ParameterList is " + remainingParametersets.size(), typeOfLogLevel.INFO);
             //Find simulations that are not already simulated
             support.log("Will simulate " + remainingParametersets.size() + " local/distributed.", typeOfLogLevel.INFO);
-
+            if (support.isCancelEverything()) {
+                return;
+            }
             myLocalSimulator.initSimulator(remainingParametersets, false);
             //support.waitForEndOfSimulator(myLocalSimulator, support.getGlobalSimulationCounter(), support.DEFAULT_TIMEOUT);
 
