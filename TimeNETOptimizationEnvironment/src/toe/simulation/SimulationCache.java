@@ -37,6 +37,7 @@ public class SimulationCache {
 //ArrayList<MeasureType> MeasureList;
     private ArrayList<SimulationType> simulationList;
     private int localSimulationCounter = 0;
+    private String tmpHash = "";
 
     public SimulationCache() {
         //this.MeasureList = new ArrayList<MeasureType>();
@@ -293,7 +294,9 @@ public class SimulationCache {
     }
 
     /**
-     * Returns all Measures, selected by one parameterset(ParameterList)
+     * Returns all Measures, selected by one parameterset(ParameterList).
+     *
+     * It will just compare the hash values of the sorted parameterLists!
      *
      * @param parameterList given Set of Parameters to by virtually simulated
      * @return ArrayList of MeasureTypes
@@ -301,13 +304,16 @@ public class SimulationCache {
     public ArrayList<MeasureType> getAllMeasuresWithParameterList(ArrayList<parameter> parameterList) {
         SimulationType tmpSimulation;
         ArrayList<MeasureType> myTmpList = new ArrayList();
+        tmpHash = support.getHashStringForParameterList(parameterList);
+        //support.log(tmpHash + " = Needle.", typeOfLogLevel.VERBOSE);
 
         //support.log("Size of All Measures from File: "+MeasureList.size());
         //Go through all Measures, find the one with the same parameterlist
         for (int i = 0; i < this.getSimulationList().size(); i++) {
             tmpSimulation = this.getSimulationList().get(i);
-            if (compareParameterList(parameterList, tmpSimulation.getListOfParameters())) {
-                myTmpList = tmpSimulation.getMeasures(); //assumming cache-file did not have experiments with same Parameterset
+            //if (compareParameterList(parameterList, tmpSimulation.getListOfParameters())) {
+            if (tmpHash.equals(tmpSimulation.getHashString())) {
+                myTmpList = tmpSimulation.getMeasures(); //assuming cache-file did not have experiments with same Parameterset
             }
         }
         return myTmpList;
@@ -479,16 +485,31 @@ public class SimulationCache {
         setLocalSimulationCounter(simulationCounter);
         ArrayList<SimulationType> myParserList = new ArrayList<SimulationType>();
 
-        for (ArrayList<parameter> parameterSet : parameterSetList) {
+        support.log("Updating all simulation hash values.", typeOfLogLevel.INFO);
+        for (int i = 0; i < this.getSimulationList().size(); i++) {
+            this.getSimulationList().get(i).updateHashString();
+            support.setStatusText("Updating Hashs: " + i * 100 / this.getSimulationList().size() + " %");
+            if (support.isCancelEverything()) {
+                return null;
+            }
+        }
+        support.log("All hash values in cache up to date.", typeOfLogLevel.VERBOSE);
+
+        //for (ArrayList<parameter> parameterSet : parameterSetList) {
+        for (int i = 0; i < parameterSetList.size(); i++) {
+            ArrayList<parameter> parameterSet = parameterSetList.get(i);
+
             //Create Arraylist from array of parameters
             /*ArrayList<parameter> tmpParameterList = new ArrayList<parameter>();
             for (parameter myParameter : parameterSet) {
                 tmpParameterList.add(myParameter);
             }*/
             support.spinInLabel();
+
+            support.setStatusText("Searching in cache: " + i * 100 / parameterSetList.size() + " %");
             //Get local simulation results
             ArrayList<MeasureType> listOfMeasureWithGivenParameters = this.getAllMeasuresWithParameterList(parameterSet);
-            //support.log("Size of ParameterList: "+ tmpParameterList.size() + " results in " +listOfMeasureWithGivenParameters.size()+ " Measurements.");
+            support.log("Size of ParameterList: " + parameterSet.size() + " results in " + listOfMeasureWithGivenParameters.size() + " Measurements.", typeOfLogLevel.VERBOSE);
             //append if listSize is > 0
             if (listOfMeasureWithGivenParameters.size() > 0) {
                 /*SimulationType tmpParser=new SimulationType();

@@ -27,6 +27,7 @@ public class SimulationType {
     private String xmlFileName = "";
     private boolean isFromCache = false;//is true, if from cache and false if logfile is parsed
     private boolean isFromDistributedSimulation = false;//Is False, if local simulated, true if simulated via Web
+    private String hashString="";//Hash String to identify this Simulation based on the parameterset
 
     /**
      * the default constructor for parser-objects
@@ -337,5 +338,20 @@ public class SimulationType {
      */
     public void setIsFromDistributedSimulation(boolean isFromDistributedSimulation) {
         this.isFromDistributedSimulation = isFromDistributedSimulation;
+    }
+
+    /**
+     * @return the hashString
+     */
+    public String getHashString() {
+        return hashString;
+    }
+
+    /**
+     * Update the HashString of current parameterlist
+     */
+    public void updateHashString() {
+        this.hashString = support.getHashStringForParameterList(parameterList);
+        //support.log(this.hashString+" = HashString", typeOfLogLevel.VERBOSE);
     }
 }
