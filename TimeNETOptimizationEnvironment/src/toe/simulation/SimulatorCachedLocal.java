@@ -62,6 +62,7 @@ public class SimulatorCachedLocal extends SimulatorCached {
     @Override
     public void run() {
         if (mySimulationCache != null) {
+            support.log("Will load available results from simulation cache.", typeOfLogLevel.INFO);
             this.myListOfSimulationParsers = mySimulationCache.getListOfCompletedSimulationParsers(listOfParameterSetsTMP, support.getGlobalSimulationCounter());
         } else {
             support.log("No local Simulation file loaded. Will build my own cache from scratch.", typeOfLogLevel.INFO);
@@ -95,7 +96,7 @@ public class SimulatorCachedLocal extends SimulatorCached {
             }
             support.log("Size of Remaining ParameterList is " + remainingParametersets.size(), typeOfLogLevel.INFO);
             //Find simulations that are not already simulated
-            support.log("Will simulate " + remainingParametersets.size() + " local.", typeOfLogLevel.INFO);
+            support.log("Will simulate " + remainingParametersets.size() + " local/distributed.", typeOfLogLevel.INFO);
 
             myLocalSimulator.initSimulator(remainingParametersets, false);
             //support.waitForEndOfSimulator(myLocalSimulator, support.getGlobalSimulationCounter(), support.DEFAULT_TIMEOUT);
