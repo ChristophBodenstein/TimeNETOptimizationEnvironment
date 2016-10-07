@@ -5,6 +5,11 @@ var path = require('path');
 var glob = require("glob");
 var masterpw = "gulli";
 
+//Global counter variables
+	var doneSimulations=0;
+	var openSimulations=0;
+
+
 
 // Required modules for form handling
 var express = require('express'),
@@ -19,17 +24,57 @@ var DEFAULT_MINIMUM_TIMEOUT = 500;//in sec
 router.get('/', function (req, res) {
     var db = req.db;
     var activeclients = db.collection('activeclients');
-    console.log("Delivering index-page.");
+    var simlist = db.collection('simlist');
+   
 
-    removeOldClientsFromList(db, function (error) {
-        res.render('index', {
-            title: 'TimeNET distribution server',
-            clientcount: Math.round(global.clientcount),
-            clientsrunning: global.clientsrunning
-        });
+    /*console.log("Delivering index-page.");*/
+	simlist.find({simulated: false}, function (err, result) {
+        if (err) {
+            console.log("Error finding open simulations in db.");
+        } else {
+//console.log("Will try to count open simulations.");
+            if (result != null) {
+               result.count(function (err, count){
+					if(err){
+					console.log("Error counting open simulations.");
+					}	else{
+						openSimulations=count;
+						//console.log("Number of open Simulations is:"+openSimulations);
 
-    });
-
+							simlist.find({simulated: true}, function (err, result) {
+		        				if (err) {
+		            		console.log("Error finding done simulations in db.");
+		        				} else 	{
+											//console.log("Will try to count open simulations.");
+		            					if (result != null) {
+			                				result.count(function (err, count){
+												if(err){
+												console.log("Error counting done simulations.");
+												}	else	{
+															doneSimulations=count;
+															//console.log("Number of done Simulations is:"+doneSimulations);
+															
+															    removeOldClientsFromList(db, function (error) {
+															        res.render('index', {
+															            title: 'TimeNET distribution server',
+															            clientcount: Math.round(global.clientcount),
+															            clientsrunning: global.clientsrunning,
+																			opensimulations: openSimulations,
+																			donesimulations: doneSimulations,
+																			percentagedone: Math.round((doneSimulations *100)/(doneSimulations+openSimulations) ) || 0
+															        });
+															
+															    });															
+															}
+												});
+											}//End if
+								}//End else
+							});
+						}
+				});
+			}//End if
+			}//End else
+		});
 });
 
 
@@ -326,7 +371,8 @@ router.post('/rest/log/upload', function (req, res) {
 
 
     form.parse(req, function (err, fields, files) {
-        var old_path = files.attachment.path,
+	try{        
+	var old_path = files.attachment.path,
             file_size = files.attachment.size,
             file_name = files.attachment.name,
             simid = fields.simid,
@@ -370,7 +416,11 @@ router.post('/rest/log/upload', function (req, res) {
             });
 
         });
-    });
+
+    }catch(e){
+	console.log("Error while uploading logfile. ");
+	}
+     });
 
 });
 
@@ -679,6 +729,7 @@ function removeOldClientsFromList(db, cb) {
 
             }
         }
+	if (global.clientsrunning == NaN)global.clientsrunning = 0;
     });
 
     //console.log("Simulating Clients:"+global.clientsrunning);
