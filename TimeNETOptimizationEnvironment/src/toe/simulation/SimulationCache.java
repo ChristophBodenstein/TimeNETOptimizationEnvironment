@@ -482,7 +482,7 @@ public class SimulationCache {
      * @param simulationCounter Counter of Simulations
      * @return List of parsers with Simulation-Results, like in real simulation
      */
-    public ArrayList<SimulationType> getListOfCompletedSimulationParsers(ArrayList<ArrayList<parameter>> parameterSetList, int simulationCounter) {
+    public ArrayList<SimulationType> getListOfCompletedSimulations(ArrayList<ArrayList<parameter>> parameterSetList, int simulationCounter) {
         setLocalSimulationCounter(simulationCounter);
         ArrayList<SimulationType> myParserList = new ArrayList<>();
         ArrayList<MeasureType> listOfMeasureWithGivenParameters;
