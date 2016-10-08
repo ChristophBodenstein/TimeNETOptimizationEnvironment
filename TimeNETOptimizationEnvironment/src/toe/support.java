@@ -183,6 +183,8 @@ public class support {
 
     private static ArrayList<MeasureType> Measures;
 
+    private static String tmpHashString = "";
+
     /**
      * @return the myOptimizerPreferences a Reference to the Preferences-Frame
      */
@@ -1981,8 +1983,8 @@ public class support {
      * @return hopefully unique string to be used as primary key
      * @see https://dzone.com/articles/get-md5-hash-few-lines-java
      */
-    public static String getHashStringForParameterList(ArrayList<parameter> parameterList) {
-        String returnValue = "";
+    public static BigInteger getHashStringForParameterList(ArrayList<parameter> parameterList) {
+        tmpHashString = "";
         try {
 
             Collections.sort(parameterList, new Comparator<parameter>() {
@@ -1993,18 +1995,16 @@ public class support {
             });
 
             for (int i = 0; i < parameterList.size(); i++) {
-                returnValue += parameterList.get(i).getStringValue();
+                tmpHashString += parameterList.get(i).getStringValue();
             }
 
-            byte[] bytesOfMessage = returnValue.getBytes("UTF-8");
-
             MessageDigest md = MessageDigest.getInstance("MD5");
-            md.update(returnValue.getBytes(), 0, returnValue.length());
-            return (new BigInteger(1, md.digest()).toString(16));
+            md.update(tmpHashString.getBytes(), 0, tmpHashString.length());
+            return (new BigInteger(1, md.digest()));
 
         } catch (Exception ex) {
-            support.log("Could not create MD5-hash for " + returnValue, typeOfLogLevel.ERROR);
+            support.log("Could not create MD5-hash for " + tmpHashString, typeOfLogLevel.ERROR);
         }
-        return returnValue;
+        return (BigInteger.ZERO);
     }
 }

@@ -7,6 +7,7 @@
  */
 package toe.datamodel;
 
+import java.math.BigInteger;
 import toe.support;
 import java.util.ArrayList;
 import toe.typedef.typeOfLogLevel;
@@ -27,7 +28,7 @@ public class SimulationType {
     private String xmlFileName = "";
     private boolean isFromCache = false;//is true, if from cache and false if logfile is parsed
     private boolean isFromDistributedSimulation = false;//Is False, if local simulated, true if simulated via Web
-    private String hashString="";//Hash String to identify this Simulation based on the parameterset
+    private BigInteger hashValue = BigInteger.ONE;//Hash Value to identify this Simulation based on the parameterset
 
     /**
      * the default constructor for parser-objects
@@ -343,15 +344,15 @@ public class SimulationType {
     /**
      * @return the hashString
      */
-    public String getHashString() {
-        return hashString;
+    public BigInteger getHashValue() {
+        return hashValue;
     }
 
     /**
      * Update the HashString of current parameterlist
      */
     public void updateHashString() {
-        this.hashString = support.getHashStringForParameterList(parameterList);
+        this.hashValue = support.getHashStringForParameterList(parameterList);
         //support.log(this.hashString+" = HashString", typeOfLogLevel.VERBOSE);
     }
 }
