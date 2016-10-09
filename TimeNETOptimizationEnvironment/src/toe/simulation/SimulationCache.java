@@ -21,6 +21,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import javax.swing.JOptionPane;
 import toe.typedef.typeOfLogLevel;
 
@@ -41,10 +42,12 @@ public class SimulationCache {
     private BigInteger tmpHash = BigInteger.ZERO;
     private SimulationType tmpSimulation;
     private ArrayList<MeasureType> myTmpList = new ArrayList();
+    private HashMap<BigInteger, SimulationType> simulationHashmap;
 
     public SimulationCache() {
         //this.MeasureList = new ArrayList<MeasureType>();
-        this.simulationList = new ArrayList<SimulationType>();
+        this.simulationList = new ArrayList<>();
+        this.simulationHashmap = new HashMap<>();
     }
 
     public boolean parseSimulationCacheFile(String filename, ArrayList<MeasureType> listOfMeasures, parameterTableModel myParameterTableModel, MainFrame myParentFrame) {
@@ -214,7 +217,8 @@ public class SimulationCache {
                     //this.MeasureList.add(tmpSimulation);
 
                 }
-                getSimulationList().add(tmpSimulation);
+                //getSimulationList().add(tmpSimulation);
+                addSimulationToCache(tmpSimulation);
             }
 
             //Do not reformat Parameter-Table
@@ -480,57 +484,38 @@ public class SimulationCache {
      *
      * @param parameterSetList List of Parameter-Arrays to be "simulated"
      * @param simulationCounter Counter of Simulations
+     * @param listOfUnknownParametersets given by reference, this list will
+     * contain all parametersets not found in cache
      * @return List of parsers with Simulation-Results, like in real simulation
      */
-    public ArrayList<SimulationType> getListOfCompletedSimulations(ArrayList<ArrayList<parameter>> parameterSetList, int simulationCounter) {
+    public ArrayList<SimulationType> getListOfCompletedSimulations(ArrayList<ArrayList<parameter>> parameterSetList, int simulationCounter, ArrayList<ArrayList<parameter>> listOfUnknownParametersets) {
         setLocalSimulationCounter(simulationCounter);
-        ArrayList<SimulationType> myParserList = new ArrayList<>();
-        ArrayList<MeasureType> listOfMeasureWithGivenParameters;
+        ArrayList<SimulationType> mySimulationList = new ArrayList<>();
         ArrayList<parameter> parameterSet;
 
-        support.log("Updating all simulation hash values.", typeOfLogLevel.INFO);
-        for (int i = 0; i < this.getSimulationList().size(); i++) {
-            this.getSimulationList().get(i).updateHashString();
-            support.setStatusText("Updating Hashs: " + i * 100 / this.getSimulationList().size() + " %");
-            if (support.isCancelEverything()) {
-                return null;
-            }
-        }
-        support.log("All hash values in cache up to date.", typeOfLogLevel.VERBOSE);
-
-        //for (ArrayList<parameter> parameterSet : parameterSetList) {
         for (int i = 0; i < parameterSetList.size(); i++) {
             parameterSet = parameterSetList.get(i);
 
             support.spinInLabel();
-
             support.setStatusText("Searching in cache: " + i * 100 / parameterSetList.size() + " %");
-            //Get local simulation results
-            listOfMeasureWithGivenParameters = this.getAllMeasuresWithParameterList(parameterSet);
 
-            //append if listSize is > 0
-            if (listOfMeasureWithGivenParameters != null) {
-                if (listOfMeasureWithGivenParameters.size() > 0) {
-                    /*
-                        SimulationType tmpParser=new SimulationType();
-                        tmpParser.setMeasures(listOfMeasureWithGivenParameters);
-                        tmpParser.setSimulationTime(listOfMeasureWithGivenParameters.get(i).getSimulationTime());
-                        tmpParser.setCPUTime(support.getInt(listOfMeasureWithGivenParameters.get(i).getCPUTime()));
-                     */
-                    SimulationType tmpParser = this.getSimulationFromListOfMeasures(listOfMeasureWithGivenParameters);
-                    tmpParser.setListOfParameters(parameterSet);
-                    myParserList.add(tmpParser);
-                    simulationCounter++;
-                }
+            //Get cached simulation results
+            SimulationType foundSimulation = simulationHashmap.get(support.getHashStringForParameterList(parameterSet));
+            if (foundSimulation != null) {
+                mySimulationList.add(foundSimulation);
+                simulationCounter++;
+            } else {
+                listOfUnknownParametersets.add(parameterSet);
             }
+
             if (support.isCancelEverything()) {
-                return myParserList;
+                return mySimulationList;
             }
         }
-        if (myParserList.isEmpty()) {
+        if (mySimulationList.isEmpty()) {
             return null;
         }
-        return myParserList;
+        return mySimulationList;
     }
 
     /**
@@ -588,7 +573,9 @@ public class SimulationCache {
      * @param SimulationToAdd Simulation to be added
      */
     public void addSimulationToCache(SimulationType SimulationToAdd) {
-        this.getSimulationList().add(SimulationToAdd);
+        SimulationToAdd.updateHashString();
+        //this.getSimulationList().add(SimulationToAdd);
+        simulationHashmap.put(SimulationToAdd.getHashValue(), SimulationToAdd);
     }
 
     /**
@@ -621,6 +608,6 @@ public class SimulationCache {
      * @return Size of SimulationList
      */
     public int getCacheSize() {
-        return this.simulationList.size();
+        return simulationList.size();
     }
 }

@@ -64,7 +64,7 @@ public class SimulatorCachedLocal extends SimulatorCached {
     public void run() {
         if (mySimulationCache != null) {
             support.log("Will load available results from simulation cache.", typeOfLogLevel.INFO);
-            this.myListOfCompletedSimulations = mySimulationCache.getListOfCompletedSimulations(listOfParameterSetsTMP, support.getGlobalSimulationCounter());
+            this.myListOfCompletedSimulations = mySimulationCache.getListOfCompletedSimulations(listOfParameterSetsTMP, support.getGlobalSimulationCounter(), remainingParametersets);
         } else {
             support.log("No local Simulation file loaded. Will build my own cache from scratch.", typeOfLogLevel.INFO);
             this.mySimulationCache = support.getMySimulationCache();
@@ -83,27 +83,6 @@ public class SimulatorCachedLocal extends SimulatorCached {
 
         if (this.myListOfCompletedSimulations.size() < listOfParameterSetsTMP.size()) {
             support.log("Some simulations were missing in cache. Will simulate them local/distributed.", typeOfLogLevel.INFO);
-
-            for (ArrayList<parameter> myParameterset : listOfParameterSetsTMP) {
-                remainingParametersets.add(myParameterset);
-            }
-
-            ArrayList<parameter> myParameterset;
-            for (int i = 0; i < listOfParameterSetsTMP.size(); i++) {
-                myParameterset = listOfParameterSetsTMP.get(i);
-                support.spinInLabel();
-                support.setStatusText("Build new List:  " + i * 100 / listOfParameterSetsTMP.size() + " %");
-                //for (ArrayList<parameter> myParameterset : listOfParameterSetsTMP) {
-                for (SimulationType myListOfSimulationParser : this.myListOfCompletedSimulations) {
-                    if (this.mySimulationCache.compareParameterList(myListOfSimulationParser.getListOfParametersFittedToBaseParameterset(), myParameterset)) {
-                        remainingParametersets.remove(myParameterset);
-                    }
-                    if (support.isCancelEverything()) {
-                        return;
-                    }
-                }
-            }
-            support.log("Size of Remaining ParameterList is " + remainingParametersets.size(), typeOfLogLevel.INFO);
             //Find simulations that are not already simulated
             support.log("Will simulate " + remainingParametersets.size() + " local/distributed.", typeOfLogLevel.INFO);
             if (support.isCancelEverything()) {
