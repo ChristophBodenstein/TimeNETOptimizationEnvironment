@@ -574,7 +574,7 @@ public class SimulationCache {
      */
     public void addSimulationToCache(SimulationType SimulationToAdd) {
         SimulationToAdd.updateHashString();
-        //this.getSimulationList().add(SimulationToAdd);
+        this.getSimulationList().add(SimulationToAdd);
         simulationHashmap.put(SimulationToAdd.getHashValue(), SimulationToAdd);
     }
 
@@ -608,6 +608,6 @@ public class SimulationCache {
      * @return Size of SimulationList
      */
     public int getCacheSize() {
-        return simulationList.size();
+        return simulationHashmap.size();
     }
 }

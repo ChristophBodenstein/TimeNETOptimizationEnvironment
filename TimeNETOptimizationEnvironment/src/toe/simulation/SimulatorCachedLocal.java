@@ -62,7 +62,7 @@ public class SimulatorCachedLocal extends SimulatorCached {
      */
     @Override
     public void run() {
-        if (mySimulationCache != null) {
+        if ((mySimulationCache != null) && (mySimulationCache.getCacheSize() >= 1)) {
             support.log("Will load available results from simulation cache.", typeOfLogLevel.INFO);
             this.myListOfCompletedSimulations = mySimulationCache.getListOfCompletedSimulations(listOfParameterSetsTMP, support.getGlobalSimulationCounter(), remainingParametersets);
         } else {
@@ -73,6 +73,7 @@ public class SimulatorCachedLocal extends SimulatorCached {
         if (this.myListOfCompletedSimulations == null) {
             support.log("No Simulation found in local Cache. Starting simulation.", typeOfLogLevel.INFO);
             this.myListOfCompletedSimulations = new ArrayList<>();
+            remainingParametersets = listOfParameterSetsTMP;
         }
 
         status = myListOfCompletedSimulations.size() * 100 / listOfParameterSetsTMP.size();
