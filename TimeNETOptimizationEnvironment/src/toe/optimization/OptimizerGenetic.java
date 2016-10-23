@@ -109,7 +109,7 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
         //support.waitForEndOfSimulator(mySimulator, support.DEFAULT_TIMEOUT);
         synchronized (mySimulator) {
             try {
-                mySimulator.initSimulator(getNextParameterSetAsArrayList(), false);
+                mySimulator.initSimulator(getNextParameterSetAsArrayList(), support.isCreateseparateLogFilesForEverySimulation());
                 mySimulator.wait();
             } catch (InterruptedException ex) {
                 support.log("Problem waiting for end of non-cache-simulator.", typeOfLogLevel.ERROR);
@@ -147,7 +147,7 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
             //support.waitForEndOfSimulator(mySimulator, support.DEFAULT_TIMEOUT);
             synchronized (mySimulator) {
                 try {
-                    mySimulator.initSimulator(parameterList, false);
+                    mySimulator.initSimulator(parameterList, support.isCreateseparateLogFilesForEverySimulation());
                     mySimulator.wait();
                 } catch (InterruptedException ex) {
                     support.log("Problem waiting for end of non-cache-simulator.", typeOfLogLevel.ERROR);

@@ -194,4 +194,8 @@ public class SimulatorCached extends Thread implements Simulator {
     public int cancelAllSimulations() {
         return 0;
     }
+    @Override
+    public String getLogfileName() {
+        return this.logFileName;
+    }
 }

@@ -178,4 +178,9 @@ public class SimulatorBenchmark extends Thread implements Simulator {
     public int cancelAllSimulations() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public String getLogfileName() {
+        return this.logFileName;
+    }
 }

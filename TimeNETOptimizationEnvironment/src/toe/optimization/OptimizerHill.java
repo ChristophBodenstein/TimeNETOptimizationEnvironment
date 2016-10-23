@@ -104,7 +104,7 @@ public class OptimizerHill implements Runnable, Optimizer {
         //support.log("Performed % of simulations: "+mySimulator.getStatus(), typeOfLogLevel.INFO);
         synchronized (mySimulator) {
             try {
-                mySimulator.initSimulator(getParametersetAsArrayList(getFirstParameterset()), false);
+                mySimulator.initSimulator(getParametersetAsArrayList(getFirstParameterset()), support.isCreateseparateLogFilesForEverySimulation());
                 mySimulator.wait();
             } catch (InterruptedException ex) {
                 support.log("Problem waiting for end of non-cache-simulator.", typeOfLogLevel.ERROR);
@@ -131,7 +131,7 @@ public class OptimizerHill implements Runnable, Optimizer {
             //support.waitForEndOfSimulator(mySimulator, support.DEFAULT_TIMEOUT);
             synchronized (mySimulator) {
                 try {
-                    mySimulator.initSimulator(newParameterset, false);
+                    mySimulator.initSimulator(newParameterset, support.isCreateseparateLogFilesForEverySimulation());
                     mySimulator.wait();
                 } catch (InterruptedException ex) {
                     support.log("Problem waiting for end of non-cache-simulator.", typeOfLogLevel.ERROR);

@@ -2007,4 +2007,14 @@ public class support {
         }
         return (BigInteger.ZERO);
     }
+
+    /**
+     * Returns true if every single simulation shall be written as log file
+     * Useful if system is not stable or distributed simulation is used for batch simulation
+     *
+     * @return true if single simulation logs shall be created
+     */
+    public static boolean isCreateseparateLogFilesForEverySimulation() {
+        return (!support.isDeleteTmpSimulationFiles());
+    }
 }

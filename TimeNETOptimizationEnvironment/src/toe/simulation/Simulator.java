@@ -57,4 +57,10 @@ public interface Simulator {
      * @return info-value about success of cancelation
      */
     public int cancelAllSimulations();
+    
+    /**
+     * Returns name of local logfile, used by this simulator. The logfilename is chosen at init of simulator
+     * @return 
+     */
+    public String getLogfileName();
 }

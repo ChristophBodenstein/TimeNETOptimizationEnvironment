@@ -576,4 +576,8 @@ public class SimulatorDistributed extends Thread implements Simulator {
         return 0;
     }
 
+    @Override
+    public String getLogfileName() {
+        return this.logFileName;
+    }
 }

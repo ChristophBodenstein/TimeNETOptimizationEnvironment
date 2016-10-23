@@ -92,7 +92,8 @@ public class SimulatorCachedLocal extends SimulatorCached {
 
             synchronized (myLocalSimulator) {
                 try {
-                    myLocalSimulator.initSimulator(remainingParametersets, false);
+                    support.addLinesToLogFileFromListOfParser(myLocalSimulator.getListOfCompletedSimulationParsers(), myLocalSimulator.getLogfileName());
+                    myLocalSimulator.initSimulator(remainingParametersets, support.isCreateseparateLogFilesForEverySimulation());
                     myLocalSimulator.wait();
                 } catch (InterruptedException ex) {
                     support.log("Problem waiting for end of non-cache-simulator.", typeOfLogLevel.ERROR);
@@ -179,4 +180,8 @@ public class SimulatorCachedLocal extends SimulatorCached {
         return 0;
     }
 
+    @Override
+    public String getLogfileName() {
+        return this.logFileName;
+    }
 }
