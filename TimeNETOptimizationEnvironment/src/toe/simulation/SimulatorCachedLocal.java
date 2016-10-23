@@ -92,7 +92,7 @@ public class SimulatorCachedLocal extends SimulatorCached {
 
             synchronized (myLocalSimulator) {
                 try {
-                    support.addLinesToLogFileFromListOfParser(myLocalSimulator.getListOfCompletedSimulationParsers(), myLocalSimulator.getLogfileName());
+                    support.addLinesToLogFileFromListOfParser(myListOfCompletedSimulations, myLocalSimulator.getLogfileName());
                     myLocalSimulator.initSimulator(remainingParametersets, support.isCreateseparateLogFilesForEverySimulation());
                     myLocalSimulator.wait();
                 } catch (InterruptedException ex) {
