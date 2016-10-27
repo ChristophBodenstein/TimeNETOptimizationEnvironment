@@ -178,7 +178,7 @@ router.post('/rest/file/upload', function (req, res) {
                                             return false;
                                         } else {
 
-                                            console.log("Adding Serversecret for simid " + simid + " as " + secret);
+                                            //console.log("Adding Serversecret for simid " + simid + " as " + secret);
 
                                             //Implicit add the collection for serversecrets if it does not exist
                                             serversecrets.count(function (err, count) {
@@ -208,7 +208,7 @@ router.post('/rest/file/upload', function (req, res) {
                                                         console.log("Error entering Serversecret into db.");
 
                                                     } else {
-                                                        console.log("Added serversecret to db.");
+                                                        //console.log("Added serversecret to db.");
                                                         res.status(200);
                                                         res.json({'success': true});
                                                         return true;
