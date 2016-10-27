@@ -1079,7 +1079,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
             }
 
             Simulator mySimulator = SimOptiFactory.getSimulator();
-            mySimulator.initSimulator(ListOfParameterSetsToBeWritten, true);
+            mySimulator.initSimulator(ListOfParameterSetsToBeWritten, support.isCreateseparateLogFilesForEverySimulation());
             support.waitForSimulatorAsynchronous(mySimulator, this);
         } else {
             this.popUIState();

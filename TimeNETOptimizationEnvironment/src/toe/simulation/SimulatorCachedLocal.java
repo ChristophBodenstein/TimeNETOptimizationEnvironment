@@ -8,6 +8,7 @@
 package toe.simulation;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import toe.datamodel.parameter;
 import toe.datamodel.SimulationType;
 import toe.support;
@@ -21,7 +22,7 @@ import toe.typedef.typeOfLogLevel;
  */
 public class SimulatorCachedLocal extends SimulatorCached {
 
-    private ArrayList<SimulationType> myListOfSimulationParsers = null;
+    private ArrayList<SimulationType> myListOfCompletedSimulations = null;
     private int status;
     private final Simulator myLocalSimulator = getNoCacheSimulator();
     private ArrayList< ArrayList<parameter>> remainingParametersets = new ArrayList<>();
@@ -45,7 +46,7 @@ public class SimulatorCachedLocal extends SimulatorCached {
     @Override
     public void initSimulator(ArrayList< ArrayList<parameter>> listOfParameterSetsTMP, boolean log) {
 
-        this.myListOfSimulationParsers = null;
+        this.myListOfCompletedSimulations = null;
         remainingParametersets = new ArrayList<>();
         status = 0;
         this.listOfParameterSetsTMP = listOfParameterSetsTMP;
@@ -61,66 +62,57 @@ public class SimulatorCachedLocal extends SimulatorCached {
      */
     @Override
     public void run() {
-        if (mySimulationCache != null) {
-            this.myListOfSimulationParsers = mySimulationCache.getListOfCompletedSimulationParsers(listOfParameterSetsTMP, support.getGlobalSimulationCounter());
+        if ((mySimulationCache != null) && (mySimulationCache.getCacheSize() >= 1)) {
+            support.log("Will load available results from simulation cache.", typeOfLogLevel.INFO);
+            this.myListOfCompletedSimulations = mySimulationCache.getListOfCompletedSimulations(listOfParameterSetsTMP, support.getGlobalSimulationCounter(), remainingParametersets);
         } else {
             support.log("No local Simulation file loaded. Will build my own cache from scratch.", typeOfLogLevel.INFO);
             this.mySimulationCache = support.getMySimulationCache();
         }
 
-        if (this.myListOfSimulationParsers == null) {
+        if (this.myListOfCompletedSimulations == null) {
             support.log("No Simulation found in local Cache. Starting simulation.", typeOfLogLevel.INFO);
-            this.myListOfSimulationParsers = new ArrayList<>();
+            this.myListOfCompletedSimulations = new ArrayList<>();
+            remainingParametersets = listOfParameterSetsTMP;
         }
 
-        status = myListOfSimulationParsers.size() * 100 / listOfParameterSetsTMP.size();
-        support.setStatusText("Simulating " + myListOfSimulationParsers.size() + "/" + listOfParameterSetsTMP.size());
+        status = myListOfCompletedSimulations.size() * 100 / listOfParameterSetsTMP.size();
+        support.setStatusText("Simulating " + myListOfCompletedSimulations.size() + "/" + listOfParameterSetsTMP.size());
         //Increase Simulationcounter only if Simulation results are found in cache
         //Local or benchmark-simulators will update the counter on their own
-        support.setGlobalSimulationCounter(support.getGlobalSimulationCounter() + myListOfSimulationParsers.size());
+        support.setGlobalSimulationCounter(support.getGlobalSimulationCounter() + myListOfCompletedSimulations.size());
 
-        if (this.myListOfSimulationParsers.size() < listOfParameterSetsTMP.size()) {
+        if (this.myListOfCompletedSimulations.size() < listOfParameterSetsTMP.size()) {
             support.log("Some simulations were missing in cache. Will simulate them local/distributed.", typeOfLogLevel.INFO);
-
-            for (ArrayList<parameter> myParameterset : listOfParameterSetsTMP) {
-                remainingParametersets.add(myParameterset);
-            }
-
-            for (ArrayList<parameter> myParameterset : listOfParameterSetsTMP) {
-                for (SimulationType myListOfSimulationParser : this.myListOfSimulationParsers) {
-                    if (this.mySimulationCache.compareParameterList(myListOfSimulationParser.getListOfParametersFittedToBaseParameterset(), myParameterset)) {
-                        remainingParametersets.remove(myParameterset);
-                    }
-                }
-            }
-            support.log("Size of Remaining ParameterList is " + remainingParametersets.size(), typeOfLogLevel.INFO);
             //Find simulations that are not already simulated
-            support.log("Will simulate " + remainingParametersets.size() + " local.", typeOfLogLevel.INFO);
-
-            myLocalSimulator.initSimulator(remainingParametersets, false);
-            //support.waitForEndOfSimulator(myLocalSimulator, support.getGlobalSimulationCounter(), support.DEFAULT_TIMEOUT);
+            support.log("Will simulate " + remainingParametersets.size() + " local/distributed.", typeOfLogLevel.INFO);
+            if (support.isCancelEverything()) {
+                return;
+            }
 
             synchronized (myLocalSimulator) {
                 try {
+                    support.addLinesToLogFileFromListOfParser(myListOfCompletedSimulations, myLocalSimulator.getLogfileName());
+                    myLocalSimulator.initSimulator(remainingParametersets, support.isCreateseparateLogFilesForEverySimulation());
                     myLocalSimulator.wait();
                 } catch (InterruptedException ex) {
                     support.log("Problem waiting for end of non-cache-simulator.", typeOfLogLevel.ERROR);
                 }
             }
 
-            myListOfSimulationParsers.addAll(myLocalSimulator.getListOfCompletedSimulationParsers());
-            status = myListOfSimulationParsers.size() * 100 / listOfParameterSetsTMP.size();
+            myListOfCompletedSimulations.addAll(myLocalSimulator.getListOfCompletedSimulationParsers());
+            status = myListOfCompletedSimulations.size() * 100 / listOfParameterSetsTMP.size();
 
-            support.log("Size of resultList is " + myListOfSimulationParsers.size(), typeOfLogLevel.INFO);
+            support.log("Size of resultList is " + myListOfCompletedSimulations.size(), typeOfLogLevel.INFO);
 
             this.mySimulationCache.addListOfSimulationsToCache(myLocalSimulator.getListOfCompletedSimulationParsers());
             support.log("Size of SimulationCache: " + this.mySimulationCache.getCacheSize(), typeOfLogLevel.INFO);
         }
 
-        if (this.myListOfSimulationParsers != null) {
-            support.log("Adding " + myListOfSimulationParsers.size() + " Results to logfile.", typeOfLogLevel.INFO);
+        if (this.myListOfCompletedSimulations != null) {
+            support.log("Adding " + myListOfCompletedSimulations.size() + " Results to logfile.", typeOfLogLevel.INFO);
             //Print out a log file
-            support.addLinesToLogFileFromListOfParser(myListOfSimulationParsers, logFileName);
+            support.addLinesToLogFileFromListOfParser(myListOfCompletedSimulations, logFileName);
             support.log("SimulationCounter is now: " + support.getGlobalSimulationCounter(), typeOfLogLevel.INFO);
         }
 
@@ -159,7 +151,7 @@ public class SimulatorCachedLocal extends SimulatorCached {
      */
     @Override
     public ArrayList<SimulationType> getListOfCompletedSimulationParsers() {
-        return this.myListOfSimulationParsers;
+        return this.myListOfCompletedSimulations;
     }
 
     /**
@@ -188,4 +180,8 @@ public class SimulatorCachedLocal extends SimulatorCached {
         return 0;
     }
 
+    @Override
+    public String getLogfileName() {
+        return this.logFileName;
+    }
 }

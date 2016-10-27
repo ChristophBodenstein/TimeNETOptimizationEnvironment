@@ -13,8 +13,10 @@ package toe.simulation;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
@@ -49,6 +51,7 @@ public class SimulatorDistributed extends Thread implements Simulator {
 
     String logFileName = "";
     ArrayList< ArrayList<parameter>> listOfParameterSets;
+    private HashMap<String, ArrayList<parameter>> listOfParametersetsByFileNameHashmap = new HashMap<>();
     ArrayList<SimulationType> listOfCompletedSimulationParsers;
     ArrayList<String> listOfUnproccessedFilesNames;
     String originalFilename;
@@ -80,6 +83,7 @@ public class SimulatorDistributed extends Thread implements Simulator {
     public void run() {
         client = HttpFactory.getHttpClient();
         boolean uploadSuccessful;//To handle upload errors
+        ArrayList<parameter> actualParameterSet;
 
         support.log("Web-Simulation-Thread started to simulate " + listOfParameterSets.size() + " simulations.", typeOfLogLevel.INFO);
         if (support.isDistributedSimulationAvailable()) {
@@ -97,7 +101,7 @@ public class SimulatorDistributed extends Thread implements Simulator {
                         if (cancelSimulations) {
                             return;
                         }
-                        ArrayList<parameter> actualParameterSet = listOfParameterSets.get(i);//get actual parameterset
+                        actualParameterSet = listOfParameterSets.get(i);//get actual parameterset
 
                         String actualParameterFileName = createLocalSimulationFile(actualParameterSet, support.getGlobalSimulationCounter());//create actual SCPN xml-file and save it in tmp-folder
                         File file = new File(actualParameterFileName);
@@ -120,6 +124,9 @@ public class SimulatorDistributed extends Thread implements Simulator {
                         }
                         //add the file to the unprocessed files names 
                         listOfUnproccessedFilesNames.add(support.removeExtention(file.getName()));
+                        listOfParametersetsByFileNameHashmap.put(support.removeExtention(file.getName()), actualParameterSet);
+                        support.log("Used xml-filename in hashmap: " + support.removeExtention(file.getName()), typeOfLogLevel.VERBOSE);
+                        support.del(file);//delete tmp xml-file
                         support.incGlobalSimulationCounter();
                         if (support.isCancelEverything()) {
                             break;
@@ -127,7 +134,8 @@ public class SimulatorDistributed extends Thread implements Simulator {
                     }
                 }
             } catch (Exception e) {
-                support.log("Error while creating local simulation file or log-file.", typeOfLogLevel.ERROR);
+                support.log("Error while uploading simulations to server.", typeOfLogLevel.ERROR);
+                support.log(e.getMessage(), typeOfLogLevel.ERROR);
             }
             //end of the first phase which is uploading the XML files
 
@@ -165,6 +173,15 @@ public class SimulatorDistributed extends Thread implements Simulator {
                             fileWriter.write(responseString);
                             fileWriter.close();
                             actualSimulationLogFile = exportFileName;
+
+                            String[] tmpArrayToGetSimulationCounter=filenameWithoutExtension.split("n_");
+                            tmpArrayToGetSimulationCounter = tmpArrayToGetSimulationCounter[1].split("_Max");
+                            
+                            
+                            //create the xml-file again for parsing, tmp solution
+                            support.log("Used xml-filename on network: " + filenameWithoutExtension, typeOfLogLevel.VERBOSE);
+                            actualParameterSet = listOfParametersetsByFileNameHashmap.get(filenameWithoutExtension);
+                            createLocalSimulationFile(actualParameterSet, new Integer(tmpArrayToGetSimulationCounter[0]));
 
                             Parser myParser = new Parser();
                             SimulationType myResults = myParser.parse(actualSimulationLogFile);//parse Log-file and xml-file
@@ -559,4 +576,8 @@ public class SimulatorDistributed extends Thread implements Simulator {
         return 0;
     }
 
+    @Override
+    public String getLogfileName() {
+        return this.logFileName;
+    }
 }

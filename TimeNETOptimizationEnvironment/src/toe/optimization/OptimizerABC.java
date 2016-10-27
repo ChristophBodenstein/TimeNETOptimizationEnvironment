@@ -174,7 +174,7 @@ public class OptimizerABC extends OptimizerPopulationBased implements Runnable, 
         //support.waitForEndOfSimulator(mySimulator, support.DEFAULT_TIMEOUT);
         synchronized (mySimulator) {
             try {
-                mySimulator.initSimulator(getNextParameterSetAsArrayList(), false);
+                mySimulator.initSimulator(getNextParameterSetAsArrayList(), support.isCreateseparateLogFilesForEverySimulation());
                 mySimulator.wait();
             } catch (InterruptedException ex) {
                 support.log("Problem waiting for end of non-cache-simulator.", typeOfLogLevel.ERROR);
@@ -200,7 +200,7 @@ public class OptimizerABC extends OptimizerPopulationBased implements Runnable, 
                 //support.waitForEndOfSimulator(mySimulator, support.DEFAULT_TIMEOUT);
                 synchronized (mySimulator) {
                     try {
-                        mySimulator.initSimulator(getNextParameterSetAsArrayList(source), false);
+                        mySimulator.initSimulator(getNextParameterSetAsArrayList(source), support.isCreateseparateLogFilesForEverySimulation());
                         mySimulator.wait();
                     } catch (InterruptedException ex) {
                         support.log("Problem waiting for end of non-cache-simulator.", typeOfLogLevel.ERROR);

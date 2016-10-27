@@ -11,15 +11,23 @@ import toe.datamodel.SimulationType;
 import toe.datamodel.parameter;
 import toe.datamodel.MeasureType;
 import java.io.*;
+import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.Charset;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Properties;
 import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -174,6 +182,8 @@ public class support {
     public static ArrayList<parameter> listOfChangableParametersMultiphase = null;
 
     private static ArrayList<MeasureType> Measures;
+
+    private static String tmpHashString = "";
 
     /**
      * @return the myOptimizerPreferences a Reference to the Preferences-Frame
@@ -692,14 +702,16 @@ public class support {
             fw.close();
         } catch (Exception e) {
             support.log("Exception while writing things to summary log-file.", typeOfLogLevel.ERROR);
-            support.log("Name of logfile: "+logFileName, typeOfLogLevel.ERROR);
-            support.log("Trace: "+e.getMessage(), typeOfLogLevel.ERROR);
+            support.log("Name of logfile: " + logFileName, typeOfLogLevel.ERROR);
+            support.log("Trace: " + e.getMessage(), typeOfLogLevel.ERROR);
         }
     }
 
     /**
-     * Add lines to logfile from parserlist, same like addLinesToLogFileFromListOfParser
-     * but with number of runs. Only used in old version of OptimizerABC
+     * Add lines to logfile from parserlist, same like
+     * addLinesToLogFileFromListOfParser but with number of runs. Only used in
+     * old version of OptimizerABC
+     *
      * @param pList
      * @param numRunList
      * @param numCachedSimulations
@@ -1961,5 +1973,48 @@ public class support {
             //we are probably on a linux like machine
             return "/usr";
         }
+    }
+
+    /**
+     * Creates an identifierString to use as primary key when searching for
+     * simulations in cache
+     *
+     * @param parameterList List of parameters to be converted into String
+     * @return hopefully unique string to be used as primary key
+     * @see https://dzone.com/articles/get-md5-hash-few-lines-java
+     */
+    public static BigInteger getHashStringForParameterList(ArrayList<parameter> parameterList) {
+        tmpHashString = "";
+        try {
+
+            Collections.sort(parameterList, new Comparator<parameter>() {
+                @Override
+                public int compare(parameter o1, parameter o2) {
+                    return o1.getName().compareTo(o2.getName());
+                }
+            });
+
+            for (int i = 0; i < parameterList.size(); i++) {
+                tmpHashString += parameterList.get(i).getStringValue();
+            }
+
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(tmpHashString.getBytes(), 0, tmpHashString.length());
+            return (new BigInteger(1, md.digest()));
+
+        } catch (Exception ex) {
+            support.log("Could not create MD5-hash for " + tmpHashString, typeOfLogLevel.ERROR);
+        }
+        return (BigInteger.ZERO);
+    }
+
+    /**
+     * Returns true if every single simulation shall be written as log file
+     * Useful if system is not stable or distributed simulation is used for batch simulation
+     *
+     * @return true if single simulation logs shall be created
+     */
+    public static boolean isCreateseparateLogFilesForEverySimulation() {
+        return (!support.isDeleteTmpSimulationFiles());
     }
 }
