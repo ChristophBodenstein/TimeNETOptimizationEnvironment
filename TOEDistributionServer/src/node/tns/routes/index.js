@@ -5,10 +5,17 @@ var path = require('path');
 var glob = require("glob");
 var masterpw = "gulli";
 
-//Global counter variables
-	var doneSimulations=0;
-	var openSimulations=0;
-
+//Global statistics variables
+	var doneSimulations = 0;
+	var openSimulations = 0;
+	var timeStampOfLastFinishedSimulation = Date.now();
+	var averageSimulationsPerMinute = 0;
+	var minutesToFinish = 0;
+	var timedOutSimulations = 0;
+	var cpuUsage = 0;
+	var freeDiskSpace = 0;
+	var statisticsSmoothingFactor = 40;
+			
 
 
 // Required modules for form handling
@@ -20,8 +27,25 @@ var express = require('express'),
 var DEFAULT_SLEEPING_TIME = 5000;// in ms
 var DEFAULT_MINIMUM_TIMEOUT = 500;//in sec
 
+setInterval(removeOldClientsFromList, 1000);
+setInterval(function(){
+	if(openSimulations==0){
+		timeStampOfLastFinishedSimulation = Date.now();
+		//console.log("Reset TimeStamp.");
+		}	
+	},1000);
+
 /* GET home page. */
 router.get('/', function (req, res) {
+var path=require('path');
+  res.status(200);
+  res.sendFile(path.resolve('views/index.html'));
+  return true;          
+});
+
+
+
+router.get('/stats', function (req, res) {
     var db = req.db;
     var activeclients = db.collection('activeclients');
     var simlist = db.collection('simlist');
@@ -54,17 +78,23 @@ router.get('/', function (req, res) {
 															doneSimulations=count;
 															//console.log("Number of done Simulations is:"+doneSimulations);
 															
-															    removeOldClientsFromList(db, function (error) {
-															        res.render('index', {
+																	//removeOldClientsFromList(db, function (error) {
+															        res.render('stats', {
 															            title: 'TimeNET distribution server',
 															            clientcount: Math.round(global.clientcount),
 															            clientsrunning: global.clientsrunning,
-																			opensimulations: openSimulations,
-																			donesimulations: doneSimulations,
-																			percentagedone: Math.round((doneSimulations *100)/(doneSimulations+openSimulations) ) || 0
+																			opensimulations: openSimulations.toLocaleString('de-DE', {maximumFractionDigits: 0}),
+																			donesimulations: doneSimulations.toLocaleString('de-DE', {maximumFractionDigits: 0}),
+																			percentagedone: ((doneSimulations *100)/(doneSimulations+openSimulations)  || 0).toLocaleString('de-DE', {minimumFractionDigits: 2, maximumFractionDigits: 2}),
+																			averageSimulationsPerMinute: averageSimulationsPerMinute.toLocaleString('de-DE', {maximumFractionDigits: 1}),
+																			minutesToFinish: minutesToFinish.toLocaleString('de-DE', {maximumFractionDigits: 0}),
+																			timedOutSimulations: timedOutSimulations.toLocaleString('de-DE', {maximumFractionDigits: 0}),
+																			cpuUsage: cpuUsage,
+																			freeDiskSpace: freeDiskSpace
+																			
 															        });
 															
-															    });															
+															    //});															
 															}
 												});
 											}//End if
@@ -76,6 +106,9 @@ router.get('/', function (req, res) {
 			}//End else
 		});
 });
+
+	
+	
 
 
 //Handles uploads of simulation files
@@ -222,9 +255,10 @@ router.get('/rest/api/downloads/ND', function (req, res) {
     var activeclients = db.collection('activeclients');
 	var clientID=req.param('ID');
 	var clientSkills=req.param('SKILLS');
-    removeOldClientsFromList(db, function (error) {
+    //removeOldClientsFromList(db, function (error) {
         //Nothing to do here...
-    });
+    //});
+
 
     simlist.findAndModify(
         {distributed: false},
@@ -238,7 +272,7 @@ router.get('/rest/api/downloads/ND', function (req, res) {
                 console.log("Error updating a non-distributed simulation-entry.");
             } else {
                 if (result) {
-                    console.log("Delivering file " + result.path);
+                    //console.log("Delivering file " + result.path);
 
                     var options = {
                         headers: {
@@ -254,7 +288,7 @@ router.get('/rest/api/downloads/ND', function (req, res) {
                             res.status(err.status).end();
                         }
                         else {
-                            console.log('Sent:', fileName);
+                            //console.log('Sent:', fileName);
                         }
                     });
                 } else {
@@ -407,6 +441,7 @@ router.post('/rest/log/upload', function (req, res) {
                                     if (err) {
                                         console.log("Error updating " + xmlname + " to simulated:true.");
                                     }
+                                    updateAverageSimulationsPerMinute();
                                 });
 
 
@@ -457,7 +492,7 @@ router.get('/rest/api/downloads/log/:simid', function (req, res) {
                     res.status(err.status).end();
                 }
                 else {
-                    console.log('Sent:', fileName + ". Try to update db.");
+                    //console.log('Sent:', fileName + ". Try to update db.");
                     simlist.updateById(result._id, {$set: {logdownloaded: true}}, function (err, res) {
                         if (err) {
                             console.log("Error updating" + result.name);
@@ -492,7 +527,7 @@ router.post('/resetSimulation', function (req, res) {
     form.parse(req, function (err, fields, files) {
         var fileprefix = fields.prefix;
         var simid = fields.simid;
-        console.log("Simulation to delete:" + fileprefix + " with simid:" + simid);
+        //console.log("Simulation to delete:" + fileprefix + " with simid:" + simid);
         var searchpath = "./uploads/" + simid + "/" + fileprefix + "*.log";
         console.log("searching:" + searchpath);
         glob(searchpath, function (err, files) {
@@ -503,7 +538,7 @@ router.post('/resetSimulation', function (req, res) {
                         if (err) {
                             console.log("Error deleting file:" + item);
                         } else {
-                            console.log("Deleted file:" + item);
+                            //console.log("Deleted file:" + item);
                         }
                     });
                 });
@@ -568,11 +603,11 @@ router.post('/deleteSimulation', function (req, res) {
         var fileprefix = fields.prefix;
         var simid = fields.simid;
 
-        console.log("Simulation to delete:" + fileprefix + " with simid:" + simid);
+        //console.log("Simulation to delete:" + fileprefix + " with simid:" + simid);
         var searchpath = "./uploads/" + simid + "/" + fileprefix + "*.*";
         //console.log("searching:"+searchpath);
         glob(searchpath, function (err, files) {
-            console.log(files);
+            //console.log(files);
             if (files != null) {
                 files.forEach(function (item) {
                     fs.unlink(item, function (err) {
@@ -614,7 +649,7 @@ router.post('/deleteAllSimulations', function (req, res) {
                     var searchpath = "./uploads/" + simid + "/*.*";
                     //console.log("searching:"+searchpath);
                     glob(searchpath, function (err, files) {
-                        console.log(files);
+                        //console.log(files);
                         if (files != null) {
                             files.forEach(function (item) {
                                 fs.unlink(item, function (err) {
@@ -675,10 +710,29 @@ router.post('/reset', function (req, res) {
     res.redirect('/');
 });
 
+//Updates to average time, a simulation needs to finish
+function updateAverageSimulationsPerMinute(){
+var currentTimeStamp=Date.now();	
+var difference=currentTimeStamp-timeStampOfLastFinishedSimulation;
+var averageSimulationsPerMinuteTMP=0;
+//console.log("Difference: "+difference);
+
+	if(difference>0){
+		averageSimulationsPerMinuteTMP = 6000 / difference;
+		//console.log("simPerMinute: "+ averageSimulationsPerMinuteTMP);
+		averageSimulationsPerMinute = (averageSimulationsPerMinuteTMP + (statisticsSmoothingFactor * averageSimulationsPerMinute)) / (statisticsSmoothingFactor + 1);
+		//console.log("simPerMinute(avg)): "+ averageSimulationsPerMinute);
+		minutesToFinish = openSimulations/averageSimulationsPerMinute;	
+	}
+
+timeStampOfLastFinishedSimulation=currentTimeStamp;
+	}
+
 //Updates active client list, removes old clients
-function removeOldClientsFromList(db, cb) {
-    var activeclients = db.collection('activeclients');
-    var simlist = db.collection('simlist');
+function removeOldClientsFromList() {
+	var db = global.db;
+   var activeclients = db.collection('activeclients');
+   var simlist = db.collection('simlist');
     //Update one from not distributed to distributed
     //return this one as file to client
     //console.log("Removing old clients from list.");
@@ -708,7 +762,7 @@ function removeOldClientsFromList(db, cb) {
     activeclients.count(function (err, count) {
         if (global.clientcount == null)global.clientcount = 0;
         if (global.clientcount == NaN)global.clientcount = 0;
-        global.clientcount = ((global.clientcount * 19) + (count * 1)) / 20;
+        global.clientcount = ((global.clientcount * 2) + (count * 1)) / 3;
         if (count == 0) {
             global.clientcount = 0;
         }
@@ -734,8 +788,7 @@ function removeOldClientsFromList(db, cb) {
 
     //console.log("Simulating Clients:"+global.clientsrunning);
 
-    //Call callback-function
-    cb();
+    
 }
 
 
