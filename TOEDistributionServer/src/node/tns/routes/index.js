@@ -27,7 +27,7 @@ var express = require('express'),
 var DEFAULT_SLEEPING_TIME = 5000;// in ms
 var DEFAULT_MINIMUM_TIMEOUT = 500;//in sec
 
-setInterval(removeOldClientsFromList, 1000);
+setInterval(removeOldClientsFromList, 2000);
 setInterval(function(){
 	if(openSimulations==0){
 		timeStampOfLastFinishedSimulation = Date.now();
