@@ -28,6 +28,8 @@ var DEFAULT_SLEEPING_TIME = 5000;// in ms
 var DEFAULT_MINIMUM_TIMEOUT = 500;//in sec
 
 setInterval(removeOldClientsFromList, 2000);
+setInterval(updateStats, 2000);
+
 setInterval(function(){
 	if(openSimulations==0){
 		timeStampOfLastFinishedSimulation = Date.now();
@@ -44,67 +46,76 @@ var path=require('path');
 });
 
 
+/**
+* update all statistics
+*/
+function updateStats(){
+	var db = global.db;
+	var activeclients = db.collection('activeclients');
+   var simlist = db.collection('simlist');
+
+    /*console.log("Delivering index-page.");*/
+	simlist.find({simulated: false}, function (err, result) {
+     if (err) {
+         console.log("Error finding open simulations in db.");
+	  } 	else {
+	//console.log("Will try to count open simulations.");
+	            if (result != null) {
+	               result.count(function (err, count){
+						if(err){
+						console.log("Error counting open simulations.");
+						}	else{
+							openSimulations=count;
+							//console.log("Number of open Simulations is:"+openSimulations);
+							}
+						});
+					}	
+			}
+	});
+
+	simlist.find({simulated: true}, function (err, result) {
+  		if (err) {
+		console.log("Error finding done simulations in db.");
+  		} 	else{
+			//console.log("Will try to count open simulations.");
+				if (result != null) {
+	 				result.count(function (err, count){
+					if(err){
+					console.log("Error counting done simulations.");
+					}	else	{
+								doneSimulations=count;																		
+								}
+					});
+				}//End if
+			}//End else
+		});  
+		
+	//Check for timed out Simulations
+	  checkForTimedOutSimulations(simlist, function (err) {
+	      if (err) {
+	          console.log("Error checking for TimedOutSimulations.");
+	      }
+	  });  
+	}
 
 router.get('/stats', function (req, res) {
     var db = req.db;
     var activeclients = db.collection('activeclients');
     var simlist = db.collection('simlist');
    
-
-    /*console.log("Delivering index-page.");*/
-	simlist.find({simulated: false}, function (err, result) {
-        if (err) {
-            console.log("Error finding open simulations in db.");
-        } else {
-//console.log("Will try to count open simulations.");
-            if (result != null) {
-               result.count(function (err, count){
-					if(err){
-					console.log("Error counting open simulations.");
-					}	else{
-						openSimulations=count;
-						//console.log("Number of open Simulations is:"+openSimulations);
-
-							simlist.find({simulated: true}, function (err, result) {
-		        				if (err) {
-		            		console.log("Error finding done simulations in db.");
-		        				} else 	{
-											//console.log("Will try to count open simulations.");
-		            					if (result != null) {
-			                				result.count(function (err, count){
-												if(err){
-												console.log("Error counting done simulations.");
-												}	else	{
-															doneSimulations=count;
-															//console.log("Number of done Simulations is:"+doneSimulations);
-															
-																	//removeOldClientsFromList(db, function (error) {
-															        res.render('stats', {
-															            title: 'TimeNET distribution server',
-															            clientcount: Math.round(global.clientcount),
-															            clientsrunning: global.clientsrunning,
-																			opensimulations: openSimulations.toLocaleString('de-DE', {maximumFractionDigits: 0}),
-																			donesimulations: doneSimulations.toLocaleString('de-DE', {maximumFractionDigits: 0}),
-																			percentagedone: ((doneSimulations *100)/(doneSimulations+openSimulations)  || 0).toLocaleString('de-DE', {minimumFractionDigits: 2, maximumFractionDigits: 2}),
-																			averageSimulationsPerMinute: averageSimulationsPerMinute.toLocaleString('de-DE', {maximumFractionDigits: 1}),
-																			minutesToFinish: minutesToFinish.toLocaleString('de-DE', {maximumFractionDigits: 0}),
-																			timedOutSimulations: timedOutSimulations.toLocaleString('de-DE', {maximumFractionDigits: 0}),
-																			cpuUsage: cpuUsage,
-																			freeDiskSpace: freeDiskSpace
-																			
-															        });
-															
-															    //});															
-															}
-												});
-											}//End if
-								}//End else
-							});
-						}
-				});
-			}//End if
-			}//End else
-		});
+     res.render('stats', {
+         title: 'Server statistics',
+         clientcount: Math.round(global.clientcount),
+			opensimulations: openSimulations.toLocaleString('de-DE', {maximumFractionDigits: 0}),
+			donesimulations: doneSimulations.toLocaleString('de-DE', {maximumFractionDigits: 0}),
+			percentagedone: ((doneSimulations *100)/(doneSimulations+openSimulations)  || 0).toLocaleString('de-DE', {minimumFractionDigits: 2, maximumFractionDigits: 2}),
+			averageSimulationsPerMinute: averageSimulationsPerMinute.toLocaleString('de-DE', {maximumFractionDigits: 1}),
+			minutesToFinish: minutesToFinish.toLocaleString('de-DE', {maximumFractionDigits: 0}),
+			timedOutSimulations: timedOutSimulations.toLocaleString('de-DE', {maximumFractionDigits: 0}),
+			cpuUsage: cpuUsage,
+			freeDiskSpace: freeDiskSpace
+     });
+				
 });
 
 	
@@ -313,18 +324,7 @@ router.get('/rest/api/downloads/ND', function (req, res) {
                             } else {
                             }
                         });
-
-
-
-                    //Check for timed out Simulations
-                    checkForTimedOutSimulations(simlist, function (err) {
-                        if (err) {
-                            console.log("Error checking for TimedOutSimulations.");
-                        }
-                    });
                 }
-
-
             }
 
         });
@@ -361,6 +361,7 @@ function checkForTimedOutSimulations(simlist, cb) {
                              console.log("Tim:" + localtimeout);
                              console.log("------------------");*/
                             if (localtimeout <= now) {
+                            		timedOutSimulations=timedOutSimulations+1;
                                 //console.log("Try to reset entry to undistributed.");
                                 //set it to undistributed
                                 simlist.findAndModify(
