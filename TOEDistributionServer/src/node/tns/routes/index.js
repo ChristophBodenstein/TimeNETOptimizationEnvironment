@@ -704,6 +704,11 @@ router.post('/reset', function (req, res) {
             });
 
         });
+   averageSimulationsPerMinute = 0;
+	minutesToFinish = 0;
+	timedOutSimulations = 0;
+	cpuUsage = 0;
+	freeDiskSpace = 0;
     } else {
         console.log("Wrong password, will not reset server.");
 
