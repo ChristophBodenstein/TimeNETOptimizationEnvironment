@@ -27,12 +27,15 @@ block content
     
   #timedOutSimulations
     p #{timedOutSimulations} simulations timed out (clients crashed?).
+
+  #numberOfMasterAlive
+    p #{numberOfMasterAlive} Masters alive.
     
   #cpuUsage
     p #{cpuUsage}% average CPU usage.
     
   #freeDiskSpace
-    p #{freeDiskSpace} MB free disk space.
+    p #{freeDiskSpace}% free disk space.
   
   div
     form(name="reset", action="/reset", method="post")

@@ -3,7 +3,16 @@ var router = express.Router();
 var mkdirp = require('mkdirp');
 var path = require('path');
 var glob = require("glob");
+var disk = require('diskusage');
+const os = require('os');
+
 var masterpw = "gulli";
+
+//check if its a windows system
+var mountPoint='/';
+if(/^win/.test(process.platform)){
+	mountPoint='c:';	
+	}
 
 //Global statistics variables
 	var doneSimulations = 0;
@@ -15,6 +24,8 @@ var masterpw = "gulli";
 	var cpuUsage = 0;
 	var freeDiskSpace = 0;
 	var statisticsSmoothingFactor = 40;
+	var arrayOfMasterLastSeen=new Array();
+	var numberOfMasterAlive=0;
 			
 
 
@@ -24,10 +35,11 @@ var express = require('express'),
     formidable = require('formidable'),
     fs = require('graceful-fs'),
     path = require('path');
-var DEFAULT_SLEEPING_TIME = 5000;// in ms
+var DEFAULT_SLEEPING_TIME = 3000;// in ms
 var DEFAULT_MINIMUM_TIMEOUT = 500;//in sec
 
-setInterval(removeOldClientsFromList, 2000);
+/* Update list of clients every (TimeOut + 1000) ms*/
+setInterval(removeOldClientsFromList, DEFAULT_SLEEPING_TIME + 1000);
 setInterval(updateStats, 2000);
 
 setInterval(function(){
@@ -52,9 +64,11 @@ var path=require('path');
 function updateStats(){
 	var db = global.db;
 	var activeclients = db.collection('activeclients');
-   var simlist = db.collection('simlist');
+	var simlist = db.collection('simlist');
+	var tmpTimeStamp=0;
+	
 
-    /*console.log("Delivering index-page.");*/
+    /* Count open simulations */
 	simlist.find({simulated: false}, function (err, result) {
      if (err) {
          console.log("Error finding open simulations in db.");
@@ -73,6 +87,7 @@ function updateStats(){
 			}
 	});
 
+	/* Count done simulations */
 	simlist.find({simulated: true}, function (err, result) {
   		if (err) {
 		console.log("Error finding done simulations in db.");
@@ -90,50 +105,68 @@ function updateStats(){
 			}//End else
 		});  
 		
-	//Check for timed out Simulations
-	  checkForTimedOutSimulations(simlist, function (err) {
-	      if (err) {
-	          console.log("Error checking for TimedOutSimulations.");
-	      }
-	  });  
+	/* Check for timed out simulations */
+	checkForTimedOutSimulations(simlist, function (err) {
+	    if (err) {
+	    console.log("Error checking for TimedOutSimulations.");
+	    }
+	});
+	
+	/* Check for died Masters */
+	tmpTimeStamp=Date.now() - DEFAULT_SLEEPING_TIME;
+	numberOfMasterAlive=0;
+	for (var i in arrayOfMasterLastSeen) {
+   	if(arrayOfMasterLastSeen[i] >= tmpTimeStamp){
+		numberOfMasterAlive = numberOfMasterAlive + 1;	
+		}	
 	}
+	
+	/* estimate average cpu load (does not work in windows)*/
+	cpuUsage=os.loadavg();
+	cpuUsage=cpuUsage[0] * 100;//using 1 min average
+	
+	
+	/* get current disk usage */
+	disk.check(mountPoint, function(err, info) {
+	freeDiskSpace=info.free * 100 / info.total;
+	});
+}
 
+/**
+* Returns simple site with current server statistics
+*/
 router.get('/stats', function (req, res) {
     var db = req.db;
     var activeclients = db.collection('activeclients');
     var simlist = db.collection('simlist');
    
      res.render('stats', {
-         title: 'Server statistics',
-         clientcount: Math.round(global.clientcount),
-			opensimulations: openSimulations.toLocaleString('de-DE', {maximumFractionDigits: 0}),
-			donesimulations: doneSimulations.toLocaleString('de-DE', {maximumFractionDigits: 0}),
-			percentagedone: ((doneSimulations *100)/(doneSimulations+openSimulations)  || 0).toLocaleString('de-DE', {minimumFractionDigits: 2, maximumFractionDigits: 2}),
-			averageSimulationsPerMinute: averageSimulationsPerMinute.toLocaleString('de-DE', {maximumFractionDigits: 1}),
-			minutesToFinish: minutesToFinish.toLocaleString('de-DE', {maximumFractionDigits: 0}),
-			timedOutSimulations: timedOutSimulations.toLocaleString('de-DE', {maximumFractionDigits: 0}),
-			cpuUsage: cpuUsage,
-			freeDiskSpace: freeDiskSpace
+        title: 'Server statistics',
+        clientcount: Math.round(global.clientcount),
+		opensimulations: openSimulations.toLocaleString('de-DE', {maximumFractionDigits: 0}),
+		donesimulations: doneSimulations.toLocaleString('de-DE', {maximumFractionDigits: 0}),
+		percentagedone: ((doneSimulations *100)/(doneSimulations+openSimulations)  || 0).toLocaleString('de-DE', {minimumFractionDigits: 2, maximumFractionDigits: 2}),
+		averageSimulationsPerMinute: averageSimulationsPerMinute.toLocaleString('de-DE', {maximumFractionDigits: 1}),
+		minutesToFinish: minutesToFinish.toLocaleString('de-DE', {maximumFractionDigits: 0}),
+		timedOutSimulations: timedOutSimulations.toLocaleString('de-DE', {maximumFractionDigits: 0}),
+		numberOfMasterAlive:	numberOfMasterAlive,
+		cpuUsage: cpuUsage.toLocaleString('de-DE', {maximumFractionDigits: 1}),
+		freeDiskSpace: freeDiskSpace.toLocaleString('de-DE', {maximumFractionDigits: 1})
      });
 				
 });
 
 	
 	
-
-
-//Handles uploads of simulation files
+/** 
+* Handles uploads of simulation files
+* parse filename, store file, store data
+*/
 router.post('/rest/file/upload', function (req, res) {
     var form = new formidable.IncomingForm();
     var db = req.db;
     var simlist = db.collection('simlist');
     var serversecrets = db.collection('serversecrets');
-
-    /*db.collection('simlist').find().toArray(function(err, result) {
-     if (err) throw err;
-     console.log(result);
-     });
-     */
 
     form.parse(req, function (err, fields, files) {
         if (err) {
@@ -247,7 +280,11 @@ router.post('/rest/file/upload', function (req, res) {
     return true;
 });
 
-//Validates xml file, if it is a correct SCPN, if yes calls cb without error else with error
+
+/**
+* Validates xml file, if it is a correct SCPN, if yes calls cb without error else with error
+* 
+*/
 function validateXMLFile(xmlfile, cb) {
 
     var stats = fs.statSync(new_path);
@@ -259,16 +296,16 @@ function validateXMLFile(xmlfile, cb) {
 
 }
 
-//Handles simulation-requests from sim-slaves
+/**
+* Handles simulation-requests from sim-slaves
+* will return a simulation file
+*/
 router.get('/rest/api/downloads/ND', function (req, res) {
     var db = req.db;
     var simlist = db.collection('simlist');
     var activeclients = db.collection('activeclients');
 	var clientID=req.param('ID');
 	var clientSkills=req.param('SKILLS');
-    //removeOldClientsFromList(db, function (error) {
-        //Nothing to do here...
-    //});
 
 
     simlist.findAndModify(
@@ -328,14 +365,15 @@ router.get('/rest/api/downloads/ND', function (req, res) {
             }
 
         });
-
-
+		
 });
 
-//Checks if any simulation is longer distributed then in MaxTime allowed.
-//If yes, then rest it to undistributed
+
+/**
+* Checks if any simulation is longer distributed then in MaxTime allowed.
+* If yes, then reset it to undistributed, so it will be distributed again.
+*/
 function checkForTimedOutSimulations(simlist, cb) {
-    //Check if timeout for one or more sims was, then reset it to undistributed
     simlist.find({distributed: true, simulated: false}, function (err, result) {
         if (err) {
             console.log("Error finding distributed and unsimulated simulations in db.");
@@ -388,7 +426,9 @@ function checkForTimedOutSimulations(simlist, cb) {
     });
 }
 
-//Extracts the maximum time from filename of simulation
+/**
+* Extracts the maximum time from filename of simulation
+*/
 function getMaxTimeFromFileName(filename, cb) {
     var maxtime = 500;
     var tmpString = filename.split('_MaxTime_')[1];
@@ -398,75 +438,81 @@ function getMaxTimeFromFileName(filename, cb) {
     cb(maxtime);
 }
 
-//Handles uploads of log-files (simulation results) from sim-slaves
+/**
+* Handles uploads of log-files (simulation results) from sim-slaves
+* store log file, set db-entry
+*/
 router.post('/rest/log/upload', function (req, res) {
     var form = new formidable.IncomingForm();
     var db = req.db;
     var simlist = db.collection('simlist');
 
-
     form.parse(req, function (err, fields, files) {
-	try{        
-	var old_path = files.attachment.path,
-            file_size = files.attachment.size,
-            file_name = files.attachment.name,
-            simid = fields.simid,
-            new_dir = './uploads/' + simid,
-            new_path = './uploads/' + simid + "/" + file_name;
+		try{        
+		var old_path = files.attachment.path,
+				file_size = files.attachment.size,
+				file_name = files.attachment.name,
+				simid = fields.simid,
+				new_dir = './uploads/' + simid,
+				new_path = './uploads/' + simid + "/" + file_name;
 
-        mkdirp(new_dir, function (err) {
-            // path was created unless there was error
-            if (err) {
-                console.log("There was an error creating dir:" + new_path);
-            }
+			mkdirp(new_dir, function (err) {
+				// path was created unless there was error
+				if (err) {
+					console.log("There was an error creating dir:" + new_path);
+				}
 
-            fs.readFile(old_path, function (err, data) {
-                fs.writeFile(new_path, data, function (err) {
-                    fs.unlink(old_path, function (err) {
-                        if (err) {
-                            res.status(500);
-                            res.json({'success': false});
-                        } else {
-                            res.status(200);
-                            res.json({'success': true});
+				fs.readFile(old_path, function (err, data) {
+					fs.writeFile(new_path, data, function (err) {
+						fs.unlink(old_path, function (err) {
+							if (err) {
+								res.status(500);
+								res.json({'success': false});
+							} 	else {
+								res.status(200);
+								res.json({'success': true});
 
-                            //Update Entry in db
-                            var xmlname = file_name.split("_simTime")[0] + "_.xml";//  slice(0,-4)+".xml"
-                            simlist.findAndModify(
-                                {simid: simid, name: xmlname},
-                                [],
-                                {$set: {simulated: true, logname: file_name}},
-                                false,
-                                true,
-                                function (err, result) {
-                                    if (err) {
-                                        console.log("Error updating " + xmlname + " to simulated:true.");
-                                    }
-                                    updateAverageSimulationsPerMinute();
-                                });
+								//Update Entry in db
+								var xmlname = file_name.split("_simTime")[0] + "_.xml";//  slice(0,-4)+".xml"
+									simlist.findAndModify(
+									{simid: simid, name: xmlname},
+									[],
+									{$set: {simulated: true, logname: file_name}},
+									false,
+									true,
+									function (err, result) {
+										if (err) {
+											console.log("Error updating " + xmlname + " to simulated:true.");
+										}
+										updateAverageSimulationsPerMinute();
+									}
+									);
+								}	
+						});
+					});
+				});
 
+			});
 
-                        }
-                    });
-                });
-            });
-
-        });
-
-    }catch(e){
-	console.log("Error while uploading logfile. ");
-	}
-     });
+		}	catch(e){
+			console.log("Error while uploading logfile. ");
+			}
+    });
 
 });
 
-
+/**
+* Handles requests for simulation results
+*/
 router.get('/rest/api/downloads/log/:simid', function (req, res) {
     var db = req.db;
     var simlist = db.collection('simlist');
     var simid = req.params.simid;
     //console.log("Asking for logfiles for: "+simid);
 
+	//Set timestamp, when master was last seen
+	arrayOfMasterLastSeen[simid]=Date.now();
+	
     simlist.findOne({simid: simid, simulated: true, logdownloaded: false}, function (err, result) {
 
         if (err) {
@@ -499,12 +545,13 @@ router.get('/rest/api/downloads/log/:simid', function (req, res) {
                             console.log("Error updating" + result.name);
                         }
                         if (res) {
-                            /*console.log("Will delete file:" + fileName);
-                             var fs = require('fs');
-                             fs.unlink(fileName);
-                             console.log("Will delete file:" + xmlPath);
-                             fs.unlink(xmlPath);
-                             */
+                            /*
+							console.log("Will delete file:" + fileName);
+							var fs = require('fs');
+							fs.unlink(fileName);
+							console.log("Will delete file:" + xmlPath);
+							fs.unlink(xmlPath);
+							*/
                         }
                     });
                 }
@@ -514,11 +561,13 @@ router.get('/rest/api/downloads/log/:simid', function (req, res) {
             res.status(500);
             res.json({'success': false});
         }
-
-        //TODO increase Counter...
     });
 });
 
+/**
+* Reset simulation
+* delete log file, set simulation to undistributed and unsimulated
+*/
 router.post('/resetSimulation', function (req, res) {
     console.log("Asked to reset simulation");
     var form = new formidable.IncomingForm();
@@ -530,7 +579,7 @@ router.post('/resetSimulation', function (req, res) {
         var simid = fields.simid;
         //console.log("Simulation to delete:" + fileprefix + " with simid:" + simid);
         var searchpath = "./uploads/" + simid + "/" + fileprefix + "*.log";
-        console.log("searching:" + searchpath);
+        //console.log("searching:" + searchpath);
         glob(searchpath, function (err, files) {
             console.log(files);
             if (files != null) {
@@ -592,7 +641,9 @@ router.post('/resetSimulation', function (req, res) {
     res.json({'success': true});
 });
 
-//Delete one simulation (xml file + log file) db-entry remains
+/**
+* Delete one simulation (xml file + log file) db-entry remains
+*/
 router.post('/deleteSimulation', function (req, res) {
 //console.log("Asked to delete simulation");
     var form = new formidable.IncomingForm();
@@ -628,7 +679,9 @@ router.post('/deleteSimulation', function (req, res) {
 
 });
 
-//Delete ALL simulations uploaded by one client (xml-file + log-file + db-entry)
+/**
+* Delete ALL simulations uploaded by one client (xml-file + log-file + db-entry)
+*/
 router.post('/deleteAllSimulations', function (req, res) {
     var form = new formidable.IncomingForm();
     var db = req.db;
@@ -682,6 +735,10 @@ router.post('/deleteAllSimulations', function (req, res) {
     res.json({'success': true});
 });
 
+
+/**
+* Handle reset-request to delete all simulations
+*/
 router.post('/reset', function (req, res) {
 
     console.log("RESET-POST received, will try to reset server.");
@@ -716,7 +773,9 @@ router.post('/reset', function (req, res) {
     res.redirect('/');
 });
 
-//Updates to average time, a simulation needs to finish
+/**
+* Updates to average time, a simulation needs to finish
+*/
 function updateAverageSimulationsPerMinute(){
 var currentTimeStamp=Date.now();	
 var difference=currentTimeStamp-timeStampOfLastFinishedSimulation;
@@ -734,7 +793,9 @@ var averageSimulationsPerMinuteTMP=0;
 timeStampOfLastFinishedSimulation=currentTimeStamp;
 	}
 
-//Updates active client list, removes old clients
+/**
+* Updates active client list, removes old clients
+*/
 function removeOldClientsFromList() {
 	var db = global.db;
    var activeclients = db.collection('activeclients');
