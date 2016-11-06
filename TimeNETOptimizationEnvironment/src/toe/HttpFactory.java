@@ -34,7 +34,7 @@ public class HttpFactory {
     public static DefaultHttpClient getHttpClient() {
         if (client == null) {
             final HttpParams httpParams = new BasicHttpParams();
-            HttpConnectionParams.setConnectionTimeout(httpParams, 2000);
+            HttpConnectionParams.setConnectionTimeout(httpParams, support.DEFAULT_CONNECTION_TIMEOUT);
             client = new DefaultHttpClient(httpParams);
         }
         return client;
