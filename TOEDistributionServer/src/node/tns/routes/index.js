@@ -123,7 +123,7 @@ function updateStats(){
 	
 	/* estimate average cpu load (does not work in windows)*/
 	cpuUsage=os.loadavg();
-	cpuUsage=cpuUsage[0] * 100;//using 1 min average
+	cpuUsage=cpuUsage[1] * 100 / os.cpus().length;//using 5 min average
 	
 	
 	/* get current disk usage */
