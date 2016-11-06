@@ -24,8 +24,6 @@ import toe.support;
 import java.awt.ComponentOrientation;
 import javax.swing.JColorChooser;
 import java.io.FileOutputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 import javax.swing.colorchooser.AbstractColorChooserPanel;
@@ -782,7 +780,7 @@ public class PlotFrameController extends javax.swing.JFrame implements nativePro
             AbstractColorChooserPanel[] panels = jc.getChooserPanels();
             for (AbstractColorChooserPanel accp : panels) {
                 String name = accp.getDisplayName();
-                System.out.println("Name:" + name);
+                //System.out.println("Name:" + name);
                 if (name.equals("Swatches")) {
                     JOptionPane.showMessageDialog(null, accp);
 
@@ -790,8 +788,7 @@ public class PlotFrameController extends javax.swing.JFrame implements nativePro
             }
 
         } catch (Exception ex) {
-            Logger.getLogger(PlotFrameController.class
-                    .getName()).log(Level.SEVERE, null, ex);
+            support.log("Error choosing colors for plot: " + ex.getStackTrace().toString(), typeOfLogLevel.RESULT);
         }
         jc.setVisible(true);
         Color chosen = jc.getColor();
