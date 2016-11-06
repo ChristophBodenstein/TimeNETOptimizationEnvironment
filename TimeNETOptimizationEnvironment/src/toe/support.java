@@ -641,7 +641,7 @@ public class support {
             }
 
             File f = new File(logFileName);
-            if (!f.exists()) {
+            if (!f.exists() || (f.length() <= 100)) {
                 writeHeader = true;
             }
             FileWriter fw = new FileWriter(logFileName, true);
