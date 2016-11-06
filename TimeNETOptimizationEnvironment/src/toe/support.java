@@ -14,9 +14,7 @@ import java.io.*;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -26,8 +24,6 @@ import java.util.Properties;
 import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -2010,7 +2006,8 @@ public class support {
 
     /**
      * Returns true if every single simulation shall be written as log file
-     * Useful if system is not stable or distributed simulation is used for batch simulation
+     * Useful if system is not stable or distributed simulation is used for
+     * batch simulation
      *
      * @return true if single simulation logs shall be created
      */
