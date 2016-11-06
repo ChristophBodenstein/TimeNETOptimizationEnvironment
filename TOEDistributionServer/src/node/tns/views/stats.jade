@@ -1,0 +1,43 @@
+extends layout
+
+block content
+  h1= title
+  
+  p
+  #clientcount
+    p #{clientcount} clients waiting for tasks.
+
+  #clientsrunning
+    p #{clientsrunning} simulations distributed for simulation and not yet ended.
+
+  #opensimulations
+    p #{opensimulations} simulations waiting.
+
+  #donesimulations
+    p #{donesimulations} simulations done (current).
+    
+  #percentage
+    p #{percentagedone}% simulations done (current).
+    
+  #averageSimulationsPerMinute
+    p #{averageSimulationsPerMinute} simulations finished per minute (average).
+    
+  #minutesToFinish
+    p #{minutesToFinish} minutes to finish all simulations.
+    
+  #timedOutSimulations
+    p #{timedOutSimulations} simulations timed out (clients crashed?).
+
+  #numberOfMasterAlive
+    p #{numberOfMasterAlive} Masters alive.
+    
+  #cpuUsage
+    p #{cpuUsage}% average CPU usage.
+    
+  #freeDiskSpace
+    p #{freeDiskSpace}% free disk space.
+  
+  div
+    form(name="reset", action="/reset", method="post")
+      input(type="password", name="password")
+      input(type="submit", value="Reset complete server!")
