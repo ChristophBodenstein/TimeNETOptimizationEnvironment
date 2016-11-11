@@ -4,6 +4,7 @@ var mkdirp = require('mkdirp');
 var path = require('path');
 var glob = require("glob");
 var disk = require('diskusage');
+var util = require("util");
 const os = require('os');
 
 var masterpw = "gulli";
@@ -167,14 +168,19 @@ router.post('/rest/file/upload', function (req, res) {
     var db = req.db;
     var simlist = db.collection('simlist');
     var serversecrets = db.collection('serversecrets');
+			console.log("Client tries to upload file.");
 
+			console.log("will try to parse it...");
     form.parse(req, function (err, fields, files) {
+			console.log("parsed form...");
         if (err) {
+			console.log("Error parsing incoming form: " + err);
             res.status(500);
             res.json({'success': false});
             return false;
         } else {
-            var old_path = files.attachment.path,
+			console.log("Will try to save received file.");
+            	var old_path = files.attachment.path,
                 file_size = files.attachment.size,
                 file_name = files.attachment.name,
                 simid = fields.simid,
@@ -307,64 +313,61 @@ router.get('/rest/api/downloads/ND', function (req, res) {
 	var clientID=req.param('ID');
 	var clientSkills=req.param('SKILLS');
 
-
-    simlist.findAndModify(
-        {distributed: false},
-        [],
-        {$set: {distributed: true, timestamp: Date.now()}},
-        false,
-        true,
-        function (err, result) {
-
-            if (err) {
-                console.log("Error updating a non-distributed simulation-entry.");
-            } else {
-                if (result) {
-                    //console.log("Delivering file " + result.path);
-
-                    var options = {
-                        headers: {
-                            'filename': result.name,
-                            'simid': result.simid
+	simlist.findOne({distributed: false}, function(err, result){
+	
+	if(err || !result){
+	//console.log("error reading or no result.");
+	//console.log("Will answer with res-code 500. No Simfiles available. Will check for timedoutsims.");
+        res.status(500);
+        res.json({'success': false});
+	//Mark Request in DB for Statistics, count the clients waiting for tasks.
+       
+        	activeclients.remove({ip: req.connection.remoteAddress, id:clientID}, function (err) {
+        		if (err) {
+                         console.log("Error removing client from list.");
                         }
-                    };
+                });  
 
-                    var fileName = path.resolve(result.path);
+                activeclients.insert({ip: req.connection.remoteAddress,id: clientID,skills: clientSkills,timestamp: Date.now()}, 
+			function (err, result) {
+                            if (err) {
+                                console.log("Error updating client-collection.");
+                            } 	else {
+                            	}
+                        });
+
+
+
+	}	else{
+		//console.log("Delivering file: " + result.path);
+                //console.log("Name: " + result.name);
+                //console.log("SIMID: " + result.simid);
+                var options = {
+                     		headers: {
+                                	'filename': result.name,
+                                 	'simid': result.simid
+                             	}
+                         	};
+		
+		var fileName = path.resolve(result.path);
                     res.sendFile(fileName, options, function (err) {
                         if (err) {
                             console.log(err);
                             res.status(err.status).end();
                         }
-                        else {
-                            //console.log('Sent:', fileName);
-                        }
+                        	else {
+                            	//console.log('Sent:', fileName);
+				//Set to distributed in db
+				simlist.update({_id:result._id}, {$set: {distributed:true, timestamp: Date.now()}});
+                        	}
                     });
-                } else {
-                    //console.log("Will answer with res-code 500. No Simfiles available. Will check for timedoutsims.");
-                    res.status(500);
-                    res.json({'success': false});
 
-                    //Mark Request in DB for Statistics, count the clients waiting for tasks.
-                    activeclients.remove({ip: req.connection.remoteAddress, id:clientID}, function (err) {
-                        if (err) {
-                            console.log("Error removing client from list.");
-                        }
-                    });
-                        activeclients.insert({
-                            ip: req.connection.remoteAddress,
-							id: clientID,
-							skills: clientSkills,
-                            timestamp: Date.now()
-                        }, function (err, result) {
-                            if (err) {
-                                console.log("Error updating client-collection.");
-                            } else {
-                            }
-                        });
-                }
-            }
+		}
+	//console.log("Result-Name:"+ util.inspect(result));
+	});
 
-        });
+         //{$set: {distributed: true, timestamp: Date.now()}},
+        
 		
 });
 
@@ -508,10 +511,12 @@ router.get('/rest/api/downloads/log/:simid', function (req, res) {
     var db = req.db;
     var simlist = db.collection('simlist');
     var simid = req.params.simid;
-    //console.log("Asking for logfiles for: "+simid);
+    console.log("Asking for logfiles for: "+simid);
 
 	//Set timestamp, when master was last seen
 	arrayOfMasterLastSeen[simid]=Date.now();
+
+	console.log("Check db for one logfile.");
 	
     simlist.findOne({simid: simid, simulated: true, logdownloaded: false}, function (err, result) {
 
@@ -519,10 +524,10 @@ router.get('/rest/api/downloads/log/:simid', function (req, res) {
             console.log("Error searching logfiles for: " + req.params.simid);
         }
         if (result) {
-            //console.log("findOne was sucessful.");
-            //console.log(result.name);
+            console.log("findOne was sucessful.");
+            console.log(result.name);
             var logfilepath = (result.path.split(result.name))[0] + result.logname;//.split(result.name)[0]+"/"+result.logfilename;
-            //console.log("Delivering logfile " + logfilepath);
+            console.log("Delivering logfile " + logfilepath);
 
             var options = {
                 headers: {
@@ -539,7 +544,7 @@ router.get('/rest/api/downloads/log/:simid', function (req, res) {
                     res.status(err.status).end();
                 }
                 else {
-                    //console.log('Sent:', fileName + ". Try to update db.");
+                    console.log('Sent:', fileName + ". Try to update db.");
                     simlist.updateById(result._id, {$set: {logdownloaded: true}}, function (err, res) {
                         if (err) {
                             console.log("Error updating" + result.name);
@@ -557,7 +562,7 @@ router.get('/rest/api/downloads/log/:simid', function (req, res) {
                 }
             });
         } else {
-            //console.log("Will answer with res-code 500. No Logfile available.");
+            console.log("Will answer with res-code 500. No Logfile available.");
             res.status(500);
             res.json({'success': false});
         }
