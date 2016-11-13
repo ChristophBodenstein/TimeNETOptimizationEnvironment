@@ -97,19 +97,30 @@ public class OptimizerHill implements Runnable, Optimizer {
         ArrayList<ArrayList<parameter>> newParameterset;
         //Simulator init with initial parameterset
         Simulator mySimulator = SimOptiFactory.getSimulator();
+        int simulationTryCounter = 0;
 
         //Wait until Simulator has ended
-        //support.waitSingleThreaded(100);
-        //support.waitForEndOfSimulator(mySimulator, support.DEFAULT_TIMEOUT);
-        //support.log("Performed % of simulations: "+mySimulator.getStatus(), typeOfLogLevel.INFO);
-        synchronized (mySimulator) {
-            try {
-                mySimulator.initSimulator(getParametersetAsArrayList(getFirstParameterset()), support.isCreateseparateLogFilesForEverySimulation());
-                mySimulator.wait();
-            } catch (InterruptedException ex) {
-                support.log("Problem waiting for end of non-cache-simulator.", typeOfLogLevel.ERROR);
+        /* encapsulate in loop to avoid empty result list at start. Unknown problem of simulators returning nothing. */
+        do {
+            synchronized (mySimulator) {
+                try {
+                    mySimulator.initSimulator(getParametersetAsArrayList(getFirstParameterset()), support.isCreateseparateLogFilesForEverySimulation());
+                    mySimulator.wait();
+                } catch (InterruptedException ex) {
+                    support.log("Problem waiting for end of non-cache-simulator.", typeOfLogLevel.ERROR);
+                }
             }
-        }
+            simulationTryCounter++;
+            switch (simulationTryCounter) {
+                default:
+                    /* It took more than one tries to simulate successfully. */
+                    support.log("Problem with simulator, this was simulation attempt #. " + simulationTryCounter, typeOfLogLevel.ERROR);
+                    break;
+                case 1:
+                    /* Simulation result after first try. */
+                    break;
+            }
+        } while (mySimulator.getListOfCompletedSimulationParsers().size() < 1);
 
         support.addLinesToLogFileFromListOfParser(mySimulator.getListOfCompletedSimulationParsers(), logFileName);
         this.historyOfParsers = support.appendListOfParsers(historyOfParsers, mySimulator.getListOfCompletedSimulationParsers());
@@ -128,15 +139,29 @@ public class OptimizerHill implements Runnable, Optimizer {
 
             stuckInCacheCounter = support.DEFAULT_CACHE_STUCK;//Reset Stuck-Counter
 
-            //support.waitForEndOfSimulator(mySimulator, support.DEFAULT_TIMEOUT);
-            synchronized (mySimulator) {
-                try {
-                    mySimulator.initSimulator(newParameterset, support.isCreateseparateLogFilesForEverySimulation());
-                    mySimulator.wait();
-                } catch (InterruptedException ex) {
-                    support.log("Problem waiting for end of non-cache-simulator.", typeOfLogLevel.ERROR);
+            /* encapsulate in loop to avoid empty result list at start. Unknown problem of simulators returning nothing. */
+            simulationTryCounter = 0;
+            do {
+                synchronized (mySimulator) {
+                    try {
+                        mySimulator.initSimulator(newParameterset, support.isCreateseparateLogFilesForEverySimulation());
+                        mySimulator.wait();
+                    } catch (InterruptedException ex) {
+                        support.log("Problem waiting for end of non-cache-simulator.", typeOfLogLevel.ERROR);
+                    }
                 }
-            }
+                simulationTryCounter++;
+                switch (simulationTryCounter) {
+                    default:
+                        /* It took more than one tries to simulate successfully. */
+                        support.log("Problem with simulator, this was simulation attempt #. " + simulationTryCounter, typeOfLogLevel.ERROR);
+                        break;
+                    case 1:
+                        /* Simulation result after first try. */
+                        break;
+                }
+            } while (mySimulator.getListOfCompletedSimulationParsers().size() < 1);
+
             listOfCompletedSimulations = mySimulator.getListOfCompletedSimulationParsers();
             support.log("List of Simulation results is: " + listOfCompletedSimulations.size() + " elements big.", typeOfLogLevel.INFO);
             //Shrink to first element of List
