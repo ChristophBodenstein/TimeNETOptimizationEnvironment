@@ -631,6 +631,11 @@ public class support {
         dummyParameterForCPUTime.setStartValue(0.0);
         dummyParameterForCPUTime.setEndValue(0.0);
 
+        //Call update hash method to trigger parameter sorting
+        for (int i = 0; i < pList.size(); i++) {
+            pList.get(i).updateHashString();
+        }
+
         try {
             //support.log("Number of Simulationtypes to add is "+pList.size());
 
@@ -654,7 +659,7 @@ public class support {
                     pList.get(0).getListOfParameters().add(dummyParameterForCPUTime);
                 }
 
-                MeasureType exportMeasure = pList.get(0).getMeasures().get(0);//First Measure will be used to determine the lsit of Parameters
+                MeasureType exportMeasure = pList.get(0).getMeasures().get(0);//First Measure will be used to determine the list of Parameters
                 line = "MeasureName;Mean Value; Variance; Conf.Interval-Min;Conf.Interval-Max;Epsilon;" + "Simulation Time";
                 for (int i1 = 0; i1 < pList.get(0).getListOfParameters().size(); i1++) {
                     line = line + ";" + pList.get(0).getListOfParameters().get(i1).getName();
@@ -704,100 +709,6 @@ public class support {
     }
 
     /**
-     * Add lines to logfile from parserlist, same like
-     * addLinesToLogFileFromListOfParser but with number of runs. Only used in
-     * old version of OptimizerABC
-     *
-     * @param pList
-     * @param numRunList
-     * @param numCachedSimulations
-     * @param logFileName
-     */
-    public static void addLinesToLogFileFromListOfSimulationBatchesIncludingNumRuns(
-            ArrayList<SimulationType> pList,
-            ArrayList<Integer> numRunList,
-            ArrayList<Integer> numCachedSimulations,
-            String logFileName) {
-        boolean writeHeader = false;
-        String line;
-
-        parameter dummyParameterForCPUTime = new parameter();
-        dummyParameterForCPUTime.setName("UsedCPUTIME");
-        dummyParameterForCPUTime.setValue(0.0);
-        dummyParameterForCPUTime.setStartValue(0.0);
-        dummyParameterForCPUTime.setEndValue(0.0);
-
-        try {
-            //support.log("Number of Simulationtypes to add is "+pList.size());
-
-            //Check if list is null, then exit
-            if (pList == null) {
-                support.log("List of Simulations to add to logfile is null. Exit.", typeOfLogLevel.ERROR);
-                return;
-            }
-
-            File f = new File(logFileName);
-            if (!f.exists()) {
-                writeHeader = true;
-            }
-            FileWriter fw = new FileWriter(logFileName, true);
-
-            if (writeHeader) {
-                //Write header of logfile
-
-                //Add empty CPU-Time-Parameter for compatibility
-                if (support.getParameterByName(pList.get(0).getListOfParameters(), "UsedCPUTIME") == null) {
-                    pList.get(0).getListOfParameters().add(dummyParameterForCPUTime);
-                }
-
-                MeasureType exportMeasure = pList.get(0).getMeasures().get(0);//First Measure will be used to determine the lsit of Parameters
-                line = "MeasureName;Mean Value; Variance; Conf.Interval-Min;Conf.Interval-Max;Epsilon;" + "Simulation Time";
-                for (int i1 = 0; i1 < pList.get(0).getListOfParameters().size(); i1++) {
-                    line = line + ";" + pList.get(0).getListOfParameters().get(i1).getName();
-                }
-                try {
-                    fw.write(line);
-                    fw.append(System.getProperty("line.separator"));
-                } catch (IOException ex) {
-                    support.log("Error writing Header to Summary-log-file.", typeOfLogLevel.ERROR);
-                }
-            }
-
-            for (int i = 0; i < pList.size(); i++) {
-                //set indicator
-                setStatusText("Writing: " + (i + 1) + "/" + pList.size());
-                SimulationType myParser = pList.get(i);
-
-                //Add empty CPU-Time-Parameter for compatibility
-                if (support.getParameterByName(myParser.getListOfParameters(), "UsedCPUTIME") == null) {
-                    myParser.getListOfParameters().add(dummyParameterForCPUTime);
-                }
-
-                StatisticAggregator.addToStatistics(myParser, logFileName);
-                try {
-                    for (int i1 = 0; i1 < myParser.getMeasures().size(); i1++) {//Alle Measure schreiben
-                        MeasureType exportMeasure = myParser.getMeasures().get(i1);
-                        line = exportMeasure.getMeasureName() + ";" + support.getCommaFloat(exportMeasure.getMeanValue()) + ";" + support.getCommaFloat(exportMeasure.getVariance()) + ";" + support.getCommaFloat(exportMeasure.getConfidenceInterval()[0]) + ";" + support.getCommaFloat(exportMeasure.getConfidenceInterval()[1]) + ";" + support.getCommaFloat(exportMeasure.getEpsilon()) + ";" + support.getCommaFloat(exportMeasure.getSimulationTime());
-                        for (int c = 0; c < myParser.getListOfParameters().size(); c++) {
-                            line = line + ";" + support.getCommaFloat(myParser.getListOfParameters().get(c).getValue());
-                        }
-                        line = line + ";" + numRunList.get(i) + ";" + numCachedSimulations.get(i);
-                        fw.write(line);
-                        fw.append(System.getProperty("line.separator"));
-                    }
-                } catch (IOException e) {
-                    support.log("IOException while appending lines to summary log-file.", typeOfLogLevel.ERROR);
-                }
-
-            }
-
-            fw.close();
-        } catch (Exception e) {
-            support.log("Exception while writing things to summary log-file.", typeOfLogLevel.ERROR);
-        }
-    }
-
-    /**
      * Adds Lines to logfile with the data from given SimulationType
      *
      * @see addLinesToLogFileFromListOfParser
@@ -806,6 +717,8 @@ public class support {
      */
     public static void addLinesToLogFile(SimulationType p, String logFileName) {
         ArrayList<SimulationType> myParserList = new ArrayList<>();
+        //Call update hash method to ensure sorting
+        p.updateHashString();
         myParserList.add(p);
         addLinesToLogFileFromListOfParser(myParserList, logFileName);
     }
