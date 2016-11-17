@@ -625,26 +625,24 @@ public class support {
         boolean writeHeader = false;
         String line;
 
+        //Check if list is null, then exit
+        if (pList == null) {
+            support.log("List of Simulations to add to logfile is null. Exit.", typeOfLogLevel.INFO);
+            return;
+        }
+
         parameter dummyParameterForCPUTime = new parameter();
         dummyParameterForCPUTime.setName("UsedCPUTIME");
         dummyParameterForCPUTime.setValue(0.0);
         dummyParameterForCPUTime.setStartValue(0.0);
         dummyParameterForCPUTime.setEndValue(0.0);
 
-        //Call update hash method to trigger parameter sorting
+        //Call sort each paramter list before writing to log file
         for (int i = 0; i < pList.size(); i++) {
-            pList.get(i).updateHashString();
+            Collections.sort(pList.get(i).getListOfParameters());
         }
 
         try {
-            //support.log("Number of Simulationtypes to add is "+pList.size());
-
-            //Check if list is null, then exit
-            if (pList == null) {
-                support.log("List of Simulations to add to logfile is null. Exit.", typeOfLogLevel.INFO);
-                return;
-            }
-
             File f = new File(logFileName);
             if (!f.exists() || (f.length() <= 100)) {
                 writeHeader = true;
@@ -1896,12 +1894,7 @@ public class support {
         tmpHashString = "";
         try {
 
-            Collections.sort(parameterList, new Comparator<parameter>() {
-                @Override
-                public int compare(parameter o1, parameter o2) {
-                    return o1.getName().compareTo(o2.getName());
-                }
-            });
+            Collections.sort(parameterList);
 
             for (int i = 0; i < parameterList.size(); i++) {
                 tmpHashString += parameterList.get(i).getStringValue();
