@@ -169,14 +169,21 @@ public class parameter implements Cloneable, Comparable<parameter> {
     }
 
     /**
-     * Compare Method similar to String comparision. It`s based on the names of
-     * Parameters
+     * Compare Method similar to String comparision. Returns result of comparing
+     * names. If names are equal, values are compared
      *
      * @param o other Parameter to be compared with
-     * @return integer-value of compariosion result
+     * @return integer-value of comparision result
      */
+    @Override
     public int compareTo(parameter o) {
-        return this.getName().compareTo(o.getName());//Parameters will be sorted by name
+        if (this.getName().equals(o.getName())) {
+            //Parameters will be sorted by value if name is equal
+            return Double.compare(this.value, o.value);
+        } else {
+            //Parameters will be sorted by name
+            return this.getName().compareTo(o.getName());
+        }
     }
 
     /**
