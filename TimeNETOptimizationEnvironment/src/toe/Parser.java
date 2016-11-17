@@ -172,7 +172,7 @@ public class Parser {
                 }
                 if (segs[i].equals("ConfidenceIntervall")) {
                     parameter tmpP = (parameter) support.getParameterByName(pBase, "ConfidenceIntervall").clone();
-                    tmpP.setName("Configured-ConfidenceIntervall");
+                    tmpP.setName("ConfidenceIntervall");
                     tmpP.setValue(support.getDouble(segs[i + 1]));
                     tmpParameterList.add(tmpP);
                 }
