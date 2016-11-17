@@ -236,16 +236,6 @@ public class SimulationType {
      * @return Array of parameters
      */
     public ArrayList<parameter> getListOfParameters() {
-//    if (parameterList == null)
-//    {
-//        return null;
-//    }
-//    parameter[] pArray=new parameter[parameterList.size()];
-//        for(int i=0;i<parameterList.size();i++){
-//        pArray[i]=parameterList.get(i);
-//        }
-//    return pArray;
-
         return this.parameterList;
     }
 
