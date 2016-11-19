@@ -1880,7 +1880,9 @@ public class support {
             Collections.sort(parameterList);
 
             for (int i = 0; i < parameterList.size(); i++) {
-                tmpHashString += parameterList.get(i).getStringValue();
+                if (!parameterList.get(i).isIgnorable()) {
+                    tmpHashString += parameterList.get(i).getStringValue();
+                }
             }
 
             MessageDigest md = MessageDigest.getInstance("MD5");
@@ -1915,8 +1917,8 @@ public class support {
         String tmp = "|Name    |Value |Start  |End    |Stepping |";
         support.log(tmp, logLevel);
         for (int i = 0; i < pList.size(); i++) {
-            parameter tmpParameter=pList.get(i);
-            tmp="|"+tmpParameter.getName()+"    |"+tmpParameter.getValue()+"    |"+tmpParameter.getStartValue()+"    |"+tmpParameter.getEndValue()+"    |"+tmpParameter.getStepping()+" |";
+            parameter tmpParameter = pList.get(i);
+            tmp = "|" + tmpParameter.getName() + "    |" + tmpParameter.getValue() + "    |" + tmpParameter.getStartValue() + "    |" + tmpParameter.getEndValue() + "    |" + tmpParameter.getStepping() + " |";
             support.log(tmp, logLevel);
         }
     }
