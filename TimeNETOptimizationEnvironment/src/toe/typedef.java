@@ -335,7 +335,7 @@ public class typedef {
     };
 
     /**
-     * Lsit of parameters to be ignored for some reasons when reading it in
+     * List of parameters to be ignored for some reasons when reading it in
      * cache or searching for paremetrsets in cache
      */
     public static final String[] listOfParametersToIgnore = {"TempPara", "TempCost", "UsedCPUTIME"};
