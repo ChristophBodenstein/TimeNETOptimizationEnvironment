@@ -40,7 +40,7 @@ public class SimulationCache {
     private int localSimulationCounter = 0;
     //Variables for search in simulationCache
     private BigInteger tmpHash = BigInteger.ZERO;
-    private SimulationType tmpSimulation;
+    private SimulationType tmpSimulationForSearch;
     private ArrayList<MeasureType> myTmpList = new ArrayList();
     private HashMap<BigInteger, SimulationType> simulationHashmap;
 
@@ -52,6 +52,8 @@ public class SimulationCache {
 
     public boolean parseSimulationCacheFile(String filename, ArrayList<MeasureType> listOfMeasures, parameterTableModel myParameterTableModel, MainFrame myParentFrame) {
         ArrayList<String[]> listOfStringLines = new ArrayList<String[]>();
+        support.setStatusText("Reading cache-file...");
+
         //read file
         BufferedReader reader;
         try {
@@ -60,7 +62,6 @@ public class SimulationCache {
             //Number of Experiments, first number of lines is counted
             int numberOfExperiments = 0;
             while (current != null) {
-                //processCsvLine(current);
                 String[] tmpString = current.split(";");
                 listOfStringLines.add(tmpString);
                 current = reader.readLine();
@@ -171,6 +172,8 @@ public class SimulationCache {
             support.log("Number of Measures:" + listOfCachedMeasureNames.size(), typeOfLogLevel.INFO);
             //Generate List of Simulated Experiments
             for (i = 0; i < numberOfExperiments; i++) {
+                support.spinInLabel();
+                support.setStatusText("Reading cache-file: " + (i * 100 / numberOfExperiments) + "%");
                 SimulationType tmpSimulation = new SimulationType();
                 for (int c = 0; c < listOfCachedMeasureNames.size(); c++) {
                     MeasureType tmpMeasure = new MeasureType();
@@ -271,7 +274,7 @@ public class SimulationCache {
 
             //Check stepping separately but first
             //Check if p.getStepping() modulo cached-Stepping is 0
-            if ((p.getStepping() % listOfCachedParameterStepping[i]) == 0.0) {
+            if (Double.compare((p.getStepping() % listOfCachedParameterStepping[i]), 0.0) == 0.0) {
                 //The original Stepping is bigger but reachable with the new stepping
                 strike[0] = true;
             }
@@ -279,20 +282,39 @@ public class SimulationCache {
             //Go through all possible values
             //if startvalue is reachable ->true
             //if end-value is reachable ->true
-            double tmpValue = listOfCachedParameterMin[i];
+            double tmpValue = support.round(listOfCachedParameterMin[i], 3);
 
-            while (tmpValue <= listOfCachedParameterMax[i]) {
-                if (tmpValue == p.getStartValue()) {
+            while (tmpValue <= listOfCachedParameterMax[i] * 1.1) {
+                if (Double.compare(tmpValue, p.getStartValue()) == 0) {
                     strike[1] = true;
                 }
-                if (tmpValue == p.getEndValue()) {
+                if (Double.compare(tmpValue, p.getEndValue()) == 0) {
                     strike[2] = true;
                 }
-                tmpValue = tmpValue + listOfCachedParameterStepping[i];
+                tmpValue = support.round(tmpValue + listOfCachedParameterStepping[i], 3);
             }
 
             if (!strike[0] || !strike[1] || !strike[2]) {
                 support.log("Parameter " + p.getName() + " does not fit!", typeOfLogLevel.ERROR);
+                if (!strike[0]) {
+                    support.log("Stepping wrong.", typeOfLogLevel.ERROR);
+                }
+                support.log("Stepping: " + Double.toString(p.getStepping()) + " ---- " + Double.toString(listOfCachedParameterStepping[i]), typeOfLogLevel.INFO);
+                if (!strike[1]) {
+                    support.log("Start wrong.", typeOfLogLevel.ERROR);
+                }
+                support.log("Start: " + Double.toString(p.getStartValue()) + " ---- " + Double.toString(listOfCachedParameterMin[i]), typeOfLogLevel.INFO);
+
+                if (!strike[2]) {
+                    support.log("End wrong.", typeOfLogLevel.ERROR);
+
+                }
+                support.log("End: " + Double.toString(p.getEndValue()) + " ---- " + Double.toString(listOfCachedParameterMax[i]), typeOfLogLevel.INFO);
+
+                support.log("Start: " + p.getStartValue(), typeOfLogLevel.INFO);
+                support.log("End: " + p.getEndValue(), typeOfLogLevel.INFO);
+                support.log("Stepping: " + p.getStepping(), typeOfLogLevel.INFO);
+
                 return false;
             }//If less then all 3 conditions are met, then exit with false    
         }
@@ -310,13 +332,14 @@ public class SimulationCache {
      */
     public ArrayList<MeasureType> getAllMeasuresWithParameterList(ArrayList<parameter> parameterList) {
         myTmpList = null;
-        tmpHash = support.getHashStringForParameterList(parameterList);
+        support.addDummyParameterCPUTimeIfNeeded(parameterList);
+        tmpHash = support.getHashValueForParameterList(parameterList);
 
         //Go through all Simulations, find the one with the same parameterlist
         for (int i = 0; i < this.getSimulationList().size(); i++) {
-            tmpSimulation = this.getSimulationList().get(i);
-            if (tmpHash.equals(tmpSimulation.getHashValue())) {
-                myTmpList = tmpSimulation.getMeasures();
+            tmpSimulationForSearch = this.getSimulationList().get(i);
+            if (tmpHash.equals(tmpSimulationForSearch.getHashValue())) {
+                myTmpList = tmpSimulationForSearch.getMeasures();
             }
         }
         return myTmpList;
@@ -479,7 +502,7 @@ public class SimulationCache {
     }
 
     /**
-     * Same function like in real simulator Given a list of parametersets, it
+     * Same function like in real simulator. Given a list of parametersets, it
      * returns a list of Simulation results (parsers)
      *
      * @param parameterSetList List of Parameter-Arrays to be "simulated"
@@ -495,12 +518,13 @@ public class SimulationCache {
 
         for (int i = 0; i < parameterSetList.size(); i++) {
             parameterSet = parameterSetList.get(i);
+            support.addDummyParameterCPUTimeIfNeeded(parameterSet);
 
             support.spinInLabel();
             support.setStatusText("Searching in cache: " + i * 100 / parameterSetList.size() + " %");
 
             //Get cached simulation results
-            SimulationType foundSimulation = simulationHashmap.get(support.getHashStringForParameterList(parameterSet));
+            SimulationType foundSimulation = simulationHashmap.get(support.getHashValueForParameterList(parameterSet));
             if (foundSimulation != null) {
                 mySimulationList.add(foundSimulation);
                 simulationCounter++;
@@ -561,7 +585,6 @@ public class SimulationCache {
     public void addListOfSimulationsToCache(ArrayList<SimulationType> SimulationListToAdd) {
         for (int i = 0; i < SimulationListToAdd.size(); i++) {
             this.addSimulationToCache(SimulationListToAdd.get(i));
-            //this.simulationList.add(SimulationListToAdd.get(i));
         }
     }
 
@@ -573,9 +596,24 @@ public class SimulationCache {
      * @param SimulationToAdd Simulation to be added
      */
     public void addSimulationToCache(SimulationType SimulationToAdd) {
-        SimulationToAdd.updateHashString();
-        this.getSimulationList().add(SimulationToAdd);
-        simulationHashmap.put(SimulationToAdd.getHashValue(), SimulationToAdd);
+        support.addDummyParameterCPUTimeIfNeeded(SimulationToAdd.getListOfParameters());
+        SimulationToAdd.updateHashValue();
+        if (!simulationHashmap.containsKey(SimulationToAdd.getHashValue())) {
+            support.log("Will add Simulation with hash: " + SimulationToAdd.getHashValue() + " to cache.", typeOfLogLevel.INFO);
+            support.printListOfParameters(SimulationToAdd.getListOfParameters(), typeOfLogLevel.INFO);
+
+            if (this.getSimulationList().size() >= 1) {
+                support.log("Cache contains Hash: " + this.getSimulationList().get(0).getHashValue(), typeOfLogLevel.INFO);
+                support.printListOfParameters(this.getSimulationList().get(0).getListOfParameters(), typeOfLogLevel.INFO);
+            }
+
+            this.getSimulationList().add(SimulationToAdd);
+            simulationHashmap.put(SimulationToAdd.getHashValue(), SimulationToAdd);
+
+        } else {
+            support.log("Simulation with hash: " + SimulationToAdd.getHashValue() + " already in cache.", typeOfLogLevel.INFO);
+        }
+
     }
 
     /**

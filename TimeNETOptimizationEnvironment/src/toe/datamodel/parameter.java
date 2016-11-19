@@ -27,6 +27,26 @@ public class parameter implements Cloneable, Comparable<parameter> {
     private long idHash = 0;
 
     /**
+     * Constructor with all details
+     *
+     * @param name Name of this paramater
+     * @param StartValue Start-Value of this parameter (double)
+     * @param EndValue End-Value of this parameter (double)
+     * @param Stepping Iteration-Stepping for this parameter (double)
+     */
+    public parameter(String name, double StartValue, double EndValue, double Stepping) {
+        super();
+        this.initWithValues(name, StartValue, EndValue, Stepping);
+    }
+
+    /**
+     * Constructor
+     */
+    public parameter() {
+        super();
+    }
+
+    /**
      * @return the name
      */
     public String getName() {
@@ -194,7 +214,7 @@ public class parameter implements Cloneable, Comparable<parameter> {
      * @param EndValue End-Value of this parameter (double)
      * @param Stepping Iteration-Stepping for this parameter (double)
      */
-    public void initWithValues(String name, double StartValue, double EndValue, double Stepping) {
+    public final void initWithValues(String name, double StartValue, double EndValue, double Stepping) {
         this.setName(name);
         this.setStartValue(StartValue);
         this.setEndValue(EndValue);

@@ -19,7 +19,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Properties;
 import java.util.Scanner;
 import java.util.Timer;
@@ -147,6 +146,8 @@ public class support {
     private static LogFrame myLogFrame = new LogFrame();//Frame for log-output
     private static ArrayList<parameter> parameterBase = null;//Base set of parameters, start/end-value, stepping, etc.
     private static ArrayList<parameter> originalParameterBase = null;//Base set of parameters, This will remain unchanged even in Multistage-Mode
+    private static ArrayList<SimulationType> myTmpSimulationList = new ArrayList<>();//List will be used to call the wrapped addLinesToLogFile-method
+    private static final parameter dummyParameterForCPUTime = new parameter("UsedCPUTIME", 0.0, 0.0, 0.0);
 
     private static boolean cancelEverything = false;//If set to true, everything is cancelled
     private static typeOfBenchmarkFunction chosenBenchmarkFunction = DEFAULT_TYPE_OF_BENCHMARKFUNCTION;
@@ -174,7 +175,7 @@ public class support {
 
     private static int globalSimulationCounter = 0;
 
-//List of Changable parameters for Multiphase-opi
+//List of Changable parameters for Multiphase-opti
     public static ArrayList<parameter> listOfChangableParametersMultiphase = null;
 
     private static ArrayList<MeasureType> Measures;
@@ -558,6 +559,7 @@ public class support {
 
     /**
      * Creates a new Cache for all simulations Used to "emptyY the cache-Object
+     * TODO: Maybe empty the cache instead of creating a new cache object?
      */
     public static void emptyCache() {
         log("Will clear cache.", typeOfLogLevel.INFO);
@@ -598,20 +600,20 @@ public class support {
         support.log("Confidence-Min: " + support.getCommaFloat(m.getConfidenceInterval()[0]), typeOfLogLevel.RESULT);
         support.log("Confidence-Max: " + support.getCommaFloat(m.getConfidenceInterval()[1]), typeOfLogLevel.RESULT);
         support.log("Epsilon: " + support.getCommaFloat(m.getEpsilon()), typeOfLogLevel.RESULT);
-
-//        if(m.getParameterList()!=null)
-//        {
-//        support.log("---Printing parameterlist---");
-//        ArrayList<parameter> pList=m.getParameterList();
-//            for(int i=0;i<pList.size();i++){
-//            support.log("Value of "+pList.get(i).getName() +" is: "+pList.get(i).getValue());
-//            }
-//        support.log("---End of parameterlist---");
-//        }
         support.log("Used CPU-Time: " + m.getCPUTime(), typeOfLogLevel.RESULT);
         support.log("***** End of Measure " + m.getMeasureName() + " ******", typeOfLogLevel.RESULT);
         support.log(footer, typeOfLogLevel.RESULT);
+    }
 
+    /**
+     * Add dummy parameter of CPUTime if needed
+     *
+     * @param pList List of parameters
+     */
+    public static void addDummyParameterCPUTimeIfNeeded(ArrayList<parameter> pList) {
+        if (support.getParameterByName(pList, dummyParameterForCPUTime.getName()) == null) {
+            pList.add(dummyParameterForCPUTime);
+        }
     }
 
     /**
@@ -631,14 +633,9 @@ public class support {
             return;
         }
 
-        parameter dummyParameterForCPUTime = new parameter();
-        dummyParameterForCPUTime.setName("UsedCPUTIME");
-        dummyParameterForCPUTime.setValue(0.0);
-        dummyParameterForCPUTime.setStartValue(0.0);
-        dummyParameterForCPUTime.setEndValue(0.0);
-
         //Call sort each paramter list before writing to log file
         for (int i = 0; i < pList.size(); i++) {
+            addDummyParameterCPUTimeIfNeeded(pList.get(i).getListOfParameters());
             Collections.sort(pList.get(i).getListOfParameters());
         }
 
@@ -651,13 +648,6 @@ public class support {
 
             if (writeHeader) {
                 //Write header of logfile
-
-                //Add empty CPU-Time-Parameter for compatibility
-                if (support.getParameterByName(pList.get(0).getListOfParameters(), "UsedCPUTIME") == null) {
-                    pList.get(0).getListOfParameters().add(dummyParameterForCPUTime);
-                }
-
-                MeasureType exportMeasure = pList.get(0).getMeasures().get(0);//First Measure will be used to determine the list of Parameters
                 line = "MeasureName;Mean Value; Variance; Conf.Interval-Min;Conf.Interval-Max;Epsilon;" + "Simulation Time";
                 for (int i1 = 0; i1 < pList.get(0).getListOfParameters().size(); i1++) {
                     line = line + ";" + pList.get(0).getListOfParameters().get(i1).getName();
@@ -674,11 +664,6 @@ public class support {
                 //set indicator
                 setStatusText("Writing: " + (i + 1) + "/" + pList.size());
                 SimulationType myParser = pList.get(i);
-
-                //Add empty CPU-Time-Parameter for compatibility
-                if (support.getParameterByName(myParser.getListOfParameters(), "UsedCPUTIME") == null) {
-                    myParser.getListOfParameters().add(dummyParameterForCPUTime);
-                }
 
                 StatisticAggregator.addToStatistics(myParser, logFileName);
                 try {
@@ -714,11 +699,9 @@ public class support {
      * @param logFileName name of logfile, data will be appended
      */
     public static void addLinesToLogFile(SimulationType p, String logFileName) {
-        ArrayList<SimulationType> myParserList = new ArrayList<>();
-        //Call update hash method to ensure sorting
-        p.updateHashString();
-        myParserList.add(p);
-        addLinesToLogFileFromListOfParser(myParserList, logFileName);
+        myTmpSimulationList.clear();
+        myTmpSimulationList.add(p);
+        addLinesToLogFileFromListOfParser(myTmpSimulationList, logFileName);
     }
 
     /**
@@ -1890,7 +1873,7 @@ public class support {
      * @return hopefully unique string to be used as primary key
      * @see https://dzone.com/articles/get-md5-hash-few-lines-java
      */
-    public static BigInteger getHashStringForParameterList(ArrayList<parameter> parameterList) {
+    public static BigInteger getHashValueForParameterList(ArrayList<parameter> parameterList) {
         tmpHashString = "";
         try {
 
@@ -1920,4 +1903,22 @@ public class support {
     public static boolean isCreateseparateLogFilesForEverySimulation() {
         return (!support.isDeleteTmpSimulationFiles());
     }
+
+    /**
+     * Prints out info about every parameter in List
+     *
+     * @param pList List of parameters to be printed
+     * @param logLevel LogLevel to print the info to.
+     */
+    public static void printListOfParameters(ArrayList<parameter> pList, typeOfLogLevel logLevel) {
+        support.log(support.getHashValueForParameterList(pList).toString(), logLevel);
+        String tmp = "|Name    |Value |Start  |End    |Stepping |";
+        support.log(tmp, logLevel);
+        for (int i = 0; i < pList.size(); i++) {
+            parameter tmpParameter=pList.get(i);
+            tmp="|"+tmpParameter.getName()+"    |"+tmpParameter.getValue()+"    |"+tmpParameter.getStartValue()+"    |"+tmpParameter.getEndValue()+"    |"+tmpParameter.getStepping()+" |";
+            support.log(tmp, logLevel);
+        }
+    }
+
 }

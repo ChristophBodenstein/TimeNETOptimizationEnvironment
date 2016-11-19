@@ -339,10 +339,10 @@ public class SimulationType {
     }
 
     /**
-     * Update the HashString of current parameterlist
+     * Update the HashValue of current parameterlist
      */
-    public void updateHashString() {
-        this.hashValue = support.getHashStringForParameterList(parameterList);
+    public void updateHashValue() {
+        this.hashValue = support.getHashValueForParameterList(parameterList);
         //support.log(this.hashString+" = HashString", typeOfLogLevel.VERBOSE);
     }
 }
