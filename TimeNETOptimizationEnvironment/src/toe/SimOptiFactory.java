@@ -30,7 +30,9 @@ import toe.simulation.SimulatorCachedBenchmark;
  */
 public class SimOptiFactory {
 //private static SimulationCache singleTonSimulationCache=new SimulationCache();
-private static ArrayList<Simulator> listOfCreatedSimulators = new ArrayList<Simulator>();//Lis of Simulators to end on program exit. First we use only remote simulators
+
+    private static ArrayList<Simulator> listOfCreatedSimulators = new ArrayList<Simulator>();//Lis of Simulators to end on program exit. First we use only remote simulators
+
     public static Simulator getSimulator() {
 
         switch (support.getChosenSimulatorType()) {
@@ -56,7 +58,7 @@ private static ArrayList<Simulator> listOfCreatedSimulators = new ArrayList<Simu
             //no break;
             case Distributed:
                 //Return distributed simulator
-                Simulator resultSim=new SimulatorDistributed();
+                Simulator resultSim = new SimulatorDistributed();
                 listOfCreatedSimulators.add(resultSim);
                 return resultSim;
             case Cached_Distributed:
@@ -71,7 +73,9 @@ private static ArrayList<Simulator> listOfCreatedSimulators = new ArrayList<Simu
                 return new SimulatorBenchmark();
             case Cached_Benchmark:
                 //Return the Benchmark-Simulator with cache-support
-                return new SimulatorCachedBenchmark();
+                SimulatorCachedBenchmark returnSimulatorCachedBenchmark = new SimulatorCachedBenchmark();
+                returnSimulatorCachedBenchmark.setMySimulationCache(support.getMySimulationCache());
+                return returnSimulatorCachedBenchmark;
             default:
                 return new SimulatorLocal();
         }
@@ -80,15 +84,15 @@ private static ArrayList<Simulator> listOfCreatedSimulators = new ArrayList<Simu
     /**
      * End all remote Simulations if possible
      */
-    public static int endAllRemoteSimulations(){
-    for (Simulator CreatedSimulator : listOfCreatedSimulators) {
-        if(CreatedSimulator!=null){
-        CreatedSimulator.cancelAllSimulations();
+    public static int endAllRemoteSimulations() {
+        for (Simulator CreatedSimulator : listOfCreatedSimulators) {
+            if (CreatedSimulator != null) {
+                CreatedSimulator.cancelAllSimulations();
+            }
         }
+        return 0;
     }
-    return 0;
-    }
-    
+
     /**
      * Returns a new Optimizer, based on chosen Optimizertype in MainFrame
      * (support.getChosenOptimization())
