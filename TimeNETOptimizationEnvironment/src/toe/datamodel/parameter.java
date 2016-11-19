@@ -58,7 +58,6 @@ public class parameter implements Cloneable, Comparable<parameter> {
      */
     public void setName(String name) {
         this.name = name;
-        this.calculateID();
     }
 
     /**
@@ -73,7 +72,6 @@ public class parameter implements Cloneable, Comparable<parameter> {
      */
     public void setValue(double value) {
         this.value = value;
-        this.calculateID();
     }
 
     /**
@@ -97,7 +95,6 @@ public class parameter implements Cloneable, Comparable<parameter> {
      */
     public void setStartValue(double startValue) {
         this.startValue = startValue;
-        this.calculateID();
     }
 
     /**
@@ -112,7 +109,6 @@ public class parameter implements Cloneable, Comparable<parameter> {
      */
     public void setEndValue(double endValue) {
         this.endValue = endValue;
-        this.calculateID();
     }
 
     /**
@@ -127,7 +123,6 @@ public class parameter implements Cloneable, Comparable<parameter> {
      */
     public void setStepping(double stepping) {
         this.stepping = stepping;
-        this.calculateID();
     }
 
     /**
@@ -175,18 +170,6 @@ public class parameter implements Cloneable, Comparable<parameter> {
         return this.idHash;
     }
 
-    /**
-     * Calculates the id of this parameter, at the moment deactiviated. Was used
-     * to detect duplicates
-     */
-    public void calculateID() {
-        //String id="End:"+endValue+"Start:"+startValue+"Step:"+stepping+"Name:"+name+"Value:"+value;
-        //long longID=  (long)( Float.valueOf(endValue)*10+Float.valueOf(startValue)*10+Float.valueOf(stepping)*10+Float.valueOf(value)*10+(float)name.hashCode());
-        this.idHash = 0;//id.hashCode();//Dont create ID, it`s useless and costs CPU-Time
-        //support.log("ID: "+id);
-        //support.log("IDHash: "+idHash);
-
-    }
 
     /**
      * Compare Method similar to String comparision. Returns result of comparing
