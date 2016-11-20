@@ -28,6 +28,7 @@ import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Properties;
 import javax.swing.DefaultCellEditor;
@@ -1211,7 +1212,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         fileChooser.setControlButtonsAreShown(true);
         fileChooser.setDialogTitle(" Choose File with cached simulation files ");
         fileChooser.setFileFilter(myFilter);
-        String inputFile;
+        final String inputFile;
 
         if (fileChooser.showDialog(this, "Open") == JFileChooser.APPROVE_OPTION) {
             if (fileChooser.getSelectedFile().isDirectory()) {
@@ -1227,11 +1228,19 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         }
         //this.mySimulationCache=SimOptiFactory.getSimulationCache();
         //Should we empty the cache each time, or only at user-wish? Everytime!
-        this.tryToFillCacheFromFile(inputFile);
-        support.getMySimulationCache().reformatParameterTable((parameterTableModel) this.jTableParameterList.getModel());
-        this.jTableParameterList.updateUI();
-        this.calculateDesignSpace();
-        this.checkIfCachedSimulationIsPossible();
+        this.pushUIState();
+        this.deactivateEveryComponentExcept(new Component[]{this.jButtonCancel});
+        new Thread() {
+            @Override
+            public void run() {
+                tryToFillCacheFromFile(inputFile);
+                support.getMySimulationCache().reformatParameterTable((parameterTableModel) jTableParameterList.getModel());
+                jTableParameterList.updateUI();
+                calculateDesignSpace();
+                checkIfCachedSimulationIsPossible();
+                popUIState();
+            }
+        }.start();
     }//GEN-LAST:event_jButtonLoadCacheFileActionPerformed
 
     /**
