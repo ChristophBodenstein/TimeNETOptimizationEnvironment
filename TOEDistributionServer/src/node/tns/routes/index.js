@@ -10,24 +10,24 @@ const os = require('os');
 var masterpw = "gulli";
 
 //check if its a windows system
-var mountPoint='/';
-if(/^win/.test(process.platform)){
-	mountPoint='c:';	
-	}
+var mountPoint = '/';
+if (/^win/.test(process.platform)) {
+    mountPoint = 'c:';
+}
 
 //Global statistics variables
-	var doneSimulations = 0;
-	var openSimulations = 0;
-	var timeStampOfLastFinishedSimulation = Date.now();
-	var averageSimulationsPerMinute = 0;
-	var minutesToFinish = 0;
-	var timedOutSimulations = 0;
-	var cpuUsage = 0;
-	var freeDiskSpace = 0;
-	var statisticsSmoothingFactor = 40;
-	var arrayOfMasterLastSeen=new Array();
-	var numberOfMasterAlive=0;
-			
+var doneSimulations = 0;
+var openSimulations = 0;
+var timeStampOfLastFinishedSimulation = Date.now();
+var averageSimulationsPerMinute = 0;
+var minutesToFinish = 0;
+var timedOutSimulations = 0;
+var cpuUsage = 0;
+var freeDiskSpace = 0;
+var statisticsSmoothingFactor = 40;
+var arrayOfMasterLastSeen = new Array();
+var numberOfMasterAlive = 0;
+
 
 
 // Required modules for form handling
@@ -43,94 +43,94 @@ var DEFAULT_MINIMUM_TIMEOUT = 500;//in sec
 setInterval(removeOldClientsFromList, DEFAULT_SLEEPING_TIME + 1000);
 setInterval(updateStats, 2000);
 
-setInterval(function(){
-	if(openSimulations==0){
-		timeStampOfLastFinishedSimulation = Date.now();
-		//console.log("Reset TimeStamp.");
-		}	
-	},1000);
+setInterval(function () {
+    if (openSimulations == 0) {
+        timeStampOfLastFinishedSimulation = Date.now();
+        //console.log("Reset TimeStamp.");
+    }
+}, 1000);
 
 /* GET home page. */
 router.get('/', function (req, res) {
-var path=require('path');
-  res.status(200);
-  res.sendFile(path.resolve('views/index.html'));
-  return true;          
+    var path = require('path');
+    res.status(200);
+    res.sendFile(path.resolve('views/index.html'));
+    return true;
 });
 
 
 /**
 * update all statistics
 */
-function updateStats(){
-	var db = global.db;
-	var activeclients = db.collection('activeclients');
-	var simlist = db.collection('simlist');
-	var tmpTimeStamp=0;
-	
+function updateStats() {
+    var db = global.db;
+    var activeclients = db.collection('activeclients');
+    var simlist = db.collection('simlist');
+    var tmpTimeStamp = 0;
+
 
     /* Count open simulations */
-	simlist.find({simulated: false}, function (err, result) {
-     if (err) {
-         console.log("Error finding open simulations in db.");
-	  } 	else {
-	//console.log("Will try to count open simulations.");
-	            if (result != null) {
-	               result.count(function (err, count){
-						if(err){
-						console.log("Error counting open simulations.");
-						}	else{
-							openSimulations=count;
-							//console.log("Number of open Simulations is:"+openSimulations);
-							}
-						});
-					}	
-			}
-	});
+    simlist.find({ simulated: false }, function (err, result) {
+        if (err) {
+            console.log("Error finding open simulations in db.");
+        } else {
+            //console.log("Will try to count open simulations.");
+            if (result != null) {
+                result.count(function (err, count) {
+                    if (err) {
+                        console.log("Error counting open simulations.");
+                    } else {
+                        openSimulations = count;
+                        //console.log("Number of open Simulations is:"+openSimulations);
+                    }
+                });
+            }
+        }
+    });
 
-	/* Count done simulations */
-	simlist.find({simulated: true}, function (err, result) {
-  		if (err) {
-		console.log("Error finding done simulations in db.");
-  		} 	else{
-			//console.log("Will try to count open simulations.");
-				if (result != null) {
-	 				result.count(function (err, count){
-					if(err){
-					console.log("Error counting done simulations.");
-					}	else	{
-								doneSimulations=count;																		
-								}
-					});
-				}//End if
-			}//End else
-		});  
-		
-	/* Check for timed out simulations */
-	checkForTimedOutSimulations(simlist, function (err) {
-	    if (err) {
-	    console.log("Error checking for TimedOutSimulations.");
-	    }
-	});
-	
-	/* Check for died Masters */
-	tmpTimeStamp=Date.now() - DEFAULT_SLEEPING_TIME;
-	numberOfMasterAlive=0;
-	for (var i in arrayOfMasterLastSeen) {
-   	if(arrayOfMasterLastSeen[i] >= tmpTimeStamp){
-		numberOfMasterAlive = numberOfMasterAlive + 1;	
-		}	
-	}
-	
-	/* estimate average cpu load (does not work in windows)*/
-	cpuUsage=os.loadavg();
-	cpuUsage=cpuUsage[1] * 100 / os.cpus().length;//using 5 min average
-	
-	
-	/* get current disk usage */
-	disk.check(mountPoint, function(err, info) {
-	freeDiskSpace=info.free * 100 / info.total;
-	});
+    /* Count done simulations */
+    simlist.find({ simulated: true }, function (err, result) {
+        if (err) {
+            console.log("Error finding done simulations in db.");
+        } else {
+            //console.log("Will try to count open simulations.");
+            if (result != null) {
+                result.count(function (err, count) {
+                    if (err) {
+                        console.log("Error counting done simulations.");
+                    } else {
+                        doneSimulations = count;
+                    }
+                });
+            }//End if
+        }//End else
+    });
+
+    /* Check for timed out simulations */
+    checkForTimedOutSimulations(simlist, function (err) {
+        if (err) {
+            console.log("Error checking for TimedOutSimulations.");
+        }
+    });
+
+    /* Check for died Masters */
+    tmpTimeStamp = Date.now() - DEFAULT_SLEEPING_TIME;
+    numberOfMasterAlive = 0;
+    for (var i in arrayOfMasterLastSeen) {
+        if (arrayOfMasterLastSeen[i] >= tmpTimeStamp) {
+            numberOfMasterAlive = numberOfMasterAlive + 1;
+        }
+    }
+
+    /* estimate average cpu load (does not work in windows)*/
+    cpuUsage = os.loadavg();
+    cpuUsage = cpuUsage[1] * 100 / os.cpus().length;//using 5 min average
+
+
+    /* get current disk usage */
+    disk.check(mountPoint, function (err, info) {
+        freeDiskSpace = info.free * 100 / info.total;
+    });
 }
 
 /**
@@ -140,25 +140,25 @@ router.get('/stats', function (req, res) {
     var db = req.db;
     var activeclients = db.collection('activeclients');
     var simlist = db.collection('simlist');
-   
-     res.render('stats', {
+
+    res.render('stats', {
         title: 'Server statistics',
         clientcount: Math.round(global.clientcount),
-		opensimulations: openSimulations.toLocaleString('de-DE', {maximumFractionDigits: 0}),
-		donesimulations: doneSimulations.toLocaleString('de-DE', {maximumFractionDigits: 0}),
-		percentagedone: ((doneSimulations *100)/(doneSimulations+openSimulations)  || 0).toLocaleString('de-DE', {minimumFractionDigits: 2, maximumFractionDigits: 2}),
-		averageSimulationsPerMinute: averageSimulationsPerMinute.toLocaleString('de-DE', {maximumFractionDigits: 1}),
-		minutesToFinish: minutesToFinish.toLocaleString('de-DE', {maximumFractionDigits: 0}),
-		timedOutSimulations: timedOutSimulations.toLocaleString('de-DE', {maximumFractionDigits: 0}),
-		numberOfMasterAlive:	numberOfMasterAlive,
-		cpuUsage: cpuUsage.toLocaleString('de-DE', {maximumFractionDigits: 1}),
-		freeDiskSpace: freeDiskSpace.toLocaleString('de-DE', {maximumFractionDigits: 1})
-     });
-				
+        opensimulations: openSimulations.toLocaleString('de-DE', { maximumFractionDigits: 0 }),
+        donesimulations: doneSimulations.toLocaleString('de-DE', { maximumFractionDigits: 0 }),
+        percentagedone: ((doneSimulations * 100) / (doneSimulations + openSimulations) || 0).toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+        averageSimulationsPerMinute: averageSimulationsPerMinute.toLocaleString('de-DE', { maximumFractionDigits: 1 }),
+        minutesToFinish: minutesToFinish.toLocaleString('de-DE', { maximumFractionDigits: 0 }),
+        timedOutSimulations: timedOutSimulations.toLocaleString('de-DE', { maximumFractionDigits: 0 }),
+        numberOfMasterAlive: numberOfMasterAlive,
+        cpuUsage: cpuUsage.toLocaleString('de-DE', { maximumFractionDigits: 1 }),
+        freeDiskSpace: freeDiskSpace.toLocaleString('de-DE', { maximumFractionDigits: 1 })
+    });
+
 });
 
-	
-	
+
+
 /** 
 * Handles uploads of simulation files
 * parse filename, store file, store data
@@ -168,19 +168,19 @@ router.post('/rest/file/upload', function (req, res) {
     var db = req.db;
     var simlist = db.collection('simlist');
     var serversecrets = db.collection('serversecrets');
-			console.log("Client tries to upload file.");
+    console.log("Client tries to upload file.");
 
-			console.log("will try to parse it...");
+    console.log("will try to parse it...");
     form.parse(req, function (err, fields, files) {
-			console.log("parsed form...");
+        console.log("parsed form...");
         if (err) {
-			console.log("Error parsing incoming form: " + err);
+            console.log("Error parsing incoming form: " + err);
             res.status(500);
-            res.json({'success': false});
+            res.json({ 'success': false });
             return false;
         } else {
-			console.log("Will try to save received file.");
-            	var old_path = files.attachment.path,
+            console.log("Will try to save received file.");
+            var old_path = files.attachment.path,
                 file_size = files.attachment.size,
                 file_name = files.attachment.name,
                 simid = fields.simid,
@@ -201,7 +201,7 @@ router.post('/rest/file/upload', function (req, res) {
                             if (err) {
                                 console.log("Error unlinking old file." + old_path);
                                 res.status(500);
-                                res.json({'success': false});
+                                res.json({ 'success': false });
                                 return false;
                             } else {
 
@@ -224,7 +224,7 @@ router.post('/rest/file/upload', function (req, res) {
                                         if (err) {
                                             console.log("Error entering simulation into db.");
                                             res.status(500);
-                                            res.json({'success': false});
+                                            res.json({ 'success': false });
                                             return false;
                                         } else {
 
@@ -247,10 +247,10 @@ router.post('/rest/file/upload', function (req, res) {
                                             });
 
                                             serversecrets.findAndModify(
-                                                {simid: simid},
+                                                { simid: simid },
                                                 [],
-                                                {$set: {secret: secret}},
-                                                {new: true},
+                                                { $set: { secret: secret } },
+                                                { new: true },
                                                 true,
                                                 function (err, result) {
 
@@ -260,7 +260,7 @@ router.post('/rest/file/upload', function (req, res) {
                                                     } else {
                                                         //console.log("Added serversecret to db.");
                                                         res.status(200);
-                                                        res.json({'success': true});
+                                                        res.json({ 'success': true });
                                                         return true;
                                                     }
 
@@ -273,7 +273,7 @@ router.post('/rest/file/upload', function (req, res) {
                                 } else {
                                     console.log("Error with written file" + new_path);
                                     res.status(500);
-                                    res.json({'success': false});
+                                    res.json({ 'success': false });
                                     return false;
                                 }
                             }
@@ -297,7 +297,7 @@ function validateXMLFile(xmlfile, cb) {
     var fileSizeInBytes = stats["size"];
     if (fileSizeInBytes >= 100) {
 
-    } else(cb());
+    } else (cb());
 
 
 }
@@ -310,65 +310,65 @@ router.get('/rest/api/downloads/ND', function (req, res) {
     var db = req.db;
     var simlist = db.collection('simlist');
     var activeclients = db.collection('activeclients');
-	var clientID=req.param('ID');
-	var clientSkills=req.param('SKILLS');
+    var clientID = req.param('ID');
+    var clientSkills = req.param('SKILLS');
 
-	simlist.findOne({distributed: false}, function(err, result){
-	
-	if(err || !result){
-	//console.log("error reading or no result.");
-	//console.log("Will answer with res-code 500. No Simfiles available. Will check for timedoutsims.");
-        res.status(500);
-        res.json({'success': false});
-	//Mark Request in DB for Statistics, count the clients waiting for tasks.
-       
-        	activeclients.remove({ip: req.connection.remoteAddress, id:clientID}, function (err) {
-        		if (err) {
-                         console.log("Error removing client from list.");
-                        }
-                });  
+    simlist.findOne({ distributed: false }, function (err, result) {
 
-                activeclients.insert({ip: req.connection.remoteAddress,id: clientID,skills: clientSkills,timestamp: Date.now()}, 
-			function (err, result) {
-                            if (err) {
-                                console.log("Error updating client-collection.");
-                            } 	else {
-                            	}
-                        });
+        if (err || !result) {
+            //console.log("error reading or no result.");
+            //console.log("Will answer with res-code 500. No Simfiles available. Will check for timedoutsims.");
+            res.status(500);
+            res.json({ 'success': false });
+            //Mark Request in DB for Statistics, count the clients waiting for tasks.
+
+            activeclients.remove({ ip: req.connection.remoteAddress, id: clientID }, function (err) {
+                if (err) {
+                    console.log("Error removing client from list.");
+                }
+            });
+
+            activeclients.insert({ ip: req.connection.remoteAddress, id: clientID, skills: clientSkills, timestamp: Date.now() },
+                function (err, result) {
+                    if (err) {
+                        console.log("Error updating client-collection.");
+                    } else {
+                    }
+                });
 
 
 
-	}	else{
-		//console.log("Delivering file: " + result.path);
-                //console.log("Name: " + result.name);
-                //console.log("SIMID: " + result.simid);
-                var options = {
-                     		headers: {
-                                	'filename': result.name,
-                                 	'simid': result.simid
-                             	}
-                         	};
-		
-		var fileName = path.resolve(result.path);
-                    res.sendFile(fileName, options, function (err) {
-                        if (err) {
-                            console.log(err);
-                            res.status(err.status).end();
-                        }
-                        	else {
-                            	//console.log('Sent:', fileName);
-				//Set to distributed in db
-				simlist.update({_id:result._id}, {$set: {distributed:true, timestamp: Date.now()}});
-                        	}
-                    });
+        } else {
+            //console.log("Delivering file: " + result.path);
+            //console.log("Name: " + result.name);
+            //console.log("SIMID: " + result.simid);
+            var options = {
+                headers: {
+                    'filename': result.name,
+                    'simid': result.simid
+                }
+            };
 
-		}
-	//console.log("Result-Name:"+ util.inspect(result));
-	});
+            var fileName = path.resolve(result.path);
+            res.sendFile(fileName, options, function (err) {
+                if (err) {
+                    console.log(err);
+                    res.status(err.status).end();
+                }
+                else {
+                    //console.log('Sent:', fileName);
+                    //Set to distributed in db
+                    simlist.update({ _id: result._id }, { $set: { distributed: true, timestamp: Date.now() } });
+                }
+            });
 
-         //{$set: {distributed: true, timestamp: Date.now()}},
-        
-		
+        }
+        //console.log("Result-Name:"+ util.inspect(result));
+    });
+
+    //{$set: {distributed: true, timestamp: Date.now()}},
+
+
 });
 
 
@@ -377,7 +377,7 @@ router.get('/rest/api/downloads/ND', function (req, res) {
 * If yes, then reset it to undistributed, so it will be distributed again.
 */
 function checkForTimedOutSimulations(simlist, cb) {
-    simlist.find({distributed: true, simulated: false}, function (err, result) {
+    simlist.find({ distributed: true, simulated: false }, function (err, result) {
         if (err) {
             console.log("Error finding distributed and unsimulated simulations in db.");
         } else {
@@ -402,13 +402,13 @@ function checkForTimedOutSimulations(simlist, cb) {
                              console.log("Tim:" + localtimeout);
                              console.log("------------------");*/
                             if (localtimeout <= now) {
-                            		timedOutSimulations=timedOutSimulations+1;
+                                timedOutSimulations = timedOutSimulations + 1;
                                 //console.log("Try to reset entry to undistributed.");
                                 //set it to undistributed
                                 simlist.findAndModify(
-                                    {_id: element._id},
+                                    { _id: element._id },
                                     [],
-                                    {$set: {distributed: false, timestamp: Date.now()}},
+                                    { $set: { distributed: false, timestamp: Date.now() } },
                                     false,
                                     true,
                                     function (err, result) {
@@ -451,55 +451,55 @@ router.post('/rest/log/upload', function (req, res) {
     var simlist = db.collection('simlist');
 
     form.parse(req, function (err, fields, files) {
-		try{        
-		var old_path = files.attachment.path,
-				file_size = files.attachment.size,
-				file_name = files.attachment.name,
-				simid = fields.simid,
-				new_dir = './uploads/' + simid,
-				new_path = './uploads/' + simid + "/" + file_name;
+        try {
+            var old_path = files.attachment.path,
+                file_size = files.attachment.size,
+                file_name = files.attachment.name,
+                simid = fields.simid,
+                new_dir = './uploads/' + simid,
+                new_path = './uploads/' + simid + "/" + file_name;
 
-			mkdirp(new_dir, function (err) {
-				// path was created unless there was error
-				if (err) {
-					console.log("There was an error creating dir:" + new_path);
-				}
+            mkdirp(new_dir, function (err) {
+                // path was created unless there was error
+                if (err) {
+                    console.log("There was an error creating dir:" + new_path);
+                }
 
-				fs.readFile(old_path, function (err, data) {
-					fs.writeFile(new_path, data, function (err) {
-						fs.unlink(old_path, function (err) {
-							if (err) {
-								res.status(500);
-								res.json({'success': false});
-							} 	else {
-								res.status(200);
-								res.json({'success': true});
+                fs.readFile(old_path, function (err, data) {
+                    fs.writeFile(new_path, data, function (err) {
+                        fs.unlink(old_path, function (err) {
+                            if (err) {
+                                res.status(500);
+                                res.json({ 'success': false });
+                            } else {
+                                res.status(200);
+                                res.json({ 'success': true });
 
-								//Update Entry in db
-								var xmlname = file_name.split("_simTime")[0] + "_.xml";//  slice(0,-4)+".xml"
-									simlist.findAndModify(
-									{simid: simid, name: xmlname},
-									[],
-									{$set: {simulated: true, logname: file_name}},
-									false,
-									true,
-									function (err, result) {
-										if (err) {
-											console.log("Error updating " + xmlname + " to simulated:true.");
-										}
-										updateAverageSimulationsPerMinute();
-									}
-									);
-								}	
-						});
-					});
-				});
+                                //Update Entry in db
+                                var xmlname = file_name.split("_simTime")[0] + "_.xml";//  slice(0,-4)+".xml"
+                                simlist.findAndModify(
+                                    { simid: simid, name: xmlname },
+                                    [],
+                                    { $set: { simulated: true, logname: file_name } },
+                                    false,
+                                    true,
+                                    function (err, result) {
+                                        if (err) {
+                                            console.log("Error updating " + xmlname + " to simulated:true.");
+                                        }
+                                        updateAverageSimulationsPerMinute();
+                                    }
+                                );
+                            }
+                        });
+                    });
+                });
 
-			});
+            });
 
-		}	catch(e){
-			console.log("Error while uploading logfile. ");
-			}
+        } catch (e) {
+            console.log("Error while uploading logfile. ");
+        }
     });
 
 });
@@ -511,14 +511,14 @@ router.get('/rest/api/downloads/log/:simid', function (req, res) {
     var db = req.db;
     var simlist = db.collection('simlist');
     var simid = req.params.simid;
-    console.log("Asking for logfiles for: "+simid);
+    console.log("Asking for logfiles for: " + simid);
 
-	//Set timestamp, when master was last seen
-	arrayOfMasterLastSeen[simid]=Date.now();
+    //Set timestamp, when master was last seen
+    arrayOfMasterLastSeen[simid] = Date.now();
 
-	console.log("Check db for one logfile.");
-	
-    simlist.findOne({simid: simid, simulated: true, logdownloaded: false}, function (err, result) {
+    console.log("Check db for one logfile.");
+
+    simlist.findOne({ simid: simid, simulated: true, logdownloaded: false }, function (err, result) {
 
         if (err) {
             console.log("Error searching logfiles for: " + req.params.simid);
@@ -545,7 +545,7 @@ router.get('/rest/api/downloads/log/:simid', function (req, res) {
                 }
                 else {
                     console.log('Sent:', fileName + ". Try to update db.");
-                    simlist.updateById(result._id, {$set: {logdownloaded: true}}, function (err, res) {
+                    simlist.updateById(result._id, { $set: { logdownloaded: true } }, function (err, res) {
                         if (err) {
                             console.log("Error updating" + result.name);
                         }
@@ -564,7 +564,7 @@ router.get('/rest/api/downloads/log/:simid', function (req, res) {
         } else {
             console.log("Will answer with res-code 500. No Logfile available.");
             res.status(500);
-            res.json({'success': false});
+            res.json({ 'success': false });
         }
     });
 });
@@ -602,7 +602,7 @@ router.post('/resetSimulation', function (req, res) {
 
         searchpath = fileprefix + ".xml";
         console.log("searching in db for:" + searchpath);
-        simlist.find({name: searchpath, simid: simid}, function (err, result) {
+        simlist.find({ name: searchpath, simid: simid }, function (err, result) {
             if (err) {
                 console.log("Error finding simulation in db to reset.");
             } else {
@@ -614,7 +614,7 @@ router.post('/resetSimulation', function (req, res) {
                             console.log("will modify:" + element);
                             //set it to undistributed
                             simlist.findAndModify(
-                                {_id: element._id},
+                                { _id: element._id },
                                 [],
                                 {
                                     $set: {
@@ -643,14 +643,14 @@ router.post('/resetSimulation', function (req, res) {
     });
     //Answer with success-code, no matter what happended
     res.status(200);
-    res.json({'success': true});
+    res.json({ 'success': true });
 });
 
 /**
 * Delete one simulation (xml file + log file) db-entry remains
 */
 router.post('/deleteSimulation', function (req, res) {
-//console.log("Asked to delete simulation");
+    //console.log("Asked to delete simulation");
     var form = new formidable.IncomingForm();
     var db = req.db;
     var simlist = db.collection('simlist');
@@ -680,7 +680,7 @@ router.post('/deleteSimulation', function (req, res) {
     });
     //Answer with success-code, no matter what happened
     res.status(200);
-    res.json({'success': true});
+    res.json({ 'success': true });
 
 });
 
@@ -699,7 +699,7 @@ router.post('/deleteAllSimulations', function (req, res) {
         var secret = fields.serversecret;
 
         //Check if serversecret is the same
-        serversecrets.find({simid: simid, secret: secret}, function (err, result) {
+        serversecrets.find({ simid: simid, secret: secret }, function (err, result) {
             if (err) {
                 console.log("Error finding simid and serversecret together. Cannot delete anything.");
             } else {
@@ -722,9 +722,9 @@ router.post('/deleteAllSimulations', function (req, res) {
                         }
                     });
 
-                    simlist.remove({simid: simid}, function(err){
-                        if(err){
-                            console.log("Error deleting db-entries for "+simid);
+                    simlist.remove({ simid: simid }, function (err) {
+                        if (err) {
+                            console.log("Error deleting db-entries for " + simid);
                         }
                     });
                 }
@@ -737,7 +737,7 @@ router.post('/deleteAllSimulations', function (req, res) {
     console.log("Will send response code 200. for deleting all simulations.");
     //Answer with success-code, no matter what happened
     res.status(200);
-    res.json({'success': true});
+    res.json({ 'success': true });
 });
 
 
@@ -766,11 +766,11 @@ router.post('/reset', function (req, res) {
             });
 
         });
-   averageSimulationsPerMinute = 0;
-	minutesToFinish = 0;
-	timedOutSimulations = 0;
-	cpuUsage = 0;
-	freeDiskSpace = 0;
+        averageSimulationsPerMinute = 0;
+        minutesToFinish = 0;
+        timedOutSimulations = 0;
+        cpuUsage = 0;
+        freeDiskSpace = 0;
     } else {
         console.log("Wrong password, will not reset server.");
 
@@ -781,30 +781,30 @@ router.post('/reset', function (req, res) {
 /**
 * Updates to average time, a simulation needs to finish
 */
-function updateAverageSimulationsPerMinute(){
-var currentTimeStamp=Date.now();	
-var difference=currentTimeStamp-timeStampOfLastFinishedSimulation;
-var averageSimulationsPerMinuteTMP=0;
-//console.log("Difference: "+difference);
+function updateAverageSimulationsPerMinute() {
+    var currentTimeStamp = Date.now();
+    var difference = currentTimeStamp - timeStampOfLastFinishedSimulation;
+    var averageSimulationsPerMinuteTMP = 0;
+    //console.log("Difference: "+difference);
 
-	if(difference>0){
-		averageSimulationsPerMinuteTMP = 6000 / difference;
-		//console.log("simPerMinute: "+ averageSimulationsPerMinuteTMP);
-		averageSimulationsPerMinute = (averageSimulationsPerMinuteTMP + (statisticsSmoothingFactor * averageSimulationsPerMinute)) / (statisticsSmoothingFactor + 1);
-		//console.log("simPerMinute(avg)): "+ averageSimulationsPerMinute);
-		minutesToFinish = openSimulations/averageSimulationsPerMinute;	
-	}
+    if (difference > 0) {
+        averageSimulationsPerMinuteTMP = 6000 / difference;
+        //console.log("simPerMinute: "+ averageSimulationsPerMinuteTMP);
+        averageSimulationsPerMinute = (averageSimulationsPerMinuteTMP + (statisticsSmoothingFactor * averageSimulationsPerMinute)) / (statisticsSmoothingFactor + 1);
+        //console.log("simPerMinute(avg)): "+ averageSimulationsPerMinute);
+        minutesToFinish = openSimulations / averageSimulationsPerMinute;
+    }
 
-timeStampOfLastFinishedSimulation=currentTimeStamp;
-	}
+    timeStampOfLastFinishedSimulation = currentTimeStamp;
+}
 
 /**
 * Updates active client list, removes old clients
 */
 function removeOldClientsFromList() {
-	var db = global.db;
-   var activeclients = db.collection('activeclients');
-   var simlist = db.collection('simlist');
+    var db = global.db;
+    var activeclients = db.collection('activeclients');
+    var simlist = db.collection('simlist');
     //Update one from not distributed to distributed
     //return this one as file to client
     //console.log("Removing old clients from list.");
@@ -818,7 +818,7 @@ function removeOldClientsFromList() {
             resultcursor.each(function (err, result) {
                 if (result != null) {
                     if (result.timestamp <= borderTimeStamp) {
-                        activeclients.remove({timestamp: result.timestamp}, function (err, result) {
+                        activeclients.remove({ timestamp: result.timestamp }, function (err, result) {
                             if (err) {
                                 console.log("Error removing client from activeclientlist.");
                             }
@@ -832,8 +832,8 @@ function removeOldClientsFromList() {
 
     //Count all clients connected during last sleeping time period
     activeclients.count(function (err, count) {
-        if (global.clientcount == null)global.clientcount = 0;
-        if (global.clientcount == NaN)global.clientcount = 0;
+        if (global.clientcount == null) global.clientcount = 0;
+        if (global.clientcount == NaN) global.clientcount = 0;
         global.clientcount = ((global.clientcount * 2) + (count * 1)) / 3;
         if (count == 0) {
             global.clientcount = 0;
@@ -842,9 +842,9 @@ function removeOldClientsFromList() {
     });
 
     //Count all simulations which are distributed but not yet simulated (this is the number of running clients)
-    if (global.clientsrunning == null)global.clientsrunning = 0;
-    if (global.clientsrunning == NaN)global.clientsrunning = 0;
-    simlist.find({distributed: true, simulated: false}, function (err, result) {
+    if (global.clientsrunning == null) global.clientsrunning = 0;
+    if (global.clientsrunning == NaN) global.clientsrunning = 0;
+    simlist.find({ distributed: true, simulated: false }, function (err, result) {
         if (err) {
             console.log("Error finding distributed and unsimulated simulations in db.");
         } else {
@@ -855,12 +855,12 @@ function removeOldClientsFromList() {
 
             }
         }
-	if (global.clientsrunning == NaN)global.clientsrunning = 0;
+        if (global.clientsrunning == NaN) global.clientsrunning = 0;
     });
 
     //console.log("Simulating Clients:"+global.clientsrunning);
 
-    
+
 }
 
 
