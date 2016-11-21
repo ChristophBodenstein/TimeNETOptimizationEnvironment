@@ -265,7 +265,7 @@ public class SimulationCache {
         //Names are equal (this should be checked before)--> now check if End-Start-Step-Value match or are subset of cache
         for (int i = 0; i < listOfCachedParameterNames.length; i++) {
             parameter p = support.getParameterByName(parameterListFromTable, listOfCachedParameterNames[i]);
-            boolean[] strike = {false, false, false};//if all 3 are true, this parameter is cached correctly
+            boolean[] strike = {true, true, true};//if all 3 are true, this parameter is cached correctly
             /*
              0->Stepping is ok
              1->StartValue is ok
