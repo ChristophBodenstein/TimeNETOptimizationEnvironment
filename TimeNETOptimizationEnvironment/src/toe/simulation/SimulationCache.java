@@ -526,6 +526,7 @@ public class SimulationCache {
             //Get cached simulation results
             SimulationType foundSimulation = simulationHashmap.get(support.getHashValueForParameterList(parameterSet));
             if (foundSimulation != null) {
+                foundSimulation.setIsFromCache(true);
                 mySimulationList.add(foundSimulation);
                 simulationCounter++;
             } else {
