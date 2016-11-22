@@ -120,8 +120,8 @@ public class SimulatorBenchmark extends Thread implements Simulator {
      * @param maxRelError given Maximum relative Error
      */
     public static double getCPUTime(double confidenceIntervall, double maxRelError) {
-        double cc = confidenceIntervall - 84;//norm to 1..15
-        double me = 15 / maxRelError;//norm to 1..15
+        double cc = Math.min(Math.max(confidenceIntervall - 84, 1), 15);//norm to 1..15
+        double me = Math.min(Math.max(15 / maxRelError, 1), 15);//norm to 1..15
         //double constX2 = 4.1765277575;
         //double constX3 = -0.0019265913;
         //double constX4 = 89.0756210425;
