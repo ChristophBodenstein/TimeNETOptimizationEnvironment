@@ -62,7 +62,7 @@ public class TOE {
                             support.checkSpinningShowTime();
                             support.updateCountLabels();
                         }
-                    }, 1000 * support.DEFAULT_MEMORYPRINT_INTERVALL, 1000 * support.DEFAULT_MEMORYPRINT_INTERVALL);
+                    }, 1000 * support.DEFAULT_MEMORYPRINT_INTERVAL, 1000 * support.DEFAULT_MEMORYPRINT_INTERVAL);
                 } catch (IOException ex) {
                     Logger.getLogger(TOE.class.getName()).log(Level.SEVERE, null, ex);
                 }
