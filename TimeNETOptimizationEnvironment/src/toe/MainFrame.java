@@ -1482,6 +1482,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
      */
     private void jProgressBarMemoryUsageMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jProgressBarMemoryUsageMouseClicked
         support.printMemoryStats();
+        System.gc();
     }//GEN-LAST:event_jProgressBarMemoryUsageMouseClicked
     /**
      * This method is called when checkbox for slave-simulation is clicked If
