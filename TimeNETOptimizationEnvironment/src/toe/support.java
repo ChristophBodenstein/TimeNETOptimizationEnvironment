@@ -123,8 +123,10 @@ public class support {
 
     public static final char DEFAULT_PLOT_CHAR = '.';//Default Char to be used in R-Plot-Scripts
 
-    public static final int DEFAULT_MEMORYPRINT_INTERVALL = 1;//in seconds. Default Interval between updating the memory-usage-progressbar
-
+    public static final int DEFAULT_MEMORYPRINT_INTERVAL = 1;//in seconds. Default Interval between updating the memory-usage-progressbar
+    
+    public static final int DEFAULT_WAIT_FOR_OPTIMIZER_INTERVAL = 1;// in seconds. Time to wait between asking Optimizer for result
+    
     public static final typeOfRelativeDistanceCalculation DEFAULT_TYPE_OF_RELATIVE_DISTANCE_CALCULATION = typeOfRelativeDistanceCalculation.EUKLID;//Distance calculation for opti-results
 
 //End of program-wide default value definition
@@ -1457,7 +1459,7 @@ public class support {
      * over, spinning-labe is set to empty
      */
     public static void checkSpinningShowTime() {
-        if (((Calendar.getInstance().getTimeInMillis()) - lastTimeOfSpinning) >= DEFAULT_MEMORYPRINT_INTERVALL) {
+        if (((Calendar.getInstance().getTimeInMillis()) - lastTimeOfSpinning) >= DEFAULT_MEMORYPRINT_INTERVAL) {
             mainFrame.jLabelSpinning.setText("");
         }
     }
@@ -1548,7 +1550,7 @@ public class support {
                     this.cancel();
                 }
             }
-        }, 1000 * support.DEFAULT_MEMORYPRINT_INTERVALL, 1000 * support.DEFAULT_MEMORYPRINT_INTERVALL);
+        }, 1000 * support.DEFAULT_MEMORYPRINT_INTERVAL, 1000 * support.DEFAULT_MEMORYPRINT_INTERVAL);
 
     }
 
@@ -1578,7 +1580,7 @@ public class support {
                     this.cancel();
                 }
             }
-        }, 1000 * support.DEFAULT_MEMORYPRINT_INTERVALL, 1000 * support.DEFAULT_MEMORYPRINT_INTERVALL);
+        }, 1000 * support.DEFAULT_WAIT_FOR_OPTIMIZER_INTERVAL, 1000 * support.DEFAULT_WAIT_FOR_OPTIMIZER_INTERVAL);
     }
 
     /**
@@ -1602,7 +1604,7 @@ public class support {
                     this.cancel();
                 }
             }
-        }, 1000 * support.DEFAULT_MEMORYPRINT_INTERVALL, 1000 * support.DEFAULT_MEMORYPRINT_INTERVALL);
+        }, 1000 * support.DEFAULT_MEMORYPRINT_INTERVAL, 1000 * support.DEFAULT_MEMORYPRINT_INTERVAL);
     }
 
     /**
