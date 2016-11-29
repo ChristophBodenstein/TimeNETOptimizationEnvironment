@@ -90,16 +90,17 @@ public class Statistic {
 
     /**
      * Prints out Statistics about optimization to Log
+     * @param logLevel typeOfLogLevel to print statistics
      */
-    public void printOptimizerStatisticsToLog() {
+    public void printOptimizerStatisticsToLog(typeOfLogLevel logLevel) {
         if (isOptimization() && this.calculatedOptimum != null) {
-            support.log("****Start*Optimization-Statistics****", typeOfLogLevel.RESULT);
+            support.log("****Start*Optimization-Statistics****", logLevel);
             //support.log("Distance to Optimum: "+this.getDistanceToTargetValue());
-            support.log("Value of calculated optimum: " + this.getCalculatedOptimum().getMeasureByName(support.getOptimizationMeasure().getMeasureName()).getMeanValue(), typeOfLogLevel.RESULT);
-            support.log("Type of calculated optimum: " + this.getCalculatedOptimum().getMeasureByName(support.getOptimizationMeasure().getMeasureName()).getTargetTypeOf().toString(), typeOfLogLevel.RESULT);
-            support.log("Distance to Optimum in Definition range: " + this.getRelativeDistanceToOptimumInDefinitionRange() + " %", typeOfLogLevel.RESULT);
-            support.log("Distance to Optimum in Value range: " + this.getRelativeDistanceToOptimumInValueRange() + " %", typeOfLogLevel.RESULT);
-            support.log("****End*Optimization-Statistics****", typeOfLogLevel.RESULT);
+            support.log("Value of calculated optimum: " + this.getCalculatedOptimum().getMeasureByName(support.getOptimizationMeasure().getMeasureName()).getMeanValue(), logLevel);
+            support.log("Type of calculated optimum: " + this.getCalculatedOptimum().getMeasureByName(support.getOptimizationMeasure().getMeasureName()).getTargetTypeOf().toString(), logLevel);
+            support.log("Distance to Optimum in Definition range: " + this.getRelativeDistanceToOptimumInDefinitionRange() + " %", logLevel);
+            support.log("Distance to Optimum in Value range: " + this.getRelativeDistanceToOptimumInValueRange() + " %", logLevel);
+            support.log("****End*Optimization-Statistics****", logLevel);
         }
     }
 
@@ -165,7 +166,7 @@ public class Statistic {
         support.log("SimulationTime from Cache: " + this.getSimulationTimeFromCache(), typeOfLogLevel.RESULT);
         support.log("SimulationTime from Local: " + this.getSimulationTimeFromLocal(), typeOfLogLevel.RESULT);
         support.log("-----Statistics of Simulation: " + this.getName() + " ----- End -----", typeOfLogLevel.RESULT);
-        printOptimizerStatisticsToLog();
+        printOptimizerStatisticsToLog(typeOfLogLevel.INFO);
     }
 
     /**

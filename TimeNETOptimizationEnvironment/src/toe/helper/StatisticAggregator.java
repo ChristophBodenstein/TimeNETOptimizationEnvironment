@@ -154,6 +154,7 @@ public class StatisticAggregator {
         //Fill new ArrayList with Statistic that are Optimization
         for (Statistic s : listOfStatistics) {
             if (s.isOptimization()) {
+                s.printOptimizerStatisticsToLog(typeOfLogLevel.INFO);
                 optiSimulationList.add(s);
                 averageDistanceToOptimumAbsolute += s.getDistanceToTargetValue();
                 averageNumberOfSimulations += s.getNumberOfSimulationsTotal();
