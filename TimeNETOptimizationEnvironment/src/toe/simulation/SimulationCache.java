@@ -600,19 +600,19 @@ public class SimulationCache {
         support.addDummyParameterCPUTimeIfNeeded(SimulationToAdd.getListOfParameters());
         SimulationToAdd.updateHashValue();
         if (!simulationHashmap.containsKey(SimulationToAdd.getHashValue())) {
-            support.log("Will add Simulation with hash: " + SimulationToAdd.getHashValue() + " to cache.", typeOfLogLevel.INFO);
-            support.printListOfParameters(SimulationToAdd.getListOfParameters(), typeOfLogLevel.INFO);
+            support.log("Will add Simulation with hash: " + SimulationToAdd.getHashValue() + " to cache.", typeOfLogLevel.VERBOSE);
+            support.printListOfParameters(SimulationToAdd.getListOfParameters(), typeOfLogLevel.VERBOSE);
 
             if (this.getSimulationList().size() >= 1) {
-                support.log("Cache contains Hash: " + this.getSimulationList().get(0).getHashValue(), typeOfLogLevel.INFO);
-                support.printListOfParameters(this.getSimulationList().get(0).getListOfParameters(), typeOfLogLevel.INFO);
+                support.log("Cache contains Hash: " + this.getSimulationList().get(0).getHashValue(), typeOfLogLevel.VERBOSE);
+                support.printListOfParameters(this.getSimulationList().get(0).getListOfParameters(), typeOfLogLevel.VERBOSE);
             }
 
             this.getSimulationList().add(SimulationToAdd);
             simulationHashmap.put(SimulationToAdd.getHashValue(), SimulationToAdd);
 
         } else {
-            support.log("Simulation with hash: " + SimulationToAdd.getHashValue() + " already in cache.", typeOfLogLevel.INFO);
+            support.log("Simulation with hash: " + SimulationToAdd.getHashValue() + " already in cache.", typeOfLogLevel.VERBOSE);
         }
 
     }
