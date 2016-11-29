@@ -76,7 +76,7 @@ public class Statistic {
      *
      * @param foundOptimum The simulation incl. parameterset which was found by
      * optimization algorithm
-     * @param calculatedOptimum The calculated optimum parameterset to calulate
+     * @param calculatedOptimum The calculated optimum parameterset to calculate
      * the distance
      */
     public void addFoundOptimum(SimulationType foundOptimum, SimulationType calculatedOptimum) {
