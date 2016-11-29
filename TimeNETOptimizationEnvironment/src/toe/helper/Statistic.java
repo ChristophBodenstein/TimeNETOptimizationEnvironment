@@ -58,17 +58,14 @@ public class Statistic {
             numberOfSimulationsFromCache++;
             CPUTimeFromCache += statisticMeasure.getCPUTime();
             simulationTimeFromCache += statisticMeasure.getSimulationTime();
+        } else if (p.isIsFromDistributedSimulation()) {
+            numberOfSimulationsFromWeb++;
+            CPUTimeFromWeb += statisticMeasure.getCPUTime();
+            simulationTimeFromWeb += statisticMeasure.getSimulationTime();
         } else {
-
-            if (p.isIsFromDistributedSimulation()) {
-                numberOfSimulationsFromWeb++;
-                CPUTimeFromWeb += statisticMeasure.getCPUTime();
-                simulationTimeFromWeb += statisticMeasure.getSimulationTime();
-            } else {
-                numberOfSimulationsFromLocal++;
-                CPUTimeFromLocal += statisticMeasure.getCPUTime();
-                simulationTimeFromLocal += statisticMeasure.getSimulationTime();
-            }
+            numberOfSimulationsFromLocal++;
+            CPUTimeFromLocal += statisticMeasure.getCPUTime();
+            simulationTimeFromLocal += statisticMeasure.getSimulationTime();
         }
 
     }
@@ -132,8 +129,9 @@ public class Statistic {
      * benchmark-functions or if absolute minimum/maximum is given by user Calls
      * the getRelativeDistanceToOptimumInValueRange of SimulationType
      *
-     * @return distance to theoretical optimum in % of possible range If an
-     * optimum was found and given to this statistic the distance to the
+     * @return distance to theoretical optimum in % of possible range
+     *
+     * If an optimum was found and given to this statistic the distance to the
      * calculated optimum is calculated. Not the distance to target value as
      * given in user interface! For calculation
      * getRelativeDistanceToTargetValueInValueRange is called from
