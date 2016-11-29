@@ -95,6 +95,8 @@ public class Statistic {
         if (isOptimization() && this.calculatedOptimum != null) {
             support.log("****Start*Optimization-Statistics****", typeOfLogLevel.RESULT);
             //support.log("Distance to Optimum: "+this.getDistanceToTargetValue());
+            support.log("Value of calculated optimum: " + this.getCalculatedOptimum().getMeasureByName(support.getOptimizationMeasure().getMeasureName()).getMeanValue(), typeOfLogLevel.RESULT);
+            support.log("Type of calculated optimum: " + this.getCalculatedOptimum().getMeasureByName(support.getOptimizationMeasure().getMeasureName()).getTargetTypeOf().toString(), typeOfLogLevel.RESULT);
             support.log("Distance to Optimum in Definition range: " + this.getRelativeDistanceToOptimumInDefinitionRange() + " %", typeOfLogLevel.RESULT);
             support.log("Distance to Optimum in Value range: " + this.getRelativeDistanceToOptimumInValueRange() + " %", typeOfLogLevel.RESULT);
             support.log("****End*Optimization-Statistics****", typeOfLogLevel.RESULT);
