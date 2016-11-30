@@ -141,11 +141,12 @@ public class SimulatorCached extends Thread implements Simulator {
         double distance = Double.MAX_VALUE;
         double minValue = Double.MAX_VALUE;
         double maxValue = Double.MIN_VALUE;
+        MeasureType tmpMeasure;
 
         int numberOfOptimalSimulation = Integer.MIN_VALUE;
         for (int i = 0; i < mySimulationList.size(); i++) {
             SimulationType tmpSim = mySimulationList.get(i);
-            MeasureType tmpMeasure = tmpSim.getMeasureByName(targetMeasure.getMeasureName());
+            tmpMeasure = tmpSim.getMeasureByName(targetMeasure.getMeasureName());
             tmpMeasure.setTargetValue(targetMeasure.getTargetValue(), targetMeasure.getTargetTypeOf());
             if (tmpMeasure.getDistanceFromTarget() <= distance) {
                 distance = tmpMeasure.getDistanceFromTarget();
@@ -166,7 +167,7 @@ public class SimulatorCached extends Thread implements Simulator {
         } else {
             support.log("No Optimum Solution for " + targetMeasure.getMeasureName() + " could be found in cache.", typeOfLogLevel.INFO);
         }
-        MeasureType tmpMeasure = mySimulationList.get(numberOfOptimalSimulation).getMeasureByName(targetMeasure.getMeasureName());
+        tmpMeasure = mySimulationList.get(numberOfOptimalSimulation).getMeasureByName(targetMeasure.getMeasureName());
         tmpMeasure.setMinValue(minValue);
         tmpMeasure.setMaxValue(maxValue);
         support.log(support.padRight("Min", 10) + " | " + support.padRight("Mean", 10) + " | " + support.padRight("Max", 10), typeOfLogLevel.INFO);
@@ -194,6 +195,7 @@ public class SimulatorCached extends Thread implements Simulator {
     public int cancelAllSimulations() {
         return 0;
     }
+
     @Override
     public String getLogfileName() {
         return this.logFileName;
