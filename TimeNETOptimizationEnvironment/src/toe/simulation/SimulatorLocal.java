@@ -340,7 +340,7 @@ public class SimulatorLocal extends Thread implements Simulator, nativeProcessCa
      */
     @Override
     public SimulationType getCalculatedOptimum(MeasureType targetMeasure) {
-        support.log("SimulatorLocal: Absolute optimum unknown. Will return null.", typeOfLogLevel.INFO);
+        support.log("No calculated optimum available in local simulation. Will return null.", typeOfLogLevel.INFO);
         return null;
     }
 
