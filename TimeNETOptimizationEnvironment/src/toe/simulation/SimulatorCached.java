@@ -138,14 +138,15 @@ public class SimulatorCached extends Thread implements Simulator {
         //iterate through all cached sims and look for best solution 
         support.log("SimulatorCached: Getting absolute optimum simulation from Cache.", typeOfLogLevel.INFO);
         ArrayList<SimulationType> mySimulationList = this.mySimulationCache.getSimulationList();
-        double distance = Double.MAX_VALUE;
-        double minValue = Double.MAX_VALUE;
-        double maxValue = Double.MIN_VALUE;
+        double distance = Double.MAX_VALUE;//Maximum absolute value
+        double minValue = Double.MAX_VALUE;//Maximum absolute value
+        double maxValue = ((Double.MAX_VALUE - Double.MIN_VALUE) * -1);//Maximum absolute value * -1
         MeasureType tmpMeasure;
+        SimulationType tmpSim;
 
         int numberOfOptimalSimulation = Integer.MIN_VALUE;
         for (int i = 0; i < mySimulationList.size(); i++) {
-            SimulationType tmpSim = mySimulationList.get(i);
+            tmpSim = mySimulationList.get(i);
             tmpMeasure = tmpSim.getMeasureByName(targetMeasure.getMeasureName());
             tmpMeasure.setTargetValue(targetMeasure.getTargetValue(), targetMeasure.getTargetTypeOf());
             if (tmpMeasure.getDistanceFromTarget() <= distance) {

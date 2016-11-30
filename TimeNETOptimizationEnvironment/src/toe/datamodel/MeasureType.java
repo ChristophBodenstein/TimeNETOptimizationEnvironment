@@ -80,7 +80,17 @@ private double targetValue = 0.0;
      * @return distance to target value
      */
     public double getDistanceFromTarget() {
-        return Math.abs(this.MeanValue - this.targetValue);
+
+        switch (targetTypeOf) {
+            case value:
+                return Math.abs(this.MeanValue - this.targetValue);
+            case max:
+                return Math.abs(this.MeanValue - Double.MAX_VALUE);
+            default:
+            case min:
+                return Math.abs(this.MeanValue - ((Double.MAX_VALUE - Double.MIN_VALUE) * -1));
+        }
+
     }
 
     /**
