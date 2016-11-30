@@ -8,7 +8,6 @@
 package toe.simulation;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import toe.datamodel.parameter;
 import toe.datamodel.SimulationType;
 import toe.support;
@@ -27,7 +26,6 @@ public class SimulatorCachedLocal extends SimulatorCached {
     private final Simulator myLocalSimulator = getNoCacheSimulator();
     private ArrayList< ArrayList<parameter>> remainingParametersets = new ArrayList<>();
     ArrayList< ArrayList<parameter>> listOfParameterSetsTMP;
-    private boolean log = true;
 
     /**
      * Constructor
@@ -50,7 +48,6 @@ public class SimulatorCachedLocal extends SimulatorCached {
         remainingParametersets = new ArrayList<>();
         status = 0;
         this.listOfParameterSetsTMP = listOfParameterSetsTMP;
-        this.log = log;
         //Start this thread
         new Thread(this).start();
 
