@@ -124,9 +124,9 @@ public class support {
     public static final char DEFAULT_PLOT_CHAR = '.';//Default Char to be used in R-Plot-Scripts
 
     public static final int DEFAULT_MEMORYPRINT_INTERVAL = 1;//in seconds. Default Interval between updating the memory-usage-progressbar
-    
+
     public static final int DEFAULT_WAIT_FOR_OPTIMIZER_INTERVAL = 1;// in seconds. Time to wait between asking Optimizer for result
-    
+
     public static final typeOfRelativeDistanceCalculation DEFAULT_TYPE_OF_RELATIVE_DISTANCE_CALCULATION = typeOfRelativeDistanceCalculation.EUKLID;//Distance calculation for opti-results
 
 //End of program-wide default value definition
@@ -1115,13 +1115,7 @@ public class support {
             MeasureType activeMeasure = p.getMeasureByName(measureList.get(measureCount).getMeasureName());
             MeasureType activeMeasureFromInterface = measureList.get(measureCount);//Contains Optimization targets
             activeMeasure.setTargetValue(activeMeasureFromInterface.getTargetValue(), activeMeasureFromInterface.getTargetTypeOf());
-            if (activeMeasure.getTargetTypeOf().equals(typedef.typeOfTarget.value)) {
-                distance = activeMeasure.getDistanceFromTarget();
-            } else if (activeMeasure.getTargetTypeOf().equals(typedef.typeOfTarget.min)) {
-                distance = activeMeasure.getMeanValue();
-            } else if (activeMeasure.getTargetTypeOf().equals(typedef.typeOfTarget.max)) {
-                distance = 0 - activeMeasure.getMeanValue();
-            }
+            distance = activeMeasure.getDistanceFromTarget();
             support.printMeasureType(activeMeasure, "**** Optimized Value for Measure is ****", "---------------------------");
         }
         support.log("Whole remaining distance of all Measures is:" + distance, typeOfLogLevel.RESULT);
