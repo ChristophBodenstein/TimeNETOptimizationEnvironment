@@ -7,6 +7,7 @@
 package toe.datamodel;
 
 import java.util.Arrays;
+import toe.support;
 import toe.typedef.*;
 
 /**
@@ -83,12 +84,12 @@ private double targetValue = 0.0;
 
         switch (targetTypeOf) {
             case value:
-                return Math.abs(this.MeanValue - this.targetValue);
+                return Math.abs(this.targetValue - this.MeanValue);
             case max:
-                return Math.abs(this.MeanValue - Double.MAX_VALUE);
+                return Math.abs(support.OPTIMIZATION_TARGET_MAX - this.MeanValue);
             default:
             case min:
-                return Math.abs(this.MeanValue - ((Double.MAX_VALUE - Double.MIN_VALUE) * -1));
+                return Math.abs(support.OPTIMIZATION_TARGET_MIN - this.MeanValue);
         }
 
     }
