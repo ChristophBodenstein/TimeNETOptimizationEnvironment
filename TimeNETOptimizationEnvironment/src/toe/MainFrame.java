@@ -2541,6 +2541,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
      * Starts an OptimizationRun, useful for Multiple optimization runs
      */
     private void startOptimizationAgain() {
+        support.log("Optimum-Value: " + Double.toString(SimOptiFactory.getSimulator().getCalculatedOptimum(support.getOptimizationMeasure()).getMeasureByName(support.getOptimizationMeasure().getMeasureName()).getMeanValue()), typeOfLogLevel.INFO);
         Optimizer myOptimizer = SimOptiFactory.getOptimizer();
         logFileNameOfOptimizer = support.getTmpPath() + File.separator + myOptimizer.getClass().getSimpleName() + "_" + Calendar.getInstance().getTimeInMillis() + support.getOptimizerPreferences().getPref_LogFileAddon() + ".csv";
         myOptimizer.setLogFileName(logFileNameOfOptimizer);
