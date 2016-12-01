@@ -1666,7 +1666,7 @@ public class support {
     }
 
     /**
-     * Returns the Optimization target Measure, chosen in Fron UI of Application
+     * Returns the Optimization target Measure, chosen in from UI of Application
      *
      * @return Measure from UI, incl. Optimization target
      */
