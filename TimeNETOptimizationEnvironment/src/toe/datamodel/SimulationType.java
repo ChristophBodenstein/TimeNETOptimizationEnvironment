@@ -170,8 +170,8 @@ public class SimulationType {
      * for benchmark-functions or if absolute minimum/maximum is given by user
      *
      * @return distance to targetMeasure in % of possible range
-     * @param targetMeasure Measure to calculate the distance to. Must contain
-     * Min/Max values! Make sure to set this values before caling this method!
+     * @param targetMeasure Measure to calculate the distance to must contain
+     * Min/Max values! Make sure to set the values before calling this method!
      *
      */
     public double getRelativeDistanceToTargetValueInValueRange(MeasureType targetMeasure) {
