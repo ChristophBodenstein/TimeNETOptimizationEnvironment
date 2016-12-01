@@ -175,6 +175,7 @@ public class SimulatorCached extends Thread implements Simulator {
 
         } else {
             support.log("No Optimum Solution for " + targetMeasure.getMeasureName() + " could be found in cache.", typeOfLogLevel.INFO);
+            return null;
         }
         tmpMeasure = mySimulationList.get(numberOfOptimalSimulation).getMeasureByName(targetMeasure.getMeasureName());
         tmpMeasure.setMinValue(minValue);
