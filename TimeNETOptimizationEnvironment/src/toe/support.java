@@ -55,6 +55,8 @@ public class support {
     public static final typeOfOptimization DEFAULT_TYPE_OF_OPTIMIZER = typeOfOptimization.HillClimbing;
     public static final typeOfBenchmarkFunction DEFAULT_TYPE_OF_BENCHMARKFUNCTION = typeOfBenchmarkFunction.Sphere;
     public static final double DEFAULT_DOUBLE_VALUE = 1.0;
+    public static final double OPTIMIZATION_TARGET_MAX = Double.MAX_VALUE / 2;
+    public static final double OPTIMIZATION_TARGET_MIN = Double.MAX_VALUE / -2;
 
 //default values for distributed simulation
     public static final int DEFAULT_SLEEPING_TIME = 1000;
