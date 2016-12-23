@@ -116,6 +116,7 @@ public class support {
 
     public static final String NAME_OF_PREF_DIR = System.getProperty("user.home") + File.separatorChar + ".TOE" + File.separatorChar;//The dir in which all pref-files will be stored
     public static final String NAME_OF_LOGFILE = NAME_OF_PREF_DIR + "TimeNETLogFile.log";//the name of the program logfile, if logging to file is active
+    public static final String NAME_OF_RESULTFILE = NAME_OF_PREF_DIR + "Results.log";//the name of the result file, all opti-statistics will be dumped here
     public static final String NAME_OF_PREFERENCES_FILE = NAME_OF_PREF_DIR + "ApplicationPreferences.prop";//name of the pref-file for program-wide prefs
     public static final String NAME_OF_OPTIMIZER_PREFFERENCES_FILE = NAME_OF_PREF_DIR + "OptimizerPreferences.prop";//name of the pref file for optimization parameters
     public static final String NAME_OF_DEFAULT_SCPN = NAME_OF_PREF_DIR + "default_SCPN.xml";//name of default scpn to be loaded at first start
@@ -178,6 +179,8 @@ public class support {
     public static final int DEFAULT_NUMBER_OF_OPTI_PROB_CLASSES = 10;
 
     private static int globalSimulationCounter = 0;
+
+    private static ArrayList<ArrayList<String>> optiStatistics = new ArrayList();
 
 //List of Changable parameters for Multiphase-opti
     public static ArrayList<parameter> listOfChangableParametersMultiphase = null;
@@ -1918,6 +1921,61 @@ public class support {
             parameter tmpParameter = pList.get(i);
             tmp = "|" + tmpParameter.getName() + "    |" + tmpParameter.getValue() + "    |" + tmpParameter.getStartValue() + "    |" + tmpParameter.getEndValue() + "    |" + tmpParameter.getStepping() + " |";
             support.log(tmp, logLevel);
+        }
+    }
+
+    /**
+     * @return the optiStatistics
+     */
+    public static ArrayList<ArrayList<String>> getOptiStatistics() {
+        return optiStatistics;
+    }
+
+    /**
+     * @param aOptiStatistics the optiStatistics to add to list
+     */
+    public static void addOptiStatistics(ArrayList<String> aOptiStatistics) {
+        optiStatistics.add(aOptiStatistics);
+    }
+
+    /**
+     * Export all opti statistics as files
+     */
+    public static void exportOptiStatistics() {
+        String exportString = "";
+        ArrayList<String> listOfStatisticStrings = null;
+        for (int i = 0; i < optiStatistics.size(); i++) {
+            exportString = "";
+            listOfStatisticStrings = optiStatistics.get(i);
+            if (listOfStatisticStrings != null) {
+                for (int c = 0; c < listOfStatisticStrings.size(); c++) {
+                    exportString += listOfStatisticStrings.get(c);
+                    if (c < listOfStatisticStrings.size() - 1) {
+                        exportString += ",";
+                    }
+                }
+            }
+            support.log(exportString, typeOfLogLevel.RESULT);
+            try {
+                FileWriter fw = new FileWriter(NAME_OF_RESULTFILE, true);
+                fw.append(exportString + System.getProperty("line.separator"));
+                fw.close();
+            } catch (IOException ex) {
+                log("Error while saving data to resultfile.", typeOfLogLevel.ERROR);
+            }
+        }
+
+    }
+
+    /**
+     * Delete all export statistics incl. resultfile
+     */
+    public static void resetOptiStatistics() {
+        support.log("Will clear all optiStatistics and delete result file.", typeOfLogLevel.INFO);
+        optiStatistics.clear();
+        File f = new File(NAME_OF_RESULTFILE);
+        if (f.exists()) {
+            del(f);
         }
     }
 

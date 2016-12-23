@@ -1166,6 +1166,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                 support.getOptimizerPreferences().setNumberOfActualOptimizationAnalysis(0);
                 support.getOptimizerPreferences().loadPreferences();
 
+                support.resetOptiStatistics();
                 startOptimizationAgain();
 
             } else {
@@ -2472,8 +2473,9 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                     //Check if other optiprefs have to be tested!
                     OptimizerPreferences p = support.getOptimizerPreferences();
                     if (support.getOptimizerPreferences().getNumberOfActualOptimizationAnalysis() >= p.getNumberOfOptiPrefs() - 1) {
-                        //Restore UI after all optimization analysis
+                        //All Optimizations done
                         this.popUIState();
+                        support.exportOptiStatistics();
                     } else {
                         //Load next Optiprefs and start again
                         p.setNumberOfActualOptimizationAnalysis(p.getNumberOfActualOptimizationAnalysis() + 1);

@@ -261,6 +261,22 @@ public class StatisticAggregator {
                     + "&averageCPUTimeTotal "
                     + "&averageCacheRatio*100", typeOfLogLevel.RESULT);
             support.log(p.getPref_WrongSimulationsUntilBreak() + "   & " + p.getPref_SizeOfNeighborhood() + "\\%     &" + p.getPref_WrongSimulationsPerDirection() + "      &" + support.round(averageDistanceToOptimumInValueRange, 3) + "\\%     &" + support.round(averageDistanceToOptimumInDefinitionRange, 3) + "\\%    &" + averageNumberOfSimulations + "    &" + averageCPUTimeTotal + "     &" + support.round(averageCacheRatio, 3) * 100 + "\\%  \\\\  \\hline", typeOfLogLevel.RESULT);
+            //TODO: Export as Arrlaylist of Strings to create files easily
+            ArrayList<String> tmpStatistics = new ArrayList();
+
+            tmpStatistics.add(Integer.toString(p.getPref_WrongSimulationsUntilBreak()));
+            tmpStatistics.add(Integer.toString(p.getPref_SizeOfNeighborhood()));
+            tmpStatistics.add(Integer.toString(p.getPref_WrongSimulationsPerDirection()));
+            
+            
+            tmpStatistics.add(Double.toString(support.round(averageDistanceToOptimumInValueRange, 3)));
+            tmpStatistics.add(Double.toString(support.round(averageDistanceToOptimumInDefinitionRange, 3)));
+            tmpStatistics.add(Double.toString(support.round(averageNumberOfSimulations, 3)));
+            tmpStatistics.add(Double.toString(support.round(averageCPUTimeTotal, 3)));
+            tmpStatistics.add(Double.toString(support.round(averageCacheRatio, 3) * 100) + "%");
+
+            support.addOptiStatistics(tmpStatistics);
+
             support.log("NeighborhoodType: " + p.getPref_NeighborhoodType().toString(), typeOfLogLevel.RESULT);
             support.log("Optimizer: " + support.getChosenOptimizerType().toString(), typeOfLogLevel.RESULT);
             support.log("Simulator: " + support.getChosenSimulatorType().toString(), typeOfLogLevel.RESULT);
