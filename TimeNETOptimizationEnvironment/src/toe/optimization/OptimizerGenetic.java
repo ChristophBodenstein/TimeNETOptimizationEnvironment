@@ -21,11 +21,11 @@ import toe.typedef.typeOfLogLevel;
  */
 public class OptimizerGenetic extends OptimizerPopulationBased implements Runnable, Optimizer {
 
-    private int populationSize = support.getOptimizerPreferences().getPref_GeneticPopulationSize(); //size of population after selection-phase
-    private double mutationChance = support.getOptimizerPreferences().getPref_GeneticMutationChance(); // chance of genes to Mutate
-    private final boolean mutateTopMeasure = support.getOptimizerPreferences().getPref_GeneticMutateTopSolution();
+    private int populationSize = support.getOptimizerPreferences().getPref_Genetic_PopulationSize(); //size of population after selection-phase
+    private double mutationChance = support.getOptimizerPreferences().getPref_Genetic_MutationChance(); // chance of genes to Mutate
+    private final boolean mutateTopMeasure = support.getOptimizerPreferences().getPref_Genetic_MutateTopSolution();
     private final typeOfGeneticCrossover crossOverStrategy = typeOfGeneticCrossover.OnePoint;
-    private final int numberOfCrossovers = support.getOptimizerPreferences().getPref_GeneticNumberOfCrossings();
+    private final int numberOfCrossovers = support.getOptimizerPreferences().getPref_Genetic_NumberOfCrossings();
     private final int SBX_n = 2;
     private final double MPC_cr = 0.5;
 
@@ -99,7 +99,7 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
     @Override
     public void run() {
 
-        maxNumberOfOptiCyclesWithoutImprovement = support.getOptimizerPreferences().getPref_GeneticMaximumOptirunsWithoutSolution();
+        maxNumberOfOptiCyclesWithoutImprovement = support.getOptimizerPreferences().getPref_Genetic_MaximumOptirunsWithoutSolution();
         optimized = false;
         int optiCycleCounter = 0;
         population = createRandomPopulation(populationSize, false);

@@ -54,8 +54,8 @@ public class OptimizerMultiPhase implements Runnable, Optimizer {
         this.optimized = false;
         logFileName = support.getTmpPath() + File.separator + this.getClass().getSimpleName() + "_" + Calendar.getInstance().getTimeInMillis() + support.getOptimizerPreferences().getPref_LogFileAddon() + ".csv";
         support.log("LogfileName:" + logFileName, typeOfLogLevel.INFO);
-        //this.keepSizeAndResolutionOfDesignspace=support.getOptimizerPreferences().getPref_KeepDesignSpaceAndResolution();
-        this.numberOfPhases = support.getOptimizerPreferences().getPref_NumberOfPhases();
+        //this.keepSizeAndResolutionOfDesignspace=support.getOptimizerPreferences().getPref_MP_KeepDesignSpaceAndResolution();
+        this.numberOfPhases = support.getOptimizerPreferences().getPref_MP_NumberOfPhases();
         support.setListOfChangableParametersMultiphase(support.getOriginalParameterBase());
     }
 
@@ -66,7 +66,7 @@ public class OptimizerMultiPhase implements Runnable, Optimizer {
     public void run() {
         this.optimized = false;
         //Optimizer init with initial parameterset
-        Optimizer myOptimizer;//=SimOptiFactory.getOptimizer(support.getOptimizerPreferences().getPref_typeOfUsedMultiPhaseOptimization() );
+        Optimizer myOptimizer;//=SimOptiFactory.getOptimizer(support.getOptimizerPreferences().getPref_MP_typeOfUsedMultiPhaseOptimization() );
         Optimizer lastOptimizer = null;
         //Push the chosen StartStrategy
         typeOfStartValueEnum myTmpStartValue = support.getOptimizerPreferences().getPref_StartValue();
@@ -140,41 +140,41 @@ public class OptimizerMultiPhase implements Runnable, Optimizer {
             OptimizerPreferences prefs = support.getOptimizerPreferences();
             ArrayList<parameter> lastParamaterset = support.getParameterBase();
             //Check if all parameters can iterate
-            boolean iterateConfidenceInterval = prefs.getPref_ConfidenceIntervallStart() < prefs.getPref_ConfidenceIntervallEnd();
-            boolean iterateMaxRelError = prefs.getPref_MaxRelErrorStart() > prefs.getPref_MaxRelErrorEnd();
-            boolean iterateInternal = support.getOptimizerPreferences().getInternalParameterToIterateInMultiphase() != null;//It can be iterated up and down
+            boolean iterateConfidenceInterval = prefs.getPref_MP_ConfidenceIntervallStart() < prefs.getPref_MP_ConfidenceIntervallEnd();
+            boolean iterateMaxRelError = prefs.getPref_MP_MaxRelErrorStart() > prefs.getPref_MP_MaxRelErrorEnd();
+            boolean iterateInternal = support.getOptimizerPreferences().getPref_MP_InternalParameterToIterateInMultiphase() != null;//It can be iterated up and down
             double confInterval, maxRelError, internal;
             if (phaseCounter == 0) {
                 //First Phase, so we use the start-values for all parameters
-                confInterval = prefs.getPref_ConfidenceIntervallStart();
-                maxRelError = prefs.getPref_MaxRelErrorStart();
-                internal = prefs.getPref_InternalParameterStart();
+                confInterval = prefs.getPref_MP_ConfidenceIntervallStart();
+                maxRelError = prefs.getPref_MP_MaxRelErrorStart();
+                internal = prefs.getPref_MP_InternalParameterStart();
             } else {
                 if (phaseCounter < this.numberOfPhases - 1) {
                     //ConfidenceIntervall goes from 85 up to 99 (min to max)
-                    double tmpDifference = prefs.getPref_ConfidenceIntervallEnd() - prefs.getPref_ConfidenceIntervallStart();
-                    confInterval = prefs.getPref_ConfidenceIntervallStart() + (tmpDifference / (double) this.numberOfPhases) * (double) phaseCounter;
-                    confInterval = Math.min(Math.round(confInterval), prefs.getPref_ConfidenceIntervallEnd());
-                    confInterval = Math.max(Math.round(confInterval), prefs.getPref_ConfidenceIntervallStart());
+                    double tmpDifference = prefs.getPref_MP_ConfidenceIntervallEnd() - prefs.getPref_MP_ConfidenceIntervallStart();
+                    confInterval = prefs.getPref_MP_ConfidenceIntervallStart() + (tmpDifference / (double) this.numberOfPhases) * (double) phaseCounter;
+                    confInterval = Math.min(Math.round(confInterval), prefs.getPref_MP_ConfidenceIntervallEnd());
+                    confInterval = Math.max(Math.round(confInterval), prefs.getPref_MP_ConfidenceIntervallStart());
 
                     //MaxRelError goes from 15 to 1 (max to min)
-                    tmpDifference = prefs.getPref_MaxRelErrorEnd() - prefs.getPref_MaxRelErrorStart();//will be negative
-                    maxRelError = prefs.getPref_MaxRelErrorStart() + (tmpDifference / (double) this.numberOfPhases) * (double) phaseCounter;
-                    maxRelError = Math.min(Math.round(maxRelError), prefs.getPref_MaxRelErrorStart());
-                    maxRelError = Math.max(Math.round(maxRelError), prefs.getPref_MaxRelErrorEnd());
+                    tmpDifference = prefs.getPref_MP_MaxRelErrorEnd() - prefs.getPref_MP_MaxRelErrorStart();//will be negative
+                    maxRelError = prefs.getPref_MP_MaxRelErrorStart() + (tmpDifference / (double) this.numberOfPhases) * (double) phaseCounter;
+                    maxRelError = Math.min(Math.round(maxRelError), prefs.getPref_MP_MaxRelErrorStart());
+                    maxRelError = Math.max(Math.round(maxRelError), prefs.getPref_MP_MaxRelErrorEnd());
 
                     //Internal parameter can go up or down
-                    tmpDifference = prefs.getPref_InternalParameterEnd() - prefs.getPref_InternalParameterStart();//will be negative
-                    internal = prefs.getPref_InternalParameterStart() + (tmpDifference / (double) this.numberOfPhases) * (double) phaseCounter;
-                    internal = Math.min(Math.round(internal), Math.max(prefs.getPref_InternalParameterStart(), prefs.getPref_InternalParameterEnd()));
-                    internal = Math.max(Math.round(internal), Math.min(prefs.getPref_InternalParameterStart(), prefs.getPref_InternalParameterEnd()));
+                    tmpDifference = prefs.getPref_MP_InternalParameterEnd() - prefs.getPref_MP_InternalParameterStart();//will be negative
+                    internal = prefs.getPref_MP_InternalParameterStart() + (tmpDifference / (double) this.numberOfPhases) * (double) phaseCounter;
+                    internal = Math.min(Math.round(internal), Math.max(prefs.getPref_MP_InternalParameterStart(), prefs.getPref_MP_InternalParameterEnd()));
+                    internal = Math.max(Math.round(internal), Math.min(prefs.getPref_MP_InternalParameterStart(), prefs.getPref_MP_InternalParameterEnd()));
 
                 } else {
                     //phaseCounter=this.numberOfPhases!
                     //Last phase, so we use the end-values for all parameters
-                    confInterval = prefs.getPref_ConfidenceIntervallEnd();
-                    maxRelError = prefs.getPref_MaxRelErrorEnd();
-                    internal = prefs.getPref_InternalParameterEnd();
+                    confInterval = prefs.getPref_MP_ConfidenceIntervallEnd();
+                    maxRelError = prefs.getPref_MP_MaxRelErrorEnd();
+                    internal = prefs.getPref_MP_InternalParameterEnd();
                 }
 
             }
@@ -186,10 +186,10 @@ public class OptimizerMultiPhase implements Runnable, Optimizer {
                 support.getParameterByName(lastParamaterset, "MaxRelError").setValue(maxRelError);
             }
             if (iterateInternal) {
-                support.getParameterByName(lastParamaterset, support.getOptimizerPreferences().getInternalParameterToIterateInMultiphase().getName()).setValue(internal);
+                support.getParameterByName(lastParamaterset, support.getOptimizerPreferences().getPref_MP_InternalParameterToIterateInMultiphase().getName()).setValue(internal);
             }
 
-            myOptimizer = SimOptiFactory.getOptimizer(support.getOptimizerPreferences().getPref_typeOfUsedMultiPhaseOptimization());
+            myOptimizer = SimOptiFactory.getOptimizer(support.getOptimizerPreferences().getPref_MP_typeOfUsedMultiPhaseOptimization());
             myOptimizer.initOptimizer();
             myOptimizer.setLogFileName(this.logFileName);
 
@@ -239,8 +239,8 @@ public class OptimizerMultiPhase implements Runnable, Optimizer {
         this.tmpPath = support.getTmpPath();
 
     //support.getOptimizerPreferences().setPref_StartValue(typeOfStartValueEnum.middle);
-        this.numberOfPhases = support.getOptimizerPreferences().getPref_NumberOfPhases();
-        this.keepSizeAndResolutionOfDesignspace = support.getOptimizerPreferences().getPref_KeepDesignSpaceAndResolution();
+        this.numberOfPhases = support.getOptimizerPreferences().getPref_MP_NumberOfPhases();
+        this.keepSizeAndResolutionOfDesignspace = support.getOptimizerPreferences().getPref_MP_KeepDesignSpaceAndResolution();
 
         //Start this Thread
         new Thread(this).start();

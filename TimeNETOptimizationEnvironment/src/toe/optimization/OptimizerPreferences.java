@@ -1758,24 +1758,24 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             in.close();
 
             this.setPref_WrongSimulationsUntilBreak(support.loadIntFromProperties("pref_WrongSimulationsUntilBreak", support.DEFAULT_WRONG_SOLUTIONS_IN_A_ROW, auto));
-            //support.log(Integer.toString(support.loadIntFromProperties("pref_WrongSimulationsUntilBreak", getPref_WrongSimulationsUntilBreak(), auto)));
-            support.log("Loaded pref_WrongSimulationsUntilBreak is " + getPref_WrongSimulationsUntilBreak(), typeOfLogLevel.INFO);
+            //support.log(Integer.toString(support.loadIntFromProperties("pref_WrongSimulationsUntilBreak", getPref_HC_WrongSimulationsUntilBreak(), auto)));
+            support.log("Loaded pref_WrongSimulationsUntilBreak is " + getPref_HC_WrongSimulationsUntilBreak(), typeOfLogLevel.INFO);
 
             this.setPref_WrongSimulationsPerDirection(support.loadIntFromProperties("pref_WrongSimulationsPerDirection", support.DEFAULT_WRONG_SOLUTION_PER_DIRECTION, auto));
-            support.log("Loaded pref_WrongSimulationsPerDirection is " + getPref_WrongSimulationsPerDirection(), typeOfLogLevel.INFO);
+            support.log("Loaded pref_WrongSimulationsPerDirection is " + getPref_HC_WrongSimulationsPerDirection(), typeOfLogLevel.INFO);
 
             this.setPref_SizeOfNeighborhood(support.loadIntFromProperties("pref_SizeOfNeighborhood", support.DEFAULT_SIZE_OF_NEIGHBORHOOD, auto));
-            support.log("Loaded Size of Neighborhood is " + getPref_SizeOfNeighborhood(), typeOfLogLevel.INFO);
+            support.log("Loaded Size of Neighborhood is " + getPref_HC_SizeOfNeighborhood(), typeOfLogLevel.INFO);
 
             this.setPref_StartValue(typeOfStartValueEnum.valueOf(auto.getProperty("pref_StartValue", support.DEFAULT_TYPE_OF_STARTVALUE.toString())));
             support.log("Loaded StartValue is " + getPref_StartValue(), typeOfLogLevel.INFO);
 
             this.setPref_NeighborhoodType(typeOfNeighborhoodEnum.valueOf(auto.getProperty("pref_NeighborhoodType", support.DEFAULT_TYPE_OF_NEIGHBORHOOD.toString())));
-            support.log("Loaded Neighborhoodtype is " + getPref_NeighborhoodType(), typeOfLogLevel.INFO);
+            support.log("Loaded Neighborhoodtype is " + getPref_HC_NeighborhoodType(), typeOfLogLevel.INFO);
 
             //Loading parameters for Simulated Annealing (first phase)
             this.setPref_Cooling(typeOfAnnealing.valueOf(auto.getProperty("pref_Cooling", support.DEFAULT_TYPE_OF_ANNEALING.toString())), 0);
-            support.log("Loaded Annealing method is " + getPref_Cooling(0), typeOfLogLevel.INFO);
+            support.log("Loaded Annealing method is " + getPref_SA_Cooling(0), typeOfLogLevel.INFO);
 
             this.setPref_TRatioScale(support.loadDoubleFromProperties("pref_TRatioScale", support.DEFAULT_T_RATIO_SCALE, auto), 0);
             support.log("Loaded TRatioScale is " + getPref_TRatioScale(0), typeOfLogLevel.INFO);
@@ -1793,11 +1793,11 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             support.log("Loaded Epsilon is " + getPref_Epsilon(0), typeOfLogLevel.INFO);
 
             this.setPref_CalculationOfNextParameterset(typeOfAnnealingParameterCalculation.valueOf(auto.getProperty("pref_CalculationOfNextParameterset", support.DEFAULT_CALC_NEXT_PARAMETER.toString())), 0);
-            support.log("Loaded Calculation of next Parameterset is " + this.getPref_CalculationOfNextParameterset(0).toString(), typeOfLogLevel.INFO);
+            support.log("Loaded Calculation of next Parameterset is " + this.getPref_SA_CalculationOfNextParameterset(0).toString(), typeOfLogLevel.INFO);
 
             //Loading parameters for Simulated Annealing (second phase)
             this.setPref_Cooling(typeOfAnnealing.valueOf(auto.getProperty("pref_Cooling1", support.DEFAULT_TYPE_OF_ANNEALING.toString())), 1);
-            support.log("*2 Loaded Annealing method is " + getPref_Cooling(1), typeOfLogLevel.INFO);
+            support.log("*2 Loaded Annealing method is " + getPref_SA_Cooling(1), typeOfLogLevel.INFO);
 
             this.setPref_TRatioScale(support.loadDoubleFromProperties("pref_TRatioScale1", support.DEFAULT_T_RATIO_SCALE, auto), 1);
             support.log("*2 Loaded TRatioScale is " + getPref_TRatioScale(1), typeOfLogLevel.INFO);
@@ -1815,44 +1815,44 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             support.log("*2 Loaded Epsilon is " + getPref_Epsilon(1), typeOfLogLevel.INFO);
 
             this.setPref_CalculationOfNextParameterset(typeOfAnnealingParameterCalculation.valueOf(auto.getProperty("pref_CalculationOfNextParameterset1", support.DEFAULT_CALC_NEXT_PARAMETER.toString())), 1);
-            support.log("*2 Loaded Calculation of next Parameterset is " + this.getPref_CalculationOfNextParameterset(1).toString(), typeOfLogLevel.INFO);
+            support.log("*2 Loaded Calculation of next Parameterset is " + this.getPref_SA_CalculationOfNextParameterset(1).toString(), typeOfLogLevel.INFO);
 
             this.setPref_LogFileAddon(auto.getProperty("pref_LogFileAddon", ""));
             support.log("Loaded Optimizer_Logfile-Addon is " + this.jTextFieldLogFileAddon.getText(), typeOfLogLevel.INFO);
 
             this.setPref_NumberOfPhases(support.loadIntFromProperties("pref_NumberOfPhases", support.DEFAULT_NumberOfPhases, auto));
-            support.log("Loaded pref_NumberOfPhases is " + this.getPref_NumberOfPhases(), typeOfLogLevel.INFO);
+            support.log("Loaded pref_NumberOfPhases is " + this.getPref_MP_NumberOfPhases(), typeOfLogLevel.INFO);
             this.setPref_ConfidenceIntervallStart(support.loadIntFromProperties("pref_ConfidenceIntervallStart", support.DEFAULT_ConfidenceIntervallStart, auto));
-            support.log("Loaded pref_ConfidenceIntervallStart is " + this.getPref_ConfidenceIntervallStart(), typeOfLogLevel.INFO);
+            support.log("Loaded pref_ConfidenceIntervallStart is " + this.getPref_MP_ConfidenceIntervallStart(), typeOfLogLevel.INFO);
             this.setPref_ConfidenceIntervallEnd(support.loadIntFromProperties("pref_ConfidenceIntervallEnd", support.DEFAULT_ConfidenceIntervallEnd, auto));
-            support.log("Loaded pref_ConfidenceIntervallEnd is " + this.getPref_ConfidenceIntervallEnd(), typeOfLogLevel.INFO);
+            support.log("Loaded pref_ConfidenceIntervallEnd is " + this.getPref_MP_ConfidenceIntervallEnd(), typeOfLogLevel.INFO);
             this.setPref_MaxRelErrorStart(support.loadIntFromProperties("pref_MaxRelErrorStart", support.DEFAULT_MaxRelErrorStart, auto));
-            support.log("Loaded pref_MaxRelErrorStart is " + this.getPref_MaxRelErrorStart(), typeOfLogLevel.INFO);
+            support.log("Loaded pref_MaxRelErrorStart is " + this.getPref_MP_MaxRelErrorStart(), typeOfLogLevel.INFO);
             this.setPref_MaxRelErrorEnd(support.loadIntFromProperties("pref_MaxRelErrorEnd", support.DEFAULT_MaxRelErrorEnd, auto));
-            support.log("Loaded pref_MaxRelErrorEnd is " + this.getPref_MaxRelErrorEnd(), typeOfLogLevel.INFO);
+            support.log("Loaded pref_MaxRelErrorEnd is " + this.getPref_MP_MaxRelErrorEnd(), typeOfLogLevel.INFO);
             this.setPref_InternalParameterStart(support.loadIntFromProperties("pref_InternalParameterStart", support.DEFAULT_InternalParameterStart, auto));
-            support.log("Loaded pref_InternalParameterStart is " + this.getPref_InternalParameterStart(), typeOfLogLevel.INFO);
+            support.log("Loaded pref_InternalParameterStart is " + this.getPref_MP_InternalParameterStart(), typeOfLogLevel.INFO);
             this.setPref_InternalParameterEnd(support.loadIntFromProperties("pref_InternalParameterEnd", support.DEFAULT_InternalParameterEnd, auto));
-            support.log("Loaded pref_InternalParameterEnd is " + this.getPref_InternalParameterEnd(), typeOfLogLevel.INFO);
+            support.log("Loaded pref_InternalParameterEnd is " + this.getPref_MP_InternalParameterEnd(), typeOfLogLevel.INFO);
 
             this.setPref_typeOfUsedMultiPhaseOptimization(typeOfOptimization.valueOf(auto.getProperty("pref_typeOfUsedMultiPhaseOptimization", support.DEFAULT_typeOfUsedMultiPhaseOptimization.toString())));
-            support.log("Loaded pref_typeOfUsedMultiPhaseOptimization is " + this.getPref_typeOfUsedMultiPhaseOptimization().toString(), typeOfLogLevel.INFO);
+            support.log("Loaded pref_typeOfUsedMultiPhaseOptimization is " + this.getPref_MP_typeOfUsedMultiPhaseOptimization().toString(), typeOfLogLevel.INFO);
             this.setPref_KeepDesignSpaceAndResolution(Boolean.valueOf(auto.getProperty("pref_KeepDesignSpaceAndResolution", Boolean.toString(support.DEFAULT_KeepDesignSpaceAndResolution))));
-            support.log("Loaded pref_KeepDesignSpaceAndResolution is " + this.getPref_KeepDesignSpaceAndResolution(), typeOfLogLevel.INFO);
+            support.log("Loaded pref_KeepDesignSpaceAndResolution is " + this.getPref_MP_KeepDesignSpaceAndResolution(), typeOfLogLevel.INFO);
 
             //load settings for Genetic Optimization
             this.setPref_GeneticPopulationSize(support.loadIntFromProperties("pref_GeneticPopulationSize", support.DEFAULT_GENETIC_POPULATION_SIZE, auto));
-            support.log("Loaded pref_GeneticPopulationSize is " + this.getPref_GeneticPopulationSize(), typeOfLogLevel.INFO);
+            support.log("Loaded pref_GeneticPopulationSize is " + this.getPref_Genetic_PopulationSize(), typeOfLogLevel.INFO);
             this.setPref_GeneticMutationChance(support.loadDoubleFromProperties("pref_GeneticMutationChance", support.DEFAULT_GENETIC_MUTATION_CHANCE, auto));
-            support.log("Loaded pref_GeneticMutationChance is " + this.getPref_GeneticMutationChance(), typeOfLogLevel.INFO);
+            support.log("Loaded pref_GeneticMutationChance is " + this.getPref_Genetic_MutationChance(), typeOfLogLevel.INFO);
             this.setPref_GeneticMutateTopSolution(Boolean.valueOf(auto.getProperty("pref_GeneticMutateTopSolution", Boolean.toString(support.DEFAULT_GENETIC_MUTATE_TOP_SOLUTION))));
-            support.log("Loaded pref_GeneticMutateTopSolution is " + this.getPref_GeneticMutateTopSolution(), typeOfLogLevel.INFO);
+            support.log("Loaded pref_GeneticMutateTopSolution is " + this.getPref_Genetic_MutateTopSolution(), typeOfLogLevel.INFO);
             this.setPref_GeneticNumberOfCrossings(support.loadIntFromProperties("pref_GeneticNumberOfCrossings", support.DEFAULT_GENETIC_NUMBEROFCROSSINGS, auto));
 
             this.setPref_GeneticMaximumOptirunsWithoutSolution(support.loadIntFromProperties("pref_GeneticMaxOptiRunsWithoutSolution", support.DEFAULT_GENETIC_MAXWRONGOPTIRUNS, auto));
-            support.log("Loaded pref_GeneticMaxOptiRunsWithoutSolution is " + this.getPref_GeneticMaximumOptirunsWithoutSolution(), typeOfLogLevel.INFO);
+            support.log("Loaded pref_GeneticMaxOptiRunsWithoutSolution is " + this.getPref_Genetic_MaximumOptirunsWithoutSolution(), typeOfLogLevel.INFO);
             this.setPref_GeneticTypeOfCrossover(typeOfGeneticCrossover.valueOf(auto.getProperty("pref_GeneticTypeOfCrossover", support.DEFAULT_GENETIC_CROSSOVER.toString())));
-            support.log("Loaded pref_GeneticTypeOfCrossover is " + this.getPref_GeneticTypeOfCrossover().toString(), typeOfLogLevel.INFO);
+            support.log("Loaded pref_GeneticTypeOfCrossover is " + this.getPref_Genetic_TypeOfCrossover().toString(), typeOfLogLevel.INFO);
 
             //load settings for CSS Optimization
             this.setPref_CSS_PopulationSize(support.loadIntFromProperties("pref_CSS_PopulationSize", support.DEFAULT_CSS_POPULATION_SIZE, auto));
@@ -1909,15 +1909,15 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         try {
 
             //Setting Parameters of HillClimbing
-            auto.setProperty("pref_WrongSimulationsUntilBreak", Integer.toString(getPref_WrongSimulationsUntilBreak()));
-            auto.setProperty("pref_WrongSimulationsPerDirection", Integer.toString(getPref_WrongSimulationsPerDirection()));
-            auto.setProperty("pref_SizeOfNeighborhood", Integer.toString(getPref_SizeOfNeighborhood()));
+            auto.setProperty("pref_WrongSimulationsUntilBreak", Integer.toString(getPref_HC_WrongSimulationsUntilBreak()));
+            auto.setProperty("pref_WrongSimulationsPerDirection", Integer.toString(getPref_HC_WrongSimulationsPerDirection()));
+            auto.setProperty("pref_SizeOfNeighborhood", Integer.toString(getPref_HC_SizeOfNeighborhood()));
 
             auto.setProperty("pref_StartValue", getPref_StartValue().toString());
-            auto.setProperty("pref_NeighborhoodType", getPref_NeighborhoodType().toString());
+            auto.setProperty("pref_NeighborhoodType", getPref_HC_NeighborhoodType().toString());
 
             //Setting Parameters of Simulated Annealing
-            auto.setProperty("pref_Cooling", getPref_Cooling(0).toString());
+            auto.setProperty("pref_Cooling", getPref_SA_Cooling(0).toString());
             auto.setProperty("pref_TRatioScale", support.getString(this.getPref_TRatioScale(0)));
             auto.setProperty("pref_TAnnealScale", support.getString(this.getPref_TAnnealScale(0)));
             auto.setProperty("pref_MaxTempParameter", support.getString(this.getPref_MaxTempParameter(0)));
@@ -1925,7 +1925,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             auto.setProperty("pref_Epsilon", Double.toString(getPref_Epsilon(0)));
 
             //Setting Parameters of Simulated Annealing - Second phase
-            auto.setProperty("pref_Cooling1", getPref_Cooling(1).toString());
+            auto.setProperty("pref_Cooling1", getPref_SA_Cooling(1).toString());
             auto.setProperty("pref_TRatioScale1", support.getString(this.getPref_TRatioScale(1)));
             auto.setProperty("pref_TAnnealScale1", support.getString(this.getPref_TAnnealScale(1)));
             auto.setProperty("pref_MaxTempParameter1", support.getString(this.getPref_MaxTempParameter(1)));
@@ -1933,26 +1933,26 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             auto.setProperty("pref_Epsilon1", Double.toString(getPref_Epsilon(1)));
 
             //Setting Parameters of MultiPhase Optimization
-            auto.setProperty("pref_NumberOfPhases", Integer.toString(this.getPref_NumberOfPhases()));
-            auto.setProperty("pref_ConfidenceIntervallStart", Integer.toString(this.getPref_ConfidenceIntervallStart()));
-            auto.setProperty("pref_ConfidenceIntervallEnd", Integer.toString(this.getPref_ConfidenceIntervallEnd()));
-            auto.setProperty("pref_MaxRelErrorStart", Integer.toString(this.getPref_MaxRelErrorStart()));
-            auto.setProperty("pref_MaxRelErrorEnd", Integer.toString(this.getPref_MaxRelErrorEnd()));
-            auto.setProperty("pref_InternalParameterStart", Integer.toString(this.getPref_InternalParameterStart()));
-            auto.setProperty("pref_InternalParameterEnd", Integer.toString(this.getPref_InternalParameterEnd()));
-            auto.setProperty("pref_typeOfUsedMultiPhaseOptimization", this.getPref_typeOfUsedMultiPhaseOptimization().toString());
-            auto.setProperty("pref_KeepDesignSpaceAndResolution", Boolean.toString(this.getPref_KeepDesignSpaceAndResolution()));
+            auto.setProperty("pref_NumberOfPhases", Integer.toString(this.getPref_MP_NumberOfPhases()));
+            auto.setProperty("pref_ConfidenceIntervallStart", Integer.toString(this.getPref_MP_ConfidenceIntervallStart()));
+            auto.setProperty("pref_ConfidenceIntervallEnd", Integer.toString(this.getPref_MP_ConfidenceIntervallEnd()));
+            auto.setProperty("pref_MaxRelErrorStart", Integer.toString(this.getPref_MP_MaxRelErrorStart()));
+            auto.setProperty("pref_MaxRelErrorEnd", Integer.toString(this.getPref_MP_MaxRelErrorEnd()));
+            auto.setProperty("pref_InternalParameterStart", Integer.toString(this.getPref_MP_InternalParameterStart()));
+            auto.setProperty("pref_InternalParameterEnd", Integer.toString(this.getPref_MP_InternalParameterEnd()));
+            auto.setProperty("pref_typeOfUsedMultiPhaseOptimization", this.getPref_MP_typeOfUsedMultiPhaseOptimization().toString());
+            auto.setProperty("pref_KeepDesignSpaceAndResolution", Boolean.toString(this.getPref_MP_KeepDesignSpaceAndResolution()));
 
             auto.setProperty("pref_LogFileAddon", this.jTextFieldLogFileAddon.getText());
-            auto.setProperty("pref_CalculationOfNextParameterset", this.getPref_CalculationOfNextParameterset(0).toString());
+            auto.setProperty("pref_CalculationOfNextParameterset", this.getPref_SA_CalculationOfNextParameterset(0).toString());
 
             //setting parameters for genetic optimization
-            auto.setProperty("pref_GeneticPopulationSize", Integer.toString(this.getPref_GeneticPopulationSize()));
-            auto.setProperty("pref_GeneticMutationChance", Double.toString(this.getPref_GeneticMutationChance()));
-            auto.setProperty("pref_GeneticMutateTopSolution", Boolean.toString(this.getPref_GeneticMutateTopSolution()));
-            auto.setProperty("pref_GeneticMaxOptiRunsWithoutSolution", Integer.toString(this.getPref_GeneticMaximumOptirunsWithoutSolution()));
-            auto.setProperty("pref_GeneticTypeOfCrossover", this.getPref_GeneticTypeOfCrossover().toString());
-            auto.setProperty("pref_GeneticNumberOfCrossings", Integer.toString(this.getPref_GeneticNumberOfCrossings()));
+            auto.setProperty("pref_GeneticPopulationSize", Integer.toString(this.getPref_Genetic_PopulationSize()));
+            auto.setProperty("pref_GeneticMutationChance", Double.toString(this.getPref_Genetic_MutationChance()));
+            auto.setProperty("pref_GeneticMutateTopSolution", Boolean.toString(this.getPref_Genetic_MutateTopSolution()));
+            auto.setProperty("pref_GeneticMaxOptiRunsWithoutSolution", Integer.toString(this.getPref_Genetic_MaximumOptirunsWithoutSolution()));
+            auto.setProperty("pref_GeneticTypeOfCrossover", this.getPref_Genetic_TypeOfCrossover().toString());
+            auto.setProperty("pref_GeneticNumberOfCrossings", Integer.toString(this.getPref_Genetic_NumberOfCrossings()));
 
             //setting parameters for CSS optimization
             auto.setProperty("pref_CSS_PopulationSize", Integer.toString(this.getPref_CSS_PopulationSize()));
@@ -1984,7 +1984,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     /**
      * @return the pref_WrongSimulationsUntilBreak
      */
-    public int getPref_WrongSimulationsUntilBreak() {
+    public int getPref_HC_WrongSimulationsUntilBreak() {
         pref_WrongSimulationsUntilBreak = (Integer) this.jSpinnerWrongSolutionsUntilBreak.getValue();
         return pref_WrongSimulationsUntilBreak;
     }
@@ -2001,7 +2001,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     /**
      * @return the pref_WrongSimulationsPerDirection
      */
-    public int getPref_WrongSimulationsPerDirection() {
+    public int getPref_HC_WrongSimulationsPerDirection() {
         pref_WrongSimulationsPerDirection = (Integer) this.jSpinnerWrongSolutionsPerDirectionUntilBreak.getValue();
         return pref_WrongSimulationsPerDirection;
     }
@@ -2026,22 +2026,22 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
             switch (support.getChosenOptimizerType()) {
                 case HillClimbing:
-                    addonString += "_WSIMPERDIR_" + this.getPref_WrongSimulationsPerDirection() + "_WSIM_" + this.getPref_WrongSimulationsUntilBreak() + "_StartAt_" + this.jComboBoxTypeOfStartValue.getSelectedItem();
+                    addonString += "_WSIMPERDIR_" + this.getPref_HC_WrongSimulationsPerDirection() + "_WSIM_" + this.getPref_HC_WrongSimulationsUntilBreak() + "_StartAt_" + this.jComboBoxTypeOfStartValue.getSelectedItem();
                     addonString += "_TypOfNeighborhood_" + this.jComboBoxTypeOfNeighborhood.getSelectedItem();
-                    addonString += "_SizeOfNeighborhood_" + this.getPref_SizeOfNeighborhood();
+                    addonString += "_SizeOfNeighborhood_" + this.getPref_HC_SizeOfNeighborhood();
                     break;
                 case SimAnnealing:
                     addonString += "_StartAt_" + this.jComboBoxTypeOfStartValue.getSelectedItem();
                     addonString += "_TAnnealScale_" + this.getPref_TAnnealScale(0);
                     addonString += "_TRatioScale_" + this.getPref_TRatioScale(0);
                     addonString += "_Epsilon_" + this.getPref_Epsilon(0);
-                    addonString += "_Cooling_" + this.getPref_Cooling(0);
+                    addonString += "_Cooling_" + this.getPref_SA_Cooling(0);
                     addonString += "_MaxTempPara_" + this.getPref_MaxTempParameter(0);
                     addonString += "_MaxTempCost_" + this.getPref_MaxTempCost(0);
                     break;
                 case MultiPhase:
-                    addonString += "_ChosenAlg_" + this.getPref_typeOfUsedMultiPhaseOptimization();
-                    addonString += "_NumberOfPhases_" + this.getPref_NumberOfPhases();
+                    addonString += "_ChosenAlg_" + this.getPref_MP_typeOfUsedMultiPhaseOptimization();
+                    addonString += "_NumberOfPhases_" + this.getPref_MP_NumberOfPhases();
                     break;
 
                 case TwoPhase:
@@ -2050,18 +2050,18 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
                         addonString += "Phase: " + i + "_TAnnealScale_" + this.getPref_TAnnealScale(i);
                         addonString += "Phase: " + i + "_TRatioScale_" + this.getPref_TRatioScale(i);
                         addonString += "Phase: " + i + "_Epsilon_" + this.getPref_Epsilon(i);
-                        addonString += "Phase: " + i + "_Cooling_" + this.getPref_Cooling(i);
+                        addonString += "Phase: " + i + "_Cooling_" + this.getPref_SA_Cooling(i);
                         addonString += "Phase: " + i + "_MaxTempPara_" + this.getPref_MaxTempParameter(i);
                         addonString += "Phase: " + i + "_MaxTempCost_" + this.getPref_MaxTempCost(i);
                     }
                     break;
 
                 case Genetic:
-                    addonString += "_Popsize_" + this.getPref_GeneticPopulationSize();
-                    addonString += "_MutationChance_" + this.getPref_GeneticMutationChance();
-                    addonString += "_MutateTop_" + this.getPref_GeneticMutateTopSolution();
-                    addonString += "_MaxWrongOptiruns_" + this.getPref_GeneticMaximumOptirunsWithoutSolution();
-                    addonString += "_Crossover_" + this.getPref_GeneticTypeOfCrossover();
+                    addonString += "_Popsize_" + this.getPref_Genetic_PopulationSize();
+                    addonString += "_MutationChance_" + this.getPref_Genetic_MutationChance();
+                    addonString += "_MutateTop_" + this.getPref_Genetic_MutateTopSolution();
+                    addonString += "_MaxWrongOptiruns_" + this.getPref_Genetic_MaximumOptirunsWithoutSolution();
+                    addonString += "_Crossover_" + this.getPref_Genetic_TypeOfCrossover();
                     break;
                 case ChargedSystemSearch:
                     //TODO Add Infos to this Algorithm here!
@@ -2105,7 +2105,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
      *
      * @return the pref_NeighborhoodType
      */
-    public typeOfNeighborhoodEnum getPref_NeighborhoodType() {
+    public typeOfNeighborhoodEnum getPref_HC_NeighborhoodType() {
         pref_NeighborhoodType = (typeOfNeighborhoodEnum) this.jComboBoxTypeOfNeighborhood.getSelectedItem();
         return pref_NeighborhoodType;
     }
@@ -2125,7 +2125,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
      *
      * @return the pref_SizeOfNeighborhood
      */
-    public int getPref_SizeOfNeighborhood() {
+    public int getPref_HC_SizeOfNeighborhood() {
         this.pref_SizeOfNeighborhood = (Integer) this.jSpinnerSizeOfNeighborhoodInPercent.getValue();
         return pref_SizeOfNeighborhood;
     }
@@ -2146,7 +2146,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
      * @param phase Number of Opti-Phase, can be 0..1
      * @return the pref_Cooling, the Type of Annealing Phase
      */
-    public typeOfAnnealing getPref_Cooling(int phase) {
+    public typeOfAnnealing getPref_SA_Cooling(int phase) {
         switch (phase) {
             case 0:
                 return (typeOfAnnealing) this.jComboBoxCoolingMethod.getSelectedItem();
@@ -2376,7 +2376,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
      * @return the pref_CalculationOfNextParameterset
      * @param phase Number of Opti-Phase, can be 0..1
      */
-    public typeOfAnnealingParameterCalculation getPref_CalculationOfNextParameterset(int phase) {
+    public typeOfAnnealingParameterCalculation getPref_SA_CalculationOfNextParameterset(int phase) {
         switch (phase) {
             case 0:
                 return (typeOfAnnealingParameterCalculation) this.jComboBoxCalculationOfNextParameterset.getSelectedItem();
@@ -2412,7 +2412,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     /**
      * @return the pref_NumberOfPhases
      */
-    public int getPref_NumberOfPhases() {
+    public int getPref_MP_NumberOfPhases() {
         this.pref_NumberOfPhases = Integer.valueOf((String) this.jComboBoxNumberOfPhases.getSelectedItem());
         return pref_NumberOfPhases;
     }
@@ -2428,7 +2428,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     /**
      * @return the pref_typeOfUsedMultiPhaseOptimization
      */
-    public typeOfOptimization getPref_typeOfUsedMultiPhaseOptimization() {
+    public typeOfOptimization getPref_MP_typeOfUsedMultiPhaseOptimization() {
         this.pref_typeOfUsedMultiPhaseOptimization = (typeOfOptimization) this.jComboBoxOptimizationType.getSelectedItem();
         return pref_typeOfUsedMultiPhaseOptimization;
     }
@@ -2445,7 +2445,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     /**
      * @return the pref_ConfidenceIntervallStart
      */
-    public int getPref_ConfidenceIntervallStart() {
+    public int getPref_MP_ConfidenceIntervallStart() {
         this.pref_ConfidenceIntervallStart = (Integer) jSpinnerConfidenceIntervallStart.getValue();
         return pref_ConfidenceIntervallStart;
     }
@@ -2462,7 +2462,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     /**
      * @return the pref_ConfidenceIntervallEnd
      */
-    public int getPref_ConfidenceIntervallEnd() {
+    public int getPref_MP_ConfidenceIntervallEnd() {
         this.pref_ConfidenceIntervallEnd = (Integer) jSpinnerConfidenceIntervallEnd.getValue();
         return pref_ConfidenceIntervallEnd;
     }
@@ -2478,7 +2478,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     /**
      * @return the pref_MaxRelErrorStart
      */
-    public int getPref_MaxRelErrorStart() {
+    public int getPref_MP_MaxRelErrorStart() {
         this.pref_MaxRelErrorStart = (Integer) jSpinnerMaxRelErrorStart.getValue();
         return pref_MaxRelErrorStart;
     }
@@ -2494,7 +2494,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     /**
      * @return the pref_MaxRelErrorEnd
      */
-    public int getPref_MaxRelErrorEnd() {
+    public int getPref_MP_MaxRelErrorEnd() {
         this.pref_MaxRelErrorEnd = (Integer) jSpinnerMaxRelErrorEnd.getValue();
         return pref_MaxRelErrorEnd;
     }
@@ -2510,7 +2510,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     /**
      * @return the pref_InternalParameterStart
      */
-    public int getPref_InternalParameterStart() {
+    public int getPref_MP_InternalParameterStart() {
         this.pref_InternalParameterStart = (Integer) jSpinnerInternalParameterStart.getValue();
         return pref_InternalParameterStart;
     }
@@ -2526,7 +2526,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     /**
      * @return the pref_InternalParameterEnd
      */
-    public int getPref_InternalParameterEnd() {
+    public int getPref_MP_InternalParameterEnd() {
         this.pref_InternalParameterEnd = (Integer) jSpinnerInternalParameterEnd.getValue();
         return pref_InternalParameterEnd;
     }
@@ -2542,7 +2542,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     /**
      * @return the pref_KeepDesignSpaceAndResolution
      */
-    public boolean getPref_KeepDesignSpaceAndResolution() {
+    public boolean getPref_MP_KeepDesignSpaceAndResolution() {
         this.pref_KeepDesignSpaceAndResolution = jCheckBoxKeepDesignspaceAndResolution.isSelected();
         return pref_KeepDesignSpaceAndResolution;
     }
@@ -2596,7 +2596,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
      *
      * @return
      */
-    public int getPref_GeneticPopulationSize() {
+    public int getPref_Genetic_PopulationSize() {
         this.pref_GeneticPopulationSize = (Integer) jSpinnerGeneticPopulationSize.getValue();
         return this.pref_GeneticPopulationSize;
     }
@@ -2614,7 +2614,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
      *
      * @return
      */
-    public double getPref_GeneticMutationChance() {
+    public double getPref_Genetic_MutationChance() {
         this.pref_GeneticMutationChance = (Double) jSpinnerGeneticMutationChance.getValue();
         return this.pref_GeneticMutationChance;
     }
@@ -2632,7 +2632,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
      *
      * @return
      */
-    public boolean getPref_GeneticMutateTopSolution() {
+    public boolean getPref_Genetic_MutateTopSolution() {
         this.pref_GeneticMutateTopSolution = (boolean) jCheckBoxGeneticMutateTopSolution.isSelected();
         return this.pref_GeneticMutateTopSolution;
     }
@@ -2820,7 +2820,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
      *
      * @return chosen parameter for precision control
      */
-    public parameter getInternalParameterToIterateInMultiphase() {
+    public parameter getPref_MP_InternalParameterToIterateInMultiphase() {
         parameter resultParameter = null;
         if (internalParameterList != null) {
             String nameOfChosenParameter = jComboBoxInternalParameterMultiphase.getSelectedItem().toString();
@@ -2842,7 +2842,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     /**
      * @return the pref_GeneticMaximumOptirunsWithoutSolution
      */
-    public int getPref_GeneticMaximumOptirunsWithoutSolution() {
+    public int getPref_Genetic_MaximumOptirunsWithoutSolution() {
         this.pref_GeneticMaximumOptirunsWithoutSolution = (Integer) jSpinnerGeneticMaxOptiRunsWithoutImprovement.getValue();
         return pref_GeneticMaximumOptirunsWithoutSolution;
     }
@@ -2859,7 +2859,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     /**
      * @return the pref_GeneticTypeOfCrossover
      */
-    public typeOfGeneticCrossover getPref_GeneticTypeOfCrossover() {
+    public typeOfGeneticCrossover getPref_Genetic_TypeOfCrossover() {
         this.pref_GeneticTypeOfCrossover = (typeOfGeneticCrossover) this.jComboBoxGeneticTypeOfGeneticCrossing.getSelectedItem();
         return pref_GeneticTypeOfCrossover;
     }
@@ -2875,7 +2875,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     /**
      * @return the pref_GeneticNumberOfCrossings
      */
-    public int getPref_GeneticNumberOfCrossings() {
+    public int getPref_Genetic_NumberOfCrossings() {
         pref_GeneticNumberOfCrossings = (Integer) jSpinnerGeneticMaxNumberOfCrossings.getValue();
         return pref_GeneticNumberOfCrossings;
     }
@@ -2914,7 +2914,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
     private void updateNumberOfEstimatedSASimulations(int phase) {
         long numberOfSimulations = 10;
 
-        typeOfAnnealing tmpType = getPref_Cooling(phase);
+        typeOfAnnealing tmpType = getPref_SA_Cooling(phase);
         double T0 = getPref_MaxTempParameter(phase);
         double epsilon = getPref_Epsilon(phase);
 
@@ -2964,7 +2964,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
                 numberOfSimulations = (long) jSpinnerEstSASimulationCount.getValue();
                 break;
         }
-        typeOfAnnealing tmpType = getPref_Cooling(phase);
+        typeOfAnnealing tmpType = getPref_SA_Cooling(phase);
         double T0 = getPref_MaxTempParameter(phase);
         double epsilon = getPref_Epsilon(phase);
 
@@ -3015,8 +3015,8 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
      * @param FROM The pashe were the paramaters are copied from
      */
     private void copySAParameters(int FROM, int TO) {
-        setPref_Cooling(getPref_Cooling(FROM), TO);
-        setPref_CalculationOfNextParameterset(getPref_CalculationOfNextParameterset(FROM), TO);
+        setPref_Cooling(getPref_SA_Cooling(FROM), TO);
+        setPref_CalculationOfNextParameterset(getPref_SA_CalculationOfNextParameterset(FROM), TO);
         setPref_MaxTempParameter(getPref_MaxTempParameter(FROM), TO);
         setPref_MaxTempCost(getPref_MaxTempCost(FROM), TO);
         setPref_TAnnealScale(getPref_TAnnealScale(FROM), TO);
@@ -3031,7 +3031,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
      * @param phase Number of simulated annealing phase
      * @return estimated number of simulations in this phase
      */
-    public long getNumberOfEstimatedSASimulations(int phase) {
+    public long getPref_SA_NumberOfEstimatedSASimulations(int phase) {
         switch (phase) {
             case 1:
                 return (long) jSpinnerEstSASimulationCount1.getValue();

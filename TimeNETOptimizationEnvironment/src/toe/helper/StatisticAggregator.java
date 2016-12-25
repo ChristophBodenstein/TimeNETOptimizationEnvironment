@@ -260,71 +260,71 @@ public class StatisticAggregator {
                     + "&averageNumberOfSimulations "
                     + "&averageCPUTimeTotal "
                     + "&averageCacheRatio*100", typeOfLogLevel.RESULT);
-            support.log(p.getPref_WrongSimulationsUntilBreak() + "   & " + p.getPref_SizeOfNeighborhood() + "\\%     &" + p.getPref_WrongSimulationsPerDirection() + "      &" + support.round(averageDistanceToOptimumInValueRange, 3) + "\\%     &" + support.round(averageDistanceToOptimumInDefinitionRange, 3) + "\\%    &" + averageNumberOfSimulations + "    &" + averageCPUTimeTotal + "     &" + support.round(averageCacheRatio, 3) * 100 + "\\%  \\\\  \\hline", typeOfLogLevel.RESULT);
+            support.log(p.getPref_HC_WrongSimulationsUntilBreak() + "   & " + p.getPref_HC_SizeOfNeighborhood() + "\\%     &" + p.getPref_HC_WrongSimulationsPerDirection() + "      &" + support.round(averageDistanceToOptimumInValueRange, 3) + "\\%     &" + support.round(averageDistanceToOptimumInDefinitionRange, 3) + "\\%    &" + averageNumberOfSimulations + "    &" + averageCPUTimeTotal + "     &" + support.round(averageCacheRatio, 3) * 100 + "\\%  \\\\  \\hline", typeOfLogLevel.RESULT);
             //TODO: Export as Arrlaylist of Strings to create files easily
             ArrayList<String> tmpStatistics = new ArrayList();
             ArrayList<String> tmpHeadline = new ArrayList();
 
             //Hill Climbing
-            tmpStatistics.add(Integer.toString(p.getPref_WrongSimulationsUntilBreak()));
+            tmpStatistics.add(Integer.toString(p.getPref_HC_WrongSimulationsUntilBreak()));
             tmpHeadline.add("WrongSimulationsUntilBreak");
-            tmpStatistics.add(Integer.toString(p.getPref_SizeOfNeighborhood()));
+            tmpStatistics.add(Integer.toString(p.getPref_HC_SizeOfNeighborhood()));
             tmpHeadline.add("SizeOfNeighborhood");
-            tmpStatistics.add(Integer.toString(p.getPref_WrongSimulationsPerDirection()));
+            tmpStatistics.add(Integer.toString(p.getPref_HC_WrongSimulationsPerDirection()));
             tmpHeadline.add("WrongSimulationsPerDirection");
-            tmpStatistics.add(p.getPref_NeighborhoodType().toString());
+            tmpStatistics.add(p.getPref_HC_NeighborhoodType().toString());
             tmpHeadline.add("NeighborhoodType");
 
             //Simulated Annealing, phase 0
-            tmpStatistics.add(p.getPref_Cooling(0).toString());
+            tmpStatistics.add(p.getPref_SA_Cooling(0).toString());
             tmpHeadline.add("SA_0_Cooling");
-            tmpStatistics.add(p.getPref_CalculationOfNextParameterset(0).toString());
+            tmpStatistics.add(p.getPref_SA_CalculationOfNextParameterset(0).toString());
             tmpHeadline.add("SA_0_CalculationOfNextParameterset");
-            tmpStatistics.add(Long.toString(p.getNumberOfEstimatedSASimulations(0)));
+            tmpStatistics.add(Long.toString(p.getPref_SA_NumberOfEstimatedSASimulations(0)));
             tmpHeadline.add("SA_0_EstimatedSASimulations");
 
             //Simulated Annealing, phase 1
-            tmpStatistics.add(p.getPref_Cooling(1).toString());
+            tmpStatistics.add(p.getPref_SA_Cooling(1).toString());
             tmpHeadline.add("SA_1_Cooling");
-            tmpStatistics.add(p.getPref_CalculationOfNextParameterset(1).toString());
+            tmpStatistics.add(p.getPref_SA_CalculationOfNextParameterset(1).toString());
             tmpHeadline.add("SA_1_CalculationOfNextParameterset");
-            tmpStatistics.add(Long.toString(p.getNumberOfEstimatedSASimulations(1)));
+            tmpStatistics.add(Long.toString(p.getPref_SA_NumberOfEstimatedSASimulations(1)));
             tmpHeadline.add("SA_1_EstimatedSASimulations");
 
             //Population based
-            tmpStatistics.add(p.getPref_GeneticTypeOfCrossover().toString());
+            tmpStatistics.add(p.getPref_Genetic_TypeOfCrossover().toString());
             tmpHeadline.add("GeneticTypeOfCrossover");
-            tmpStatistics.add(Integer.toString(p.getPref_GeneticPopulationSize()));
+            tmpStatistics.add(Integer.toString(p.getPref_Genetic_PopulationSize()));
             tmpHeadline.add("GeneticPopulationSize");
-            tmpStatistics.add(Double.toString(p.getPref_GeneticMutationChance()));
+            tmpStatistics.add(Double.toString(p.getPref_Genetic_MutationChance()));
             tmpHeadline.add("GeneticMutationChance");
-            tmpStatistics.add(Integer.toString(p.getPref_GeneticMaximumOptirunsWithoutSolution()));
+            tmpStatistics.add(Integer.toString(p.getPref_Genetic_MaximumOptirunsWithoutSolution()));
             tmpHeadline.add("GeneticMaximumOptirunsWithoutSolution");
-            tmpStatistics.add(Boolean.toString(p.getPref_GeneticMutateTopSolution()));
+            tmpStatistics.add(Boolean.toString(p.getPref_Genetic_MutateTopSolution()));
             tmpHeadline.add("GeneticMutateTopSolution");
-            tmpStatistics.add(Integer.toString(p.getPref_GeneticNumberOfCrossings()));
+            tmpStatistics.add(Integer.toString(p.getPref_Genetic_NumberOfCrossings()));
             tmpHeadline.add("GeneticNumberOfCrossings");
 
             //Multiphase
-            tmpStatistics.add(Integer.toString(p.getPref_NumberOfPhases()));
+            tmpStatistics.add(Integer.toString(p.getPref_MP_NumberOfPhases()));
             tmpHeadline.add("MP_NumberOfPhases");
-            tmpStatistics.add(p.getPref_typeOfUsedMultiPhaseOptimization().toString());
+            tmpStatistics.add(p.getPref_MP_typeOfUsedMultiPhaseOptimization().toString());
             tmpHeadline.add("MP_typeOfUsedMultiPhaseOptimization");
-            tmpStatistics.add(Double.toString(p.getPref_ConfidenceIntervallStart()));
+            tmpStatistics.add(Double.toString(p.getPref_MP_ConfidenceIntervallStart()));
             tmpHeadline.add("MP_ConfidenceIntervallStart");
-            tmpStatistics.add(Double.toString(p.getPref_ConfidenceIntervallEnd()));
+            tmpStatistics.add(Double.toString(p.getPref_MP_ConfidenceIntervallEnd()));
             tmpHeadline.add("MP_ConfidenceIntervallEnd");
-            tmpStatistics.add(Double.toString(p.getPref_MaxRelErrorStart()));
+            tmpStatistics.add(Double.toString(p.getPref_MP_MaxRelErrorStart()));
             tmpHeadline.add("MP_MaxRelErrorStart");
-            tmpStatistics.add(Double.toString(p.getPref_MaxRelErrorEnd()));
+            tmpStatistics.add(Double.toString(p.getPref_MP_MaxRelErrorEnd()));
             tmpHeadline.add("MP_MaxRelErrorEnd");
-            tmpStatistics.add(Boolean.toString(p.getPref_KeepDesignSpaceAndResolution()));
+            tmpStatistics.add(Boolean.toString(p.getPref_MP_KeepDesignSpaceAndResolution()));
             tmpHeadline.add("MP_KeepDesignSpaceAndResolution");
-            tmpStatistics.add(Double.toString(p.getPref_InternalParameterStart()));
+            tmpStatistics.add(Double.toString(p.getPref_MP_InternalParameterStart()));
             tmpHeadline.add("MP_InternalParameterStart");
-            tmpStatistics.add(Double.toString(p.getPref_InternalParameterEnd()));
+            tmpStatistics.add(Double.toString(p.getPref_MP_InternalParameterEnd()));
             tmpHeadline.add("MP_InternalParameterEnd");
-            tmpStatistics.add(p.getInternalParameterToIterateInMultiphase().toString());
+            tmpStatistics.add(p.getPref_MP_InternalParameterToIterateInMultiphase().toString());
             tmpHeadline.add("MP_InternalParameterToIterateInMultiphase");
 
             //Results, quality of found optima
@@ -341,7 +341,7 @@ public class StatisticAggregator {
 
             support.addOptiStatistics(tmpStatistics);
 
-            support.log("NeighborhoodType: " + p.getPref_NeighborhoodType().toString(), typeOfLogLevel.RESULT);
+            support.log("NeighborhoodType: " + p.getPref_HC_NeighborhoodType().toString(), typeOfLogLevel.RESULT);
             support.log("Optimizer: " + support.getChosenOptimizerType().toString(), typeOfLogLevel.RESULT);
             support.log("Simulator: " + support.getChosenSimulatorType().toString(), typeOfLogLevel.RESULT);
             if (support.getChosenSimulatorType().equals(typedef.typeOfSimulator.Benchmark)) {

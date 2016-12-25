@@ -63,7 +63,7 @@ public class OptimizerSimAnnealing extends OptimizerHill implements Runnable, Op
         generated++;
 
         //Calculate the new Temperatures
-        switch (support.getOptimizerPreferences().getPref_Cooling(phase)) {
+        switch (support.getOptimizerPreferences().getPref_SA_Cooling(phase)) {
             default:
             case Boltzmann:
                 double denominator = (Math.log((double) generated));
@@ -173,7 +173,7 @@ public class OptimizerSimAnnealing extends OptimizerHill implements Runnable, Op
                 double range = (p.getEndValue() - p.getStartValue());
                 simpleValue = Math.round(Math.random() * range * actualTempParameter);
 
-                switch (support.getOptimizerPreferences().getPref_CalculationOfNextParameterset(phase)) {
+                switch (support.getOptimizerPreferences().getPref_SA_CalculationOfNextParameterset(phase)) {
                     default:
                         //Do nothing
                         break;

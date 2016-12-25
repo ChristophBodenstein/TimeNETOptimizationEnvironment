@@ -47,8 +47,8 @@ public class OptimizerHill implements Runnable, Optimizer {
     double simulationTimeSum = 0;
     double cpuTimeSum = 0;
     String logFileName;
-    int wrongSolutionCounter = myPreferences.getPref_WrongSimulationsUntilBreak();
-    int wrongSolutionPerDirectionCounter = myPreferences.getPref_WrongSimulationsPerDirection();
+    int wrongSolutionCounter = myPreferences.getPref_HC_WrongSimulationsUntilBreak();
+    int wrongSolutionPerDirectionCounter = myPreferences.getPref_HC_WrongSimulationsPerDirection();
     boolean directionOfOptimization = true;//true->increment parameters, false->decrement parameters
     boolean directionOfOptimizationChanged = false;//True->direction already changed, False->you can change it one time
     int stuckInCacheCounter = support.DEFAULT_CACHE_STUCK;
@@ -58,10 +58,10 @@ public class OptimizerHill implements Runnable, Optimizer {
      *
      */
     public OptimizerHill() {
-        this.sizeOfNeighborhood = myPreferences.getPref_SizeOfNeighborhood();
+        this.sizeOfNeighborhood = myPreferences.getPref_HC_SizeOfNeighborhood();
         logFileName = support.getTmpPath() + File.separator + this.getClass().getSimpleName() + "_" + Calendar.getInstance().getTimeInMillis() + myPreferences.getPref_LogFileAddon() + ".csv";
         support.log("LogfileName:" + logFileName, typeOfLogLevel.INFO);
-        this.wrongSolutionCounter = myPreferences.getPref_WrongSimulationsUntilBreak();
+        this.wrongSolutionCounter = myPreferences.getPref_HC_WrongSimulationsUntilBreak();
         myPreferences.setVisible(false);
     }
 
@@ -233,8 +233,8 @@ public class OptimizerHill implements Runnable, Optimizer {
             currentSolution = nextSolution;//Set Global Solution Value
             bestSolution = currentSolution;//Set global best Solution Value
             //Reset wrong-solution-counter
-            wrongSolutionCounter = myPreferences.getPref_WrongSimulationsUntilBreak();
-            wrongSolutionPerDirectionCounter = myPreferences.getPref_WrongSimulationsPerDirection();
+            wrongSolutionCounter = myPreferences.getPref_HC_WrongSimulationsUntilBreak();
+            wrongSolutionPerDirectionCounter = myPreferences.getPref_HC_WrongSimulationsPerDirection();
             return false;
         } else {
             nextSolution = null;
@@ -243,7 +243,7 @@ public class OptimizerHill implements Runnable, Optimizer {
             support.log("Distance was higher, Solution not chosen. Counting up wrong-solution-counter.", typeOfLogLevel.INFO);
             wrongSolutionCounter--;
             if (wrongSolutionCounter <= 1) {
-                support.log("There were " + myPreferences.getPref_WrongSimulationsUntilBreak() + " wrong solutions. Assume optimum is already found.", typeOfLogLevel.INFO);
+                support.log("There were " + myPreferences.getPref_HC_WrongSimulationsUntilBreak() + " wrong solutions. Assume optimum is already found.", typeOfLogLevel.INFO);
                 return true;
             } else {
                 return false;
@@ -390,10 +390,10 @@ public class OptimizerHill implements Runnable, Optimizer {
                 if (wrongSolutionPerDirectionCounter <= 0) {
                     //Number of maximum wrong solutions per direction/parameter reached
                     //-->first change the direction, if already changed, choose next parameter
-                    wrongSolutionPerDirectionCounter = myPreferences.getPref_WrongSimulationsPerDirection();
+                    wrongSolutionPerDirectionCounter = myPreferences.getPref_HC_WrongSimulationsPerDirection();
 
-                    support.log(myPreferences.getPref_WrongSimulationsPerDirection() + " wrong solutions in one direction.", typeOfLogLevel.INFO);
-                    if (this.directionOfOptimization && myPreferences.getPref_NeighborhoodType() == typedef.typeOfNeighborhoodEnum.StepForwardBackRandom) {
+                    support.log(myPreferences.getPref_HC_WrongSimulationsPerDirection() + " wrong solutions in one direction.", typeOfLogLevel.INFO);
+                    if (this.directionOfOptimization && myPreferences.getPref_HC_NeighborhoodType() == typedef.typeOfNeighborhoodEnum.StepForwardBackRandom) {
                         //Switch direction of Optimization but change the same old parameter
                         //This only applies if StepForwardBackward
 
@@ -415,7 +415,7 @@ public class OptimizerHill implements Runnable, Optimizer {
                             numberOfParameterToBeChanged = 0;
 
                             //Reset the wrong solution-counter
-                            this.wrongSolutionPerDirectionCounter = myPreferences.getPref_WrongSimulationsPerDirection();
+                            this.wrongSolutionPerDirectionCounter = myPreferences.getPref_HC_WrongSimulationsPerDirection();
 
                         }
                         support.log("Last changed Parameter was: " + numberOfLastParameter + ", next Parameter to be changed is " + numberOfParameterToBeChanged, typeOfLogLevel.INFO);
@@ -437,7 +437,7 @@ public class OptimizerHill implements Runnable, Optimizer {
             boolean incResult = false;
             support.log("Number of Parameter to be changed " + numberOfParameterToBeChanged, typeOfLogLevel.INFO);
             support.log("Name of Parameter to be changed: " + nameOfParameterToBeChanged, typeOfLogLevel.INFO);
-            switch (myPreferences.getPref_NeighborhoodType()) {
+            switch (myPreferences.getPref_HC_NeighborhoodType()) {
                 case StepForward://0 choose the next neighbor based on stepping forward
                     //Inc this parameter by standard-increment
                     incResult = support.getParameterByName(newParameterset, nameOfParameterToBeChanged).incValue();
@@ -507,7 +507,7 @@ public class OptimizerHill implements Runnable, Optimizer {
 
             }
 
-            switch (myPreferences.getPref_NeighborhoodType()) {
+            switch (myPreferences.getPref_HC_NeighborhoodType()) {
                 case StepForward:
                 case StepForwardBackward:
                     parameter p = support.getParameterByName(newParameterset, nameOfParameterToBeChanged);
