@@ -839,7 +839,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
 
         jSpinnerGeneticMaxOptiRunsWithoutImprovement.setModel(new javax.swing.SpinnerNumberModel(1, 1, null, 1));
 
-        jLabel27.setText("Maximum Optiruns without improvment");
+        jLabel27.setText("Maximum Optiruns without improvement");
 
         jComboBoxGeneticTypeOfGeneticCrossing.setModel(new DefaultComboBoxModel(typeOfGeneticCrossover.values()));
         jComboBoxGeneticTypeOfGeneticCrossing.addItemListener(new java.awt.event.ItemListener() {
@@ -1887,7 +1887,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             support.log("Loaded MVMO_parentSelection is " + this.getPref_MVMO_parentSelection(), typeOfLogLevel.INFO);
             this.setPref_MVMO_sd(support.loadDoubleFromProperties("MVMO_sd", support.DEFAULT_MVMO_SD, auto));
             support.log("Loaded MVMO_sd is " + this.getPref_MVMO_sd(), typeOfLogLevel.INFO);
-            
+
         } catch (IOException e) {
             // Exception bearbeiten
             support.log("Error while loading Optimizer-Properties.", typeOfLogLevel.ERROR);
@@ -1968,11 +1968,11 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             auto.setProperty("pref_MVMO_StartingPop", Integer.toString(this.getPref_MVMO_StartingPop()));
             auto.setProperty("pref_MVMO_MaxPop", Integer.toString(this.getPref_MVMO_MaxPop()));
             auto.setProperty("MVMO_AsymmetryFactor", Double.toString(this.getPref_MVMO_AsymmetryFactor()));
-            auto.setProperty("MVMO_ScalingFactor",Double.toString(this.getPref_MVMO_ScalingFactor()));
-            auto.setProperty("MVMO_mutationSelection",this.getPref_MVMO_mutationSelection().toString());
-            auto.setProperty("MVMO_parentSelection", this.getPref_MVMO_parentSelection().toString());        
-            auto.setProperty("MVMO_sd", Double.toString(this.getPref_MVMO_sd()));  
-                                    
+            auto.setProperty("MVMO_ScalingFactor", Double.toString(this.getPref_MVMO_ScalingFactor()));
+            auto.setProperty("MVMO_mutationSelection", this.getPref_MVMO_mutationSelection().toString());
+            auto.setProperty("MVMO_parentSelection", this.getPref_MVMO_parentSelection().toString());
+            auto.setProperty("MVMO_sd", Double.toString(this.getPref_MVMO_sd()));
+
             File parserprops = new File(filename);
             auto.store(new FileOutputStream(parserprops), "ExperimentGenerator-Properties");
         } catch (IOException e) {
@@ -3022,5 +3022,22 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
         setPref_TAnnealScale(getPref_TAnnealScale(FROM), TO);
         setPref_TRatioScale(getPref_TRatioScale(FROM), TO);
         setPref_Epsilon(getPref_Epsilon(FROM), TO);
+    }
+
+    /**
+     * Returns the estimated number of simulation runs per phase of simulated
+     * annealing
+     *
+     * @param phase Number of simulated annealing phase
+     * @return estimated number of simulations in this phase
+     */
+    public long getNumberOfEstimatedSASimulations(int phase) {
+        switch (phase) {
+            case 1:
+                return (long) jSpinnerEstSASimulationCount1.getValue();
+            default:
+            case 0:
+                return (long) jSpinnerEstSASimulationCount.getValue();
+        }
     }
 }
