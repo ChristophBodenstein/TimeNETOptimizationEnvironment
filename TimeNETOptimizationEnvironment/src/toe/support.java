@@ -1947,15 +1947,19 @@ public class support {
         ArrayList<String> listOfStatisticStrings = null;
 
         for (int i = 0; i < optiStatisticsHeadline.size(); i++) {
-            exportString = optiStatisticsHeadline.get(i);
-            support.log(exportString, typeOfLogLevel.RESULT);
-            try {
-                FileWriter fw = new FileWriter(NAME_OF_RESULTFILE, true);
-                fw.append(exportString + System.getProperty("line.separator"));
-                fw.close();
-            } catch (IOException ex) {
-                log("Error while saving data to resultfile.", typeOfLogLevel.ERROR);
+            exportString += optiStatisticsHeadline.get(i);
+            if (i < optiStatisticsHeadline.size() - 1) {
+                exportString += ",";
             }
+        }
+
+        support.log(exportString, typeOfLogLevel.RESULT);
+        try {
+            FileWriter fw = new FileWriter(NAME_OF_RESULTFILE, true);
+            fw.append(exportString + System.getProperty("line.separator"));
+            fw.close();
+        } catch (IOException ex) {
+            log("Error while saving data to resultfile.", typeOfLogLevel.ERROR);
         }
 
         for (int i = 0; i < optiStatistics.size(); i++) {

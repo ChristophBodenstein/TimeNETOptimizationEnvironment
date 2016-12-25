@@ -343,6 +343,7 @@ public class StatisticAggregator {
             tmpHeadline.add("averageCacheRatio");
 
             support.addOptiStatistics(tmpStatistics);
+            support.setOptiStatisticsHeadline(tmpHeadline);
 
             support.log("NeighborhoodType: " + p.getPref_HC_NeighborhoodType().toString(), typeOfLogLevel.RESULT);
             support.log("Optimizer: " + support.getChosenOptimizerType().toString(), typeOfLogLevel.RESULT);
