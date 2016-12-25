@@ -181,6 +181,7 @@ public class support {
     private static int globalSimulationCounter = 0;
 
     private static ArrayList<ArrayList<String>> optiStatistics = new ArrayList();
+    private static ArrayList<String> optiStatisticsHeadline = new ArrayList();
 
 //List of Changable parameters for Multiphase-opti
     public static ArrayList<parameter> listOfChangableParametersMultiphase = null;
@@ -1944,6 +1945,19 @@ public class support {
     public static void exportOptiStatistics() {
         String exportString = "";
         ArrayList<String> listOfStatisticStrings = null;
+
+        for (int i = 0; i < optiStatisticsHeadline.size(); i++) {
+            exportString = optiStatisticsHeadline.get(i);
+            support.log(exportString, typeOfLogLevel.RESULT);
+            try {
+                FileWriter fw = new FileWriter(NAME_OF_RESULTFILE, true);
+                fw.append(exportString + System.getProperty("line.separator"));
+                fw.close();
+            } catch (IOException ex) {
+                log("Error while saving data to resultfile.", typeOfLogLevel.ERROR);
+            }
+        }
+
         for (int i = 0; i < optiStatistics.size(); i++) {
             exportString = "";
             listOfStatisticStrings = optiStatistics.get(i);
@@ -1977,6 +1991,20 @@ public class support {
         if (f.exists()) {
             del(f);
         }
+    }
+
+    /**
+     * @return the optiStatisticsHeadline
+     */
+    public static ArrayList<String> getOptiStatisticsHeadline() {
+        return optiStatisticsHeadline;
+    }
+
+    /**
+     * @param aOptiStatisticsHeadline the optiStatisticsHeadline to set
+     */
+    public static void setOptiStatisticsHeadline(ArrayList<String> aOptiStatisticsHeadline) {
+        optiStatisticsHeadline = aOptiStatisticsHeadline;
     }
 
 }
