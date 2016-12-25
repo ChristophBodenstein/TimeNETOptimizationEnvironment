@@ -324,8 +324,11 @@ public class StatisticAggregator {
             tmpHeadline.add("MP_InternalParameterStart");
             tmpStatistics.add(Double.toString(p.getPref_MP_InternalParameterEnd()));
             tmpHeadline.add("MP_InternalParameterEnd");
-            tmpStatistics.add(p.getPref_MP_InternalParameterToIterateInMultiphase().toString());
-            tmpHeadline.add("MP_InternalParameterToIterateInMultiphase");
+            try {
+                tmpStatistics.add(p.getPref_MP_InternalParameterToIterateInMultiphase().toString());
+                tmpHeadline.add("MP_InternalParameterToIterateInMultiphase");
+            } catch (java.lang.NullPointerException e) {
+            }
 
             //Results, quality of found optima
             tmpStatistics.add(Double.toString(support.round(averageDistanceToOptimumInValueRange, 3)));
