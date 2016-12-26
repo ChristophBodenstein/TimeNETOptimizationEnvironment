@@ -296,7 +296,7 @@ public class StatisticAggregator {
             tmpHeadline.add("GeneticTypeOfCrossover");
             tmpStatistics.add(Integer.toString(p.getPref_Genetic_PopulationSize()));
             tmpHeadline.add("GeneticPopulationSize");
-            tmpStatistics.add(Double.toString(p.getPref_Genetic_MutationChance()));
+            tmpStatistics.add(support.getCommaFloat(p.getPref_Genetic_MutationChance()));
             tmpHeadline.add("GeneticMutationChance");
             tmpStatistics.add(Integer.toString(p.getPref_Genetic_MaximumOptirunsWithoutSolution()));
             tmpHeadline.add("GeneticMaximumOptirunsWithoutSolution");
@@ -310,19 +310,19 @@ public class StatisticAggregator {
             tmpHeadline.add("MP_NumberOfPhases");
             tmpStatistics.add(p.getPref_MP_typeOfUsedMultiPhaseOptimization().toString());
             tmpHeadline.add("MP_typeOfUsedMultiPhaseOptimization");
-            tmpStatistics.add(Double.toString(p.getPref_MP_ConfidenceIntervallStart()));
+            tmpStatistics.add(support.getCommaFloat(p.getPref_MP_ConfidenceIntervallStart()));
             tmpHeadline.add("MP_ConfidenceIntervallStart");
-            tmpStatistics.add(Double.toString(p.getPref_MP_ConfidenceIntervallEnd()));
+            tmpStatistics.add(support.getCommaFloat(p.getPref_MP_ConfidenceIntervallEnd()));
             tmpHeadline.add("MP_ConfidenceIntervallEnd");
-            tmpStatistics.add(Double.toString(p.getPref_MP_MaxRelErrorStart()));
+            tmpStatistics.add(support.getCommaFloat(p.getPref_MP_MaxRelErrorStart()));
             tmpHeadline.add("MP_MaxRelErrorStart");
-            tmpStatistics.add(Double.toString(p.getPref_MP_MaxRelErrorEnd()));
+            tmpStatistics.add(support.getCommaFloat(p.getPref_MP_MaxRelErrorEnd()));
             tmpHeadline.add("MP_MaxRelErrorEnd");
             tmpStatistics.add(Boolean.toString(p.getPref_MP_KeepDesignSpaceAndResolution()));
             tmpHeadline.add("MP_KeepDesignSpaceAndResolution");
-            tmpStatistics.add(Double.toString(p.getPref_MP_InternalParameterStart()));
+            tmpStatistics.add(support.getCommaFloat(p.getPref_MP_InternalParameterStart()));
             tmpHeadline.add("MP_InternalParameterStart");
-            tmpStatistics.add(Double.toString(p.getPref_MP_InternalParameterEnd()));
+            tmpStatistics.add(support.getCommaFloat(p.getPref_MP_InternalParameterEnd()));
             tmpHeadline.add("MP_InternalParameterEnd");
             try {
                 tmpStatistics.add(p.getPref_MP_InternalParameterToIterateInMultiphase().toString());
@@ -331,15 +331,15 @@ public class StatisticAggregator {
             }
 
             //Results, quality of found optima
-            tmpStatistics.add(Double.toString(support.round(averageDistanceToOptimumInValueRange, 3)));
+            tmpStatistics.add(support.getCommaFloat(support.round(averageDistanceToOptimumInValueRange, 3)));
             tmpHeadline.add("averageDistanceToOptimumInValueRange");
-            tmpStatistics.add(Double.toString(support.round(averageDistanceToOptimumInDefinitionRange, 3)));
+            tmpStatistics.add(support.getCommaFloat(support.round(averageDistanceToOptimumInDefinitionRange, 3)));
             tmpHeadline.add("averageDistanceToOptimumInDefinitionRange");
-            tmpStatistics.add(Double.toString(support.round(averageNumberOfSimulations, 3)));
+            tmpStatistics.add(support.getCommaFloat(support.round(averageNumberOfSimulations, 3)));
             tmpHeadline.add("averageNumberOfSimulations");
-            tmpStatistics.add(Double.toString(support.round(averageCPUTimeTotal, 3)));
+            tmpStatistics.add(support.getCommaFloat(support.round(averageCPUTimeTotal, 3)));
             tmpHeadline.add("averageCPUTimeTotal");
-            tmpStatistics.add(Double.toString(support.round(averageCacheRatio, 3) * 100) + "%");
+            tmpStatistics.add(support.getCommaFloat(support.round(averageCacheRatio, 3) * 100) + "%");
             tmpHeadline.add("averageCacheRatio");
 
             support.addOptiStatistics(tmpStatistics);

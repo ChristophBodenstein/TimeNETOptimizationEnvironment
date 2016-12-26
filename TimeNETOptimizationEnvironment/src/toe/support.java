@@ -1949,7 +1949,7 @@ public class support {
         for (int i = 0; i < optiStatisticsHeadline.size(); i++) {
             exportString += optiStatisticsHeadline.get(i);
             if (i < optiStatisticsHeadline.size() - 1) {
-                exportString += ",";
+                exportString += "\t";
             }
         }
 
@@ -1969,7 +1969,7 @@ public class support {
                 for (int c = 0; c < listOfStatisticStrings.size(); c++) {
                     exportString += listOfStatisticStrings.get(c);
                     if (c < listOfStatisticStrings.size() - 1) {
-                        exportString += ",";
+                        exportString += "\t";
                     }
                 }
             }
