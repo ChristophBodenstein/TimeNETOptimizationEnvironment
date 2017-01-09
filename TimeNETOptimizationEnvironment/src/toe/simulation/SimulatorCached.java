@@ -45,7 +45,9 @@ public class SimulatorCached extends Thread implements Simulator {
         ArrayList<ArrayList<parameter>> listOfUnKnownParametersets = new ArrayList<>();
         if (mySimulationCache != null) {
             this.myListOfSimulations = mySimulationCache.getListOfCompletedSimulations(listOfParameterSetsTMP, support.getGlobalSimulationCounter(), listOfUnKnownParametersets);
-            support.setGlobalSimulationCounter(support.getGlobalSimulationCounter() + myListOfSimulations.size());
+            if (this.myListOfSimulations != null) {
+                support.setGlobalSimulationCounter(support.getGlobalSimulationCounter() + myListOfSimulations.size());
+            }
         } else {
             support.log("No local Simulation file loaded. Simulation not possible.", typeOfLogLevel.ERROR);
         }
