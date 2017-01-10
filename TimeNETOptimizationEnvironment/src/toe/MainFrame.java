@@ -2512,6 +2512,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         typeOfSimulator usedSimulator = support.getChosenSimulatorType();
         if (usedSimulator.toString().contains("Cache")) {
             tryToFillCacheFromFile(this.pathToLastSimulationCache);
+            checkIfCachedSimulationIsPossible();
         }
     }
 
