@@ -25,6 +25,8 @@ public class SimulatorCached extends Thread implements Simulator {
     SimulationCache mySimulationCache = null;
     ArrayList<SimulationType> myListOfSimulations = null;
     final String logFileName;
+    ArrayList<ArrayList<parameter>> listOfParameterSetsTMP = null;
+    boolean log = false;
 
     /**
      * Constructor
@@ -42,6 +44,14 @@ public class SimulatorCached extends Thread implements Simulator {
      */
     @Override
     public void initSimulator(ArrayList<ArrayList<parameter>> listOfParameterSetsTMP, boolean log) {
+        this.listOfParameterSetsTMP = listOfParameterSetsTMP;
+        this.log = log;
+        //Start this thread
+        new Thread(this).start();
+    }
+
+    @Override
+    public void run() {
         ArrayList<ArrayList<parameter>> listOfUnKnownParametersets = new ArrayList<>();
         if (mySimulationCache != null) {
             this.myListOfSimulations = mySimulationCache.getListOfCompletedSimulations(listOfParameterSetsTMP, support.getGlobalSimulationCounter(), listOfUnKnownParametersets);
@@ -78,7 +88,7 @@ public class SimulatorCached extends Thread implements Simulator {
                 support.addLinesToLogFileFromListOfParser(myListOfSimulations, logFileName);
             }
         }
-        //Notify, even if this is a non-threaded simulator
+
         synchronized (this) {
             notify();
         }
@@ -87,7 +97,7 @@ public class SimulatorCached extends Thread implements Simulator {
     /**
      * Returns the actual status of all simulations
      *
-     * @return % of simulatiions that are finished
+     * @return % of simulatiions that are finished Will return either 0 or 100
      */
     @Override
     public int getStatus() {
