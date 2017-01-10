@@ -19,8 +19,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import javax.swing.JOptionPane;
 import toe.typedef.typeOfLogLevel;
@@ -350,51 +348,21 @@ public class SimulationCache {
      * (if exact match doesn`t exist)
      *
      * @param parameterList given parameterSet for simulated simulation...
-     * @return Measure which is nearest one to given parameterset 
+     * @return Measure which is nearest one to given parameterset
      */
     public SimulationType getNearestParserWithParameterList(ArrayList<parameter> parameterList) {
-        //ArrayList<Double[]> distArrayList = new ArrayList<>();
-        int indexOfSmallestDistance=0;
-        double valueOfSmallestDistance=Double.MAX_VALUE;
+        int indexOfSmallestDistance = 0;
+        double valueOfSmallestDistance = Double.MAX_VALUE;
+        double currentDistance = Double.MAX_VALUE;
 
-        double currentDistance=Double.MAX_VALUE;
         for (int i = 0; i < this.getSimulationList().size(); i++) {
-            //Double[] tmpDist = new Double[2];//0->Dist, 1->Index
             currentDistance = getDistanceOfParameterLists(this.getSimulationList().get(i).getListOfParameters(), parameterList);
-            //tmpDist[0] = currentDistance;
-            //tmpDist[1] = (double) i;
-            //distArrayList.add(tmpDist);
-            
-            if(currentDistance<=valueOfSmallestDistance){
-            indexOfSmallestDistance=i;
-            valueOfSmallestDistance=currentDistance;
+
+            if (currentDistance <= valueOfSmallestDistance) {
+                indexOfSmallestDistance = i;
+                valueOfSmallestDistance = currentDistance;
             }
         }
-        /*
-        Collections.sort(distArrayList, new Comparator<Double[]>() {
-            @Override
-            public int compare(Double[] a, Double[] b) {
-                return a[0].compareTo(b[0]);
-            }
-        });
-        */
-        //Now it`s sorted, we should find the one with distance >= 0
-        //int indexOfZeroDistance = 0;
-
-        //Debug, output Distance-List
-        //for(int c=0;c<distArrayList.size();c++){
-        //support.log("Distance # "+c + " is "+ distArrayList.get(c)[0]);
-        //}
-        //indexOfZeroDistance should contain the index of the Distance >=0
-        /*ArrayList<MeasureType> listOfMeasureWithGivenParameters = this.getAllMeasuresWithParameterList(this.getSimulationList().get(distArrayList.get(indexOfZeroDistance)[1].intValue()).getListOfParameters());
-        if (listOfMeasureWithGivenParameters != null) {
-            if (listOfMeasureWithGivenParameters.size() > 0) {
-
-                this.setLocalSimulationCounter(this.getLocalSimulationCounter() + 1);
-                return (this.getSimulationFromListOfMeasures(listOfMeasureWithGivenParameters));
-            }
-        }
-        */
         return this.getSimulationList().get(indexOfSmallestDistance);
     }
 
@@ -408,11 +376,6 @@ public class SimulationCache {
     public ArrayList<SimulationType> getNearestParserListFromListOfParameterSets(ArrayList< ArrayList<parameter>> pList) {
         ArrayList<SimulationType> returnList = new ArrayList<>();
         for (int i = 0; i < pList.size(); i++) {
-            /*ArrayList<parameter> tmpPList = new ArrayList();
-            for (int c = 0; c < pList.get(i).size(); c++) {
-                tmpPList.add(pList.get(i).get(c));
-            }
-            */
             returnList.add(getNearestParserWithParameterList(pList.get(i)));
         }
         return returnList;
@@ -435,15 +398,8 @@ public class SimulationCache {
             sum[i] = 0;
             for (int c = 0; c < list[i].size(); c++) {
                 sum[i] += list[i].get(c).getValue();
-                //support.log("Size of List "+i+" is "+list[i].size());
-                //support.log("Value of Parameter "+c+" is "+list[i].get(c).getValue());
-
             }
         }
-        //support.log("Check For Disctance of parameterset---");
-        //support.log("Distance-A "+sum[0]);
-        //support.log("Distance-B "+sum[1]);
-
         return Math.abs(sum[0] - sum[1]);
     }
 
@@ -632,6 +588,7 @@ public class SimulationCache {
      * Removes all ignorable parameters from list It`s needed for comparision of
      * parameterlist because some data is stored as a parameter but is just
      * metadata
+     *
      * @param pList List of parameters to be filtered
      * @return List of parameters without ignorable ones
      */
