@@ -63,6 +63,7 @@ public class SimulationCache {
                 String[] tmpString = current.split(";");
                 listOfStringLines.add(tmpString);
                 current = reader.readLine();
+                support.spinInLabel();
                 Thread.yield();
                 //Eject if user requested to cancel
                 if (support.isCancelEverything()) {
@@ -101,6 +102,9 @@ public class SimulationCache {
                 listOfCachedParameterStepping[i] = Double.POSITIVE_INFINITY;
                 //Walk through a column and get Min and Max Values
                 for (int line = 1; line < listOfStringLines.size(); line++) {
+                    support.spinInLabel();
+                    Thread.yield();
+
                     tmpValue = support.getDouble(listOfStringLines.get(line)[column]);
                     listOfCachedParameterMax[i] = Math.max(tmpValue, listOfCachedParameterMax[i]);
                     listOfCachedParameterMin[i] = Math.min(tmpValue, listOfCachedParameterMin[i]);
@@ -183,6 +187,7 @@ public class SimulationCache {
             for (i = 0; i < numberOfExperiments; i++) {
                 support.spinInLabel();
                 support.setStatusText("Reading cache-file: " + (i * 100 / numberOfExperiments) + "%");
+                Thread.yield();
                 SimulationType tmpSimulation = new SimulationType();
                 for (int c = 0; c < listOfCachedMeasureNames.size(); c++) {
                     MeasureType tmpMeasure = new MeasureType();
