@@ -63,6 +63,12 @@ public class SimulationCache {
                 String[] tmpString = current.split(";");
                 listOfStringLines.add(tmpString);
                 current = reader.readLine();
+                Thread.yield();
+                //Eject if user requested to cancel
+                if (support.isCancelEverything()) {
+                    support.emptyCache();
+                    return false;
+                }
             }
             reader.close();
 
@@ -114,6 +120,11 @@ public class SimulationCache {
                         } catch (Exception e) {
                             support.log("Maybe there was an error getting the stepping from cache file.", typeOfLogLevel.ERROR);
                         }
+                    }
+                    //Eject if user requested to cancel
+                    if (support.isCancelEverything()) {
+                        support.emptyCache();
+                        return false;
                     }
                 }
                 //listOfCachedParameterStepping[i]=support.round( Math.abs( (listOfCachedParameterMax[i]-listOfCachedParameterMin[i])/(listOfStringLines.size()-1)) ) ; 
@@ -220,6 +231,12 @@ public class SimulationCache {
                 }
                 //getSimulationList().add(tmpSimulation);
                 addSimulationToCache(tmpSimulation);
+
+                //Eject if user requested to cancel
+                if (support.isCancelEverything()) {
+                    support.emptyCache();
+                    return false;
+                }
             }
 
             //Do not reformat Parameter-Table

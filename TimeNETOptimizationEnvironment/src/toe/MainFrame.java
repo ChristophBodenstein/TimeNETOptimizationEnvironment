@@ -378,7 +378,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
      */
     private boolean checkIfCachedSimulationIsPossible() {
 
-        if (mySimulationCache != null) {
+        if ((mySimulationCache != null) && (mySimulationCache.getCacheSize() >= 1)) {
             if (mySimulationCache.checkIfAllParameterMatchTable((parameterTableModel) this.jTableParameterList.getModel())) {
                 support.log("Cached Simulation available, all Parameter match.", typeOfLogLevel.INFO);
                 support.setMySimulationCache(mySimulationCache);
@@ -1258,7 +1258,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
             parameterTableModel tmpModel = (parameterTableModel) this.jTableParameterList.getModel();
             this.mySimulationCache = support.getMySimulationCache();
             if (!mySimulationCache.parseSimulationCacheFile(inputFile, ((MeasurementForm) this.jTabbedPaneOptiTargets.getComponent(0)).getMeasurements(), tmpModel, this)) {
-                support.log("Wrong Simulation cache file for this SCPN!", typeOfLogLevel.ERROR);
+                support.log("Wrong Simulation cache file for this SCPN or operation canceled!", typeOfLogLevel.ERROR);
                 support.setStatusText("Error loading cache-file!");
                 return false;
             } else {
