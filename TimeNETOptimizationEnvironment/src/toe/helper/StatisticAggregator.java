@@ -332,15 +332,15 @@ public class StatisticAggregator {
 
             //Results, quality of found optima
             tmpStatistics.add(support.getCommaFloat(support.round(averageDistanceToOptimumInValueRange, 3)));
-            tmpHeadline.add("averageDistanceToOptimumInValueRange");
+            tmpHeadline.add("averageDistanceToOptimumInValueRange (%)");
             tmpStatistics.add(support.getCommaFloat(support.round(averageDistanceToOptimumInDefinitionRange, 3)));
-            tmpHeadline.add("averageDistanceToOptimumInDefinitionRange");
+            tmpHeadline.add("averageDistanceToOptimumInDefinitionRange (%)");
             tmpStatistics.add(support.getCommaFloat(support.round(averageNumberOfSimulations, 3)));
             tmpHeadline.add("averageNumberOfSimulations");
             tmpStatistics.add(support.getCommaFloat(support.round(averageCPUTimeTotal, 3)));
             tmpHeadline.add("averageCPUTimeTotal");
-            tmpStatistics.add(support.getCommaFloat(support.round(averageCacheRatio, 3) * 100) + "%");
-            tmpHeadline.add("averageCacheRatio");
+            tmpStatistics.add(support.getCommaFloat(support.round(averageCacheRatio, 3) * 100));
+            tmpHeadline.add("averageCacheRatio (%)");
 
             support.addOptiStatistics(tmpStatistics);
             support.setOptiStatisticsHeadline(tmpHeadline);
