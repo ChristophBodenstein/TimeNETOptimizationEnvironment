@@ -1787,10 +1787,11 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
 
             }
 
-            this.fileName = filename;//nach Erfolg, globalen filename setzen
+            this.fileName = filename;//set global filename if loading succeded
             support.setOriginalFilename(filename);
             activateGenerateButtons();
             activateReloadButtons();
+            support.emptyCache();
         } catch (ParserConfigurationException | SAXException | IOException | DOMException e) {
         }
         tableChanged(null);
