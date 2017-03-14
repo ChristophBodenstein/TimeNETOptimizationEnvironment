@@ -114,10 +114,11 @@ public class SimulationType {
          }*/
         //Get active OptimizationTarget from UI (via support)
         MeasureType activeMeasure = support.getOptimizationMeasure();
+        MeasureType localMeasure = this.getMeasureByName(activeMeasure.getMeasureName());
         //Set target Value and target Kind for Measure with same name but in list of this simulation
-        this.getMeasureByName(activeMeasure.getMeasureName()).setTargetValue(activeMeasure.getTargetValue(), activeMeasure.getTargetTypeOf());
+        localMeasure.setTargetValue(activeMeasure.getTargetValue(), activeMeasure.getTargetTypeOf());
         //Return the distance of local Measure from target, chosen from Master-Measure
-        return this.getMeasureByName(activeMeasure.getMeasureName()).getDistanceFromTarget();
+        return localMeasure.getDistanceFromTarget();
     }
 
     /**
