@@ -2117,6 +2117,9 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
             auto.setProperty("MaxErrorEnd", support.getString(this.getpMaxError().getEndValue()));
             auto.setProperty("MaxErrorStepping", support.getString(this.getpMaxError().getStepping()));
 
+            if (support.getMySimulationCache().getCacheSize() <= 0) {
+                this.pathToLastSimulationCache = "";
+            }
             auto.setProperty("pathToLastSimulationCache", this.pathToLastSimulationCache);
 
             auto.setProperty("OptimizationType", support.getChosenOptimizerType().toString());
