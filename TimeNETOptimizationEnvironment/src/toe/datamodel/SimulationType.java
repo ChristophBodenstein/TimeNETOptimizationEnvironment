@@ -86,32 +86,6 @@ public class SimulationType {
      * is supported!
      */
     public double getDistanceToTargetValue() {
-        //TODO Only use one MeasureType, the first, to calculate distance
-
-        /*double distance=0;
-         for(int measureCount=0;measureCount<Measures.size();measureCount++)
-         {
-         MeasureType activeMeasure = getMeasureByName(Measures.get(measureCount).getMeasureName());
-         if (activeMeasure.getTargetKindOf() != null)
-         {
-         if(activeMeasure.getTargetKindOf().equals("value"))
-         {
-         distance+=activeMeasure.getDistanceFromTarget();
-         }
-         else if(activeMeasure.getTargetKindOf().equals("min"))
-         {
-         distance+=activeMeasure.getMeanValue();
-         }
-         else if(activeMeasure.getTargetKindOf().equals("max"))
-         {
-         distance+=0-activeMeasure.getMeanValue();
-         }
-         else
-         {
-         //TODO error handling for unknown target-type
-         }
-         }
-         }*/
         //Get active OptimizationTarget from UI (via support)
         MeasureType activeMeasure = support.getOptimizationMeasure();
         MeasureType localMeasure = this.getMeasureByName(activeMeasure.getMeasureName());
