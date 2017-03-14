@@ -339,7 +339,7 @@ public class StatisticAggregator {
             tmpHeadline.add("averageNumberOfSimulations");
             tmpStatistics.add(support.getCommaFloat(support.round(averageCPUTimeTotal, 3)));
             tmpHeadline.add("averageCPUTimeTotal");
-            tmpStatistics.add(support.getCommaFloat(support.round(averageCacheRatio, 3) * 100));
+            tmpStatistics.add(support.getCommaFloat(support.round(averageCacheRatio*100, 3) ));
             tmpHeadline.add("averageCacheRatio (%)");
 
             support.addOptiStatistics(tmpStatistics);
