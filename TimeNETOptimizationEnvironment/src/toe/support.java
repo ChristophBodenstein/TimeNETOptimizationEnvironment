@@ -1571,7 +1571,7 @@ public class support {
                 if (myOptimizer.getOptimum() != null) {
 
                     MeasureType myOptiMeasure = support.getOptimizationMeasure();
-                    StatisticAggregator.getStatisticByName(myOptimizer.getLogFileName()).addFoundOptimum(myOptimizer.getOptimum(), SimOptiFactory.getSimulator().getCalculatedOptimum(myOptiMeasure));
+                    StatisticAggregator.getStatisticByName(myOptimizer.getLogFileName()).setFoundOptimum(myOptimizer.getOptimum(), SimOptiFactory.getSimulator().getCalculatedOptimum(myOptiMeasure));
                     listener.operationSucessfull("The end.", typeOfProcessFeedback.OptimizationSuccessful);
                     this.cancel();
                 }

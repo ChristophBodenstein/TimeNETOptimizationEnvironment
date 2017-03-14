@@ -71,7 +71,7 @@ public class Statistic {
     }
 
     /**
-     * Adds the found optimum and the calculated optimum to statistics. Useful
+     * Set the found optimum and the calculated optimum to statistics. Useful
      * for statistics of optimization runs
      *
      * @param foundOptimum The simulation incl. parameterset which was found by
@@ -79,7 +79,7 @@ public class Statistic {
      * @param calculatedOptimum The calculated optimum parameterset to calculate
      * the distance
      */
-    public void addFoundOptimum(SimulationType foundOptimum, SimulationType calculatedOptimum) {
+    public void setFoundOptimum(SimulationType foundOptimum, SimulationType calculatedOptimum) {
         support.log("Adding found and calculated optimum (if exists) to List of Statistics.", typeOfLogLevel.INFO);
         this.foundOptimum = foundOptimum;
         this.calculatedOptimum = calculatedOptimum;
