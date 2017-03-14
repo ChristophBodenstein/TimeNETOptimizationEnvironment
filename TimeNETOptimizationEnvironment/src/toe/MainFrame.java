@@ -1167,7 +1167,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                 support.getOptimizerPreferences().loadPreferences();
 
                 support.resetOptiStatistics();
-                startOptimizationAgain();
+                startOptimization();
 
             } else {
                 support.log("No Tmp-Path given, Optimization not possible.", typeOfLogLevel.ERROR);
@@ -2484,7 +2484,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                         support.setNumberOfOptiRunsToGo((Integer) this.jSpinnerNumberOfOptimizationRuns.getValue());
                         //If cache or cache-support, reload cache
                         reloadFromCacheIfNeeded();
-                        startOptimizationAgain();
+                        startOptimization();
                     }
 
                 } else {
@@ -2492,7 +2492,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                     support.setNumberOfOptiRunsToGo(tmpNumberOfOptiRunsToGo - 1);
                     //If cache or cache-support, reload cache
                     reloadFromCacheIfNeeded();
-                    this.startOptimizationAgain();
+                    this.startOptimization();
                 }
                 break;
 
@@ -2544,7 +2544,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
     /**
      * Starts an OptimizationRun, useful for Multiple optimization runs
      */
-    private void startOptimizationAgain() {
+    private void startOptimization() {
         support.log("Optimum-Value: " + Double.toString(SimOptiFactory.getSimulator().getCalculatedOptimum(support.getOptimizationMeasure()).getMeasureByName(support.getOptimizationMeasure().getMeasureName()).getMeanValue()), typeOfLogLevel.INFO);
         Optimizer myOptimizer = SimOptiFactory.getOptimizer();
         logFileNameOfOptimizer = support.getTmpPath() + File.separator + myOptimizer.getClass().getSimpleName() + "_" + Calendar.getInstance().getTimeInMillis() + support.getOptimizerPreferences().getPref_LogFileAddon() + ".csv";
