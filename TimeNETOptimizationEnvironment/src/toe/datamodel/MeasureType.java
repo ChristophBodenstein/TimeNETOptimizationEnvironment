@@ -86,10 +86,10 @@ private double targetValue = 0.0;
             case value:
                 return Math.abs(this.targetValue - this.MeanValue);
             case max:
-                return Math.abs(support.OPTIMIZATION_TARGET_MAX - this.MeanValue);
+                return Math.abs(support.getOPTIMIZATION_TARGET_MAX() - this.MeanValue);
             default:
             case min:
-                return Math.abs(support.OPTIMIZATION_TARGET_MIN - this.MeanValue);
+                return Math.abs(support.getOPTIMIZATION_TARGET_MIN() - this.MeanValue);
         }
 
     }

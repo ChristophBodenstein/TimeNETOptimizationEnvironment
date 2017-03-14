@@ -31,6 +31,7 @@ import toe.helper.SimOptiCallback;
 import toe.helper.StatisticAggregator;
 import toe.optimization.Optimizer;
 import toe.optimization.OptimizerPreferences;
+import toe.simulation.BenchmarkFactory;
 import toe.simulation.SimulationCache;
 import toe.simulation.Simulator;
 import toe.typedef.*;
@@ -55,8 +56,8 @@ public class support {
     public static final typeOfOptimization DEFAULT_TYPE_OF_OPTIMIZER = typeOfOptimization.HillClimbing;
     public static final typeOfBenchmarkFunction DEFAULT_TYPE_OF_BENCHMARKFUNCTION = typeOfBenchmarkFunction.Sphere;
     public static final double DEFAULT_DOUBLE_VALUE = 1.0;
-    public static final double OPTIMIZATION_TARGET_MAX = Double.MAX_VALUE / 2;
-    public static final double OPTIMIZATION_TARGET_MIN = Double.MAX_VALUE / -2;
+    private static final double OPTIMIZATION_TARGET_MAX = Double.MAX_VALUE / 2;
+    private static final double OPTIMIZATION_TARGET_MIN = Double.MAX_VALUE / -2;
 
 //default values for distributed simulation
     public static final int DEFAULT_SLEEPING_TIME = 1000;
@@ -2009,6 +2010,26 @@ public class support {
      */
     public static void setOptiStatisticsHeadline(ArrayList<String> aOptiStatisticsHeadline) {
         optiStatisticsHeadline = aOptiStatisticsHeadline;
+    }
+
+    /**
+     * @return the OPTIMIZATION_TARGET_MAX
+     */
+    public static double getOPTIMIZATION_TARGET_MAX() {
+        return OPTIMIZATION_TARGET_MAX;
+    }
+
+    /**
+     * @return the OPTIMIZATION_TARGET_MIN
+     */
+    public static double getOPTIMIZATION_TARGET_MIN() {
+        double returnValue = OPTIMIZATION_TARGET_MIN;
+
+        if (getChosenSimulatorType().equals(typeOfSimulator.Benchmark) || getChosenSimulatorType().equals(typeOfSimulator.Cached_Benchmark)) {
+            BenchmarkFactory.getBenchmarkFunction().getOptimumSimulation().getMeasures().get(0).getMeanValue();
+        }
+
+        return returnValue;
     }
 
 }

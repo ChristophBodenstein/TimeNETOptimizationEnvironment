@@ -563,13 +563,14 @@ public class OptimizerHill implements Runnable, Optimizer {
             MeasureType activeMeasure = p.getMeasureByName(listOfMeasure.getMeasureName());
             MeasureType activeMeasureFromInterface = listOfMeasure; //Contains Optimization targets
             activeMeasure.setTargetValue(activeMeasureFromInterface.getTargetValue(), activeMeasureFromInterface.getTargetTypeOf());
-            if (activeMeasure.getTargetTypeOf().equals(typedef.typeOfTarget.value)) {
+            distance = activeMeasure.getDistanceFromTarget();
+            /*if (activeMeasure.getTargetTypeOf().equals(typedef.typeOfTarget.value)) {
                 distance = activeMeasure.getDistanceFromTarget();
             } else if (activeMeasure.getTargetTypeOf().equals(typedef.typeOfTarget.min)) {
                 distance = activeMeasure.getMeanValue();
             } else if (activeMeasure.getTargetTypeOf().equals(typedef.typeOfTarget.max)) {
                 distance = 0 - activeMeasure.getMeanValue();
-            }
+            }*/
         }
         return distance;
     }
