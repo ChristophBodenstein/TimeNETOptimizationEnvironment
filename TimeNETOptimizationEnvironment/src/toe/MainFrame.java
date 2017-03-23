@@ -286,6 +286,8 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         listOfUIComponents.add(this.jButtonOpenSCPN);
         listOfUIComponents.add(this.jSpinnerNumberOfOptimizationRuns);
         listOfUIComponents.add(this.jButtonEmptyCache);
+        listOfUIComponents.add(this.jButtonSetSecret);
+        listOfUIComponents.add(this.measurementForm1);
 
         //Reload the last File
         try {
@@ -447,7 +449,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         jLabelMemoryUsage = new javax.swing.JLabel();
         jLabelSpinning = new javax.swing.JLabel();
         jSpinnerNumberOfOptimizationRuns = new javax.swing.JSpinner();
-        jButton1 = new javax.swing.JButton();
+        jButtonSetSecret = new javax.swing.JButton();
         jCheckBoxDeleteTmpFiles = new javax.swing.JCheckBox();
         jButtonEmptyCache = new javax.swing.JButton();
         jLabelSimulationCountIndicator = new javax.swing.JLabel();
@@ -687,10 +689,10 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         jSpinnerNumberOfOptimizationRuns.setModel(new javax.swing.SpinnerNumberModel(1, 1, null, 1));
         jSpinnerNumberOfOptimizationRuns.setToolTipText("How many optimizations will be run with the same settings");
 
-        jButton1.setText("Secret");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        jButtonSetSecret.setText("Secret");
+        jButtonSetSecret.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                jButtonSetSecretActionPerformed(evt);
             }
         });
 
@@ -850,7 +852,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                                     .add(layout.createSequentialGroup()
                                         .add(jButtonEnterURLToSimServer, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 192, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                                         .add(18, 18, 18)
-                                        .add(jButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 100, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                                        .add(jButtonSetSecret, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 100, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                                     .add(jLabelDesignspaceSize, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .add(0, 0, Short.MAX_VALUE)))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
@@ -964,7 +966,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                     .add(layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                             .add(jButtonEnterURLToSimServer, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 20, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .add(jButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 22, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                            .add(jButtonSetSecret, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 22, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                         .add(12, 12, 12)
                         .add(jCheckBoxSlaveSimulator))
                     .add(layout.createSequentialGroup()
@@ -1537,13 +1539,13 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
 
     }//GEN-LAST:event_jCheckBoxSlaveSimulatorActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void jButtonSetSecretActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSetSecretActionPerformed
         String newServerSecret = JOptionPane.showInputDialog(this, "Please enter a secred word/number to secure your simulations on server.", support.getServerSecret());
         if (newServerSecret != null) {
             support.setServerSecret(newServerSecret);
             this.saveProperties();
         }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_jButtonSetSecretActionPerformed
 
     private void jCheckBoxDeleteTmpFilesItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBoxDeleteTmpFilesItemStateChanged
         support.setDeleteTmpSimulationFiles(jCheckBoxDeleteTmpFiles.isSelected());
@@ -1669,7 +1671,6 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButtonCancel;
     private javax.swing.JButton jButtonEmptyCache;
     private javax.swing.JButton jButtonEnterURLToSimServer;
@@ -1682,6 +1683,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
     private javax.swing.JButton jButtonPathToTimeNet;
     private javax.swing.JButton jButtonPlotR;
     private javax.swing.JButton jButtonReload;
+    private javax.swing.JButton jButtonSetSecret;
     private javax.swing.JButton jButtonStartBatchSimulation;
     private javax.swing.JButton jButtonStartOptimization;
     private javax.swing.JCheckBox jCheckBoxDeleteTmpFiles;
@@ -2341,6 +2343,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
          19-jButtonOpenSCPN
          20-jSpinnerNumberOfOptimizationRuns
          21-jButtonEmptyCache
+         22-jButtonSetSecret
          */
         this.listOfUIStates = new ArrayList<>();
         //Activate all

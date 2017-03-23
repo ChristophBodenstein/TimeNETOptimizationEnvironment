@@ -202,4 +202,12 @@ public final class MeasurementForm extends javax.swing.JPanel {
         return this.jCheckBoxEnableOptimizationForThisMeasurement.isSelected();
     }
 
+    /**
+     * Override to enable/disable members
+     */
+    @Override
+    public void setEnabled(boolean enabled) {
+        this.setActivated(enabled);
+    }
+
 }
