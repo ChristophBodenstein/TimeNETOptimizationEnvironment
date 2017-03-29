@@ -1,5 +1,5 @@
 /*
- * Optimizer using the simulated annealing algorithm
+ * Optimizer using the selected algorithm in multiple phases
  * It´s a child of OptimizerHill
  *
  * Christoph Bodenstein
