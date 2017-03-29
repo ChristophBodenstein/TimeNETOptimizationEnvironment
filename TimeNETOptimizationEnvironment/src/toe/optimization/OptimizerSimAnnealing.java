@@ -35,6 +35,25 @@ public class OptimizerSimAnnealing extends OptimizerHill implements Runnable, Op
      */
     public OptimizerSimAnnealing() {
         super();
+        initWithPhase(0);
+    }
+
+    /**
+     * Constructor for use in Two-Phase optimization
+     *
+     * @param phase
+     */
+    public OptimizerSimAnnealing(int phase) {
+        initWithPhase(phase);
+    }
+
+    /**
+     * Init local parameters, depending on current optimization phase For use in
+     * Two-Phase optimization
+     *
+     * @param phase
+     */
+    private void initWithPhase(int phase) {
         D = support.getListOfChangableParameters(support.getMainFrame().getParameterBase()).size();//Number of changeable parameters
         c = -Math.log(support.getOptimizerPreferences().getPref_TRatioScale(phase));
         c = c * Math.exp(-Math.log(support.getOptimizerPreferences().getPref_TAnnealScale(phase) / this.D));
@@ -44,7 +63,6 @@ public class OptimizerSimAnnealing extends OptimizerHill implements Runnable, Op
         nameOfdummyLogfile = support.removeExtention(nameOfdummyLogfile) + "_SA_Temperatures.csv";
         support.addLinesToLogFileFromListOfParser(null, nameOfdummyLogfile);
         this.optimized = false;
-
     }
 
     /**
