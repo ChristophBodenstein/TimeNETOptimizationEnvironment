@@ -22,6 +22,7 @@ import toe.optimization.OptimizerMVMO;
 import toe.optimization.OptimizerSimAnnealing;
 import toe.optimization.OptimizerHill;
 import java.util.ArrayList;
+import toe.optimization.OptimizerTwoPhase;
 import toe.simulation.SimulatorCachedBenchmark;
 
 /**
@@ -125,7 +126,8 @@ public class SimOptiFactory {
                 return new OptimizerABC();
             case MVMO:
                 return new OptimizerMVMO();
-
+            case TwoPhase:
+                return new OptimizerTwoPhase();
             case MultiPhase:
                 return new OptimizerMultiPhase();
             default:
