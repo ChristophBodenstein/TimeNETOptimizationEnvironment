@@ -2045,14 +2045,15 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
                     break;
 
                 case TwoPhase:
+                    addonString += "_StartAt_" + this.jComboBoxTypeOfStartValue.getSelectedItem();
                     for (int i = 0; i <= 1; i++) {
-                        addonString += "Phase: " + i + "_StartAt_" + this.jComboBoxTypeOfStartValue.getSelectedItem();
-                        addonString += "Phase: " + i + "_TAnnealScale_" + this.getPref_TAnnealScale(i);
-                        addonString += "Phase: " + i + "_TRatioScale_" + this.getPref_TRatioScale(i);
-                        addonString += "Phase: " + i + "_Epsilon_" + this.getPref_Epsilon(i);
-                        addonString += "Phase: " + i + "_Cooling_" + this.getPref_SA_Cooling(i);
-                        addonString += "Phase: " + i + "_MaxTempPara_" + this.getPref_MaxTempParameter(i);
-                        addonString += "Phase: " + i + "_MaxTempCost_" + this.getPref_MaxTempCost(i);
+                        addonString += "Phase_" + i;
+                        addonString += "_TAS_" + this.getPref_TAnnealScale(i);
+                        addonString += "_TRS_" + this.getPref_TRatioScale(i);
+                        addonString += "_E_" + this.getPref_Epsilon(i);
+                        addonString += "_C_" + this.getPref_SA_Cooling(i);
+                        addonString += "_MTP_" + this.getPref_MaxTempParameter(i);
+                        addonString += "_MTC_" + this.getPref_MaxTempCost(i);
                     }
                     break;
 
