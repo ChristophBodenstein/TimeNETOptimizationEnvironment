@@ -2047,7 +2047,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
                 case TwoPhase:
                     addonString += "_StartAt_" + this.jComboBoxTypeOfStartValue.getSelectedItem();
                     for (int i = 0; i <= 1; i++) {
-                        addonString += "Phase_" + i;
+                        addonString += "_Phase_" + i;
                         addonString += "_TAS_" + this.getPref_TAnnealScale(i);
                         addonString += "_TRS_" + this.getPref_TRatioScale(i);
                         addonString += "_E_" + this.getPref_Epsilon(i);
