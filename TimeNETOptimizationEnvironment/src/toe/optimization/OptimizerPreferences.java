@@ -1923,6 +1923,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             auto.setProperty("pref_MaxTempParameter", support.getString(this.getPref_MaxTempParameter(0)));
             auto.setProperty("pref_MaxTempCost", support.getString(this.getPref_MaxTempCost(0)));
             auto.setProperty("pref_Epsilon", Double.toString(getPref_Epsilon(0)));
+            auto.setProperty("pref_CalculationOfNextParameterset", this.getPref_SA_CalculationOfNextParameterset(0).toString());
 
             //Setting Parameters of Simulated Annealing - Second phase
             auto.setProperty("pref_Cooling1", getPref_SA_Cooling(1).toString());
@@ -1931,6 +1932,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             auto.setProperty("pref_MaxTempParameter1", support.getString(this.getPref_MaxTempParameter(1)));
             auto.setProperty("pref_MaxTempCost1", support.getString(this.getPref_MaxTempCost(1)));
             auto.setProperty("pref_Epsilon1", Double.toString(getPref_Epsilon(1)));
+            auto.setProperty("pref_CalculationOfNextParameterset1", this.getPref_SA_CalculationOfNextParameterset(1).toString());
 
             //Setting Parameters of MultiPhase Optimization
             auto.setProperty("pref_NumberOfPhases", Integer.toString(this.getPref_MP_NumberOfPhases()));
@@ -1944,7 +1946,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             auto.setProperty("pref_KeepDesignSpaceAndResolution", Boolean.toString(this.getPref_MP_KeepDesignSpaceAndResolution()));
 
             auto.setProperty("pref_LogFileAddon", this.jTextFieldLogFileAddon.getText());
-            auto.setProperty("pref_CalculationOfNextParameterset", this.getPref_SA_CalculationOfNextParameterset(0).toString());
+            
 
             //setting parameters for genetic optimization
             auto.setProperty("pref_GeneticPopulationSize", Integer.toString(this.getPref_Genetic_PopulationSize()));
