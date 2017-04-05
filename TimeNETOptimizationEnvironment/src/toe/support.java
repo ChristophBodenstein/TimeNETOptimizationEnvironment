@@ -181,7 +181,7 @@ public class support {
 
     private static int globalSimulationCounter = 0;
 
-    private static ArrayList<ArrayList<String>> optiStatistics = new ArrayList();
+    private static final ArrayList<ArrayList<String>> optiStatistics = new ArrayList();
     private static ArrayList<String> optiStatisticsHeadline = new ArrayList();
 
 //List of Changable parameters for Multiphase-opti
@@ -1570,7 +1570,6 @@ public class support {
             public void run() {
                 //support.log("Entering again waitForOptimizerTimer.");
                 if (myOptimizer.getOptimum() != null) {
-
                     MeasureType myOptiMeasure = support.getOptimizationMeasure();
                     StatisticAggregator.getStatisticByName(myOptimizer.getLogFileName()).setFoundOptimum(myOptimizer.getOptimum(), SimOptiFactory.getSimulator().getCalculatedOptimum(myOptiMeasure));
                     listener.operationSucessfull("The end.", typeOfProcessFeedback.OptimizationSuccessful);
