@@ -37,7 +37,7 @@ public class OptimizerTwoPhase implements Runnable, Optimizer {
     ArrayList<parameter> parameterBase;//Base set of parameters, start/end-value, stepping, etc.
     JLabel infoLabel;
     int numberOfPhases = 2;
-    boolean keepSizeAndResolutionOfDesignspace = false;
+    boolean keepSizeAndResolutionOfDesignspace = true;
     boolean optimized = false;
     String logFileName;
     int simulationCount = 0;
@@ -70,9 +70,10 @@ public class OptimizerTwoPhase implements Runnable, Optimizer {
         typeOfStartValueEnum myTmpStartValue = support.getOptimizerPreferences().getPref_StartValue();
 
         //Prepare parameterset for first Optimization run
+        /*
         for (int i = 0; i < this.parameterBase.size(); i++) {
             parameter p = this.parameterBase.get(i);
-            keepSizeAndResolutionOfDesignspace = false;
+            keepSizeAndResolutionOfDesignspace = false;//TODO: Check if this is correct
             if (p.isIteratableAndIntern()) {
                 //embiggen the stepping :-)
                 if (!this.keepSizeAndResolutionOfDesignspace) {
@@ -93,6 +94,7 @@ public class OptimizerTwoPhase implements Runnable, Optimizer {
                 support.log("Parameter is not Intern & Changable.", typeOfLogLevel.INFO);
             }
         }
+        */
 
         //Set Parameterbase for first use
         support.setParameterBase(parameterBase);
@@ -196,7 +198,7 @@ public class OptimizerTwoPhase implements Runnable, Optimizer {
                 try {
                     Thread.sleep(10);
                 } catch (InterruptedException ex) {
-                    support.log("Problem waiting for Optimizer. (Multiphase)", typeOfLogLevel.ERROR);
+                    support.log("Problem waiting for Optimizer. (TwoPhase)", typeOfLogLevel.ERROR);
                 }
             }
             lastOptimizer = myOptimizer;
@@ -238,7 +240,6 @@ public class OptimizerTwoPhase implements Runnable, Optimizer {
 
     //support.getOptimizerPreferences().setPref_StartValue(typeOfStartValueEnum.middle);
         this.numberOfPhases = support.getOptimizerPreferences().getPref_MP_NumberOfPhases();
-        this.keepSizeAndResolutionOfDesignspace = support.getOptimizerPreferences().getPref_MP_KeepDesignSpaceAndResolution();
 
         //Start this Thread
         new Thread(this).start();
