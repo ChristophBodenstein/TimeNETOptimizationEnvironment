@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import javax.swing.*;
 import toe.MainFrame;
-import toe.SimOptiFactory;
 import toe.datamodel.MeasureType;
 import toe.datamodel.SimulationType;
 import toe.datamodel.parameter;
@@ -94,12 +93,11 @@ public class OptimizerTwoPhase implements Runnable, Optimizer {
                 support.log("Parameter is not Intern & Changable.", typeOfLogLevel.INFO);
             }
         }
-        */
-
+         */
         //Set Parameterbase for first use
         support.setParameterBase(parameterBase);
 
-            //Start with given parameter value (preset)
+        //Start with given parameter value (preset)
         for (int phaseCounter = 0; phaseCounter < this.numberOfPhases; phaseCounter++) {
             support.log("Starting phase " + (phaseCounter + 1) + " of " + this.numberOfPhases, typeOfLogLevel.INFO);
             if (lastOptimizer != null) {
@@ -148,34 +146,31 @@ public class OptimizerTwoPhase implements Runnable, Optimizer {
                 confInterval = prefs.getPref_MP_ConfidenceIntervallStart();
                 maxRelError = prefs.getPref_MP_MaxRelErrorStart();
                 internal = prefs.getPref_MP_InternalParameterStart();
+            } else if (phaseCounter < this.numberOfPhases - 1) {
+                //ConfidenceIntervall goes from 85 up to 99 (min to max)
+                double tmpDifference = prefs.getPref_MP_ConfidenceIntervallEnd() - prefs.getPref_MP_ConfidenceIntervallStart();
+                confInterval = prefs.getPref_MP_ConfidenceIntervallStart() + (tmpDifference / (double) this.numberOfPhases) * (double) phaseCounter;
+                confInterval = Math.min(Math.round(confInterval), prefs.getPref_MP_ConfidenceIntervallEnd());
+                confInterval = Math.max(Math.round(confInterval), prefs.getPref_MP_ConfidenceIntervallStart());
+
+                //MaxRelError goes from 15 to 1 (max to min)
+                tmpDifference = prefs.getPref_MP_MaxRelErrorEnd() - prefs.getPref_MP_MaxRelErrorStart();//will be negative
+                maxRelError = prefs.getPref_MP_MaxRelErrorStart() + (tmpDifference / (double) this.numberOfPhases) * (double) phaseCounter;
+                maxRelError = Math.min(Math.round(maxRelError), prefs.getPref_MP_MaxRelErrorStart());
+                maxRelError = Math.max(Math.round(maxRelError), prefs.getPref_MP_MaxRelErrorEnd());
+
+                //Internal parameter can go up or down
+                tmpDifference = prefs.getPref_MP_InternalParameterEnd() - prefs.getPref_MP_InternalParameterStart();//will be negative
+                internal = prefs.getPref_MP_InternalParameterStart() + (tmpDifference / (double) this.numberOfPhases) * (double) phaseCounter;
+                internal = Math.min(Math.round(internal), Math.max(prefs.getPref_MP_InternalParameterStart(), prefs.getPref_MP_InternalParameterEnd()));
+                internal = Math.max(Math.round(internal), Math.min(prefs.getPref_MP_InternalParameterStart(), prefs.getPref_MP_InternalParameterEnd()));
+
             } else {
-                if (phaseCounter < this.numberOfPhases - 1) {
-                    //ConfidenceIntervall goes from 85 up to 99 (min to max)
-                    double tmpDifference = prefs.getPref_MP_ConfidenceIntervallEnd() - prefs.getPref_MP_ConfidenceIntervallStart();
-                    confInterval = prefs.getPref_MP_ConfidenceIntervallStart() + (tmpDifference / (double) this.numberOfPhases) * (double) phaseCounter;
-                    confInterval = Math.min(Math.round(confInterval), prefs.getPref_MP_ConfidenceIntervallEnd());
-                    confInterval = Math.max(Math.round(confInterval), prefs.getPref_MP_ConfidenceIntervallStart());
-
-                    //MaxRelError goes from 15 to 1 (max to min)
-                    tmpDifference = prefs.getPref_MP_MaxRelErrorEnd() - prefs.getPref_MP_MaxRelErrorStart();//will be negative
-                    maxRelError = prefs.getPref_MP_MaxRelErrorStart() + (tmpDifference / (double) this.numberOfPhases) * (double) phaseCounter;
-                    maxRelError = Math.min(Math.round(maxRelError), prefs.getPref_MP_MaxRelErrorStart());
-                    maxRelError = Math.max(Math.round(maxRelError), prefs.getPref_MP_MaxRelErrorEnd());
-
-                    //Internal parameter can go up or down
-                    tmpDifference = prefs.getPref_MP_InternalParameterEnd() - prefs.getPref_MP_InternalParameterStart();//will be negative
-                    internal = prefs.getPref_MP_InternalParameterStart() + (tmpDifference / (double) this.numberOfPhases) * (double) phaseCounter;
-                    internal = Math.min(Math.round(internal), Math.max(prefs.getPref_MP_InternalParameterStart(), prefs.getPref_MP_InternalParameterEnd()));
-                    internal = Math.max(Math.round(internal), Math.min(prefs.getPref_MP_InternalParameterStart(), prefs.getPref_MP_InternalParameterEnd()));
-
-                } else {
-                    //phaseCounter=this.numberOfPhases!
-                    //Last phase, so we use the end-values for all parameters
-                    confInterval = prefs.getPref_MP_ConfidenceIntervallEnd();
-                    maxRelError = prefs.getPref_MP_MaxRelErrorEnd();
-                    internal = prefs.getPref_MP_InternalParameterEnd();
-                }
-
+                //phaseCounter=this.numberOfPhases!
+                //Last phase, so we use the end-values for all parameters
+                confInterval = prefs.getPref_MP_ConfidenceIntervallEnd();
+                maxRelError = prefs.getPref_MP_MaxRelErrorEnd();
+                internal = prefs.getPref_MP_InternalParameterEnd();
             }
             support.log("In phase " + (phaseCounter + 1) + " will set Confinterval:" + confInterval + ", maxRelError:" + maxRelError + ", internalParamter:" + internal, typeOfLogLevel.INFO);
             if (iterateConfidenceInterval) {
@@ -189,7 +184,7 @@ public class OptimizerTwoPhase implements Runnable, Optimizer {
             }
             //Factory cannot be used here...
             myOptimizer = new OptimizerSimAnnealing(phaseCounter);
-                    //SimOptiFactory.getOptimizer(support.getOptimizerPreferences().getPref_MP_typeOfUsedMultiPhaseOptimization());
+            //SimOptiFactory.getOptimizer(support.getOptimizerPreferences().getPref_MP_typeOfUsedMultiPhaseOptimization());
             myOptimizer.initOptimizer();
             myOptimizer.setLogFileName(this.logFileName);
 
@@ -208,15 +203,15 @@ public class OptimizerTwoPhase implements Runnable, Optimizer {
         support.getOptimizerPreferences().setPref_StartValue(myTmpStartValue);
 
         this.optimized = true;//Even if its not optimized, this is set to true to end the optimization loop
-        if(lastOptimizer.getOptimum()!=null){
-        this.bestSolution = lastOptimizer.getOptimum();
-        support.log(this.getClass().getSimpleName() + " has ended, printing optimal value:", typeOfLogLevel.INFO);
-        support.addLinesToLogFile(bestSolution, logFileName);
-        support.setStatusText("Optimization ended. See Log.");
-        support.printOptimizedMeasures(bestSolution, this.listOfMeasures);
-        StatisticAggregator.printStatistic(this.logFileName);
-        }else{
-        support.log("Optimization was not successful.", typeOfLogLevel.ERROR);
+        if (lastOptimizer.getOptimum() != null) {
+            this.bestSolution = lastOptimizer.getOptimum();
+            support.log(this.getClass().getSimpleName() + " has ended, printing optimal value:", typeOfLogLevel.INFO);
+            support.addLinesToLogFile(bestSolution, logFileName);
+            support.setStatusText("Optimization ended. See Log.");
+            support.printOptimizedMeasures(bestSolution, this.listOfMeasures);
+            StatisticAggregator.printStatistic(this.logFileName);
+        } else {
+            support.log("Optimization was not successful.", typeOfLogLevel.ERROR);
         }
     }
 
@@ -238,7 +233,7 @@ public class OptimizerTwoPhase implements Runnable, Optimizer {
 
         this.tmpPath = support.getTmpPath();
 
-    //support.getOptimizerPreferences().setPref_StartValue(typeOfStartValueEnum.middle);
+        //support.getOptimizerPreferences().setPref_StartValue(typeOfStartValueEnum.middle);
         this.numberOfPhases = support.getOptimizerPreferences().getPref_MP_NumberOfPhases();
 
         //Start this Thread
