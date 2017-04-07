@@ -44,7 +44,7 @@ public class OptimizerSimAnnealing extends OptimizerHill implements Runnable, Op
      * @param phase
      */
     public OptimizerSimAnnealing(int phase) {
-        this.phase=phase;
+        this.phase = phase;
         initWithPhase(phase);
     }
 
