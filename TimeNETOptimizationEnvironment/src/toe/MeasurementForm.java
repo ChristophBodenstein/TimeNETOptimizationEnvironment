@@ -208,6 +208,7 @@ public final class MeasurementForm extends javax.swing.JPanel {
     @Override
     public void setEnabled(boolean enabled) {
         this.setActivated(enabled);
+        this.jTextFieldCustomTargetValue.setEnabled(enabled && this.getOptimizationTarget().equals(typeOfTarget.value));
     }
 
 }
