@@ -62,7 +62,7 @@ public class OptimizerSimAnnealing extends OptimizerHill implements Runnable, Op
         actualTempParameter = support.getOptimizerPreferences().getPref_MaxTempParameter(phase);
         nameOfdummyLogfile = this.logFileName;
         nameOfdummyLogfile = support.removeExtention(nameOfdummyLogfile) + "_SA_Temperatures.csv";
-        support.addLinesToLogFileFromListOfParser(null, nameOfdummyLogfile);
+        support.addLinesToLogFileFromListOfSimulations(null, nameOfdummyLogfile);
         this.optimized = false;
     }
 
@@ -261,7 +261,7 @@ public class OptimizerSimAnnealing extends OptimizerHill implements Runnable, Op
         ArrayList<SimulationType> dummySimulationTypeList = new ArrayList<>();
         dummySimulationTypeList.add(dummySim);
 
-        support.addLinesToLogFileFromListOfParser(dummySimulationTypeList, nameOfdummyLogfile);
+        support.addLinesToLogFileFromListOfSimulations(dummySimulationTypeList, nameOfdummyLogfile);
 
         //End of logging the temperatures
         if (support.isCancelEverything()) {

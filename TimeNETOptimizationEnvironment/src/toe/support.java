@@ -628,24 +628,24 @@ public class support {
     /**
      * Adds Lines to logfile with the data from given parserlist
      *
-     * @param pList List of parsers, which includes the data from one simulation
+     * @param simulationList List of parsers, which includes the data from one simulation
      * each
      * @param logFileName The path and name of the general log file
      */
-    public static void addLinesToLogFileFromListOfParser(ArrayList<SimulationType> pList, String logFileName) {
+    public static void addLinesToLogFileFromListOfSimulations(ArrayList<SimulationType> simulationList, String logFileName) {
         boolean writeHeader = false;
         String line;
 
         //Check if list is null, then exit
-        if (pList == null) {
+        if (simulationList == null) {
             support.log("List of Simulations to add to logfile is null. Exit.", typeOfLogLevel.INFO);
             return;
         }
 
         //Call sort each paramter list before writing to log file
-        for (int i = 0; i < pList.size(); i++) {
-            addDummyParameterCPUTimeIfNeeded(pList.get(i).getListOfParameters());
-            Collections.sort(pList.get(i).getListOfParameters());
+        for (int i = 0; i < simulationList.size(); i++) {
+            addDummyParameterCPUTimeIfNeeded(simulationList.get(i).getListOfParameters());
+            Collections.sort(simulationList.get(i).getListOfParameters());
         }
 
         try {
@@ -658,8 +658,8 @@ public class support {
             if (writeHeader) {
                 //Write header of logfile
                 line = "MeasureName;Mean Value; Variance; Conf.Interval-Min;Conf.Interval-Max;Epsilon;" + "Simulation Time";
-                for (int i1 = 0; i1 < pList.get(0).getListOfParameters().size(); i1++) {
-                    line = line + ";" + pList.get(0).getListOfParameters().get(i1).getName();
+                for (int i1 = 0; i1 < simulationList.get(0).getListOfParameters().size(); i1++) {
+                    line = line + ";" + simulationList.get(0).getListOfParameters().get(i1).getName();
                 }
                 try {
                     fw.write(line);
@@ -669,19 +669,19 @@ public class support {
                 }
             }
 
-            for (int i = 0; i < pList.size(); i++) {
+            for (int i = 0; i < simulationList.size(); i++) {
                 //set indicator
-                setStatusText("Writing: " + (i + 1) + "/" + pList.size());
-                SimulationType myParser = pList.get(i);
+                setStatusText("Writing: " + (i + 1) + "/" + simulationList.size());
+                SimulationType mySimulation = simulationList.get(i);
 
-                StatisticAggregator.addToStatistics(myParser, logFileName);
+                StatisticAggregator.addToStatistics(mySimulation, logFileName);
                 try {
-                    for (int i1 = 0; i1 < myParser.getMeasures().size(); i1++) {//Alle Measure schreiben
-                        MeasureType exportMeasure = myParser.getMeasures().get(i1);
+                    for (int i1 = 0; i1 < mySimulation.getMeasures().size(); i1++) {//Alle Measure schreiben
+                        MeasureType exportMeasure = mySimulation.getMeasures().get(i1);
                         line = exportMeasure.getMeasureName() + ";" + support.getCommaFloat(exportMeasure.getMeanValue()) + ";" + support.getCommaFloat(exportMeasure.getVariance()) + ";" + support.getCommaFloat(exportMeasure.getConfidenceInterval()[0]) + ";" + support.getCommaFloat(exportMeasure.getConfidenceInterval()[1]) + ";" + support.getCommaFloat(exportMeasure.getEpsilon()) + ";" + support.getCommaFloat(exportMeasure.getSimulationTime());
                         dummyParameterForCPUTime.setValue(exportMeasure.getCPUTime());
-                        for (int c = 0; c < myParser.getListOfParameters().size(); c++) {
-                            line = line + ";" + support.getCommaFloat(myParser.getListOfParameters().get(c).getValue());
+                        for (int c = 0; c < mySimulation.getListOfParameters().size(); c++) {
+                            line = line + ";" + support.getCommaFloat(mySimulation.getListOfParameters().get(c).getValue());
                         }
                         fw.write(line);
                         fw.append(System.getProperty("line.separator"));
@@ -703,14 +703,14 @@ public class support {
     /**
      * Adds Lines to logfile with the data from given SimulationType
      *
-     * @see addLinesToLogFileFromListOfParser
+     * @see addLinesToLogFileFromListOfParser#addLinesToLogFileFromListOfSimulations
      * @param p SimulationType with data from simgle logfile
      * @param logFileName name of logfile, data will be appended
      */
     public static void addLinesToLogFile(SimulationType p, String logFileName) {
         myTmpSimulationList.clear();
         myTmpSimulationList.add(p);
-        addLinesToLogFileFromListOfParser(myTmpSimulationList, logFileName);
+        addLinesToLogFileFromListOfSimulations(myTmpSimulationList, logFileName);
     }
 
     /**

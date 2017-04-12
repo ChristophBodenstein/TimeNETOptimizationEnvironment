@@ -153,7 +153,7 @@ public class SimulatorBenchmark extends Thread implements Simulator {
         support.log("Number of done simulations: " + myListOfSimulations.size(), typeOfLogLevel.INFO);
         if (log) {
             //Print out a log file
-            support.addLinesToLogFileFromListOfParser(myListOfSimulations, logFileName);
+            support.addLinesToLogFileFromListOfSimulations(myListOfSimulations, logFileName);
         }
         this.status = 100;
         synchronized (this) {

@@ -208,7 +208,7 @@ public class OptimizerABC extends OptimizerPopulationBased implements Runnable, 
                 }
                 source = mySimulator.getListOfCompletedSimulationParsers();
                 population.set(fs, source);
-                support.addLinesToLogFileFromListOfParser(source, logFileName);
+                support.addLinesToLogFileFromListOfSimulations(source, logFileName);
             }
 
             population = sortAndFilterFoodSources(population);
@@ -275,7 +275,7 @@ public class OptimizerABC extends OptimizerPopulationBased implements Runnable, 
      source = mySimulator.getListOfCompletedSimulationParsers();
      totalSimulations += source.size();
      population.set(fs, source);
-     //support.addLinesToLogFileFromListOfParser(source, logFileName);
+     //support.addLinesToLogFileFromListOfSimulations(source, logFileName);
      }
                 
      population = sortAndFilterFoodSources(population);

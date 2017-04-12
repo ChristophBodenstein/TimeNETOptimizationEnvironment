@@ -122,7 +122,7 @@ public class OptimizerHill implements Runnable, Optimizer {
             }
         } while (mySimulator.getListOfCompletedSimulationParsers().size() < 1);
 
-        support.addLinesToLogFileFromListOfParser(mySimulator.getListOfCompletedSimulationParsers(), logFileName);
+        support.addLinesToLogFileFromListOfSimulations(mySimulator.getListOfCompletedSimulationParsers(), logFileName);
         this.historyOfParsers = support.appendListOfParsers(historyOfParsers, mySimulator.getListOfCompletedSimulationParsers());
         currentSolution = mySimulator.getListOfCompletedSimulationParsers().get(0);
         nextSolution = currentSolution;
@@ -187,7 +187,7 @@ public class OptimizerHill implements Runnable, Optimizer {
                 nextSolution = listOfCompletedSimulations.get(0);
             }
 
-            support.addLinesToLogFileFromListOfParser(listOfCompletedSimulations, logFileName);
+            support.addLinesToLogFileFromListOfSimulations(listOfCompletedSimulations, logFileName);
             this.historyOfParsers = support.appendListOfParsers(historyOfParsers, listOfCompletedSimulations);
 
             //Set the LastParameterset to be compared in next opti-loop

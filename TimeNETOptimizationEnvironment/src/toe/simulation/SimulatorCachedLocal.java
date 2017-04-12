@@ -89,7 +89,7 @@ public class SimulatorCachedLocal extends SimulatorCached {
 
             synchronized (myLocalSimulator) {
                 try {
-                    support.addLinesToLogFileFromListOfParser(myListOfCompletedSimulations, myLocalSimulator.getLogfileName());
+                    support.addLinesToLogFileFromListOfSimulations(myListOfCompletedSimulations, myLocalSimulator.getLogfileName());
                     myLocalSimulator.initSimulator(remainingParametersets, support.isCreateseparateLogFilesForEverySimulation());
                     myLocalSimulator.wait();
                 } catch (InterruptedException ex) {
@@ -109,7 +109,7 @@ public class SimulatorCachedLocal extends SimulatorCached {
         if (this.myListOfCompletedSimulations != null) {
             support.log("Adding " + myListOfCompletedSimulations.size() + " Results to logfile.", typeOfLogLevel.INFO);
             //Print out a log file
-            support.addLinesToLogFileFromListOfParser(myListOfCompletedSimulations, logFileName);
+            support.addLinesToLogFileFromListOfSimulations(myListOfCompletedSimulations, logFileName);
             support.log("SimulationCounter is now: " + support.getGlobalSimulationCounter(), typeOfLogLevel.INFO);
         }
 

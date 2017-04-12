@@ -146,7 +146,7 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
                 }
             }
             simulationResults = mySimulator.getListOfCompletedSimulationParsers();
-            support.addLinesToLogFileFromListOfParser(simulationResults, logFileName);
+            support.addLinesToLogFileFromListOfSimulations(simulationResults, logFileName);
             population = tryAddCandidate(population, simulationResults);
 
             if (population.size() == maxPopulationSize) {

@@ -85,7 +85,7 @@ public class SimulatorCached extends Thread implements Simulator {
 
             if (log) {
                 //Print out a log file    
-                support.addLinesToLogFileFromListOfParser(myListOfSimulations, logFileName);
+                support.addLinesToLogFileFromListOfSimulations(myListOfSimulations, logFileName);
             }
         }
 

@@ -155,7 +155,7 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
             }
             simulationResults = mySimulator.getListOfCompletedSimulationParsers();
             population = getPopulationFromSimulationResults(simulationResults);
-            support.addLinesToLogFileFromListOfParser(simulationResults, logFileName);
+            support.addLinesToLogFileFromListOfSimulations(simulationResults, logFileName);
 
             //evaluation phase --------------------------------------------------------------------------
             population = cutPopulation(population);

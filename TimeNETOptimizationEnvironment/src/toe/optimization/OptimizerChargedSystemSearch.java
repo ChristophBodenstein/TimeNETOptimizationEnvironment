@@ -144,7 +144,7 @@ public class OptimizerChargedSystemSearch extends OptimizerPopulationBased imple
                 }
             }
             simulationResults = mySimulator.getListOfCompletedSimulationParsers();
-            support.addLinesToLogFileFromListOfParser(simulationResults, logFileName);
+            support.addLinesToLogFileFromListOfSimulations(simulationResults, logFileName);
             population = getPopulationFromSimulationResults(simulationResults);
 
             //calculateDistances();
