@@ -1239,9 +1239,9 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                 tryToFillCacheFromFile(inputFile);
                 support.getMySimulationCache().reformatParameterTable((parameterTableModel) jTableParameterList.getModel());
                 jTableParameterList.updateUI();
-                calculateDesignSpace();
                 checkIfCachedSimulationIsPossible();
                 popUIState();
+                calculateDesignSpace();
             }
         }.start();
     }//GEN-LAST:event_jButtonLoadCacheFileActionPerformed
