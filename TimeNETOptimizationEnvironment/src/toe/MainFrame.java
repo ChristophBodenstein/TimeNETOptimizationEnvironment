@@ -1134,7 +1134,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         //Send chosen Optimizertype to support-class
         support.setChosenOptimizerType((typeOfOptimization) this.jComboBoxOptimizationType.getSelectedItem());
         if (this.sizeOfDesignSpace <= support.DEFAULT_MINIMUM_DESIGNSPACE_FOR_OPTIMIZATION) {
-            support.log("Design space to small, no Optimization posible.", typeOfLogLevel.INFO);
+            support.log("Design space to small, no Optimization possible.", typeOfLogLevel.INFO);
             support.setStatusText("Designspace to small for Opti.");
         } else if (this.getListOfActiveMeasureMentsToOptimize().size() >= 1) {
             this.switchUIState(uiState.processRunning);
@@ -2512,6 +2512,11 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
      * local cache to start from scratch
      */
     private void reloadFromCacheIfNeeded() {
+        //Do not reload, if cache-only is selected
+        if (support.getChosenSimulatorType().equals(typeOfSimulator.Cache_Only)) {
+            return;
+        }
+
         //Check if cache-support is enabled
         support.emptyCache();
         this.mySimulationCache = support.getMySimulationCache();
@@ -2519,6 +2524,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         typeOfSimulator usedSimulator = support.getChosenSimulatorType();
         if (usedSimulator.toString().contains("Cache")) {
             tryToFillCacheFromFile(this.pathToLastSimulationCache);
+            calculateDesignSpace();
             checkIfCachedSimulationIsPossible();
         }
     }
