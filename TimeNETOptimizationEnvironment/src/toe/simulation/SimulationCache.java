@@ -28,7 +28,7 @@ import toe.typedef.typeOfLogLevel;
  * @author Christoph Bodenstein
  */
 public class SimulationCache {
-
+    
     String[] listOfCachedParameterNames;
     double[] listOfCachedParameterMin;
     double[] listOfCachedParameterMax;
@@ -41,13 +41,13 @@ public class SimulationCache {
     private SimulationType tmpSimulationForSearch;
     private ArrayList<MeasureType> myTmpList = new ArrayList();
     private HashMap<BigInteger, SimulationType> simulationHashmap;
-
+    
     public SimulationCache() {
         //this.MeasureList = new ArrayList<MeasureType>();
         this.simulationList = new ArrayList<>();
         this.simulationHashmap = new HashMap<>();
     }
-
+    
     public boolean parseSimulationCacheFile(String filename, ArrayList<MeasureType> listOfMeasures, parameterTableModel myParameterTableModel, MainFrame myParentFrame) {
         ArrayList<String[]> listOfStringLines = new ArrayList<String[]>();
         support.setStatusText("Reading cache-file...");
@@ -93,7 +93,7 @@ public class SimulationCache {
                 return false;
             }
             support.log("Count of cached Parameters seems correct.", typeOfLogLevel.INFO);
-
+            
             for (int i = 0; i < listOfCachedParameterNames.length; i++) {
                 column = i + 7;
                 listOfCachedParameterNames[i] = support.translateParameterNameFromLogFileToTable(listOfStringLines.get(0)[column]);
@@ -104,7 +104,7 @@ public class SimulationCache {
                 for (int line = 1; line < listOfStringLines.size(); line++) {
                     support.spinInLabel();
                     Thread.yield();
-
+                    
                     tmpValue = support.getDouble(listOfStringLines.get(line)[column]);
                     listOfCachedParameterMax[i] = Math.max(tmpValue, listOfCachedParameterMax[i]);
                     listOfCachedParameterMin[i] = Math.min(tmpValue, listOfCachedParameterMin[i]);
@@ -120,7 +120,7 @@ public class SimulationCache {
                                 //support.log("Result of round: "+tmpValue2);
                                 //support.log("Setting new Value for Stepping.");
                             }
-
+                            
                         } catch (Exception e) {
                             support.log("Maybe there was an error getting the stepping from cache file.", typeOfLogLevel.ERROR);
                         }
@@ -181,7 +181,7 @@ public class SimulationCache {
                 }
             }
             support.log("All parameters seem available in table.", typeOfLogLevel.INFO);
-
+            
             support.log("Number of Measures:" + listOfCachedMeasureNames.size(), typeOfLogLevel.INFO);
             //Generate List of Simulated Experiments
             for (i = 0; i < numberOfExperiments; i++) {
@@ -222,14 +222,14 @@ public class SimulationCache {
                             //We did not change the order of Parameters (it`s the same like in the raw file)
                             //tmpParameter.setValue(support.translateParameterNameFromLogFileToTable(listOfStringLines.get(lineNumber)[column]));
                             tmpParameter.setValue(support.round(support.getDouble(listOfStringLines.get(lineNumber)[column]), 3));
-
+                            
                             tmpParameterList.add(tmpParameter);
                         }
 
                         //tmpMeasure.setParameterList(tmpParameterList);
                         tmpSimulation.setListOfParameters(tmpParameterList);
                     }
-
+                    
                     tmpSimulation.getMeasures().add(tmpMeasure);
                     //this.MeasureList.add(tmpSimulation);
 
@@ -248,7 +248,7 @@ public class SimulationCache {
             //this.reformatParameterTable(myParameterTableModel);
             //Refresh Design Space label of MainFrame
             myParentFrame.calculateDesignSpace();
-
+            
         } catch (Exception ex) {
             support.log("Error while reading the Simulation Cache File.", typeOfLogLevel.ERROR);
             JOptionPane.showMessageDialog(null, "Could not read simulation cache file!");
@@ -259,7 +259,7 @@ public class SimulationCache {
 
         return true;
     }
-
+    
     public void reformatParameterTable(parameterTableModel myTableModel) {
         if (listOfCachedParameterNames == null) {
             return;
@@ -274,7 +274,7 @@ public class SimulationCache {
             support.log("Setting Stepping to " + listOfCachedParameterStepping[i], typeOfLogLevel.INFO);
         }
     }
-
+    
     public boolean checkIfAllParameterMatchTable(parameterTableModel myTableModel) {
         if (listOfCachedParameterNames == null) {
             support.log("ListOfCachedParameterNames=NULL.", typeOfLogLevel.INFO);
@@ -303,7 +303,7 @@ public class SimulationCache {
             //if startvalue is reachable ->true
             //if end-value is reachable ->true
             double tmpValue = support.round(listOfCachedParameterMin[i], 3);
-
+            
             while (tmpValue <= listOfCachedParameterMax[i] * 1.1) {
                 if (Double.compare(tmpValue, p.getStartValue()) == 0) {
                     strike[1] = true;
@@ -313,7 +313,7 @@ public class SimulationCache {
                 }
                 tmpValue = support.round(tmpValue + listOfCachedParameterStepping[i], 3);
             }
-
+            
             if (!strike[0] || !strike[1] || !strike[2]) {
                 support.log("Parameter " + p.getName() + " does not fit!", typeOfLogLevel.ERROR);
                 if (!strike[0]) {
@@ -324,17 +324,17 @@ public class SimulationCache {
                     support.log("Start wrong.", typeOfLogLevel.ERROR);
                 }
                 support.log("Start: " + Double.toString(p.getStartValue()) + " ---- " + Double.toString(listOfCachedParameterMin[i]), typeOfLogLevel.INFO);
-
+                
                 if (!strike[2]) {
                     support.log("End wrong.", typeOfLogLevel.ERROR);
-
+                    
                 }
                 support.log("End: " + Double.toString(p.getEndValue()) + " ---- " + Double.toString(listOfCachedParameterMax[i]), typeOfLogLevel.INFO);
-
+                
                 support.log("Start: " + p.getStartValue(), typeOfLogLevel.INFO);
                 support.log("End: " + p.getEndValue(), typeOfLogLevel.INFO);
                 support.log("Stepping: " + p.getStepping(), typeOfLogLevel.INFO);
-
+                
                 return false;
             }//If less then all 3 conditions are met, then exit with false    
         }
@@ -372,14 +372,14 @@ public class SimulationCache {
      * @param parameterList given parameterSet for simulated simulation...
      * @return Measure which is nearest one to given parameterset
      */
-    public SimulationType getNearestParserWithParameterList(ArrayList<parameter> parameterList) {
+    public SimulationType getNearestSimulationWithParameterList(ArrayList<parameter> parameterList) {
         int indexOfSmallestDistance = 0;
         double valueOfSmallestDistance = Double.MAX_VALUE;
         double currentDistance = Double.MAX_VALUE;
-
+        
         for (int i = 0; i < this.getSimulationList().size(); i++) {
             currentDistance = getDistanceOfParameterLists(this.getSimulationList().get(i).getListOfParameters(), parameterList);
-
+            
             if (currentDistance <= valueOfSmallestDistance) {
                 indexOfSmallestDistance = i;
                 valueOfSmallestDistance = currentDistance;
@@ -395,10 +395,10 @@ public class SimulationCache {
      * @param pList List of Parametersets (ArrayList of Arrays)
      * @return ArrayList of parsers
      */
-    public ArrayList<SimulationType> getNearestParserListFromListOfParameterSets(ArrayList< ArrayList<parameter>> pList) {
+    public ArrayList<SimulationType> getNearestSimulationListFromListOfParameterSets(ArrayList< ArrayList<parameter>> pList) {
         ArrayList<SimulationType> returnList = new ArrayList<>();
         for (int i = 0; i < pList.size(); i++) {
-            returnList.add(getNearestParserWithParameterList(pList.get(i)));
+            returnList.add(getNearestSimulationWithParameterList(pList.get(i)));
         }
         return returnList;
     }
@@ -438,7 +438,7 @@ public class SimulationCache {
         parameter tmpParameterA, tmpParameterB;
         ArrayList<parameter> listA = this.getParameterListWithoutIgnorableParameters(mylistA);
         ArrayList<parameter> listB = this.getParameterListWithoutIgnorableParameters(mylistB);
-
+        
         if (listA.size() != listB.size()) {
             support.log("Size of needle-ParameterList is different from haystack-ParameterList.", typeOfLogLevel.INFO);
             support.log("Size of A: " + listA.size() + " vs. Size of B: " + listB.size(), typeOfLogLevel.INFO);
@@ -446,15 +446,15 @@ public class SimulationCache {
             for (int i = 0; i < listA.size(); i++) {
                 support.log(listA.get(i).getName(), typeOfLogLevel.INFO);
             }
-
+            
             support.log("List of ParameterNames of B is:", typeOfLogLevel.INFO);
             for (int i = 0; i < listB.size(); i++) {
                 support.log(listB.get(i).getName(), typeOfLogLevel.INFO);
             }
-
+            
             return false;
         }
-
+        
         for (int i = 0; i < listA.size(); i++) {
             tmpParameterA = listA.get(i);
             nameA = support.translateParameterNameFromLogFileToTable(tmpParameterA.getName());
@@ -504,11 +504,11 @@ public class SimulationCache {
         setLocalSimulationCounter(simulationCounter);
         ArrayList<SimulationType> mySimulationList = new ArrayList<>();
         ArrayList<parameter> parameterSet;
-
+        
         for (int i = 0; i < parameterSetList.size(); i++) {
             parameterSet = parameterSetList.get(i);
             support.addDummyParameterCPUTimeIfNeeded(parameterSet);
-
+            
             support.spinInLabel();
             support.setStatusText("Searching in cache: " + i * 100 / parameterSetList.size() + " %");
 
@@ -521,7 +521,7 @@ public class SimulationCache {
             } else {
                 listOfUnknownParametersets.add(parameterSet);
             }
-
+            
             if (support.isCancelEverything()) {
                 return mySimulationList;
             }
@@ -586,24 +586,25 @@ public class SimulationCache {
      * @param SimulationToAdd Simulation to be added
      */
     public void addSimulationToCache(SimulationType SimulationToAdd) {
+        SimulationToAdd.setIsFromCache(true);
         support.addDummyParameterCPUTimeIfNeeded(SimulationToAdd.getListOfParameters());
         SimulationToAdd.updateHashValue();
         if (!simulationHashmap.containsKey(SimulationToAdd.getHashValue())) {
             support.log("Will add Simulation with hash: " + SimulationToAdd.getHashValue() + " to cache.", typeOfLogLevel.VERBOSE);
             support.printListOfParameters(SimulationToAdd.getListOfParameters(), typeOfLogLevel.VERBOSE);
-
+            
             if (this.getSimulationList().size() >= 1) {
                 support.log("Cache contains Hash: " + this.getSimulationList().get(0).getHashValue(), typeOfLogLevel.VERBOSE);
                 support.printListOfParameters(this.getSimulationList().get(0).getListOfParameters(), typeOfLogLevel.VERBOSE);
             }
-
+            
             this.getSimulationList().add(SimulationToAdd);
             simulationHashmap.put(SimulationToAdd.getHashValue(), SimulationToAdd);
-
+            
         } else {
             support.log("Simulation with hash: " + SimulationToAdd.getHashValue() + " already in cache.", typeOfLogLevel.VERBOSE);
         }
-
+        
     }
 
     /**
