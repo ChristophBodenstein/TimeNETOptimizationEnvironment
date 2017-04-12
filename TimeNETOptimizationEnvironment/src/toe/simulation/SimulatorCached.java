@@ -64,7 +64,7 @@ public class SimulatorCached extends Thread implements Simulator {
 
         if ((this.myListOfSimulations == null) || (this.myListOfSimulations.size() != listOfParameterSetsTMP.size())) {
             support.log("Not all Simulations found in local Cache.  Will take next possible parametersets from cache.", typeOfLogLevel.INFO);
-            myListOfSimulations = this.mySimulationCache.getNearestParserListFromListOfParameterSets(listOfParameterSetsTMP);
+            myListOfSimulations = this.mySimulationCache.getNearestSimulationListFromListOfParameterSets(listOfParameterSetsTMP);
         }
 
         if (this.myListOfSimulations != null) {
