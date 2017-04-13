@@ -23,6 +23,8 @@ import toe.typedef.typeOfLogLevel;
 public class SimulatorCached extends Thread implements Simulator {
 
     SimulationCache mySimulationCache = null;
+    //Temporary simulation cache, to story current simulation results. Results find in this cache are taged as "isCache", other results are tagged as fresh simulations
+    SimulationCache myTmpSimulationCache = support.getTmpSimulationCache();
     ArrayList<SimulationType> myListOfSimulations = null;
     final String logFileName;
     ArrayList<ArrayList<parameter>> listOfParameterSetsTMP = null;
@@ -53,6 +55,14 @@ public class SimulatorCached extends Thread implements Simulator {
     @Override
     public void run() {
         ArrayList<ArrayList<parameter>> listOfUnKnownParametersets = new ArrayList<>();
+        //Look in tmp cache for simulations, do not look for nearest results
+        //tag results as isCached
+        //add results to myListOfSimulation
+        
+        //Look in global cache for simulations, also look for neares results
+        //tag results as !isCached
+        //add results to myListOfSimiulations
+        //add results to tmp cache
         if (mySimulationCache != null) {
             this.myListOfSimulations = mySimulationCache.getListOfCompletedSimulations(listOfParameterSetsTMP, support.getGlobalSimulationCounter(), listOfUnKnownParametersets);
             if (this.myListOfSimulations != null) {

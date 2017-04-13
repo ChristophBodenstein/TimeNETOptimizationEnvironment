@@ -142,6 +142,7 @@ public class support {
     private static String pathToR = null;//The path to R
     private static String tmpPath = null;//The path, where all simulation files (xml), source files and logs will be stored
     private static SimulationCache mySimulationCache = null;
+    private static SimulationCache myTmpSimulationCache = new SimulationCache(); //Secondary simulation cache, used in cache-only simulation
     private static boolean cachedSimulationAvailable = false;
     private static boolean distributedSimulationAvailable = true;
     private static boolean localSimulationAvailable = false;
@@ -567,7 +568,7 @@ public class support {
     }
 
     /**
-     * Creates a new Cache for all simulations Used to "emptyY the cache-Object
+     * Creates a new Cache for all simulations Used to "empty" the cache-Object
      * TODO: Maybe empty the cache instead of creating a new cache object?
      */
     public static void emptyCache() {
@@ -577,6 +578,25 @@ public class support {
     }
 
     /**
+     * Empty temporary cache, used in cache-only simulation
+     */
+    public static void emptyTmpCache() {
+        log("Will clear temporary cache, used in cache-only simulation.", typeOfLogLevel.INFO);
+        myTmpSimulationCache = new SimulationCache();
+    }
+
+    /**
+     * Get the temporary simulation cache, used in cache-only simulation
+     *
+     * @return temporary simulation cache
+     */
+    public static SimulationCache getTmpSimulationCache() {
+        return myTmpSimulationCache;
+    }
+
+    /**
+     * Return true if cached simulation is available
+     *
      * @return the cachedSimulationAvailable
      */
     public static boolean isCachedSimulationAvailable() {
@@ -584,6 +604,8 @@ public class support {
     }
 
     /**
+     * Set to true if cached simulation is available
+     *
      * @param aCachedSimulationEnabled the cachedSimulationAvailable to set
      */
     public static void setCachedSimulationEnabled(boolean aCachedSimulationEnabled) {
@@ -628,8 +650,8 @@ public class support {
     /**
      * Adds Lines to logfile with the data from given parserlist
      *
-     * @param simulationList List of parsers, which includes the data from one simulation
-     * each
+     * @param simulationList List of parsers, which includes the data from one
+     * simulation each
      * @param logFileName The path and name of the general log file
      */
     public static void addLinesToLogFileFromListOfSimulations(ArrayList<SimulationType> simulationList, String logFileName) {
@@ -703,7 +725,8 @@ public class support {
     /**
      * Adds Lines to logfile with the data from given SimulationType
      *
-     * @see addLinesToLogFileFromListOfParser#addLinesToLogFileFromListOfSimulations
+     * @see
+     * addLinesToLogFileFromListOfParser#addLinesToLogFileFromListOfSimulations
      * @param p SimulationType with data from simgle logfile
      * @param logFileName name of logfile, data will be appended
      */
