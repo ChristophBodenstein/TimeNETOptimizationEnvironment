@@ -299,7 +299,7 @@ public class SimulatorLocal extends Thread implements Simulator, nativeProcessCa
      * @return List of completed simulation parsers
      */
     @Override
-    public ArrayList<SimulationType> getListOfCompletedSimulationParsers() {
+    public ArrayList<SimulationType> getListOfCompletedSimulations() {
         return this.listOfCompletedSimulationParsers;
     }
 

@@ -495,7 +495,7 @@ public class SimulatorDistributed extends Thread implements Simulator {
      * @return List of completed simulation parsers
      */
     @Override
-    public ArrayList<SimulationType> getListOfCompletedSimulationParsers() {
+    public ArrayList<SimulationType> getListOfCompletedSimulations() {
         return this.listOfCompletedSimulationParsers;
     }
 

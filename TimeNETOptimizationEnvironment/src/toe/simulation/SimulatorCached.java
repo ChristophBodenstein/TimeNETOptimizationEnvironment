@@ -116,7 +116,7 @@ public class SimulatorCached extends Thread implements Simulator {
      * from the log-files
      */
     @Override
-    public ArrayList<SimulationType> getListOfCompletedSimulationParsers() {
+    public ArrayList<SimulationType> getListOfCompletedSimulations() {
         return this.myListOfSimulations;
     }
 
@@ -139,7 +139,7 @@ public class SimulatorCached extends Thread implements Simulator {
     }
 
     /**
-     * Returns the calculated optimimum For Benchmark-Functions and Cache-only
+     * Returns the calculated optimum For Benchmark-Functions and Cache-only
      * simulations this can be calculated. For other simulators, this must be
      * given by user.
      *

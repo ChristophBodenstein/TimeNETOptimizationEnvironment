@@ -104,7 +104,7 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
                 support.log("Problem waiting for end of non-cache-simulator.", typeOfLogLevel.ERROR);
             }
         }
-        ArrayList<SimulationType> simulationResults = mySimulator.getListOfCompletedSimulationParsers();
+        ArrayList<SimulationType> simulationResults = mySimulator.getListOfCompletedSimulations();
         population = getPopulationFromSimulationResults(simulationResults);
         population = normalize(population);
 
@@ -145,7 +145,7 @@ public class OptimizerMVMO extends OptimizerPopulationBased implements Runnable,
                     support.log("Problem waiting for end of non-cache-simulator.", typeOfLogLevel.INFO);
                 }
             }
-            simulationResults = mySimulator.getListOfCompletedSimulationParsers();
+            simulationResults = mySimulator.getListOfCompletedSimulations();
             support.addLinesToLogFileFromListOfSimulations(simulationResults, logFileName);
             population = tryAddCandidate(population, simulationResults);
 

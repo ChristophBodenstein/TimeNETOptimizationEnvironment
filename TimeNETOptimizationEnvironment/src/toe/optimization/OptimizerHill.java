@@ -120,11 +120,11 @@ public class OptimizerHill implements Runnable, Optimizer {
                     /* Simulation result after first try. */
                     break;
             }
-        } while (mySimulator.getListOfCompletedSimulationParsers().size() < 1);
+        } while (mySimulator.getListOfCompletedSimulations().size() < 1);
 
-        support.addLinesToLogFileFromListOfSimulations(mySimulator.getListOfCompletedSimulationParsers(), logFileName);
-        this.historyOfParsers = support.appendListOfParsers(historyOfParsers, mySimulator.getListOfCompletedSimulationParsers());
-        currentSolution = mySimulator.getListOfCompletedSimulationParsers().get(0);
+        support.addLinesToLogFileFromListOfSimulations(mySimulator.getListOfCompletedSimulations(), logFileName);
+        this.historyOfParsers = support.appendListOfParsers(historyOfParsers, mySimulator.getListOfCompletedSimulations());
+        currentSolution = mySimulator.getListOfCompletedSimulations().get(0);
         nextSolution = currentSolution;
         bestSolution = currentSolution;
         ArrayList<SimulationType> listOfCompletedSimulations;
@@ -160,9 +160,9 @@ public class OptimizerHill implements Runnable, Optimizer {
                         /* Simulation result after first try. */
                         break;
                 }
-            } while (mySimulator.getListOfCompletedSimulationParsers().size() < 1);
+            } while (mySimulator.getListOfCompletedSimulations().size() < 1);
 
-            listOfCompletedSimulations = mySimulator.getListOfCompletedSimulationParsers();
+            listOfCompletedSimulations = mySimulator.getListOfCompletedSimulations();
             support.log("List of Simulation results is: " + listOfCompletedSimulations.size() + " elements big.", typeOfLogLevel.INFO);
             //Shrink to first element of List
             listOfCompletedSimulations = support.shrinkArrayListToFirstMember(listOfCompletedSimulations);

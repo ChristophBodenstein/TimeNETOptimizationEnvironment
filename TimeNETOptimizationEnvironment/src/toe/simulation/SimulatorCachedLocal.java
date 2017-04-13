@@ -97,12 +97,12 @@ public class SimulatorCachedLocal extends SimulatorCached {
                 }
             }
 
-            myListOfCompletedSimulations.addAll(myLocalSimulator.getListOfCompletedSimulationParsers());
+            myListOfCompletedSimulations.addAll(myLocalSimulator.getListOfCompletedSimulations());
             status = myListOfCompletedSimulations.size() * 100 / listOfParameterSetsTMP.size();
 
             support.log("Size of resultList is " + myListOfCompletedSimulations.size(), typeOfLogLevel.INFO);
 
-            this.mySimulationCache.addListOfSimulationsToCache(myLocalSimulator.getListOfCompletedSimulationParsers());
+            this.mySimulationCache.addListOfSimulationsToCache(myLocalSimulator.getListOfCompletedSimulations());
             support.log("Size of SimulationCache: " + this.mySimulationCache.getCacheSize(), typeOfLogLevel.INFO);
         }
 
@@ -147,7 +147,7 @@ public class SimulatorCachedLocal extends SimulatorCached {
      * from the log-files
      */
     @Override
-    public ArrayList<SimulationType> getListOfCompletedSimulationParsers() {
+    public ArrayList<SimulationType> getListOfCompletedSimulations() {
         return this.myListOfCompletedSimulations;
     }
 

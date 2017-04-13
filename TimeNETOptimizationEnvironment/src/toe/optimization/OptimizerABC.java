@@ -181,7 +181,7 @@ public class OptimizerABC extends OptimizerPopulationBased implements Runnable, 
             }
         }
 
-        ArrayList<SimulationType> simulationResults = mySimulator.getListOfCompletedSimulationParsers();
+        ArrayList<SimulationType> simulationResults = mySimulator.getListOfCompletedSimulations();
         population = getPopulationFromSimulationResults(simulationResults);
 
         while (optiCycleCounter < this.maxNumberOfOptiCycles) {
@@ -206,7 +206,7 @@ public class OptimizerABC extends OptimizerPopulationBased implements Runnable, 
                         support.log("Problem waiting for end of non-cache-simulator.", typeOfLogLevel.ERROR);
                     }
                 }
-                source = mySimulator.getListOfCompletedSimulationParsers();
+                source = mySimulator.getListOfCompletedSimulations();
                 population.set(fs, source);
                 support.addLinesToLogFileFromListOfSimulations(source, logFileName);
             }
@@ -252,7 +252,7 @@ public class OptimizerABC extends OptimizerPopulationBased implements Runnable, 
      support.waitForEndOfSimulator(mySimulator, optiCycleCounter, support.DEFAULT_TIMEOUT);
      int simulationCounter = 0;
         
-     ArrayList<SimulationType> simulationResults = mySimulator.getListOfCompletedSimulationParsers();
+     ArrayList<SimulationType> simulationResults = mySimulator.getListOfCompletedSimulations();
      population = getPopulationFromSimulationResults(simulationResults);
         
      while(optiCycleCounter < this.maxNumberOfOptiCycles)
@@ -272,7 +272,7 @@ public class OptimizerABC extends OptimizerPopulationBased implements Runnable, 
      ArrayList<SimulationType> source = population.get(fs);
      mySimulator.initSimulator(getNextParameterSetAsArrayList(source), optiCycleCounter, false);
      support.waitForEndOfSimulator(mySimulator, optiCycleCounter, support.DEFAULT_TIMEOUT);
-     source = mySimulator.getListOfCompletedSimulationParsers();
+     source = mySimulator.getListOfCompletedSimulations();
      totalSimulations += source.size();
      population.set(fs, source);
      //support.addLinesToLogFileFromListOfSimulations(source, logFileName);

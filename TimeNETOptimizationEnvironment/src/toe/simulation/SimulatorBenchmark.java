@@ -76,7 +76,7 @@ public class SimulatorBenchmark extends Thread implements Simulator {
      * from the log-files
      */
     @Override
-    public ArrayList<SimulationType> getListOfCompletedSimulationParsers() {
+    public ArrayList<SimulationType> getListOfCompletedSimulations() {
         return this.myListOfSimulations;
     }
 

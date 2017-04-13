@@ -115,7 +115,7 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
                 support.log("Problem waiting for end of non-cache-simulator.", typeOfLogLevel.ERROR);
             }
         }
-        ArrayList<SimulationType> simulationResults = mySimulator.getListOfCompletedSimulationParsers();
+        ArrayList<SimulationType> simulationResults = mySimulator.getListOfCompletedSimulations();
 
         population = getPopulationFromSimulationResults(simulationResults);
         support.log("Population size is: " + population.size(), typeOfLogLevel.INFO);
@@ -153,7 +153,7 @@ public class OptimizerGenetic extends OptimizerPopulationBased implements Runnab
                     support.log("Problem waiting for end of non-cache-simulator.", typeOfLogLevel.ERROR);
                 }
             }
-            simulationResults = mySimulator.getListOfCompletedSimulationParsers();
+            simulationResults = mySimulator.getListOfCompletedSimulations();
             population = getPopulationFromSimulationResults(simulationResults);
             support.addLinesToLogFileFromListOfSimulations(simulationResults, logFileName);
 

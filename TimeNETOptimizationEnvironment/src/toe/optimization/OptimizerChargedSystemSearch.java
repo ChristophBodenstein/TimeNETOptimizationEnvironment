@@ -114,7 +114,7 @@ public class OptimizerChargedSystemSearch extends OptimizerPopulationBased imple
                 support.log("Problem waiting for end of non-cache-simulator.", typeOfLogLevel.ERROR);
             }
         }
-        ArrayList<SimulationType> simulationResults = mySimulator.getListOfCompletedSimulationParsers();
+        ArrayList<SimulationType> simulationResults = mySimulator.getListOfCompletedSimulations();
         population = getPopulationFromSimulationResults(simulationResults);
 
         //int simulationCounter = 0;
@@ -143,7 +143,7 @@ public class OptimizerChargedSystemSearch extends OptimizerPopulationBased imple
                     support.log("Problem waiting for end of non-cache-simulator.", typeOfLogLevel.ERROR);
                 }
             }
-            simulationResults = mySimulator.getListOfCompletedSimulationParsers();
+            simulationResults = mySimulator.getListOfCompletedSimulations();
             support.addLinesToLogFileFromListOfSimulations(simulationResults, logFileName);
             population = getPopulationFromSimulationResults(simulationResults);
 

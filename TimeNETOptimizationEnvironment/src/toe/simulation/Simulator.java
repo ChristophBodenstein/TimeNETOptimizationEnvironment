@@ -41,7 +41,7 @@ public interface Simulator {
      * @return List of completed simulations as parser-objects to be used for
      * optimization or export
      */
-    public ArrayList<SimulationType> getListOfCompletedSimulationParsers();
+    public ArrayList<SimulationType> getListOfCompletedSimulations();
 
     /**
      *
