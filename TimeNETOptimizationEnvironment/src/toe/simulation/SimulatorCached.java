@@ -139,8 +139,8 @@ public class SimulatorCached extends Thread implements Simulator {
     }
 
     /**
-     * Returns the calulated optimimum For Benchmark-Functions and Cache-only
-     * simulations this can be caluclated. For other simulators, this must be
+     * Returns the calculated optimimum For Benchmark-Functions and Cache-only
+     * simulations this can be calculated. For other simulators, this must be
      * given by user.
      *
      * @return
