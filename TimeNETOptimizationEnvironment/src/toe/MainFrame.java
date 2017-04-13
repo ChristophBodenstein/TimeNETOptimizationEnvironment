@@ -2514,6 +2514,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
     private void reloadFromCacheIfNeeded() {
         //Do not reload, if cache-only is selected
         if (support.getChosenSimulatorType().equals(typeOfSimulator.Cache_Only)) {
+            support.emptyTmpCache();
             return;
         }
 
