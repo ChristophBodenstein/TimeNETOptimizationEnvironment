@@ -21,7 +21,7 @@ import toe.typedef.typeOfLogLevel;
  * @author Christoph Bodenstein
  */
 public class SimulatorCached extends Thread implements Simulator {
-
+    
     SimulationCache mySimulationCache = null;
     //Temporary simulation cache, to story current simulation results. Results find in this cache are taged as "isCache", other results are tagged as fresh simulations
     SimulationCache myTmpSimulationCache = support.getTmpSimulationCache();
@@ -51,7 +51,7 @@ public class SimulatorCached extends Thread implements Simulator {
         //Start this thread
         new Thread(this).start();
     }
-
+    
     @Override
     public void run() {
         ArrayList<ArrayList<parameter>> listOfUnKnownParametersets = new ArrayList<>();
@@ -64,62 +64,74 @@ public class SimulatorCached extends Thread implements Simulator {
         //add results to myListOfSimiulations
         //add results to tmp cache
         if (myTmpSimulationCache != null && mySimulationCache != null) {
-            this.myListOfSimulations = myTmpSimulationCache.getListOfCompletedSimulations(listOfParameterSetsTMP, support.getGlobalSimulationCounter(), listOfUnKnownParametersets);
-            if (this.myListOfSimulations != null) {
-                support.setGlobalSimulationCounter(support.getGlobalSimulationCounter() + myListOfSimulations.size());
-                for (int i = 0; i < myListOfSimulations.size(); i++) {
-                    myListOfSimulations.get(i).setIsFromCache(true);
+            ArrayList<SimulationType> tmpListOfSimulations = myTmpSimulationCache.getListOfCompletedSimulations(listOfParameterSetsTMP, support.getGlobalSimulationCounter(), listOfUnKnownParametersets);
+            if (tmpListOfSimulations != null) {
+                support.setGlobalSimulationCounter(support.getGlobalSimulationCounter() + tmpListOfSimulations.size());
+                for (int i = 0; i < tmpListOfSimulations.size(); i++) {
+                    SimulationType copyOfFoundSimulation = new SimulationType(tmpListOfSimulations.get(i));
+                    copyOfFoundSimulation.setIsFromCache(true);
+                    this.myListOfSimulations.add(copyOfFoundSimulation);
                 }
+            } else {
+                myListOfSimulations = new ArrayList<>();
             }
             if (this.myListOfSimulations.size() < listOfParameterSetsTMP.size()) {
                 //Some simulation results are missing
                 support.log("Not all Simulations found in local Cache.  Will lookup in global cache.", typeOfLogLevel.INFO);
                 ArrayList<ArrayList<parameter>> listofUnknownParametersetsInGlobalCache = new ArrayList<>();
-                ArrayList<SimulationType> tmpListOfSimulations = this.mySimulationCache.getListOfCompletedSimulations(listOfUnKnownParametersets, support.getGlobalSimulationCounter(), listofUnknownParametersetsInGlobalCache);
-
-                for (int i = 0; i < tmpListOfSimulations.size(); i++) {
-                    tmpListOfSimulations.get(i).setIsFromCache(false);
-                }
-                //Add found results to list of simulations
-                myListOfSimulations.addAll(tmpListOfSimulations);
-
-                if (myListOfSimulations.size() < listOfUnKnownParametersets.size()) {
-                    //Still some simulation results are missing...
-                    support.log("Not all Simulations found in local Cache.  Will take next possible parametersets from cache.", typeOfLogLevel.INFO);
-                    tmpListOfSimulations = this.mySimulationCache.getNearestSimulationListFromListOfParameterSets(listofUnknownParametersetsInGlobalCache);
+                tmpListOfSimulations = this.mySimulationCache.getListOfCompletedSimulations(listOfUnKnownParametersets, support.getGlobalSimulationCounter(), listofUnknownParametersetsInGlobalCache);
+                
+                if (tmpListOfSimulations != null && tmpListOfSimulations.size() > 0) {
                     for (int i = 0; i < tmpListOfSimulations.size(); i++) {
                         tmpListOfSimulations.get(i).setIsFromCache(false);
                     }
                     //Add found results to list of simulations
                     myListOfSimulations.addAll(tmpListOfSimulations);
                 }
+                
+                if (myListOfSimulations.size() < listOfUnKnownParametersets.size()) {
+                    //Still some simulation results are missing...
+                    support.log("Not all Simulations found in local Cache.  Will take next possible parametersets from cache.", typeOfLogLevel.INFO);
+                    tmpListOfSimulations = this.mySimulationCache.getNearestSimulationListFromListOfParameterSets(listofUnknownParametersetsInGlobalCache);
+                    if (tmpListOfSimulations != null && tmpListOfSimulations.size() > 0) {
+                        for (int i = 0; i < tmpListOfSimulations.size(); i++) {
+                            tmpListOfSimulations.get(i).setIsFromCache(false);
+                        }
+                        //Add found results to list of simulations
+                        myListOfSimulations.addAll(tmpListOfSimulations);
+                    }
+                }
             }
         } else {
             support.log("No cache available.", typeOfLogLevel.ERROR);
         }
-
+        
         if (this.myListOfSimulations != null) {
-            //copy parameterList of measure to parameter[] of SimulationType for later use
-            if (myListOfSimulations.size() > 0) {
-                //take first measure in SimulationType for list of parameters
-                if (myListOfSimulations.get(0).getMeasures().size() > 0) {
-                    for (int i = 0; i < myListOfSimulations.size(); ++i) {
-                        //MeasureType firstMeasure = myListOfSimulations.get(i).getMeasures().get(0);
-                        myListOfSimulations.get(i).setListOfParameters(listOfParameterSetsTMP.get(i));
-                    }
-                } else {
-                    support.log("No Measures found in parser.", typeOfLogLevel.ERROR);
-                }
-            } else {
-                support.log("List of parsers is empty.", typeOfLogLevel.INFO);
+            for (int i = 0; i < myListOfSimulations.size(); i++) {
+                myTmpSimulationCache.addSimulationToCache(new SimulationType(myListOfSimulations.get(i)));
             }
 
+            //copy parameterList of measure to parameter[] of SimulationType for later use
+//            if (myListOfSimulations.size() > 0) {
+//                //take first measure in SimulationType for list of parameters
+//                if (myListOfSimulations.get(0).getMeasures().size() > 0) {
+//                    for (int i = 0; i < myListOfSimulations.size(); ++i) {
+//                        //MeasureType firstMeasure = myListOfSimulations.get(i).getMeasures().get(0);
+//                        //myListOfSimulations.get(i).setListOfParameters(listOfParameterSetsTMP.get(i));
+//                        //myTmpSimulationCache.addSimulationToCache(myListOfSimulations.get(i));
+//                    }
+//                } else {
+//                    support.log("No Measures found in parser.", typeOfLogLevel.ERROR);
+//                }
+//            } else {
+//                support.log("List of parsers is empty.", typeOfLogLevel.INFO);
+//            }
             if (log) {
                 //Print out a log file    
                 support.addLinesToLogFileFromListOfSimulations(myListOfSimulations, logFileName);
             }
         }
-
+        
         synchronized (this) {
             notify();
         }
@@ -186,7 +198,7 @@ public class SimulatorCached extends Thread implements Simulator {
         double maxValue = Double.NEGATIVE_INFINITY;//Maximum absolute value * -1
         MeasureType tmpMeasure;
         SimulationType tmpSim;
-
+        
         try {
             tmpMeasure = mySimulationList.get(0).getMeasureByName(targetMeasure.getMeasureName());
             minValue = tmpMeasure.getMeanValue();
@@ -194,7 +206,7 @@ public class SimulatorCached extends Thread implements Simulator {
         } catch (Exception e) {
             //INFINITY-Values will be used
         }
-
+        
         int numberOfOptimalSimulation = Integer.MIN_VALUE;
         for (int i = 0; i < mySimulationList.size(); i++) {
             tmpSim = mySimulationList.get(i);
@@ -212,10 +224,10 @@ public class SimulatorCached extends Thread implements Simulator {
                 maxValue = tmpV;
             }
         }
-
+        
         if (numberOfOptimalSimulation >= 0) {
             support.log("Found optimal Simulation for Measure " + targetMeasure.getMeasureName(), typeOfLogLevel.INFO);
-
+            
         } else {
             support.log("No Optimum Solution for " + targetMeasure.getMeasureName() + " could be found in cache.", typeOfLogLevel.INFO);
             return null;
@@ -226,7 +238,7 @@ public class SimulatorCached extends Thread implements Simulator {
         tmpMeasure.setTargetValue(targetMeasure.getTargetValue(), targetMeasure.getTargetTypeOf());
         support.log(support.padRight("Min", 10) + " | " + support.padRight("Mean", 10) + " | " + support.padRight("Max", 10), typeOfLogLevel.INFO);
         support.log(support.padRight(Double.toString(tmpMeasure.getMinValue()), 10) + " | " + support.padRight(Double.toString(tmpMeasure.getMeanValue()), 10) + " | " + support.padRight(Double.toString(tmpMeasure.getMaxValue()), 10), typeOfLogLevel.INFO);
-
+        
         SimulationType resultSimulation = mySimulationList.get(numberOfOptimalSimulation);
         /*
          * Set start-end value for every parameter based on Parameterbase
@@ -244,12 +256,12 @@ public class SimulatorCached extends Thread implements Simulator {
         }
         return resultSimulation;
     }
-
+    
     @Override
     public int cancelAllSimulations() {
         return 0;
     }
-
+    
     @Override
     public String getLogfileName() {
         return this.logFileName;

@@ -49,22 +49,22 @@ public class SimulationType {
     /**
      * the copy-constructor for parser objects
      *
-     * @param originalParser the parser to be copied
+     * @param originalSimulation the parser to be copied
      */
-    public SimulationType(SimulationType originalParser) {
-        this.logName = originalParser.logName;
-        this.SimulationType = originalParser.SimulationType;
+    public SimulationType(SimulationType originalSimulation) {
+        this.logName = originalSimulation.logName;
+        this.SimulationType = originalSimulation.SimulationType;
         this.Measures = new ArrayList<>();
-        for (int i = 0; i < originalParser.getMeasures().size(); ++i) {
-            MeasureType newMeasure = new MeasureType(originalParser.getMeasures().get(i));
+        for (int i = 0; i < originalSimulation.getMeasures().size(); ++i) {
+            MeasureType newMeasure = new MeasureType(originalSimulation.getMeasures().get(i));
             this.Measures.add(newMeasure);
         }
-        this.tmpStrings = originalParser.tmpStrings;
-        this.parseStatus = originalParser.parseStatus;
-        this.CPUTime = originalParser.CPUTime;
+        this.tmpStrings = originalSimulation.tmpStrings;
+        this.parseStatus = originalSimulation.parseStatus;
+        this.CPUTime = originalSimulation.CPUTime;
 
         this.parameterList = new ArrayList<>();
-        ArrayList<parameter> originalParamterArray = originalParser.getListOfParameters();
+        ArrayList<parameter> originalParamterArray = originalSimulation.getListOfParameters();
         for (int i = 0; i < originalParamterArray.size(); ++i) {
             try {
                 parameter p = (parameter) originalParamterArray.get(i).clone();
@@ -74,9 +74,9 @@ public class SimulationType {
             }
 
         }
-        this.xmlFileName = originalParser.xmlFileName;
-        this.isFromCache = originalParser.isFromCache;
-        this.isFromDistributedSimulation = originalParser.isFromDistributedSimulation;
+        this.xmlFileName = originalSimulation.xmlFileName;
+        this.isFromCache = originalSimulation.isFromCache;
+        this.isFromDistributedSimulation = originalSimulation.isFromDistributedSimulation;
     }
 
     /**
