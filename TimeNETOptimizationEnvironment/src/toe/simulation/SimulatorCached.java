@@ -58,23 +58,44 @@ public class SimulatorCached extends Thread implements Simulator {
         //Look in tmp cache for simulations, do not look for nearest results
         //tag results as isCached
         //add results to myListOfSimulation
-        
+
         //Look in global cache for simulations, also look for neares results
         //tag results as !isCached
         //add results to myListOfSimiulations
         //add results to tmp cache
-        if (mySimulationCache != null) {
-            this.myListOfSimulations = mySimulationCache.getListOfCompletedSimulations(listOfParameterSetsTMP, support.getGlobalSimulationCounter(), listOfUnKnownParametersets);
+        if (myTmpSimulationCache != null && mySimulationCache != null) {
+            this.myListOfSimulations = myTmpSimulationCache.getListOfCompletedSimulations(listOfParameterSetsTMP, support.getGlobalSimulationCounter(), listOfUnKnownParametersets);
             if (this.myListOfSimulations != null) {
                 support.setGlobalSimulationCounter(support.getGlobalSimulationCounter() + myListOfSimulations.size());
+                for (int i = 0; i < myListOfSimulations.size(); i++) {
+                    myListOfSimulations.get(i).setIsFromCache(true);
+                }
+            }
+            if (this.myListOfSimulations.size() < listOfParameterSetsTMP.size()) {
+                //Some simulation results are missing
+                support.log("Not all Simulations found in local Cache.  Will lookup in global cache.", typeOfLogLevel.INFO);
+                ArrayList<ArrayList<parameter>> listofUnknownParametersetsInGlobalCache = new ArrayList<>();
+                ArrayList<SimulationType> tmpListOfSimulations = this.mySimulationCache.getListOfCompletedSimulations(listOfUnKnownParametersets, support.getGlobalSimulationCounter(), listofUnknownParametersetsInGlobalCache);
+
+                for (int i = 0; i < tmpListOfSimulations.size(); i++) {
+                    tmpListOfSimulations.get(i).setIsFromCache(false);
+                }
+                //Add found results to list of simulations
+                myListOfSimulations.addAll(tmpListOfSimulations);
+
+                if (myListOfSimulations.size() < listOfUnKnownParametersets.size()) {
+                    //Still some simulation results are missing...
+                    support.log("Not all Simulations found in local Cache.  Will take next possible parametersets from cache.", typeOfLogLevel.INFO);
+                    tmpListOfSimulations = this.mySimulationCache.getNearestSimulationListFromListOfParameterSets(listofUnknownParametersetsInGlobalCache);
+                    for (int i = 0; i < tmpListOfSimulations.size(); i++) {
+                        tmpListOfSimulations.get(i).setIsFromCache(false);
+                    }
+                    //Add found results to list of simulations
+                    myListOfSimulations.addAll(tmpListOfSimulations);
+                }
             }
         } else {
-            support.log("No local Simulation file loaded. Simulation not possible.", typeOfLogLevel.ERROR);
-        }
-
-        if ((this.myListOfSimulations == null) || (this.myListOfSimulations.size() != listOfParameterSetsTMP.size())) {
-            support.log("Not all Simulations found in local Cache.  Will take next possible parametersets from cache.", typeOfLogLevel.INFO);
-            myListOfSimulations = this.mySimulationCache.getNearestSimulationListFromListOfParameterSets(listOfParameterSetsTMP);
+            support.log("No cache available.", typeOfLogLevel.ERROR);
         }
 
         if (this.myListOfSimulations != null) {
