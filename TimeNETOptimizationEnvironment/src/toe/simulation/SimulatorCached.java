@@ -55,14 +55,7 @@ public class SimulatorCached extends Thread implements Simulator {
     @Override
     public void run() {
         ArrayList<ArrayList<parameter>> listOfUnKnownParametersets = new ArrayList<>();
-        //Look in tmp cache for simulations, do not look for nearest results
-        //tag results as isCached
-        //add results to myListOfSimulation
-
-        //Look in global cache for simulations, also look for neares results
-        //tag results as !isCached
-        //add results to myListOfSimiulations
-        //add results to tmp cache
+        
         if (myTmpSimulationCache != null && mySimulationCache != null) {
             ArrayList<SimulationType> tmpListOfSimulations = myTmpSimulationCache.getListOfCompletedSimulations(listOfParameterSetsTMP, support.getGlobalSimulationCounter(), listOfUnKnownParametersets);
             if (tmpListOfSimulations != null) {
@@ -111,21 +104,6 @@ public class SimulatorCached extends Thread implements Simulator {
                 myTmpSimulationCache.addSimulationToCache(new SimulationType(myListOfSimulations.get(i)));
             }
 
-            //copy parameterList of measure to parameter[] of SimulationType for later use
-//            if (myListOfSimulations.size() > 0) {
-//                //take first measure in SimulationType for list of parameters
-//                if (myListOfSimulations.get(0).getMeasures().size() > 0) {
-//                    for (int i = 0; i < myListOfSimulations.size(); ++i) {
-//                        //MeasureType firstMeasure = myListOfSimulations.get(i).getMeasures().get(0);
-//                        //myListOfSimulations.get(i).setListOfParameters(listOfParameterSetsTMP.get(i));
-//                        //myTmpSimulationCache.addSimulationToCache(myListOfSimulations.get(i));
-//                    }
-//                } else {
-//                    support.log("No Measures found in parser.", typeOfLogLevel.ERROR);
-//                }
-//            } else {
-//                support.log("List of parsers is empty.", typeOfLogLevel.INFO);
-//            }
             if (log) {
                 //Print out a log file    
                 support.addLinesToLogFileFromListOfSimulations(myListOfSimulations, logFileName);
