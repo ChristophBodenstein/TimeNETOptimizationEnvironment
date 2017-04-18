@@ -586,7 +586,7 @@ public class SimulationCache {
      * @param SimulationToAdd Simulation to be added
      */
     public void addSimulationToCache(SimulationType SimulationToAdd) {
-        SimulationToAdd.setIsFromCache(true);
+        //Maybe deep copy simulation object and set isFromCache=true ?
         support.addDummyParameterCPUTimeIfNeeded(SimulationToAdd.getListOfParameters());
         SimulationToAdd.updateHashValue();
         if (!simulationHashmap.containsKey(SimulationToAdd.getHashValue())) {
