@@ -48,6 +48,8 @@ public class SimulatorCached extends Thread implements Simulator {
     public void initSimulator(ArrayList<ArrayList<parameter>> listOfParameterSetsTMP, boolean log) {
         this.listOfParameterSetsTMP = listOfParameterSetsTMP;
         this.log = log;
+        this.myListOfSimulations = new ArrayList<>();
+        this.myTmpSimulationCache = support.getTmpSimulationCache();
         //Start this thread
         new Thread(this).start();
     }
