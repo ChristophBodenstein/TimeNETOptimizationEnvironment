@@ -20,7 +20,7 @@ import toe.typedef.typeOfLogLevel;
  * @author Christoph Bodenstein
  */
 public class OptimizerSimAnnealing extends OptimizerHill implements Runnable, Optimizer {
-
+    
     private int accepted = 0, generated = 0;
     private double D;
     private double c;
@@ -60,8 +60,7 @@ public class OptimizerSimAnnealing extends OptimizerHill implements Runnable, Op
         c = c * Math.exp(-Math.log(support.getOptimizerPreferences().getPref_TAnnealScale(phase) / this.D));
         actualTempCost = support.getOptimizerPreferences().getPref_MaxTempCost(phase);
         actualTempParameter = support.getOptimizerPreferences().getPref_MaxTempParameter(phase);
-        nameOfdummyLogfile = this.logFileName;
-        nameOfdummyLogfile = support.removeExtention(nameOfdummyLogfile) + "_SA_Temperatures.csv";
+        this.setDummyLogFileName(this.logFileName);
         support.addLinesToLogFileFromListOfSimulations(null, nameOfdummyLogfile);
         this.optimized = false;
     }
@@ -93,26 +92,26 @@ public class OptimizerSimAnnealing extends OptimizerHill implements Runnable, Op
                 if (actualTempParameter > support.getOptimizerPreferences().getPref_MaxTempParameter(phase)) {
                     actualTempParameter = support.getOptimizerPreferences().getPref_MaxTempParameter(phase);
                 }
-
+                
                 actualTempCost = (1 / denominator) * support.getOptimizerPreferences().getPref_MaxTempCost(phase);
                 if (actualTempCost > support.getOptimizerPreferences().getPref_MaxTempCost(phase)) {
                     actualTempCost = support.getOptimizerPreferences().getPref_MaxTempCost(phase);
                 }
-
+                
                 break;
-
+            
             case FastAnnealing:
                 actualTempParameter = (1 / (double) generated) * support.getOptimizerPreferences().getPref_MaxTempParameter(phase);
                 actualTempCost = (1 / (double) generated) * support.getOptimizerPreferences().getPref_MaxTempCost(phase);
                 break;
-
+            
             case VeryFastAnnealing:
                 actualTempParameter = Math.exp(-c * Math.pow((double) generated, 1 / D)) * support.getOptimizerPreferences().getPref_MaxTempParameter(phase);
                 actualTempCost = Math.exp(-c * Math.pow((double) accepted, 1 / D)) * support.getOptimizerPreferences().getPref_MaxTempCost(phase);
-
+                
                 break;
         }
-
+        
         support.log("Actual Temp for Parameters: " + actualTempParameter, typeOfLogLevel.INFO);
         support.log("Actual Temp for Cost: " + actualTempCost, typeOfLogLevel.INFO);
         //Eject if Temperature is lower then Epsilon
@@ -126,9 +125,9 @@ public class OptimizerSimAnnealing extends OptimizerHill implements Runnable, Op
         //If new cost is lower then previous then break and accept new solution
         if (getActualDistance(nextSolution) < getActualDistance(bestSolution)) {
             bestSolution = nextSolution;
-
+            
             double delta = getActualDistance(nextSolution) - getActualDistance(currentSolution);
-
+            
             if ((delta < 0) || (Math.random() < (Math.exp(-delta / actualTempCost)))) {
                 currentSolution = nextSolution;
                 this.accepted++;
@@ -149,24 +148,24 @@ public class OptimizerSimAnnealing extends OptimizerHill implements Runnable, Op
     protected ArrayList<parameter> getNextParameterset(ArrayList<parameter> actualParameterset) {
         ArrayList<parameter> newParameterset = support.getCopyOfParameterSet(parameterBase);
         ArrayList<parameter> listOfChangableParameters = support.getListOfChangableParameters(newParameterset);
-
+        
         support.log("TempParameter:" + actualTempParameter + " and TempCost:" + actualTempCost, typeOfLogLevel.INFO);
         for (int i = 0; i < listOfChangableParameters.size(); i++) {
-
+            
             parameter p = listOfChangableParameters.get(i);
             double sign;
             double distanceMax = p.getEndValue() - p.getStartValue();
             double r;
-
+            
             double nextValue = p.getEndValue() + 1;
             double simpleValue;
-
+            
             while ((nextValue < p.getStartValue() || nextValue > p.getEndValue()) && (!support.isCancelEverything())) {
                 //while(r<1){
                 r = Math.random();
                 r = 1 - (r * 2);
                 r = r + 0.01;
-
+                
                 sign = Math.signum(r);
 
                 //Calculation of Standard nextValue
@@ -191,7 +190,7 @@ public class OptimizerSimAnnealing extends OptimizerHill implements Runnable, Op
                 //Calculation of simple nextValue
                 double range = (p.getEndValue() - p.getStartValue());
                 simpleValue = Math.round(Math.random() * range * actualTempParameter);
-
+                
                 switch (support.getOptimizerPreferences().getPref_SA_CalculationOfNextParameterset(phase)) {
                     default:
                         //Do nothing
@@ -212,63 +211,85 @@ public class OptimizerSimAnnealing extends OptimizerHill implements Runnable, Op
                         break;
                     case SimpleStepwise:
                         support.log("SimpleValue to add is " + simpleValue, typeOfLogLevel.INFO);
-
+                        
                         if (Math.random() >= 0.5) {
                             nextValue = p.getValue() + Math.round(simpleValue / p.getStepping()) * p.getStepping();
                         } else {
                             nextValue = p.getValue() - Math.round(simpleValue / p.getStepping()) * p.getStepping();
                         }
                         break;
-
+                    
                 }
 
                 //Normalize between min and max value
                 nextValue = Math.min(nextValue, p.getEndValue());
                 nextValue = Math.max(nextValue, p.getStartValue());
-
+                
                 support.log("Try to set value to: " + nextValue, typeOfLogLevel.INFO);
             }
-
+            
             p.setValue(nextValue);
             support.log("Setting Parameter " + p.getName() + " to Value " + p.getValue() + ".", typeOfLogLevel.INFO);
-
+            
         }
 
         //Log the Temperature-Data to a seperate file
         parameter parameterTempParameter = new parameter();
         parameterTempParameter.setName(typedef.listOfParametersToIgnore[0]);
         parameterTempParameter.setValue(actualTempParameter);
-
+        
         parameter parameterCostParameter = new parameter();
         parameterCostParameter.setName(typedef.listOfParametersToIgnore[1]);
         parameterCostParameter.setValue(actualTempCost);
-
+        
         ArrayList<parameter> dummyParameterset = new ArrayList<>();
-
+        
         dummyParameterset.add(parameterCostParameter);
         dummyParameterset.add(parameterTempParameter);
-
+        
         MeasureType dummyMeasure = new MeasureType();
         dummyMeasure.setMeasureName("SimAnnealingTemperature");
         ArrayList<MeasureType> dummyMeasureList = new ArrayList<>();
-
+        
         dummyMeasureList.add(dummyMeasure);
-
+        
         SimulationType dummySim = new SimulationType();
         dummySim.setListOfParameters(dummyParameterset);
         dummySim.setMeasures(dummyMeasureList);
-
+        
         ArrayList<SimulationType> dummySimulationTypeList = new ArrayList<>();
         dummySimulationTypeList.add(dummySim);
-
+        
         support.addLinesToLogFileFromListOfSimulations(dummySimulationTypeList, nameOfdummyLogfile);
 
         //End of logging the temperatures
         if (support.isCancelEverything()) {
             return null;
         }
-
+        
         return newParameterset;
     }
 
+    /**
+     * *
+     * Sets the name of dummy logfile for temperatures, appends a fix string
+     *
+     * @param tmpName
+     */
+    private void setDummyLogFileName(String tmpName) {
+        this.nameOfdummyLogfile = support.removeExtention(tmpName) + "_SA_Temperatures.csv";
+    }
+
+    /**
+     * Set the logfilename this is useful for multi-optimization or if you like
+     * specific names for your logfiles
+     *
+     * @param name Name (path) of logfile
+     */
+    @Override
+    public void setLogFileName(String name) {
+        this.logFileName = name;
+        this.setDummyLogFileName(name);
+    }
+    
 }

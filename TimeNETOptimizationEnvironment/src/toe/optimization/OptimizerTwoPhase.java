@@ -185,8 +185,8 @@ public class OptimizerTwoPhase implements Runnable, Optimizer {
             //Factory cannot be used here...
             myOptimizer = new OptimizerSimAnnealing(phaseCounter);
             //SimOptiFactory.getOptimizer(support.getOptimizerPreferences().getPref_MP_typeOfUsedMultiPhaseOptimization());
-            myOptimizer.initOptimizer();
             myOptimizer.setLogFileName(this.logFileName);
+            myOptimizer.initOptimizer();
 
             //Wait for Optimizer to end
             while (myOptimizer.getOptimum() == null) {
