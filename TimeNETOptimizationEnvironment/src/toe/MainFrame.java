@@ -6,7 +6,6 @@
  */
 package toe;
 
-import toe.simulation.SimulationCache;
 import toe.simulation.Simulator;
 import toe.simulation.SimulatorWebSlave;
 import toe.plot.RPlugin;
@@ -69,7 +68,6 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
     ArrayList<Long> ListOfParameterSetIds = new ArrayList<>();
     private int sizeOfDesignSpace;
     private String pathToTimeNet = "";
-    private SimulationCache mySimulationCache = null;
     private String pathToLastSimulationCache = "";
     private SimulationTypeComboBoxModel mySimulationTypeModel = new SimulationTypeComboBoxModel(typeOfSimulator.values());
     SimulatorWebSlave mySlave = new SimulatorWebSlave();
@@ -380,10 +378,10 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
      */
     private boolean checkIfCachedSimulationIsPossible() {
 
-        if ((mySimulationCache != null) && (mySimulationCache.getCacheSize() >= 1)) {
-            if (mySimulationCache.checkIfAllParameterMatchTable((parameterTableModel) this.jTableParameterList.getModel())) {
+        if ((support.getMySimulationCache() != null) && (support.getMySimulationCache().getCacheSize() >= 1)) {
+            if (support.getMySimulationCache().checkIfAllParameterMatchTable((parameterTableModel) this.jTableParameterList.getModel())) {
                 support.log("Cached Simulation available, all Parameter match.", typeOfLogLevel.INFO);
-                support.setMySimulationCache(mySimulationCache);
+                support.setMySimulationCache(support.getMySimulationCache());
                 support.setCachedSimulationEnabled(true);
                 this.jButtonEmptyCache.setEnabled(true);
             } else {
@@ -1262,8 +1260,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         }
         try {
             parameterTableModel tmpModel = (parameterTableModel) this.jTableParameterList.getModel();
-            this.mySimulationCache = support.getMySimulationCache();
-            if (!mySimulationCache.parseSimulationCacheFile(inputFile, ((MeasurementForm) this.jTabbedPaneOptiTargets.getComponent(0)).getMeasurements(), tmpModel, this)) {
+            if (!support.getMySimulationCache().parseSimulationCacheFile(inputFile, ((MeasurementForm) this.jTabbedPaneOptiTargets.getComponent(0)).getMeasurements(), tmpModel, this)) {
                 support.log("Wrong Simulation cache file for this SCPN or operation canceled!", typeOfLogLevel.ERROR);
                 support.setStatusText("Error loading cache-file!");
                 return false;
@@ -1558,7 +1555,6 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
 
     private void jButtonEmptyCacheActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEmptyCacheActionPerformed
         support.emptyCache();
-        this.mySimulationCache = support.getMySimulationCache();
         this.pathToLastSimulationCache = "";
         checkIfCachedSimulationIsPossible();
         this.saveProperties();
@@ -2524,7 +2520,6 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
 
         //Check if cache-support is enabled
         support.emptyCache();
-        this.mySimulationCache = support.getMySimulationCache();
         //If yes, then reload cache
         typeOfSimulator usedSimulator = support.getChosenSimulatorType();
         if (usedSimulator.toString().contains("Cache")) {
