@@ -45,7 +45,7 @@ public class SimOptiFactory {
                 //Return Cache-Only-Simulator
                 if (support.isCachedSimulationAvailable() && (support.getMySimulationCache() != null)) {
                     SimulatorCached returnSimulator = new SimulatorCached();
-                    returnSimulator.setMySimulationCache(support.getMySimulationCache());
+                    //returnSimulator.setMySimulationCache(support.getMySimulationCache());
                     return returnSimulator;
                 } else {
                     return new SimulatorLocal();
@@ -54,7 +54,7 @@ public class SimOptiFactory {
             case Cached_Local:
                 //Return Cache&Local Simulator
                 SimulatorCachedLocal returnSimulator = new SimulatorCachedLocal();
-                returnSimulator.setMySimulationCache(support.getMySimulationCache());
+                //returnSimulator.setMySimulationCache(support.getMySimulationCache());
                 return returnSimulator;
             //no break;
             case Distributed:
@@ -65,7 +65,7 @@ public class SimOptiFactory {
             case Cached_Distributed:
                 //Return Cache&Distributed Simulator
                 SimulatorCachedDistributed returnSimulatorDistributed = new SimulatorCachedDistributed();
-                returnSimulatorDistributed.setMySimulationCache(support.getMySimulationCache());
+                //returnSimulatorDistributed.setMySimulationCache(support.getMySimulationCache());
                 listOfCreatedSimulators.add(returnSimulatorDistributed);
                 return returnSimulatorDistributed;
 
@@ -75,7 +75,7 @@ public class SimOptiFactory {
             case Cached_Benchmark:
                 //Return the Benchmark-Simulator with cache-support
                 SimulatorCachedBenchmark returnSimulatorCachedBenchmark = new SimulatorCachedBenchmark();
-                returnSimulatorCachedBenchmark.setMySimulationCache(support.getMySimulationCache());
+                //returnSimulatorCachedBenchmark.setMySimulationCache(support.getMySimulationCache());
                 return returnSimulatorCachedBenchmark;
             default:
                 return new SimulatorLocal();

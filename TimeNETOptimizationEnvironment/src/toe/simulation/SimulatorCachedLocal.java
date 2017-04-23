@@ -59,14 +59,14 @@ public class SimulatorCachedLocal extends SimulatorCached {
      */
     @Override
     public void run() {
-        if ((mySimulationCache != null) && (mySimulationCache.getCacheSize() >= 1)) {
+        if ((support.getMySimulationCache() != null) && (support.getMySimulationCache().getCacheSize() >= 1)) {
             support.log("Will load available results from simulation cache.", typeOfLogLevel.INFO);
-            this.myListOfCompletedSimulations = mySimulationCache.getListOfCompletedSimulations(listOfParameterSetsTMP, support.getGlobalSimulationCounter(), remainingParametersets);
+            this.myListOfCompletedSimulations = support.getMySimulationCache().getListOfCompletedSimulations(listOfParameterSetsTMP, support.getGlobalSimulationCounter(), remainingParametersets);
         } else {
             support.log("No local Simulation file loaded. Will build my own cache from scratch.", typeOfLogLevel.INFO);
-            this.mySimulationCache = support.getMySimulationCache();
+            support.emptyCache();
         }
-
+        
         if (this.myListOfCompletedSimulations == null) {
             support.log("No Simulation found in local Cache. Starting simulation.", typeOfLogLevel.INFO);
             this.myListOfCompletedSimulations = new ArrayList<>();
@@ -102,8 +102,8 @@ public class SimulatorCachedLocal extends SimulatorCached {
 
             support.log("Size of resultList is " + myListOfCompletedSimulations.size(), typeOfLogLevel.INFO);
 
-            this.mySimulationCache.addListOfSimulationsToCache(myLocalSimulator.getListOfCompletedSimulations());
-            support.log("Size of SimulationCache: " + this.mySimulationCache.getCacheSize(), typeOfLogLevel.INFO);
+            support.getMySimulationCache().addListOfSimulationsToCache(myLocalSimulator.getListOfCompletedSimulations());
+            support.log("Size of SimulationCache: " + support.getMySimulationCache().getCacheSize(), typeOfLogLevel.INFO);
         }
 
         if (this.myListOfCompletedSimulations != null) {
@@ -151,25 +151,6 @@ public class SimulatorCachedLocal extends SimulatorCached {
         return this.myListOfCompletedSimulations;
     }
 
-    /**
-     * Returns the data-source for simulated simulation-runs
-     *
-     * @return the mySimulationCache
-     */
-    @Override
-    public SimulationCache getMySimulationCache() {
-        return mySimulationCache;
-    }
-
-    /**
-     * Sets the data-source for simulated simulation-runs
-     *
-     * @param mySimulationCache the mySimulationCache to set
-     */
-    @Override
-    public void setMySimulationCache(SimulationCache mySimulationCache) {
-        this.mySimulationCache = mySimulationCache;
-    }
 
     @Override
     public int cancelAllSimulations() {

@@ -22,7 +22,6 @@ import toe.typedef.typeOfLogLevel;
  */
 public class SimulatorCached extends Thread implements Simulator {
     
-    SimulationCache mySimulationCache = null;
     //Temporary simulation cache, to story current simulation results. Results find in this cache are taged as "isCache", other results are tagged as fresh simulations
     SimulationCache myTmpSimulationCache = support.getTmpSimulationCache();
     ArrayList<SimulationType> myListOfSimulations = null;
@@ -58,7 +57,7 @@ public class SimulatorCached extends Thread implements Simulator {
     public void run() {
         ArrayList<ArrayList<parameter>> listOfUnKnownParametersets = new ArrayList<>();
         
-        if (myTmpSimulationCache != null && mySimulationCache != null) {
+        if (myTmpSimulationCache != null && support.getMySimulationCache() != null) {
             ArrayList<SimulationType> tmpListOfSimulations = myTmpSimulationCache.getListOfCompletedSimulations(listOfParameterSetsTMP, support.getGlobalSimulationCounter(), listOfUnKnownParametersets);
             if (tmpListOfSimulations != null) {
                 support.setGlobalSimulationCounter(support.getGlobalSimulationCounter() + tmpListOfSimulations.size());
@@ -74,7 +73,7 @@ public class SimulatorCached extends Thread implements Simulator {
                 //Some simulation results are missing
                 support.log("Not all Simulations found in local Cache.  Will lookup in global cache.", typeOfLogLevel.INFO);
                 ArrayList<ArrayList<parameter>> listofUnknownParametersetsInGlobalCache = new ArrayList<>();
-                tmpListOfSimulations = this.mySimulationCache.getListOfCompletedSimulations(listOfUnKnownParametersets, support.getGlobalSimulationCounter(), listofUnknownParametersetsInGlobalCache);
+                tmpListOfSimulations = support.getMySimulationCache().getListOfCompletedSimulations(listOfUnKnownParametersets, support.getGlobalSimulationCounter(), listofUnknownParametersetsInGlobalCache);
                 
                 if (tmpListOfSimulations != null && tmpListOfSimulations.size() > 0) {
                     for (int i = 0; i < tmpListOfSimulations.size(); i++) {
@@ -87,7 +86,7 @@ public class SimulatorCached extends Thread implements Simulator {
                 if (myListOfSimulations.size() < listOfUnKnownParametersets.size()) {
                     //Still some simulation results are missing...
                     support.log("Not all Simulations found in local Cache.  Will take next possible parametersets from cache.", typeOfLogLevel.INFO);
-                    tmpListOfSimulations = this.mySimulationCache.getNearestSimulationListFromListOfParameterSets(listofUnknownParametersetsInGlobalCache);
+                    tmpListOfSimulations = support.getMySimulationCache().getNearestSimulationListFromListOfParameterSets(listofUnknownParametersetsInGlobalCache);
                     if (tmpListOfSimulations != null && tmpListOfSimulations.size() > 0) {
                         for (int i = 0; i < tmpListOfSimulations.size(); i++) {
                             tmpListOfSimulations.get(i).setIsFromCache(false);
@@ -143,23 +142,6 @@ public class SimulatorCached extends Thread implements Simulator {
         return this.myListOfSimulations;
     }
 
-    /**
-     * Returns the data-source for simulated simulation-runs
-     *
-     * @return the mySimulationCache
-     */
-    public SimulationCache getMySimulationCache() {
-        return mySimulationCache;
-    }
-
-    /**
-     * Sets the data-source for simulated simulation-runs
-     *
-     * @param mySimulationCache the mySimulationCache to set
-     */
-    public void setMySimulationCache(SimulationCache mySimulationCache) {
-        this.mySimulationCache = mySimulationCache;
-    }
 
     /**
      * Returns the calculated optimum For Benchmark-Functions and Cache-only
@@ -172,7 +154,7 @@ public class SimulatorCached extends Thread implements Simulator {
     public SimulationType getCalculatedOptimum(MeasureType targetMeasure) {
         //iterate through all cached sims and look for best solution 
         support.log("SimulatorCached: Getting absolute optimum simulation from Cache.", typeOfLogLevel.INFO);
-        ArrayList<SimulationType> mySimulationList = this.mySimulationCache.getSimulationList();
+        ArrayList<SimulationType> mySimulationList = support.getMySimulationCache().getSimulationList();
         double distance = Double.POSITIVE_INFINITY;//Maximum absolute value
         double minValue = Double.POSITIVE_INFINITY;//Maximum absolute value
         double maxValue = Double.NEGATIVE_INFINITY;//Maximum absolute value * -1
