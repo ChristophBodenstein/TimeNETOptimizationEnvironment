@@ -192,6 +192,9 @@ public class support {
 
     private static String tmpHashString = "";
 
+//Cache debugging variables
+    public static int cacheHits = 0, cacheHitsTmp = 0, cacheHitsNear = 0;
+
     /**
      * @return the myOptimizerPreferences a Reference to the Preferences-Frame
      */
@@ -2058,6 +2061,13 @@ public class support {
         }
 
         return returnValue;
+    }
+
+    /**
+     * Prints temporary collected data of cache hits
+     */
+    public static void printCacheHits() {
+        log("CacheHits: " + cacheHits + " | CacheHitsTmp: " + cacheHitsTmp + " | CacheHitsNear: " + cacheHitsNear, typeOfLogLevel.RESULT);
     }
 
 }

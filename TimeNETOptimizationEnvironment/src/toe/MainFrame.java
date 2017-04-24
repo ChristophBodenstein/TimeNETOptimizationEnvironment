@@ -2465,6 +2465,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                     support.log("Ended was: " + feedback.toString(), typeOfLogLevel.RESULT);
                     support.log("This was Opti-Analysis: " + support.getOptimizerPreferences().getNumberOfActualOptimizationAnalysis().toString(), typeOfLogLevel.RESULT);
                     StatisticAggregator.printOptiStatistics();
+                    support.printCacheHits();
 
                     String addonStringForFileName = support.getOptimizerPreferences().getNumberOfActualOptimizationAnalysis().toString();
                     if (support.getOptimizerPreferences().getNumberOfActualOptimizationAnalysis() <= 0) {
@@ -2558,6 +2559,9 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
      */
     private void startOptimization() {
         support.emptyTmpCache();
+        support.cacheHits=0;
+        support.cacheHitsTmp=0;
+        support.cacheHitsNear=0;
         support.log("Optimum-Value: " + Double.toString(SimOptiFactory.getSimulator().getCalculatedOptimum(support.getOptimizationMeasure()).getMeasureByName(support.getOptimizationMeasure().getMeasureName()).getMeanValue()), typeOfLogLevel.INFO);
         Optimizer myOptimizer = SimOptiFactory.getOptimizer();
         logFileNameOfOptimizer = support.getTmpPath() + File.separator + myOptimizer.getClass().getSimpleName() + "_" + Calendar.getInstance().getTimeInMillis() + support.getOptimizerPreferences().getPref_LogFileAddon() + ".csv";
