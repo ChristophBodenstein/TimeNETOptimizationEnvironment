@@ -127,10 +127,10 @@ public class SimulationType {
                     if (targetParameterTmp.isIteratableAndIntern()) {
                         parameter currentParameterTmp = support.getParameterByName(this.parameterList, targetParameterTmp.getName());
                         rangeSum = rangeSum + Math.pow(targetParameterTmp.getEndValue() - targetParameterTmp.getStartValue(), 2);
-                        System.out.println("Range:" + (targetParameterTmp.getEndValue() - targetParameterTmp.getStartValue()));
+                        //System.out.println("Range:" + (targetParameterTmp.getEndValue() - targetParameterTmp.getStartValue()));
 
                         distanceSum = distanceSum + Math.pow(targetParameterTmp.getValue() - currentParameterTmp.getValue(), 2);
-                        System.out.println("Distance:" + (targetParameterTmp.getValue() - currentParameterTmp.getValue()));
+                        //System.out.println("Distance:" + (targetParameterTmp.getValue() - currentParameterTmp.getValue()));
                     }
                 }
                 distanceSum = Math.sqrt(distanceSum);
