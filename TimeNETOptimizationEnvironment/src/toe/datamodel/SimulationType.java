@@ -96,9 +96,9 @@ public class SimulationType {
     }
 
     /**
-     * Returns distance to target simulation coordinates in design space the
-     * distance is relative to the whole design space, So Sum of all
-     * parameter-value-ranges equals 100% It works only for few Benchmark
+     * Returns distance to target simulation coordinates in design space. The
+     * distance is relative to the whole design space, so Sum of all
+     * parameter-value-ranges equals 100%. It works only for few Benchmark
      * functions and for normal petri nets if theroetical optimum is given!
      *
      * @return Sum of relative Distances to target Values
@@ -123,11 +123,14 @@ public class SimulationType {
                 break;
             case EUKLID:
                 for (int i = 0; i < targetSimulation.getListOfParameters().size(); i++) {
-                    parameter pOptimumCalculated = targetSimulation.getListOfParameters().get(i);
-                    if (pOptimumCalculated.isIteratableAndIntern()) {
-                        parameter pOptimumFound = support.getParameterByName(this.parameterList, pOptimumCalculated.getName());
-                        rangeSum = rangeSum + Math.pow(pOptimumCalculated.getEndValue() - pOptimumCalculated.getStartValue(), 2);
-                        distanceSum = distanceSum + Math.pow(pOptimumCalculated.getValue() - pOptimumFound.getValue(), 2);
+                    parameter targetParameterTmp = targetSimulation.getListOfParameters().get(i);
+                    if (targetParameterTmp.isIteratableAndIntern()) {
+                        parameter currentParameterTmp = support.getParameterByName(this.parameterList, targetParameterTmp.getName());
+                        rangeSum = rangeSum + Math.pow(targetParameterTmp.getEndValue() - targetParameterTmp.getStartValue(), 2);
+                        //System.out.println("Range:" + (targetParameterTmp.getEndValue() - targetParameterTmp.getStartValue()));
+
+                        distanceSum = distanceSum + Math.pow(targetParameterTmp.getValue() - currentParameterTmp.getValue(), 2);
+                        //System.out.println("Distance:" + (targetParameterTmp.getValue() - currentParameterTmp.getValue()));
                     }
                 }
                 distanceSum = Math.sqrt(distanceSum);

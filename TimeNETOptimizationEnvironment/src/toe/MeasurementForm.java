@@ -24,10 +24,6 @@ public final class MeasurementForm extends javax.swing.JPanel {
     public MeasurementForm() {
         initComponents();
         this.setActivated(true);
-        //Remove next two lines if multiple Measurements should be enabled again.
-        //Meanwhile this feature is disabled
-        this.jCheckBoxEnableOptimizationForThisMeasurement.setSelected(true);
-        this.jCheckBoxEnableOptimizationForThisMeasurement.setVisible(false);
     }
 
     /**
@@ -41,8 +37,7 @@ public final class MeasurementForm extends javax.swing.JPanel {
 
         jComboBoxMeasurementName = new javax.swing.JComboBox();
         jComboBoxOptimizationTarget = new javax.swing.JComboBox();
-        jTextFieldCustomTargetValue = new javax.swing.JTextField();
-        jCheckBoxEnableOptimizationForThisMeasurement = new javax.swing.JCheckBox();
+        jSpinnerTargetValue = new javax.swing.JSpinner();
 
         jComboBoxMeasurementName.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "No Measure available!" }));
         jComboBoxMeasurementName.setToolTipText("Chose Measurement to optimize");
@@ -55,15 +50,8 @@ public final class MeasurementForm extends javax.swing.JPanel {
             }
         });
 
-        jTextFieldCustomTargetValue.setText("0");
-        jTextFieldCustomTargetValue.setToolTipText("Enter Custom Target Value for Measurement");
-
-        jCheckBoxEnableOptimizationForThisMeasurement.setToolTipText("Enable to optimize for this Measurement");
-        jCheckBoxEnableOptimizationForThisMeasurement.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                jCheckBoxEnableOptimizationForThisMeasurementItemStateChanged(evt);
-            }
-        });
+        jSpinnerTargetValue.setModel(new javax.swing.SpinnerNumberModel(0.0d, null, null, 0.001d));
+        jSpinnerTargetValue.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerTargetValue, "#.####"));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -73,12 +61,10 @@ public final class MeasurementForm extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jComboBoxOptimizationTarget, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextFieldCustomTargetValue, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE))
-                    .addComponent(jComboBoxMeasurementName, 0, 204, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jCheckBoxEnableOptimizationForThisMeasurement)
+                        .addComponent(jComboBoxOptimizationTarget, 0, 82, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jSpinnerTargetValue, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jComboBoxMeasurementName, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -86,30 +72,22 @@ public final class MeasurementForm extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jComboBoxMeasurementName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextFieldCustomTargetValue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBoxOptimizationTarget, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jCheckBoxEnableOptimizationForThisMeasurement)
-                .addContainerGap())
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jSpinnerTargetValue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jComboBoxOptimizationTarget, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jCheckBoxEnableOptimizationForThisMeasurementItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBoxEnableOptimizationForThisMeasurementItemStateChanged
-        this.setActivated(this.jCheckBoxEnableOptimizationForThisMeasurement.isSelected());
-    }//GEN-LAST:event_jCheckBoxEnableOptimizationForThisMeasurementItemStateChanged
-
     private void jComboBoxOptimizationTargetItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxOptimizationTargetItemStateChanged
-        this.jTextFieldCustomTargetValue.setEnabled(this.getOptimizationTarget().equals(typeOfTarget.value));
+        this.jSpinnerTargetValue.setEnabled(this.getOptimizationTarget().equals(typeOfTarget.value));
     }//GEN-LAST:event_jComboBoxOptimizationTargetItemStateChanged
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JCheckBox jCheckBoxEnableOptimizationForThisMeasurement;
     private javax.swing.JComboBox jComboBoxMeasurementName;
     private javax.swing.JComboBox jComboBoxOptimizationTarget;
-    private javax.swing.JTextField jTextFieldCustomTargetValue;
+    private javax.swing.JSpinner jSpinnerTargetValue;
     // End of variables declaration//GEN-END:variables
 
     /**
@@ -144,7 +122,7 @@ public final class MeasurementForm extends javax.swing.JPanel {
      */
     public double getCustomTargetValue() {
         double returnValue;
-        returnValue = support.getDouble(this.jTextFieldCustomTargetValue.getText());
+        returnValue = (double) jSpinnerTargetValue.getValue();
         return returnValue;
     }
 
@@ -190,7 +168,7 @@ public final class MeasurementForm extends javax.swing.JPanel {
     public void setActivated(boolean b) {
         this.jComboBoxMeasurementName.setEnabled(b);
         this.jComboBoxOptimizationTarget.setEnabled(b);
-        this.jTextFieldCustomTargetValue.setEnabled(this.getOptimizationTarget().equals(typeOfTarget.value));
+        this.jSpinnerTargetValue.setEnabled(this.getOptimizationTarget().equals(typeOfTarget.value));
     }
 
     /**
@@ -199,7 +177,8 @@ public final class MeasurementForm extends javax.swing.JPanel {
      * @return true if this measure is selected, els false
      */
     public boolean isActive() {
-        return this.jCheckBoxEnableOptimizationForThisMeasurement.isSelected();
+        //Multi-Target is not yet implemented completely
+        return true;
     }
 
     /**
@@ -208,7 +187,7 @@ public final class MeasurementForm extends javax.swing.JPanel {
     @Override
     public void setEnabled(boolean enabled) {
         this.setActivated(enabled);
-        this.jTextFieldCustomTargetValue.setEnabled(enabled && this.getOptimizationTarget().equals(typeOfTarget.value));
+        this.jSpinnerTargetValue.setEnabled(enabled && this.getOptimizationTarget().equals(typeOfTarget.value));
     }
 
 }

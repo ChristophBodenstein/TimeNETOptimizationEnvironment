@@ -289,7 +289,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
 
         //Reload the last File
         try {
-            this.readSCPNFile(jTextFieldSCPNFile.getText());
+            this.readSCPNFile(getPathToSCPNFile());
         } catch (Exception e) {
             support.log("Could not read SCPN-file!", typeOfLogLevel.ERROR);
             JOptionPane.showMessageDialog(null, "Please choose a correct SCPN file!");
@@ -991,8 +991,8 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         support.setCancelEverything(false);
 
         javax.swing.filechooser.FileFilter myFilter = new javax.swing.filechooser.FileNameExtensionFilter("xml file", "xml");
-        JFileChooser fileChooser = new JFileChooser(this.jTextFieldSCPNFile.getText());
-        fileChooser.setCurrentDirectory(new java.io.File(this.jTextFieldSCPNFile.getText() + "/.."));
+        JFileChooser fileChooser = new JFileChooser(this.getPathToSCPNFile());
+        fileChooser.setCurrentDirectory(new java.io.File(this.getPathToSCPNFile() + "/.."));
         fileChooser.setFileFilter(myFilter);
         fileChooser.setDialogTitle("Select SCPN-Net");
 
@@ -1010,7 +1010,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
     }//GEN-LAST:event_jButtonOpenSCPNActionPerformed
 
     private void jButtonReloadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonReloadActionPerformed
-        this.readSCPNFile(jTextFieldSCPNFile.getText());
+        this.readSCPNFile(this.getPathToSCPNFile());
     }//GEN-LAST:event_jButtonReloadActionPerformed
 
     private void jButtonExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonExportActionPerformed
@@ -1207,7 +1207,12 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
     private void jButtonLoadCacheFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLoadCacheFileActionPerformed
         //JFileChooser fileChooser = new JFileChooser(this.getPathToTimeNet());
         javax.swing.filechooser.FileFilter myFilter = new javax.swing.filechooser.FileNameExtensionFilter("csv file", "csv");
-        JFileChooser fileChooser = new JFileChooser(this.pathToLastSimulationCache);
+        String startPathForChoosingCacheFile = "";
+        startPathForChoosingCacheFile = pathToLastSimulationCache;
+        if (startPathForChoosingCacheFile == "") {
+            startPathForChoosingCacheFile = this.getPathToSCPNFile();
+        }
+        JFileChooser fileChooser = new JFileChooser(startPathForChoosingCacheFile);
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
         fileChooser.setControlButtonsAreShown(true);
@@ -2094,7 +2099,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         try {
 
             auto.setProperty("timenetpath", this.getPathToTimeNet());
-            auto.setProperty("file", this.jTextFieldSCPNFile.getText());
+            auto.setProperty("file", this.getPathToSCPNFile());
 
             auto.setProperty("serversecret", support.getServerSecret());
 
@@ -2559,9 +2564,9 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
      */
     private void startOptimization() {
         support.emptyTmpCache();
-        support.cacheHits=0;
-        support.cacheHitsTmp=0;
-        support.cacheHitsNear=0;
+        support.cacheHits = 0;
+        support.cacheHitsTmp = 0;
+        support.cacheHitsNear = 0;
         support.log("Optimum-Value: " + Double.toString(SimOptiFactory.getSimulator().getCalculatedOptimum(support.getOptimizationMeasure()).getMeasureByName(support.getOptimizationMeasure().getMeasureName()).getMeanValue()), typeOfLogLevel.INFO);
         Optimizer myOptimizer = SimOptiFactory.getOptimizer();
         logFileNameOfOptimizer = support.getTmpPath() + File.separator + myOptimizer.getClass().getSimpleName() + "_" + Calendar.getInstance().getTimeInMillis() + support.getOptimizerPreferences().getPref_LogFileAddon() + ".csv";
@@ -2801,4 +2806,13 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         support.setLogToFile(active);
     }
 
+    /**
+     * Returns String with path to currently chosen SCPN file (content of
+     * jTextField)
+     *
+     * @return Path to currently loaded/selected SCPN file
+     */
+    public String getPathToSCPNFile() {
+        return jTextFieldSCPNFile.getText();
+    }
 }

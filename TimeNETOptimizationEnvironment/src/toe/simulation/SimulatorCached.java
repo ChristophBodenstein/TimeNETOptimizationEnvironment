@@ -211,8 +211,8 @@ public class SimulatorCached extends Thread implements Simulator {
         for (int i = 0; i < resultSimulation.getListOfParameters().size(); i++) {
             try {
                 parameter pTmp = resultSimulation.getListOfParameters().get(i);
-                pTmp.setEndValue(support.getParameterByName(support.getParameterBase(), pTmp.getName()).getEndValue());
-                pTmp.setStartValue(support.getParameterByName(support.getParameterBase(), pTmp.getName()).getStartValue());
+                pTmp.setEndValue(support.getParameterByName(support.getOriginalParameterBase(), pTmp.getName()).getEndValue());
+                pTmp.setStartValue(support.getParameterByName(support.getOriginalParameterBase(), pTmp.getName()).getStartValue());
             } catch (Exception e) {
                 support.log("Error setting values for optimum.", typeOfLogLevel.ERROR);
                 support.log(e.getLocalizedMessage(), typeOfLogLevel.ERROR);
