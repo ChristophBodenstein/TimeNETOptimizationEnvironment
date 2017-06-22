@@ -1769,7 +1769,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         if (filename.equals("")) {
             return;
         }
-
+        savePropertiesEnabled = false;
         deactivateExportButtons();
         try {
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -1819,6 +1819,10 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
             support.emptyCache();
         } catch (ParserConfigurationException | SAXException | IOException | DOMException e) {
         }
+        tableChanged(null);
+        //Load parameters for SCPN as used last time
+        loadSCPNParameters();
+        savePropertiesEnabled = true;
         tableChanged(null);
     }
 
@@ -2187,6 +2191,9 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
      * SCPN-file (without path)
      */
     private void saveSCPNParameters() {
+        if (!savePropertiesEnabled) {
+            return;
+        }
         Properties SCPNParametersProperties = new Properties();
         String SCPNParametersfileName = support.getPropertiesFileForSCPN(support.getOriginalFilename());
         ArrayList<parameter> listOfParametersToSave = getParameterBase();
@@ -2208,6 +2215,30 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                     support.log("Problem Saving the Parameters of SCPN:" + SCPNParametersfileName, typeOfLogLevel.INFO);
                 }
             }
+        }
+    }
+
+    /**
+     * *
+     * Load the paramerts for current SCPN-file from prop-file in pref-path
+     */
+    private void loadSCPNParameters() {
+        Properties SCPNParametersProperties = new Properties();
+        String SCPNParametersfileName = support.getPropertiesFileForSCPN(support.getOriginalFilename());
+        support.log("Try to load parameters from:" + SCPNParametersfileName, typeOfLogLevel.INFO);
+        try {
+            FileInputStream in = new FileInputStream(SCPNParametersfileName);
+            SCPNParametersProperties.load(in);
+            in.close();
+        } catch (IOException e) {
+            support.log("Could not load paramerts for:" + SCPNParametersfileName, typeOfLogLevel.INFO);
+        }
+        parameterTableModel tmpTableModel = (parameterTableModel) this.jTableParameterList.getModel();
+        ArrayList<parameter> listOfParameters = tmpTableModel.getListOfParameter();
+        for (parameter p : listOfParameters) {
+            tmpTableModel.setValueByName(p.getName(), "StartValue", SCPNParametersProperties.getProperty(p.getName() + ".start", Double.toString(p.getStartValue())));
+            tmpTableModel.setValueByName(p.getName(), "EndValue", SCPNParametersProperties.getProperty(p.getName() + ".end", Double.toString(p.getEndValue())));
+            tmpTableModel.setValueByName(p.getName(), "Stepping", SCPNParametersProperties.getProperty(p.getName() + ".stepping", Double.toString(p.getStepping())));
         }
     }
 
