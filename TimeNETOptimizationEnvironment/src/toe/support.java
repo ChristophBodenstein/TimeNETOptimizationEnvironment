@@ -1281,6 +1281,7 @@ public class support {
      * @return the parameterBase
      */
     public static ArrayList<parameter> getParameterBase() {
+        //TODO Check if this uncommenting was correct
         //if (parameterBase != null) {
         //    return parameterBase;
         //} else {
@@ -2068,6 +2069,34 @@ public class support {
      */
     public static void printCacheHits() {
         log("CacheHits: " + cacheHits + " | CacheHitsTmp: " + cacheHitsTmp + " | CacheHitsNear: " + cacheHitsNear, typeOfLogLevel.RESULT);
+    }
+
+    /**
+     * *
+     * Returns the filename as String without path
+     *
+     * @param completeFileName The filename to be stripped
+     * @return Filename without path or null, if any error occured
+     */
+    public static String getFileNameWithoutPath(String completeFileName) {
+        try {
+            File f = new File(completeFileName);
+            return f.getName();
+        } catch (Exception e) {
+            support.log("Error extracting filename without path from: " + completeFileName, typeOfLogLevel.ERROR);
+            return null;
+        }
+    }
+
+    /**
+     * *
+     * Returns the path to properties file of given SCPN-File
+     *
+     * @param PathToSCPN Path to SCPN file
+     * @return Path to Poperties files of given SCPN
+     */
+    public static String getPropertiesFileForSCPN(String PathToSCPN) {
+        return support.NAME_OF_PREF_DIR + "." + support.removeExtention(support.getFileNameWithoutPath(PathToSCPN)) + ".prop";
     }
 
 }

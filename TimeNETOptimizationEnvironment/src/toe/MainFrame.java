@@ -987,6 +987,13 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * *
+     * Open the dialog to choose an SCPN-file as base for optimization
+     *
+     * @param evt Event to be transmitted from Button or other UI-Element (is
+     * not used)
+     */
     private void jButtonOpenSCPNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonOpenSCPNActionPerformed
         support.setCancelEverything(false);
 
@@ -1098,6 +1105,12 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         }
     }//GEN-LAST:event_jButtonGenerateListOfExperimentsActionPerformed
 
+    /**
+     * *
+     * Start optimization, show dialog before
+     *
+     * @param evt Event to be transmitted from calling UI-Element (not used)
+     */
     private void jButtonStartOptimizationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonStartOptimizationActionPerformed
         //Show Dialog if many optiruns are planned
         if ((Integer) this.jSpinnerNumberOfOptimizationRuns.getValue() > 1 || support.getOptimizerPreferences().getNumberOfOptiPrefs() > 1) {
@@ -1254,8 +1267,13 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
     }//GEN-LAST:event_jButtonLoadCacheFileActionPerformed
 
     /**
+     * *
      * It will try to fill the local cache from simualtion results out of a csv
      * file It will NOT fit the parameter table
+     *
+     * @param inputFile The file with simulation data to be read
+     * @return true if reading from cache was successful or false, if any error
+     * occured
      */
     private boolean tryToFillCacheFromFile(String inputFile) {
         support.emptyCache();
@@ -2158,11 +2176,44 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
             support.log("Problem Saving the properties.", typeOfLogLevel.ERROR);
         }
 
+        //Save SCPN Parameters
+        this.saveSCPNParameters();
+
     }
 
     /**
-     * Prints 2 parametersets and it`s values to see the difference Just used
-     * for debug reasons
+     * *
+     * Saves the current set of parameters in file, corresponding to current
+     * SCPN-file (without path)
+     */
+    private void saveSCPNParameters() {
+        Properties SCPNParametersProperties = new Properties();
+        String SCPNParametersfileName = support.getPropertiesFileForSCPN(support.getOriginalFilename());
+        ArrayList<parameter> listOfParametersToSave = getParameterBase();
+        support.log("Saving Parameters to: " + SCPNParametersfileName, typeOfLogLevel.INFO);
+        if (listOfParametersToSave != null) {
+            if (listOfParametersToSave.size() >= 1) {
+                try {
+                    for (parameter p : listOfParametersToSave) {
+                        SCPNParametersProperties.setProperty(p.getName() + ".name", p.getName());
+                        SCPNParametersProperties.setProperty(p.getName() + ".value", p.getStringValue());
+                        SCPNParametersProperties.setProperty(p.getName() + ".start", support.getString(p.getStartValue()));
+                        SCPNParametersProperties.setProperty(p.getName() + ".end", support.getString(p.getEndValue()));
+                        SCPNParametersProperties.setProperty(p.getName() + ".stepping", support.getString(p.getStepping()));
+                    }
+
+                    File SCPNProperties = new File(SCPNParametersfileName);
+                    SCPNParametersProperties.store(new FileOutputStream(SCPNProperties), "Parameters of: " + support.getOriginalFilename());
+                } catch (IOException e) {
+                    support.log("Problem Saving the Parameters of SCPN:" + SCPNParametersfileName, typeOfLogLevel.INFO);
+                }
+            }
+        }
+    }
+
+    /**
+     * Prints 2 parametersets and it`s values to see the difference. Just used
+     * for debug reasons.
      *
      * @param p parameter to be compared with p1
      * @param p1 parameter to be compared with p
