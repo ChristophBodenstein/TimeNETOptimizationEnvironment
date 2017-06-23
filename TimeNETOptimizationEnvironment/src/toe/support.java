@@ -1157,7 +1157,7 @@ public class support {
     /**
      * @return the myLogFrame
      */
-    public static LogFrame getMyLogFrame() {
+    public static LogFrame getLogFrame() {
         return myLogFrame;
     }
 
