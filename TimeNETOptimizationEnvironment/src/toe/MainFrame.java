@@ -2174,8 +2174,8 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
             auto.setProperty("LOGTOWINDOW", Boolean.toString(getLogToWindow()));
             auto.setProperty("LOGTOFILE", Boolean.toString(getLogToFile()));
 
-            File parserprops = new File(support.NAME_OF_PREFERENCES_FILE);
-            auto.store(new FileOutputStream(parserprops), "ExperimentGenerator-Properties");
+            File applicationProperties = new File(support.NAME_OF_PREFERENCES_FILE);
+            auto.store(new FileOutputStream(applicationProperties), "ExperimentGenerator-Properties");
         } catch (IOException e) {
             support.log("Problem Saving the properties.", typeOfLogLevel.ERROR);
         }
