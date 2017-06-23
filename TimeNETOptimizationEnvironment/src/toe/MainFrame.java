@@ -1,6 +1,6 @@
 /*
- * Main Frame for TimeNetExperimentGenerator
- * provides many additional features
+ * Main Frame for TimeNETOptimizationEnvironment
+ * 
  * Christoph Bodenstein
  * TU-Ilmenau, FG SSE
  */
