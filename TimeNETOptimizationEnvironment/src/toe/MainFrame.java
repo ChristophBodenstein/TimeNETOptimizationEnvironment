@@ -20,6 +20,7 @@ import toe.datamodel.MeasureType;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dialog.ModalityType;
+import java.awt.Point;
 import java.io.*;
 import java.io.File;
 import java.io.IOException;
@@ -265,6 +266,13 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         logFrameRectangle.width = support.getInt(auto.getProperty("frame.log.w", support.getString(logFrameRectangle.getWidth())));
         logFrameRectangle.height = support.getInt(auto.getProperty("frame.log.h", support.getString(logFrameRectangle.getHeight())));
         support.getLogFrame().setBounds(logFrameRectangle);
+
+        //Restore MainFrame position
+        this.setLocation(support.getInt(auto.getProperty("frame.main.x", Integer.toString(this.getX()))), support.getInt(auto.getProperty("frame.main.y", Integer.toString(this.getY()))));
+        //Restore Optiprefs-Frame-Position
+        support.getOptimizerPreferences().setLocation(support.getInt(auto.getProperty("frame.optiprefs.x", Integer.toString(support.getOptimizerPreferences().getX()))), support.getInt(auto.getProperty("frame.optiprefs.y", Integer.toString(support.getOptimizerPreferences().getY()))));
+        //Restore RPlot-Frame-Position
+        this.rplugin.setFramePosition(new Point(support.getInt(auto.getProperty("frame.rplot.x", Double.toString(this.rplugin.getFramePostition().getX()))), support.getInt(auto.getProperty("frame.rplot.y", Double.toString(this.rplugin.getFramePostition().getY())))));
 
         savePropertiesEnabled = true;//Enable property saving after init of all components
 
@@ -2185,6 +2193,18 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
             auto.setProperty("frame.log.y", support.getString(logFrameRectangle.getY()));
             auto.setProperty("frame.log.w", support.getString(logFrameRectangle.getWidth()));
             auto.setProperty("frame.log.h", support.getString(logFrameRectangle.getHeight()));
+
+            auto.setProperty("frame.main.x", support.getString(this.getX()));
+            auto.setProperty("frame.main.y", support.getString(this.getY()));
+            //no need to save size, frame is not resizeable
+
+            auto.setProperty("frame.optiprefs.x", support.getString(support.getOptimizerPreferences().getX()));
+            auto.setProperty("frame.optiprefs.y", support.getString(support.getOptimizerPreferences().getY()));
+            //no need to save size, frame is not resizeable
+
+            auto.setProperty("frame.rplot.x", support.getString(this.rplugin.getFramePostition().getX()));
+            auto.setProperty("frame.rplot.y", support.getString(this.rplugin.getFramePostition().getY()));
+            //no need to save size, frame is not resizeable
 
             File applicationProperties = new File(support.NAME_OF_PREFERENCES_FILE);
             auto.store(new FileOutputStream(applicationProperties), "ExperimentGenerator-Properties");
