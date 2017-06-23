@@ -36,17 +36,17 @@ public final class MeasurementForm extends javax.swing.JPanel {
     private void initComponents() {
 
         jComboBoxMeasurementName = new javax.swing.JComboBox();
-        jComboBoxOptimizationTarget = new javax.swing.JComboBox();
+        jComboBoxTargetType = new javax.swing.JComboBox();
         jSpinnerTargetValue = new javax.swing.JSpinner();
 
         jComboBoxMeasurementName.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "No Measure available!" }));
         jComboBoxMeasurementName.setToolTipText("Chose Measurement to optimize");
 
-        jComboBoxOptimizationTarget.setModel(new DefaultComboBoxModel(typeOfTarget.values()));
-        jComboBoxOptimizationTarget.setToolTipText("Chose Optimization Target Value");
-        jComboBoxOptimizationTarget.addItemListener(new java.awt.event.ItemListener() {
+        jComboBoxTargetType.setModel(new DefaultComboBoxModel(typeOfTarget.values()));
+        jComboBoxTargetType.setToolTipText("Chose Optimization Target Value");
+        jComboBoxTargetType.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                jComboBoxOptimizationTargetItemStateChanged(evt);
+                jComboBoxTargetTypeItemStateChanged(evt);
             }
         });
 
@@ -61,7 +61,7 @@ public final class MeasurementForm extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jComboBoxOptimizationTarget, 0, 82, Short.MAX_VALUE)
+                        .addComponent(jComboBoxTargetType, 0, 82, Short.MAX_VALUE)
                         .addGap(18, 18, 18)
                         .addComponent(jSpinnerTargetValue, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jComboBoxMeasurementName, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -74,19 +74,19 @@ public final class MeasurementForm extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jSpinnerTargetValue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBoxOptimizationTarget, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jComboBoxTargetType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jComboBoxOptimizationTargetItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxOptimizationTargetItemStateChanged
-        this.jSpinnerTargetValue.setEnabled(this.getOptimizationTarget().equals(typeOfTarget.value));
-    }//GEN-LAST:event_jComboBoxOptimizationTargetItemStateChanged
+    private void jComboBoxTargetTypeItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxTargetTypeItemStateChanged
+        this.jSpinnerTargetValue.setEnabled(this.getTargetType().equals(typeOfTarget.value));
+    }//GEN-LAST:event_jComboBoxTargetTypeItemStateChanged
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox jComboBoxMeasurementName;
-    private javax.swing.JComboBox jComboBoxOptimizationTarget;
+    private javax.swing.JComboBox jComboBoxTargetType;
     private javax.swing.JSpinner jSpinnerTargetValue;
     // End of variables declaration//GEN-END:variables
 
@@ -116,6 +116,22 @@ public final class MeasurementForm extends javax.swing.JPanel {
     }
 
     /**
+     * *
+     * Selects the masurement with given name as optimization target
+     *
+     * @param nameOfMeasurement
+     */
+    public void setChosenMeasurement(String nameOfMeasurement) {
+        int i = 0;
+        for (i = 0; i < this.jComboBoxMeasurementName.getItemCount(); i++) {
+            if (this.jComboBoxMeasurementName.getItemAt(i).equals(nameOfMeasurement)) {
+                this.jComboBoxMeasurementName.setSelectedIndex(i);
+            }
+        }
+
+    }
+
+    /**
      * Return target value, given by user in JTextField
      *
      * @return target value for measurement
@@ -124,6 +140,16 @@ public final class MeasurementForm extends javax.swing.JPanel {
         double returnValue;
         returnValue = (double) jSpinnerTargetValue.getValue();
         return returnValue;
+    }
+
+    /**
+     * *
+     * Set the custom target value for measure
+     *
+     * @param targetValue Targetvalue for optimization
+     */
+    public void setTargetValue(double targetValue) {
+        jSpinnerTargetValue.setValue(targetValue);
     }
 
     /**
@@ -155,8 +181,18 @@ public final class MeasurementForm extends javax.swing.JPanel {
      *
      * @return Type of target
      */
-    public typeOfTarget getOptimizationTarget() {
-        return (typeOfTarget.valueOf(this.jComboBoxOptimizationTarget.getSelectedItem().toString()));
+    public typeOfTarget getTargetType() {
+        return (typeOfTarget.valueOf(this.jComboBoxTargetType.getSelectedItem().toString()));
+    }
+
+    /**
+     * *
+     * Sets the type of target for optimization
+     *
+     * @param targetType Type of target to be set
+     */
+    public void setTargetType(typeOfTarget targetType) {
+        this.jComboBoxTargetType.setSelectedItem(targetType);
     }
 
     /**
@@ -167,8 +203,8 @@ public final class MeasurementForm extends javax.swing.JPanel {
      */
     public void setActivated(boolean b) {
         this.jComboBoxMeasurementName.setEnabled(b);
-        this.jComboBoxOptimizationTarget.setEnabled(b);
-        this.jSpinnerTargetValue.setEnabled(this.getOptimizationTarget().equals(typeOfTarget.value));
+        this.jComboBoxTargetType.setEnabled(b);
+        this.jSpinnerTargetValue.setEnabled(this.getTargetType().equals(typeOfTarget.value));
     }
 
     /**
@@ -187,7 +223,7 @@ public final class MeasurementForm extends javax.swing.JPanel {
     @Override
     public void setEnabled(boolean enabled) {
         this.setActivated(enabled);
-        this.jSpinnerTargetValue.setEnabled(enabled && this.getOptimizationTarget().equals(typeOfTarget.value));
+        this.jSpinnerTargetValue.setEnabled(enabled && this.getTargetType().equals(typeOfTarget.value));
     }
 
 }

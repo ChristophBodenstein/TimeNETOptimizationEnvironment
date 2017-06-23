@@ -2222,6 +2222,11 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                         SCPNParametersProperties.setProperty(p.getName() + ".end", support.getString(p.getEndValue()));
                         SCPNParametersProperties.setProperty(p.getName() + ".stepping", support.getString(p.getStepping()));
                     }
+                    //Save optimization targets
+                    MeasureType chosenOptimizationMeasure = support.getOptimizationMeasure();
+                    SCPNParametersProperties.setProperty("optimeasure.name", chosenOptimizationMeasure.getMeasureName());
+                    SCPNParametersProperties.setProperty("optimeasure.type", chosenOptimizationMeasure.getTargetTypeOf().toString());
+                    SCPNParametersProperties.setProperty("optimeasure.value", support.getString(chosenOptimizationMeasure.getTargetValue()));
 
                     File SCPNProperties = new File(SCPNParametersfileName);
                     SCPNParametersProperties.store(new FileOutputStream(SCPNProperties), "Parameters of: " + support.getOriginalFilename());
@@ -2254,6 +2259,12 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
             tmpTableModel.setValueByName(p.getName(), "EndValue", SCPNParametersProperties.getProperty(p.getName() + ".end", Double.toString(p.getEndValue())));
             tmpTableModel.setValueByName(p.getName(), "Stepping", SCPNParametersProperties.getProperty(p.getName() + ".stepping", Double.toString(p.getStepping())));
         }
+
+        MeasurementForm tmpMeasurementForm = (MeasurementForm) this.jTabbedPaneOptiTargets.getComponent(0);
+        tmpMeasurementForm.setChosenMeasurement(SCPNParametersProperties.getProperty("optimeasure.name"));
+        tmpMeasurementForm.setTargetValue(Double.valueOf(SCPNParametersProperties.getProperty("optimeasure.value", "0")));
+        tmpMeasurementForm.setTargetType(typeOfTarget.valueOf(SCPNParametersProperties.getProperty("optimeasure.type", "min")));
+
     }
 
     /**
@@ -2328,7 +2339,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
             if (tmpMeasurementForm.isActive()) {
                 MeasureType tmpMeasure = tmpMeasurementForm.getChosenMeasurement();
                 double targetValue = tmpMeasurementForm.getCustomTargetValue();
-                typedef.typeOfTarget targetKind = tmpMeasurementForm.getOptimizationTarget();
+                typedef.typeOfTarget targetKind = tmpMeasurementForm.getTargetType();
                 tmpMeasure.setTargetValue(targetValue, targetKind);
                 myTmpList.add(tmpMeasure);
             }
