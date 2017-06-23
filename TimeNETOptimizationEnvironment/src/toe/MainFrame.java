@@ -27,7 +27,6 @@ import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Properties;
 import javax.swing.DefaultCellEditor;
@@ -343,7 +342,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
      * of Distr. is available
      */
     public void updateComboBoxSimulationType() {
-        ArrayList enabledSimulationTypes = new ArrayList<Integer>();
+        ArrayList enabledSimulationTypes = new ArrayList<>();
         DefaultListSelectionModel model = new DefaultListSelectionModel();
         if (support.isLocalSimulationAvailable()) {
             model.addSelectionInterval(0, 0);
@@ -1228,9 +1227,8 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
     private void jButtonLoadCacheFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLoadCacheFileActionPerformed
         //JFileChooser fileChooser = new JFileChooser(this.getPathToTimeNet());
         javax.swing.filechooser.FileFilter myFilter = new javax.swing.filechooser.FileNameExtensionFilter("csv file", "csv");
-        String startPathForChoosingCacheFile = "";
-        startPathForChoosingCacheFile = pathToLastSimulationCache;
-        if (startPathForChoosingCacheFile == "") {
+        String startPathForChoosingCacheFile = pathToLastSimulationCache;
+        if ("".equals(startPathForChoosingCacheFile)) {
             startPathForChoosingCacheFile = this.getPathToSCPNFile();
         }
         JFileChooser fileChooser = new JFileChooser(startPathForChoosingCacheFile);
@@ -2636,9 +2634,12 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         //If yes, then reload cache
         typeOfSimulator usedSimulator = support.getChosenSimulatorType();
         if (usedSimulator.toString().contains("Cache")) {
-            tryToFillCacheFromFile(this.pathToLastSimulationCache);
-            calculateDesignSpace();
-            checkIfCachedSimulationIsPossible();
+            if (tryToFillCacheFromFile(this.pathToLastSimulationCache)) {
+                calculateDesignSpace();
+                checkIfCachedSimulationIsPossible();
+            } else {
+                support.log("Failed to load from Cache.", typeOfLogLevel.ERROR);
+            }
         }
     }
 
