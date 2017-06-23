@@ -493,9 +493,9 @@ public class support {
     }
 
     /**
-     * Casts a float to int
+     * Casts a double to int
      *
-     * @param f float value to cast to int
+     * @param f double value to cast to int
      * @return int value of given float
      */
     public static int getInt(double f) {
@@ -503,9 +503,26 @@ public class support {
     }
 
     /**
-     * Converts a float into a String
+     * *
+     * Converts a String to int
      *
-     * @param f float value to be converted into String
+     * @param f String value to be converted
+     * @return int value of given String
+     */
+    public static int getInt(String f) {
+        try {
+            return Integer.parseInt(f);
+        } catch (Exception e) {
+
+            return (int) Double.parseDouble(f);
+        }
+
+    }
+
+    /**
+     * Converts a double into a String
+     *
+     * @param f double value to be converted into String
      * @return String which represents the input float value
      */
     public static String getString(double f) {

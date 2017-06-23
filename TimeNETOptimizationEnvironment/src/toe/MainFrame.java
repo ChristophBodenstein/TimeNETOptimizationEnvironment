@@ -259,6 +259,14 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         support.setChosenSimulatorType((typeOfSimulator) jComboBoxSimulationType.getSelectedItem());
         this.jComboBoxOptimizationType.setSelectedItem(typeOfOptimization.valueOf(auto.getProperty("OptimizationType", support.DEFAULT_TYPE_OF_OPTIMIZER.toString())));
 
+        //Restore log frame position
+        java.awt.Rectangle logFrameRectangle = support.getLogFrame().getBounds();
+        logFrameRectangle.x = support.getInt(auto.getProperty("frame.log.x", support.getString(logFrameRectangle.getX())));
+        logFrameRectangle.y = support.getInt(auto.getProperty("frame.log.y", support.getString(logFrameRectangle.getY())));
+        logFrameRectangle.width = support.getInt(auto.getProperty("frame.log.w", support.getString(logFrameRectangle.getWidth())));
+        logFrameRectangle.height = support.getInt(auto.getProperty("frame.log.h", support.getString(logFrameRectangle.getHeight())));
+        support.getLogFrame().setBounds(logFrameRectangle);
+
         savePropertiesEnabled = true;//Enable property saving after init of all components
 
         //Add all Components to ListOfUIComponents
@@ -1392,11 +1400,11 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-        support.getMyLogFrame().setVisible(true);
+        support.getLogFrame().setVisible(true);
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void jMenuItemClearLogWindowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemClearLogWindowActionPerformed
-        support.getMyLogFrame().clearText();
+        support.getLogFrame().clearText();
     }//GEN-LAST:event_jMenuItemClearLogWindowActionPerformed
 
     private void jButtonOptiOptionsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonOptiOptionsActionPerformed
@@ -2173,6 +2181,12 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
 
             auto.setProperty("LOGTOWINDOW", Boolean.toString(getLogToWindow()));
             auto.setProperty("LOGTOFILE", Boolean.toString(getLogToFile()));
+
+            java.awt.Rectangle logFrameRectangle = support.getLogFrame().getBounds();
+            auto.setProperty("frame.log.x", support.getString(logFrameRectangle.getX()));
+            auto.setProperty("frame.log.y", support.getString(logFrameRectangle.getY()));
+            auto.setProperty("frame.log.w", support.getString(logFrameRectangle.getWidth()));
+            auto.setProperty("frame.log.h", support.getString(logFrameRectangle.getHeight()));
 
             File applicationProperties = new File(support.NAME_OF_PREFERENCES_FILE);
             auto.store(new FileOutputStream(applicationProperties), "ExperimentGenerator-Properties");
