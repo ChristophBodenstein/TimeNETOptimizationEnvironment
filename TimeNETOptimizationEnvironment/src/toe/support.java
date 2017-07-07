@@ -2062,7 +2062,7 @@ public class support {
         double returnValue = OPTIMIZATION_TARGET_MAX;
 
         if (getChosenSimulatorType().equals(typeOfSimulator.Benchmark) || getChosenSimulatorType().equals(typeOfSimulator.Cached_Benchmark)) {
-            returnValue = BenchmarkFactory.getBenchmarkFunction().getOptimumSimulation().getMeasures().get(0).getMaxValue();
+            returnValue = BenchmarkFactory.getBenchmarkFunction().getMaxValue();//getOptimumSimulation().getMeasures().get(0).getMaxValue();
         }
 
         return returnValue;
@@ -2075,7 +2075,7 @@ public class support {
         double returnValue = OPTIMIZATION_TARGET_MIN;
 
         if (getChosenSimulatorType().equals(typeOfSimulator.Benchmark) || getChosenSimulatorType().equals(typeOfSimulator.Cached_Benchmark)) {
-            returnValue = BenchmarkFactory.getBenchmarkFunction().getOptimumSimulation().getMeasures().get(0).getMinValue();
+            returnValue = BenchmarkFactory.getBenchmarkFunction().getMinValue();//getOptimumSimulation().getMeasures().get(0).getMinValue();
         }
 
         return returnValue;
