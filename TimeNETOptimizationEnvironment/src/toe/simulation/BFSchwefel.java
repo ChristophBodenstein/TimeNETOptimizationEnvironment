@@ -76,7 +76,7 @@ public class BFSchwefel implements BenchmarkFunction {
     }
 
     @Override
-    public SimulationType getOptimumSimulation() {
+    public SimulationType getOptimumSimulation(MeasureType targetMeasure) {
         ArrayList<parameter> optimumParameterlist = support.getCopyOfParameterSet(support.getOriginalParameterBase());
         ArrayList<parameter> optimumChangableParameterset = support.getListOfChangableParameters(optimumParameterlist);
 
