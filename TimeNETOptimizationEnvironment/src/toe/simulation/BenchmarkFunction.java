@@ -7,6 +7,7 @@
 package toe.simulation;
 
 import java.util.ArrayList;
+import toe.datamodel.MeasureType;
 import toe.datamodel.SimulationType;
 import toe.datamodel.parameter;
 import toe.typedef;
@@ -22,15 +23,16 @@ public interface BenchmarkFunction {
      * same values in benchmark functions Thus giving a target measure in
      * function call is not needed
      *
+     * @param targetMeasure Target Measure with Type of optimum and value
      * @return SimulationType-object of optimal target value
      */
-    public SimulationType getOptimumSimulation();
+    public SimulationType getOptimumSimulation(MeasureType targetMeasure);
 
     /**
      * Returns calculated simulation object, containing the value of measures
      * for given parameterlist
      *
-     * all Measures have to contain simTime, CPUTime, Min/Max-ValueÏ
+     * all Measures have to contain simTime, CPUTime, Min/Max-Value
      *
      * @param parameterList definition space coordinates to calculate the result
      * values
@@ -51,11 +53,11 @@ public interface BenchmarkFunction {
      * @return maximum measure value
      */
     public double getMaxValue();
-    
+
     /**
-     * Return type of this benchmark function. (typeOfBenchmarkFunction)
-     * This makes it easier to check and compare in other parts of program
-     * 
+     * Return type of this benchmark function. (typeOfBenchmarkFunction) This
+     * makes it easier to check and compare in other parts of program
+     *
      * @return Type of this benchmarkfunction
      */
     public typedef.typeOfBenchmarkFunction getTypeOfBenchmarkFunction();
