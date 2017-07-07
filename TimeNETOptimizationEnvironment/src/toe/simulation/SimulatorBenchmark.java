@@ -170,8 +170,7 @@ public class SimulatorBenchmark extends Thread implements Simulator {
      */
     @Override
     public SimulationType getCalculatedOptimum(MeasureType targetMeasure) {
-
-        return BenchmarkFactory.getBenchmarkFunction().getOptimumSimulation();
+        return BenchmarkFactory.getBenchmarkFunction().getOptimumSimulation(targetMeasure);
     }
 
     @Override
