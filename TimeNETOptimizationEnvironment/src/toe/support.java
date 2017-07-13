@@ -112,6 +112,7 @@ public class support {
     public static final int DEFAULT_InternalParameterEnd = 0;
     public static final boolean DEFAULT_KeepDesignSpaceAndResolution = true;
 
+//default values for other program wide used parameters    
     public static final int DEFAULT_MINIMUM_DESIGNSPACE_SIZE_PER_PARAMETER = 10;//Minimum Steps per Parameter.
     public static final int DEFAULT_MINIMUM_DESIGNSPACE_FOR_OPTIMIZATION = 50;//If DS is smaller, no Optimization is possible
 
@@ -132,6 +133,10 @@ public class support {
     public static final int DEFAULT_WAIT_FOR_OPTIMIZER_INTERVAL = 1;// in seconds. Time to wait between asking Optimizer for result
 
     public static final typeOfRelativeDistanceCalculation DEFAULT_TYPE_OF_RELATIVE_DISTANCE_CALCULATION = typeOfRelativeDistanceCalculation.EUKLID;//Distance calculation for opti-results
+
+    public static final double DEFAULT_TARGET_MIN = Double.NEGATIVE_INFINITY;
+    public static final double DEFAULT_TARGET_MAX = Double.POSITIVE_INFINITY;
+    public static final double DEFAULT_TARGET_STEPPING = 0.001;
 
 //End of program-wide default value definition
     private static JLabel statusLabel = null;//The label for showing status information
@@ -1374,8 +1379,8 @@ public class support {
      */
     public static ArrayList<parameter> getListOfChangableParameters(ArrayList<parameter> sourceList) {
 
-        //If Multiphase is used, return modified List of old Changaleb Parameters
-        //take old list and modify Values by actual list
+        //If Multiphase is used, return modified list of old changable parameters
+        //take old list and modify values by actual list
         if (listOfChangableParametersMultiphase != null) {
             //support.log("Multiphase is chosen. Return of Multiphase-list instead of new calculated list.");
             for (int i = 0; i < listOfChangableParametersMultiphase.size(); i++) {
@@ -2114,6 +2119,13 @@ public class support {
      */
     public static String getPropertiesFileForSCPN(String PathToSCPN) {
         return support.NAME_OF_PREF_DIR + "." + support.removeExtention(support.getFileNameWithoutPath(PathToSCPN)) + ".prop";
+    }
+
+    public static void updateMeasureFormPane() {
+        MeasurementForm tmpMeasurementForm = (MeasurementForm) getMeasureFormPane().getComponent(0);
+        if (tmpMeasurementForm != null) {
+            tmpMeasurementForm.updateMinMax();
+        }
     }
 
 }

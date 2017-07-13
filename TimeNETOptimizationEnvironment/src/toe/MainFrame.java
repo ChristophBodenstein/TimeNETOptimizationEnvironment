@@ -95,6 +95,9 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
 
         initComponents();
 
+        support.setStatusLabel(jLabelExportStatus);
+        support.setMeasureFormPane(jTabbedPaneOptiTargets);
+
         aboutDialog = new JDialog(MainFrame.getWindows()[0], ModalityType.DOCUMENT_MODAL);
         aboutDialog.setContentPane(new AboutPanel());
         aboutDialog.pack();
@@ -239,8 +242,6 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
             }
         });
 
-        support.setStatusLabel(jLabelExportStatus);
-        support.setMeasureFormPane(jTabbedPaneOptiTargets);
         support.setPathToTimeNet(pathToTimeNet);
         support.setPathToR(pathToR);
 
@@ -1326,6 +1327,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
     private void jComboBoxSimulationTypeItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxSimulationTypeItemStateChanged
         support.setChosenSimulatorType((typedef.typeOfSimulator) this.jComboBoxSimulationType.getSelectedItem());
         this.saveProperties();
+        support.updateMeasureFormPane();
     }//GEN-LAST:event_jComboBoxSimulationTypeItemStateChanged
 
     private void jComboBoxOptimizationTypeItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxOptimizationTypeItemStateChanged
@@ -1516,6 +1518,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
     private void jComboBoxBenchmarkFunctionItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxBenchmarkFunctionItemStateChanged
         support.setChosenBenchmarkFunction((typeOfBenchmarkFunction) this.jComboBoxBenchmarkFunction.getSelectedItem());
         this.saveProperties();
+        support.updateMeasureFormPane();
     }//GEN-LAST:event_jComboBoxBenchmarkFunctionItemStateChanged
 
     /**

@@ -8,6 +8,8 @@ package toe;
 import toe.datamodel.MeasureType;
 import java.util.ArrayList;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.SpinnerNumberModel;
+import toe.simulation.BenchmarkFactory;
 import toe.typedef.*;
 
 /**
@@ -15,6 +17,12 @@ import toe.typedef.*;
  * @author Christoph Bodenstein
  */
 public final class MeasurementForm extends javax.swing.JPanel {
+
+    private double targetMin = support.DEFAULT_TARGET_MIN;
+    private double targetMax = support.DEFAULT_TARGET_MAX;
+    private double targetStepping = support.DEFAULT_TARGET_STEPPING;
+    private double currentTargetValue = 0.00;
+    private SpinnerNumberModel targetSpinnerModel = new SpinnerNumberModel(0.00, targetMin, targetMax, targetStepping);
 
     private ArrayList<MeasureType> listOfMeasureMents = new ArrayList<>();
 
@@ -24,6 +32,7 @@ public final class MeasurementForm extends javax.swing.JPanel {
     public MeasurementForm() {
         initComponents();
         this.setActivated(true);
+        updateMinMax();
     }
 
     /**
@@ -50,7 +59,7 @@ public final class MeasurementForm extends javax.swing.JPanel {
             }
         });
 
-        jSpinnerTargetValue.setModel(new javax.swing.SpinnerNumberModel(0.0d, null, null, 0.001d));
+        jSpinnerTargetValue.setModel(targetSpinnerModel);
         jSpinnerTargetValue.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerTargetValue, "#.####"));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -81,6 +90,20 @@ public final class MeasurementForm extends javax.swing.JPanel {
 
     private void jComboBoxTargetTypeItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxTargetTypeItemStateChanged
         this.jSpinnerTargetValue.setEnabled(this.getTargetType().equals(typeOfTarget.value));
+        if (support.getChosenSimulatorType().equals(typeOfSimulator.Benchmark) || support.getChosenSimulatorType().equals(typeOfSimulator.Cached_Benchmark)) {
+            switch (this.getTargetType()) {
+                case max:
+                    this.jSpinnerTargetValue.setValue(this.targetMax);
+                    break;
+                case min:
+                    this.jSpinnerTargetValue.setValue(this.targetMin);
+                    break;
+                default:
+                    break;
+            }
+
+        }
+
     }//GEN-LAST:event_jComboBoxTargetTypeItemStateChanged
 
 
@@ -224,6 +247,42 @@ public final class MeasurementForm extends javax.swing.JPanel {
     public void setEnabled(boolean enabled) {
         this.setActivated(enabled);
         this.jSpinnerTargetValue.setEnabled(enabled && this.getTargetType().equals(typeOfTarget.value));
+    }
+
+    /**
+     * If benchmark simulation is chosen, get Min and Max Values of Target from
+     * selected benchmark function and restrict input field, If no benchmark
+     * simulation is chosen, set Min Max restictions to default
+     */
+    public void updateMinMax() {
+        //jSpinnerTargetValue.getModel().
+
+        //get Min
+        //get Max
+        //check if value is inbetween min and max, else change it
+        currentTargetValue = (double) jSpinnerTargetValue.getValue();
+        if (support.getChosenSimulatorType().equals(typeOfSimulator.Benchmark) || support.getChosenSimulatorType().equals(typeOfSimulator.Cached_Benchmark)) {
+            targetMin = BenchmarkFactory.getBenchmarkFunction().getMinValue();
+            targetMax = BenchmarkFactory.getBenchmarkFunction().getMaxValue();
+            targetStepping = support.DEFAULT_TARGET_STEPPING;
+
+        } else {
+            targetMin = support.DEFAULT_TARGET_MIN;
+            targetMax = support.DEFAULT_TARGET_MAX;
+            targetStepping = support.DEFAULT_TARGET_STEPPING;
+        }
+
+        if (currentTargetValue < targetMin) {
+            currentTargetValue = targetMin;
+        }
+        if (currentTargetValue > targetMax) {
+            currentTargetValue = targetMax;
+        }
+
+        targetSpinnerModel = new SpinnerNumberModel(currentTargetValue, targetMin, targetMax, targetStepping);
+        jSpinnerTargetValue.setModel(targetSpinnerModel);
+
+        this.jComboBoxTargetTypeItemStateChanged(null);
     }
 
 }

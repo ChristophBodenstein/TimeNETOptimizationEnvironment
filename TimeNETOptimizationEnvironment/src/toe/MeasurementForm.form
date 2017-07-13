@@ -68,8 +68,8 @@
     </Component>
     <Component class="javax.swing.JSpinner" name="jSpinnerTargetValue">
       <Properties>
-        <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-          <SpinnerModel initial="0.0" numberType="java.lang.Double" stepSize="0.001" type="number"/>
+        <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="targetSpinnerModel" type="code"/>
         </Property>
         <Property name="editor" type="javax.swing.JComponent" editor="org.netbeans.modules.form.editors.SpinnerEditorEditor">
           <SpinnerEditor format="#.####" type="3"/>
