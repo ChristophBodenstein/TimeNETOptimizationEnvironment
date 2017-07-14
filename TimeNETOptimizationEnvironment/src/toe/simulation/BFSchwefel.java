@@ -103,10 +103,7 @@ public class BFSchwefel implements BenchmarkFunction {
 
     @Override
     public double getMaxValue() {
-        ArrayList<parameter> tmpParameterList = support.getParameterBase();
-        ArrayList<parameter> tmpListOfChangableParameter = support.getListOfChangableParameters(tmpParameterList);
-
-        return 418.9829 * tmpListOfChangableParameter.size() * 2;
+        return 418.9829 * support.getNumberOfChangeableParameters() * 2;
     }
 
     @Override

@@ -1945,7 +1945,6 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
             auto.setProperty("pref_KeepDesignSpaceAndResolution", Boolean.toString(this.getPref_MP_KeepDesignSpaceAndResolution()));
 
             auto.setProperty("pref_LogFileAddon", this.jTextFieldLogFileAddon.getText());
-            
 
             //setting parameters for genetic optimization
             auto.setProperty("pref_GeneticPopulationSize", Integer.toString(this.getPref_Genetic_PopulationSize()));
@@ -2995,8 +2994,7 @@ public final class OptimizerPreferences extends javax.swing.JFrame {
      */
     public void updateDimension() {
         try {
-            dimension = 0;
-            dimension = Math.max(support.getListOfChangableParameters(support.getMainFrame().getParameterBase()).size(), dimension);
+            dimension = support.getNumberOfChangeableParameters();
             if (dimension < 1) {
                 jLabelDimensionNumber.setText("No Dimension!");
                 dimension = 1;

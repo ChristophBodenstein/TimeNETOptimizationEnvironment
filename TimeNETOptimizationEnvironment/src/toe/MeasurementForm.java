@@ -32,7 +32,6 @@ public final class MeasurementForm extends javax.swing.JPanel {
     public MeasurementForm() {
         initComponents();
         this.setActivated(true);
-        updateMinMax();
     }
 
     /**
@@ -93,15 +92,15 @@ public final class MeasurementForm extends javax.swing.JPanel {
         if (support.getChosenSimulatorType().equals(typeOfSimulator.Benchmark) || support.getChosenSimulatorType().equals(typeOfSimulator.Cached_Benchmark)) {
             switch (this.getTargetType()) {
                 case max:
-                    this.jSpinnerTargetValue.setValue(this.targetMax);
+                    currentTargetValue = targetMax;
                     break;
                 case min:
-                    this.jSpinnerTargetValue.setValue(this.targetMin);
+                    currentTargetValue = targetMin;
                     break;
                 default:
                     break;
             }
-
+            this.jSpinnerTargetValue.setValue((Double) currentTargetValue);
         }
 
     }//GEN-LAST:event_jComboBoxTargetTypeItemStateChanged
@@ -255,11 +254,6 @@ public final class MeasurementForm extends javax.swing.JPanel {
      * simulation is chosen, set Min Max restictions to default
      */
     public void updateMinMax() {
-        //jSpinnerTargetValue.getModel().
-
-        //get Min
-        //get Max
-        //check if value is inbetween min and max, else change it
         currentTargetValue = (double) jSpinnerTargetValue.getValue();
         if (support.getChosenSimulatorType().equals(typeOfSimulator.Benchmark) || support.getChosenSimulatorType().equals(typeOfSimulator.Cached_Benchmark)) {
             targetMin = BenchmarkFactory.getBenchmarkFunction().getMinValue();
@@ -279,10 +273,24 @@ public final class MeasurementForm extends javax.swing.JPanel {
             currentTargetValue = targetMax;
         }
 
+        if (support.getChosenSimulatorType().equals(typeOfSimulator.Benchmark) || support.getChosenSimulatorType().equals(typeOfSimulator.Cached_Benchmark)) {
+            switch (this.getTargetType()) {
+                case max:
+                    currentTargetValue = targetMax;
+                    break;
+                case min:
+                    currentTargetValue = targetMin;
+                    break;
+                default:
+                    break;
+            }
+        }
+        
         targetSpinnerModel = new SpinnerNumberModel(currentTargetValue, targetMin, targetMax, targetStepping);
         jSpinnerTargetValue.setModel(targetSpinnerModel);
-
-        this.jComboBoxTargetTypeItemStateChanged(null);
+        
+        jSpinnerTargetValue.setValue((Double) currentTargetValue);
+        support.log("Setting target value to:" + currentTargetValue, typeOfLogLevel.INFO);
     }
 
 }

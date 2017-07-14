@@ -105,10 +105,7 @@ public class BFSphere implements BenchmarkFunction {
 
     @Override
     public double getMaxValue() {
-        ArrayList<parameter> tmpParameterList = support.getParameterBase();
-        ArrayList<parameter> tmpListOfChangableParameter = support.getListOfChangableParameters(tmpParameterList);
-
-        return Math.pow((limitUpper * limitUpper), (double) tmpListOfChangableParameter.size());
+        return Math.pow((limitUpper * limitUpper), (double) support.getNumberOfChangeableParameters());
 
     }
 

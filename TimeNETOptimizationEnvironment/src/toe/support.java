@@ -170,6 +170,8 @@ public class support {
 
     private static boolean deleteTmpSimulationFiles = true;
 
+    private static int dimension = 0;
+
 //Defaults for Benchmark-Funktions
     public static final double DEFAULT_ACKLEY_limitLower = -5;
     public static final double DEFAULT_ACKLEY_limitupper = 5;
@@ -1379,6 +1381,10 @@ public class support {
      */
     public static ArrayList<parameter> getListOfChangableParameters(ArrayList<parameter> sourceList) {
 
+        if (sourceList == null) {
+            return null;
+        }
+
         //If Multiphase is used, return modified list of old changable parameters
         //take old list and modify values by actual list
         if (listOfChangableParametersMultiphase != null) {
@@ -2122,10 +2128,32 @@ public class support {
     }
 
     public static void updateMeasureFormPane() {
-        MeasurementForm tmpMeasurementForm = (MeasurementForm) getMeasureFormPane().getComponent(0);
-        if (tmpMeasurementForm != null) {
-            tmpMeasurementForm.updateMinMax();
+
+        try {
+            MeasurementForm tmpMeasurementForm = (MeasurementForm) getMeasureFormPane().getComponent(0);
+            if (tmpMeasurementForm != null) {
+                tmpMeasurementForm.updateMinMax();
+            }
+        } catch (Exception e) {
+            support.log("Could not update Target Measurementform / TargetValueSpinner", typeOfLogLevel.INFO);
         }
+
+    }
+
+    /**
+     * Return number of changable parameters, the dimension of problem
+     *
+     * @return number of parameter to be changed while optimization (dimension
+     * of problem)
+     */
+    public static int getNumberOfChangeableParameters() {
+        dimension = 0;
+        try {
+            dimension = Math.max(support.getListOfChangableParameters(support.getMainFrame().getParameterBase()).size(), dimension);
+        } catch (Exception e) {
+            support.log("Problem calculating the dimension/number of changable parameters.", typeOfLogLevel.INFO);
+        }
+        return dimension;
     }
 
 }

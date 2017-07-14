@@ -90,11 +90,9 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
      * @throws java.io.IOException
      */
     public MainFrame() throws IOException {
-
-        support.setMainFrame(this);
-
         initComponents();
 
+        support.setMainFrame(this);
         support.setStatusLabel(jLabelExportStatus);
         support.setMeasureFormPane(jTabbedPaneOptiTargets);
 
@@ -1956,6 +1954,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         }
         support.getOptimizerPreferences().setPossibleInternalParameters(resultParameterList);
         support.getOptimizerPreferences().updateDimension();
+        support.updateMeasureFormPane();
     }
 
     /**
