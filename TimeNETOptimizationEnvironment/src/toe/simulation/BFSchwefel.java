@@ -20,6 +20,7 @@ public class BFSchwefel implements BenchmarkFunction {
     double limitUpper = support.DEFAULT_Schwefel_limitupper;
     double limitLower = support.DEFAULT_Schwefel_limitLower;
 
+    @Override
     public SimulationType getSimulationResult(ArrayList<parameter> parameterList) {
         ArrayList<parameter> tmpParameterList = (parameterList);
         ArrayList<parameter> tmpListOfChangableParameter = support.getListOfChangableParameters(tmpParameterList);
