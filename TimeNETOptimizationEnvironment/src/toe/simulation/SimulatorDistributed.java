@@ -13,7 +13,6 @@ package toe.simulation;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -174,10 +173,9 @@ public class SimulatorDistributed extends Thread implements Simulator {
                             fileWriter.close();
                             actualSimulationLogFile = exportFileName;
 
-                            String[] tmpArrayToGetSimulationCounter=filenameWithoutExtension.split("n_");
+                            String[] tmpArrayToGetSimulationCounter = filenameWithoutExtension.split("n_");
                             tmpArrayToGetSimulationCounter = tmpArrayToGetSimulationCounter[1].split("_Max");
-                            
-                            
+
                             //create the xml-file again for parsing, tmp solution
                             support.log("Used xml-filename on network: " + filenameWithoutExtension, typeOfLogLevel.VERBOSE);
                             actualParameterSet = listOfParametersetsByFileNameHashmap.get(filenameWithoutExtension);
@@ -579,5 +577,25 @@ public class SimulatorDistributed extends Thread implements Simulator {
     @Override
     public String getLogfileName() {
         return this.logFileName;
+    }
+
+    @Override
+    public boolean isOptimumCalculated() {
+        return false;
+    }
+
+    @Override
+    public void startCalculatingOptimum(MeasureType targetMeasure) {
+        //not needed
+    }
+
+    @Override
+    public void stopCalculatingOptimum() {
+        //not needed
+    }
+
+    @Override
+    public void discardCalculatedOptimum() {
+        //not needed
     }
 }

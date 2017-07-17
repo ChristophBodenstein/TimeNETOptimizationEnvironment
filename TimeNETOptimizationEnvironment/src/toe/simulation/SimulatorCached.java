@@ -22,7 +22,7 @@ import toe.typedef.typeOfLogLevel;
  */
 public class SimulatorCached extends Thread implements Simulator {
 
-    //Temporary simulation cache, to story current simulation results. Results find in this cache are taged as "isCache", other results are tagged as fresh simulations
+    //Temporary simulation cache, to store current simulation results. Results find in this cache are taged as "isCache", other results are tagged as fresh simulations
     SimulationCache myTmpSimulationCache = support.getTmpSimulationCache();
     ArrayList<SimulationType> myListOfSimulations = null;
     final String logFileName;
@@ -146,7 +146,7 @@ public class SimulatorCached extends Thread implements Simulator {
     }
 
     /**
-     * Returns the calculated optimum For Benchmark-Functions and Cache-only
+     * Returns the calculated optimum for Benchmark-Functions and Cache-only
      * simulations this can be calculated. For other simulators, this must be
      * given by user.
      *
@@ -229,5 +229,25 @@ public class SimulatorCached extends Thread implements Simulator {
     @Override
     public String getLogfileName() {
         return this.logFileName;
+    }
+
+    @Override
+    public boolean isOptimumCalculated() {
+        return true;
+    }
+
+    @Override
+    public void startCalculatingOptimum(MeasureType targetMeasure) {
+        //TODO: implement later
+    }
+
+    @Override
+    public void stopCalculatingOptimum() {
+        //TODO: implement later
+    }
+
+    @Override
+    public void discardCalculatedOptimum() {
+        //TODO: implement later
     }
 }

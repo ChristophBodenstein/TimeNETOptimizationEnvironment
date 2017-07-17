@@ -30,6 +30,7 @@ public class SimulatorBenchmark extends Thread implements Simulator {
     int status = 0;
     boolean log = true;
     ArrayList<ArrayList<parameter>> listOfParameterSetsTMP;
+    boolean isOptimumCalculated = false; // by default optimum coordinates are not calculated
 
     /**
      * Constructor
@@ -181,5 +182,25 @@ public class SimulatorBenchmark extends Thread implements Simulator {
     @Override
     public String getLogfileName() {
         return this.logFileName;
+    }
+
+    @Override
+    public boolean isOptimumCalculated() {
+        return isOptimumCalculated;
+    }
+
+    @Override
+    public void startCalculatingOptimum(MeasureType targetMeasure) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void stopCalculatingOptimum() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void discardCalculatedOptimum() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

@@ -26,7 +26,7 @@ public class SimulatorCachedBenchmark extends SimulatorCachedLocal {
     public Simulator getNoCacheSimulator() {
         return new SimulatorBenchmark();
     }
-    
+
     /**
      * Returns the calculated optimimum For Benchmark-Functions this can be
      * calculated. For other simulators, this must be given by user.
@@ -35,7 +35,27 @@ public class SimulatorCachedBenchmark extends SimulatorCachedLocal {
      * @return caluclated optimum. Not possible in Web-Simulator so returns null
      */
     @Override
-    public SimulationType getCalculatedOptimum(MeasureType targetMeasure){
-    return new SimulatorBenchmark().getCalculatedOptimum(targetMeasure);
+    public SimulationType getCalculatedOptimum(MeasureType targetMeasure) {
+        return getNoCacheSimulator().getCalculatedOptimum(targetMeasure);
+    }
+
+    @Override
+    public boolean isOptimumCalculated() {
+        return getNoCacheSimulator().isOptimumCalculated();
+    }
+
+    @Override
+    public void startCalculatingOptimum(MeasureType targetMeasure) {
+        getNoCacheSimulator().startCalculatingOptimum(targetMeasure);
+    }
+
+    @Override
+    public void stopCalculatingOptimum() {
+        getNoCacheSimulator().stopCalculatingOptimum();
+    }
+
+    @Override
+    public void discardCalculatedOptimum() {
+        getNoCacheSimulator().discardCalculatedOptimum();
     }
 }

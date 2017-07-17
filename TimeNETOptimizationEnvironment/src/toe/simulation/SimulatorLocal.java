@@ -348,9 +348,29 @@ public class SimulatorLocal extends Thread implements Simulator, nativeProcessCa
     public int cancelAllSimulations() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
     @Override
     public String getLogfileName() {
         return this.logFileName;
+    }
+
+    @Override
+    public boolean isOptimumCalculated() {
+        return false;
+    }
+
+    @Override
+    public void startCalculatingOptimum(MeasureType targetMeasure) {
+        //not needed
+    }
+
+    @Override
+    public void stopCalculatingOptimum() {
+        //not needed
+    }
+
+    @Override
+    public void discardCalculatedOptimum() {
+        //not needed
     }
 }
