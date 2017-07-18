@@ -452,7 +452,7 @@ public class typedef {
          * Draws a 2D-Heatmap
          */
         Heatmap
-    }
+    };
 
     /**
      * Type of distance calculation in definition space for found optima
@@ -467,7 +467,7 @@ public class typedef {
          * use EULID Distance and calc relative value
          */
         EUKLID
-    }
+    };
 
     /**
      * Skills of Client to be mentioned for distributed simulation TimeNET,
@@ -487,7 +487,7 @@ public class typedef {
          * client can simulate Matlab models
          */
         MATLAB
-    }
+    };
 
     /**
      * Types of log (Verbose, Info, Error, Result)
@@ -510,5 +510,27 @@ public class typedef {
          * Results of Optimization/Simulation, etc.
          */
         RESULT
-    }
+    };
+
+    /**
+     * Possible results of calculating the optimum solution
+     */
+    public enum typeOfOptimumCalculationResult {
+
+        /**
+         * No problems, the optimum could be found in Design space, its
+         * coordinates are unique.
+         */
+        SUCCESSFUL,
+        /**
+         * Optimum was calculated successful but problems occured. Maybe
+         * coordinates are not unique.
+         */
+        PROBLEMATIC,
+        /**
+         * Optimum could not be calculated.
+         */
+        ERROR
+    };
+
 }

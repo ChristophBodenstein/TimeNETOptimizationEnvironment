@@ -290,4 +290,17 @@ public final class MeasurementForm extends javax.swing.JPanel {
         support.log("Setting target value to:" + currentTargetValue, typeOfLogLevel.INFO);
     }
 
+    /**
+     * Used to announce the success of optimum calculation incl. reasons for possible fails
+     * @param result Type of sucess: see type definition
+     * @param comment 
+     */
+    public void optimumWasCalculated(typeOfOptimumCalculationResult result, String comment){
+        /**
+         * success-levels:
+         * 0->Optimum calculated successful
+         * 1->Optimum calculated but issues occured, read comment for info
+         * 2->Optimum not calculated, read comment for info
+        */
+    }
 }
