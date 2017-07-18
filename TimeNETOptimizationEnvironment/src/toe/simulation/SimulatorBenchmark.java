@@ -42,10 +42,12 @@ public class SimulatorBenchmark extends Thread implements Simulator {
     }
 
     /**
-     * inits and starts the simulation, this is neccessary and must be
-     * implemented In Benchmark we don`t use a local cache Ackley, Rosenbrock,
-     * Schwefel, Rastrigin: source from Le Minh Nghia, NTU-Singapore Parts of
-     * other functions are isp. by http://fossies.org/dox/cilib-0.7.6
+     * Inits and starts the simulation, this is neccessary and must be
+     * implemented.
+     * In Benchmark we don`t use a local cache.
+     * Ackley, Schwefel: source from Le Minh Nghia, NTU-Singapore.
+     * Parts of other functions are inspired 
+     * by http://fossies.org/dox/cilib-0.7.6
      *
      * @param listOfParameterSetsTMP List of Parametersets to be simulated
      * @param log write special log file for this simulator. true: write log
