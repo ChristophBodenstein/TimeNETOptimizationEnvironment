@@ -31,6 +31,7 @@ public class SimulatorBenchmark extends Thread implements Simulator {
     boolean log = true;
     ArrayList<ArrayList<parameter>> listOfParameterSetsTMP;
     boolean isOptimumCalculated = false; // by default optimum coordinates are not calculated
+    boolean cancelAllSimulations = false;//Flag to cancel all simulations
 
     /**
      * Constructor
@@ -43,11 +44,9 @@ public class SimulatorBenchmark extends Thread implements Simulator {
 
     /**
      * Inits and starts the simulation, this is neccessary and must be
-     * implemented.
-     * In Benchmark we don`t use a local cache.
-     * Ackley, Schwefel: source from Le Minh Nghia, NTU-Singapore.
-     * Parts of other functions are inspired 
-     * by http://fossies.org/dox/cilib-0.7.6
+     * implemented. In Benchmark we don`t use a local cache. Ackley, Schwefel:
+     * source from Le Minh Nghia, NTU-Singapore. Parts of other functions are
+     * inspired by http://fossies.org/dox/cilib-0.7.6
      *
      * @param listOfParameterSetsTMP List of Parametersets to be simulated
      * @param log write special log file for this simulator. true: write log
@@ -152,6 +151,14 @@ public class SimulatorBenchmark extends Thread implements Simulator {
             support.incGlobalSimulationCounter();
             this.status = (100 / listOfParameterSetsTMP.size()) * i;
             myListOfSimulations.add(BenchmarkFactory.getBenchmarkFunction().getSimulationResult(listOfParameterSetsTMP.get(i)));
+
+            if (cancelAllSimulations) {
+                support.log("Will abort all benchmark simulations and return null.", typeOfLogLevel.INFO);
+                status = 100;
+                myListOfSimulations = null;
+                cancelAllSimulations = false;
+                break;
+            }
         }
         support.log("Number of done simulations: " + myListOfSimulations.size(), typeOfLogLevel.INFO);
         if (log) {
@@ -166,7 +173,7 @@ public class SimulatorBenchmark extends Thread implements Simulator {
 
     /**
      * Returns the calulated optimimum For Benchmark-Functions this can be
-     * caluclated. For other simulators, this must be given by user.
+     * calculated. For other simulators, this must be given by user.
      *
      * @param targetMeasure Measure that should be optimized
      * @return calculated optimum (for given measure)
@@ -178,7 +185,8 @@ public class SimulatorBenchmark extends Thread implements Simulator {
 
     @Override
     public int cancelAllSimulations() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        cancelAllSimulations = true;
+        return 0;
     }
 
     @Override
@@ -193,6 +201,9 @@ public class SimulatorBenchmark extends Thread implements Simulator {
 
     @Override
     public void startCalculatingOptimum(MeasureType targetMeasure) {
+        //Get List of all parametersets.
+        //Iterate through all possible parametersets
+        //support.getMainFrame()
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

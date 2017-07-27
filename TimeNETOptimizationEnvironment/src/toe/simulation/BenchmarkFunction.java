@@ -20,7 +20,7 @@ public interface BenchmarkFunction {
 
     /**
      * Returns the optimum simulation object All target measures will have the
-     * same values in benchmark functions Thus giving a target measure in
+     * same values in benchmark functions. Thus giving a target measure in
      * function call is not needed
      *
      * @param targetMeasure Target Measure with Type of optimum and value

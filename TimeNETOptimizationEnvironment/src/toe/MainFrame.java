@@ -1934,7 +1934,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
     public void tableChanged(TableModelEvent e) {
         //support.log("Editing of Cell stopped, restarting generator.");
         //this.restartGenerator();
-        jButtonStartBatchSimulation.setEnabled(false);
+        this.deactivateExportButtons();
         readStaticParametersFromTable();
         saveProperties();
         calculateDesignSpace();
@@ -1994,7 +1994,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         //this.jButtonOpenSCPN.setEnabled(false);
         this.jButtonReload.setEnabled(false);
         this.jButtonStartOptimization.setEnabled(false);
-        this.jButtonGenerateListOfExperiments.setEnabled(false);
+        //this.jButtonGenerateListOfExperiments.setEnabled(false);
     }
 
     /**
@@ -2002,6 +2002,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
      */
     public void activateExportButtons() {
         this.jButtonExport.setEnabled(true);
+        this.jButtonStartBatchSimulation.setEnabled(true);
         //this.jButtonOpenSCPN.setEnabled(true);
         this.jButtonReload.setEnabled(true);
         //this.jButtonStartOptimization.setEnabled(true);
@@ -2021,9 +2022,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
      * Sets the Generate- and OptimizeButtons active
      */
     public void activateGenerateButtons() {
-        //this.jButtonStartOptimization.setEnabled(true);
         this.jButtonGenerateListOfExperiments.setEnabled(true);
-        //this.jButtonStartBatchSimulation.setEnabled(true);
     }
 
     /*
@@ -2035,7 +2034,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         File tmpFile = new File(path + File.separator + "TimeNET.jar");
         support.log("TimeNET should be here: " + tmpFile.getAbsolutePath(), typeOfLogLevel.INFO);
         if (tmpFile.canRead()) {
-            this.jButtonStartBatchSimulation.setEnabled(true);
+            //this.jButtonStartBatchSimulation.setEnabled(true);
             //this.jLabelCheckPathToTimeNet.setVisible(false);
             jButtonPathToTimeNet.setBackground(Color.GREEN);
             jButtonPathToTimeNet.setOpaque(true);
@@ -2582,7 +2581,8 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
             case GenerationSuccessful:
                 this.popUIState();
                 support.log("Generation of Designspace successful.", typeOfLogLevel.RESULT);
-                jButtonStartBatchSimulation.setEnabled(true);
+                //jButtonStartBatchSimulation.setEnabled(true);
+                activateExportButtons();
                 break;
             case SimulationSuccessful:
                 support.log("Simulation successful.", typeOfLogLevel.RESULT);
