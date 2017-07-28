@@ -1,6 +1,7 @@
 /*
  * Exports a list of Experiments as xml-files into a given directory.
-
+ * Calculates the design space
+ *
  * Christoph Bodenstein
  * TU-Ilmenau, FG SSE
  */
@@ -11,7 +12,6 @@ import toe.datamodel.parameter;
 import java.io.File;
 import java.util.ArrayList;
 import javax.swing.JFileChooser;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.xml.parsers.*;
@@ -29,7 +29,6 @@ public class exporter implements Runnable {
 
     ArrayList< ArrayList<parameter>> ListOfParameterSetsToBeWritten;
     String filename;
-    //JLabel infoLabel;
     MainFrame parent;
 
     exporter(ArrayList< ArrayList<parameter>> ListOfParameterSetsToBeWritten) {
