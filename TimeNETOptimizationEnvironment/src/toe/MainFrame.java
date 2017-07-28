@@ -1612,7 +1612,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
      * with respect to the stepping sizes
      */
     public void calculateDesignSpace() {
-        myGenerator = new generator(ListOfParameterSetsToBeWritten, fileName, jLabelExportStatus, this, jTableParameterList);
+        myGenerator = new generator(ListOfParameterSetsToBeWritten, fileName, this, jTableParameterList);
         this.sizeOfDesignSpace = myGenerator.getSizeOfDesignspace();
         //support.setStatusText("Designspace-Size:" + NumberFormat.getInstance().format(sizeOfDesignSpace));
         this.jLabelDesignspaceSize.setText("Designspace size: " + NumberFormat.getInstance().format(sizeOfDesignSpace));
@@ -1635,10 +1635,8 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
      * @param ListOfParameterSetsToBeWritten List of parameterset to be
      * simulated, this is the designspace
      * @param lastParameterSet the last parameterset while generating recursive
-     * @param infoLabel Label to display some information while generating
      */
-    public void buildListOfParameterSetsToExport(ArrayList ListOfParameterSetsToBeWritten, ArrayList ListOfParameterAsFromTable, ArrayList<parameter> lastParameterSet, JLabel infoLabel) {
-        boolean isAlreadyInExportList = false;
+    public void buildListOfParameterSetsToExport(ArrayList ListOfParameterSetsToBeWritten, ArrayList ListOfParameterAsFromTable, ArrayList<parameter> lastParameterSet) {
 
         if (support.isCancelEverything()) {
             this.activateReloadButtons();
@@ -1693,12 +1691,9 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                         addToListOfParameterSetsToBeWritten(nextParameterSet);
                     }
                     //call this method again with reduced parameterset
-                    buildListOfParameterSetsToExport(ListOfParameterSetsToBeWritten, ListOfParameterAsFromTable, nextParameterSet, infoLabel);
+                    buildListOfParameterSetsToExport(ListOfParameterSetsToBeWritten, ListOfParameterAsFromTable, nextParameterSet);
                 }
             } else {
-                //check if entry ia already in list
-                //no more used...
-                isAlreadyInExportList = false;
             }
             ListOfParameterAsFromTable.add(loopParameter);
 
@@ -1919,7 +1914,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         myGenerator = null;
         ListOfParameterSetIds = new ArrayList<>();
         ListOfParameterSetsToBeWritten = new ArrayList<>();
-        myGenerator = new generator(ListOfParameterSetsToBeWritten, fileName, jLabelExportStatus, this, jTableParameterList);
+        myGenerator = new generator(ListOfParameterSetsToBeWritten, fileName, this, jTableParameterList);
         myGenerator.start();
         support.waitForGeneratorAsynchronous(myGenerator, this);
     }

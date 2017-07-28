@@ -29,7 +29,7 @@ public class exporter implements Runnable {
 
     ArrayList< ArrayList<parameter>> ListOfParameterSetsToBeWritten;
     String filename;
-    JLabel infoLabel;
+    //JLabel infoLabel;
     MainFrame parent;
 
     exporter(ArrayList< ArrayList<parameter>> ListOfParameterSetsToBeWritten) {
@@ -89,8 +89,7 @@ public class exporter implements Runnable {
                         }
                     }
                     //set status text
-                    infoLabel.setText("Export of file " + (c + 1) + "/" + ListOfParameterSetsToBeWritten.size());
-                    infoLabel.updateUI();
+                    support.setStatusText("Export of file " + (c + 1) + "/" + ListOfParameterSetsToBeWritten.size());
                     //Create filename
                     String tmpDirName = "";
                     support.log("Choosen File: " + fileChooser.getSelectedFile(), typeOfLogLevel.INFO);
@@ -109,10 +108,13 @@ public class exporter implements Runnable {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                JOptionPane.showMessageDialog(parent, "Es gab einen Fehler beim Export der Experimente.");
+                support.log("Error exporting files. Will print stacktrace.", typeOfLogLevel.ERROR);
+                support.log(e.getLocalizedMessage(), typeOfLogLevel.ERROR);
+                JOptionPane.showMessageDialog(parent, "Error exporting files.");
             }
-            JOptionPane.showMessageDialog(parent, "Es wurden " + ListOfParameterSetsToBeWritten.size() + " Dateien erzeugt.");
-            infoLabel.setText("");
+            support.log("Successfully exported " + ListOfParameterSetsToBeWritten.size() + " files", typeOfLogLevel.INFO);
+            JOptionPane.showMessageDialog(parent, "Successfully exported " + ListOfParameterSetsToBeWritten.size() + " files.");
+            support.setStatusText("");
         } else {
             support.log("No Selection ", typeOfLogLevel.INFO);
             //parent.cancelOperation=true;
@@ -125,29 +127,33 @@ class generator extends Thread {
 
     ArrayList< ArrayList<parameter>> ListOfParameterSetsToBeWritten;
     String filename;
-    JLabel infoLabel;
     MainFrame parent;
     JTable jTableParameterList;
     boolean isRunning = false;
 
-    generator(ArrayList< ArrayList<parameter>> ListOfParameterSetsToBeWritten, String filename, JLabel infoLabel, MainFrame parent, JTable jTableParameterList) {
+    /**
+     * Constructor
+     *
+     * @param ListOfParameterSetsToBeWritten List of Parametersets to be
+     * exported as files (the list ist calculated with
+     * buildListOfParameterSetsToExport of Mainrame
+     * @param filename name of simulation file (master file to be copied)
+     * @param parent parent frame (will be removed later)
+     * @param jTableParameterList List of all Parameters from table
+     */
+    generator(ArrayList< ArrayList<parameter>> ListOfParameterSetsToBeWritten, String filename, MainFrame parent, JTable jTableParameterList) {
         this.ListOfParameterSetsToBeWritten = ListOfParameterSetsToBeWritten;
         this.filename = filename;
-        this.infoLabel = infoLabel;
         this.parent = parent;
         this.jTableParameterList = jTableParameterList;
-
-        //new Thread(this).start();
     }
 
     @Override
     public void run() {
         isRunning = true;
         parent.deactivateExportButtons();
-        infoLabel.setText("Generating all Experiments.");
-        int parameterCount = this.jTableParameterList.getModel().getRowCount();
+        support.setStatusText("Generating all Experiments.");
         parameterTableModel tModel = (parameterTableModel) this.jTableParameterList.getModel();
-        String[][] parameterArray = tModel.getParameterArray();
 
         //Build initial ArrayList of parameters
         ArrayList<parameter> ListOfParameterAsFromTable = tModel.getListOfParameter();
@@ -159,29 +165,30 @@ class generator extends Thread {
         support.setStatusText("Designspace-Size:" + this.getSizeOfDesignspace());
 
         //call recursive generation-function!
-        parent.buildListOfParameterSetsToExport(ListOfParameterSetsToBeWritten, ListOfParameterAsFromTable, lastParameterSet, infoLabel);
+        parent.buildListOfParameterSetsToExport(ListOfParameterSetsToBeWritten, ListOfParameterAsFromTable, lastParameterSet);
 
         support.log("Designspace-Size (incl. duplicates): " + ListOfParameterSetsToBeWritten.size(), typeOfLogLevel.INFO);
-        infoLabel.setText("Size is about: " + ListOfParameterSetsToBeWritten.size() + "Removing Duplicates.");
+        support.setStatusText("Size is about: " + ListOfParameterSetsToBeWritten.size() + "Removing Duplicates.");
 
         //ListOfParameterSetsToBeWritten=parent.removeDuplicates(ListOfParameterSetsToBeWritten, infoLabel);
         if (ListOfParameterSetsToBeWritten != null) {
-            infoLabel.setText("Designspace-Size:" + ListOfParameterSetsToBeWritten.size());
+            support.setStatusText("Designspace-Size:" + ListOfParameterSetsToBeWritten.size());
             support.log("Designspace without duplicates: " + ListOfParameterSetsToBeWritten.size(), typeOfLogLevel.INFO);
             parent.activateExportButtons();
         }
         isRunning = false;
     }
 
+    /**
+     * Calculates the size of design space, defined by parameter table
+     *
+     * @return Size of design space as int
+     */
     public int getSizeOfDesignspace() {
-        //Calculate the size of Design space and return just this number
         support.log("Calculating Size of Design Space.", typeOfLogLevel.INFO);
-        int parameterCount = this.jTableParameterList.getModel().getRowCount();
         parameterTableModel tModel = (parameterTableModel) this.jTableParameterList.getModel();
-        String[][] parameterArray = tModel.getParameterArray();
         double designSpaceSize = 1;
-        //ArrayListe aufbauen und Funktion mit dieser Liste aufrufen
-        //ArrayList <parameter>ListOfParameterAsFromTable=new ArrayList();//wird in rekursiver Funktion verkleinert
+
         for (int i = 0; i < tModel.getRowCount(); i++) {
             parameter tmpParameter = new parameter();
             tmpParameter.setName(tModel.getValueAt(i, 0).toString());
@@ -196,7 +203,6 @@ class generator extends Thread {
             }
 
             tmpParameter.setStepping(tModel.getDoubleValueAt(i, 3));
-            //ListOfParameterAsFromTable.add(tmpParameter);
 
             double start, end, step, spaceCounter = 1;
             start = tModel.getDoubleValueAt(i, 1);
