@@ -17,7 +17,7 @@ public class BenchmarkFactory {
     private static final BenchmarkFunction myBFSchwefel = new BFSchwefel();
 
     /**
-     * Returns the chosen Benchmark-function instance TODO: Use Singleton
+     * Returns the chosen Benchmark-function instance
      *
      * @return Benchmarkfunction-object
      */
