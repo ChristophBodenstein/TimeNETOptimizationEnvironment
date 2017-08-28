@@ -585,7 +585,7 @@ public class SimulatorDistributed extends Thread implements Simulator {
     }
 
     @Override
-    public void startCalculatingOptimum(MeasureType targetMeasure) {
+    public void startCalculatingOptimum() {
         //not needed
     }
 

@@ -360,7 +360,7 @@ public class SimulatorLocal extends Thread implements Simulator, nativeProcessCa
     }
 
     @Override
-    public void startCalculatingOptimum(MeasureType targetMeasure) {
+    public void startCalculatingOptimum() {
         //not needed
     }
 

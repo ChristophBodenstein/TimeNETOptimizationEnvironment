@@ -45,8 +45,8 @@ public class SimulatorCachedBenchmark extends SimulatorCachedLocal {
     }
 
     @Override
-    public void startCalculatingOptimum(MeasureType targetMeasure) {
-        getNoCacheSimulator().startCalculatingOptimum(targetMeasure);
+    public void startCalculatingOptimum() {
+        getNoCacheSimulator().startCalculatingOptimum();
     }
 
     @Override

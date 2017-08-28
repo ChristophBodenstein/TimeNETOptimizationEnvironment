@@ -200,7 +200,7 @@ public class SimulatorBenchmark extends Thread implements Simulator {
     }
 
     @Override
-    public void startCalculatingOptimum(MeasureType targetMeasure) {
+    public void startCalculatingOptimum() {
         //Get List of all parametersets.
         //Iterate through all possible parametersets
         //support.getMainFrame()

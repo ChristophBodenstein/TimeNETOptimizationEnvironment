@@ -237,7 +237,7 @@ public class SimulatorCached extends Thread implements Simulator {
     }
 
     @Override
-    public void startCalculatingOptimum(MeasureType targetMeasure) {
+    public void startCalculatingOptimum() {
         //TODO: implement later
     }
 

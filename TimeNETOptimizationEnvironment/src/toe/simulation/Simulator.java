@@ -63,10 +63,11 @@ public interface Simulator {
      * Start calculating the optimum solution, this can take time for big design
      * spaces.
      */
-    public void startCalculatingOptimum(MeasureType targetMeasure);
+    public void startCalculatingOptimum();
 
     /**
      * Trigger to stop the calculation of optimum solution
+     * TODO: Check if necessary, maybe CancelAll works
      */
     public void stopCalculatingOptimum();
 
