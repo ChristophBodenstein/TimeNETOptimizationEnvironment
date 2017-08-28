@@ -236,10 +236,6 @@ public class SimulationType {
      * @see getListOfParameters
      */
     public void setListOfParameters(ArrayList<parameter> pList) {
-//    this.parameterList=new ArrayList<parameter>();
-//        for(int i=0;i<p.length;i++){
-//        this.parameterList.add((parameter)p[i]);
-//        }
         this.parameterList = pList;
     }
 
@@ -251,36 +247,12 @@ public class SimulationType {
     }
 
     /**
-     * @return the SimulationTime
-     */
-    //public double getSimulationTime() {
-    //    return SimulationTime;
-    //}
-    /**
-     * @param SimulationTime the SimulationTime to set
-     */
-    //public void setSimulationTime(double SimulationTime) {
-    //    this.SimulationTime = SimulationTime;
-    //}
-    /**
      * @return the logName
      */
     public String getLogName() {
         return logName;
     }
 
-    /**
-     * @param testString String to be converted to double value if not NaN
-     * @return the double value of goven testString
-     */
-    /*public double getFloatString(String testString) {
-     if (!testString.equalsIgnoreCase("nan")) {
-     return Double.valueOf(testString);
-     } else {
-     return 0;
-     }
-     }
-     */
     /**
      * @return the isFromCache
      */
