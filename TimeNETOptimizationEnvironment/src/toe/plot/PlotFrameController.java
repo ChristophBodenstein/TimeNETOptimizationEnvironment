@@ -244,12 +244,6 @@ public class PlotFrameController extends javax.swing.JFrame implements nativePro
 
         MeasureLabel.setText("Measure:");
 
-        MeasureComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                MeasureComboBoxActionPerformed(evt);
-            }
-        });
-
         JButtonPlot.setText("Plot");
         JButtonPlot.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -267,11 +261,6 @@ public class PlotFrameController extends javax.swing.JFrame implements nativePro
 
         jComboBoxPlotChar.setModel(new javax.swing.DefaultComboBoxModel(new String[] { ".", "*", "+", "x", "X", "o", "O" }));
         jComboBoxPlotChar.setSelectedIndex(3);
-        jComboBoxPlotChar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBoxPlotCharActionPerformed(evt);
-            }
-        });
 
         jButtonOpenColorChooser.setText("Plot-Color");
         jButtonOpenColorChooser.addActionListener(new java.awt.event.ActionListener() {
@@ -281,11 +270,6 @@ public class PlotFrameController extends javax.swing.JFrame implements nativePro
         });
 
         jCheckBox1.setText("Add to last plot");
-        jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCheckBox1ActionPerformed(evt);
-            }
-        });
 
         jComboBoxTypeOf3DPlot.setModel(new DefaultComboBoxModel(typedef.typeOf3DPlot.values()));
 
@@ -466,10 +450,6 @@ public class PlotFrameController extends javax.swing.JFrame implements nativePro
         }
         checkIfColorChosingIsPossible();
     }//GEN-LAST:event_SetYButtonActionPerformed
-
-    private void MeasureComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MeasureComboBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_MeasureComboBoxActionPerformed
 
     /**
      * Create the R script and run it.
@@ -800,14 +780,6 @@ public class PlotFrameController extends javax.swing.JFrame implements nativePro
         }
 
     }//GEN-LAST:event_jButtonOpenColorChooserActionPerformed
-
-    private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jCheckBox1ActionPerformed
-
-    private void jComboBoxPlotCharActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxPlotCharActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBoxPlotCharActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

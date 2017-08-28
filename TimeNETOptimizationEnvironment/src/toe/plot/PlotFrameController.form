@@ -288,9 +288,6 @@
           <StringArray count="0"/>
         </Property>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="MeasureComboBoxActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="JButtonPlot">
       <Properties>
@@ -341,9 +338,6 @@
         </Property>
         <Property name="selectedIndex" type="int" value="3"/>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jComboBoxPlotCharActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="jButtonOpenColorChooser">
       <Properties>
@@ -357,9 +351,6 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Add to last plot"/>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jCheckBox1ActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JComboBox" name="jComboBoxTypeOf3DPlot">
       <Properties>
