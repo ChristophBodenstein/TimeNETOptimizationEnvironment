@@ -482,7 +482,6 @@ public class support {
      * @return float value of input String
      */
     public static double getDouble(String s) {
-        //TODO, checkk for nan!
         if (s.toLowerCase().equals("nan")) {
             return Double.MAX_VALUE;
         }
