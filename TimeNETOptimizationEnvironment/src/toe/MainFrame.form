@@ -222,20 +222,13 @@
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <Group type="103" groupAlignment="0" attributes="0">
-                                          <Component id="jLabelSimulationCountIndicator" alignment="0" min="-2" pref="152" max="-2" attributes="0"/>
-                                          <Component id="jLabelCachSizeIndicator" alignment="0" min="-2" pref="152" max="-2" attributes="0"/>
-                                      </Group>
-                                      <EmptySpace max="32767" attributes="0"/>
-                                  </Group>
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <Component id="jProgressBarMemoryUsage" min="-2" pref="152" max="-2" attributes="0"/>
-                                      <EmptySpace max="32767" attributes="0"/>
-                                      <Component id="jLabelSpinning" min="-2" pref="44" max="-2" attributes="0"/>
-                                      <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
-                                  </Group>
+                                  <Component id="jProgressBarMemoryUsage" alignment="0" min="-2" pref="152" max="-2" attributes="0"/>
+                                  <Component id="jLabelSimulationCountIndicator" alignment="0" min="-2" pref="152" max="-2" attributes="0"/>
+                                  <Component id="jLabelCachSizeIndicator" alignment="0" min="-2" pref="152" max="-2" attributes="0"/>
                               </Group>
+                              <EmptySpace max="32767" attributes="0"/>
+                              <Component id="jLabelSpinning" min="-2" pref="59" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                           </Group>
                           <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="1" attributes="0">
@@ -261,8 +254,11 @@
                                           <Component id="jButtonCheckOptimum" alignment="0" max="32767" attributes="0"/>
                                           <Component id="jButtonStartOptimization" max="32767" attributes="1"/>
                                       </Group>
-                                      <EmptySpace min="-2" pref="91" max="-2" attributes="0"/>
-                                      <Component id="jSpinnerNumberOfOptimizationRuns" min="-2" pref="139" max="-2" attributes="0"/>
+                                      <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                          <Component id="jSpinnerNumberOfOptimizationRuns" pref="139" max="32767" attributes="0"/>
+                                          <Component id="jLabelTargetStatus" max="32767" attributes="0"/>
+                                      </Group>
                                   </Group>
                               </Group>
                               <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
@@ -270,7 +266,7 @@
                       </Group>
                   </Group>
               </Group>
-              <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="13" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -326,10 +322,11 @@
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabelDesignspaceSize" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jButtonCheckOptimum" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jLabelTargetStatus" alignment="0" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="jButtonStartOptimization" alignment="3" min="-2" pref="32" max="-2" attributes="0"/>
+                  <Component id="jButtonStartOptimization" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jSpinnerNumberOfOptimizationRuns" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jButtonPathToTimeNet" alignment="3" min="-2" pref="20" max="-2" attributes="0"/>
                   <Component id="jCheckBoxDeleteTmpFiles" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -364,7 +361,7 @@
                       </Group>
                   </Group>
               </Group>
-              <EmptySpace max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
                       <Component id="jLabelMemoryUsage" alignment="0" max="32767" attributes="0"/>
@@ -744,6 +741,11 @@
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonCheckOptimumActionPerformed"/>
       </Events>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabelTargetStatus">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Target unchecked!"/>
+      </Properties>
     </Component>
   </SubComponents>
 </Form>
