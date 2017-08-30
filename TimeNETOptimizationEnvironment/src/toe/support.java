@@ -2126,6 +2126,10 @@ public class support {
         return support.NAME_OF_PREF_DIR + "." + support.removeExtention(support.getFileNameWithoutPath(PathToSCPN)) + ".prop";
     }
 
+    
+    /**
+     * Update the min and max values of measurement form
+     */
     public static void updateMeasureFormPane() {
 
         try {
@@ -2136,7 +2140,7 @@ public class support {
         } catch (Exception e) {
             support.log("Could not update Target Measurementform / TargetValueSpinner", typeOfLogLevel.INFO);
         }
-
+        support.discardTarget();
     }
 
     /**
@@ -2153,6 +2157,13 @@ public class support {
             support.log("Problem calculating the dimension/number of changable parameters.", typeOfLogLevel.INFO);
         }
         return dimension;
+    }
+
+    /**
+     * Wrapper to cal discard-method of mainframe from anywhere
+     */
+    public static void discardTarget() {
+        getMainFrame().discardTarget();
     }
 
 }

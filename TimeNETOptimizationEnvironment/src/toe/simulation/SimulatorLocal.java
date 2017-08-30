@@ -373,7 +373,7 @@ public class SimulatorLocal extends Thread implements Simulator, nativeProcessCa
     }
 
     @Override
-    public void discardCalculatedOptimum(SimOptiCallback listener) {
+    public void discardCalculatedOptimum() {
         //not needed
         throw new UnsupportedOperationException("Not supported yet.");
     }

@@ -250,7 +250,7 @@ public class SimulatorCached extends Thread implements Simulator {
     }
 
     @Override
-    public void discardCalculatedOptimum(SimOptiCallback listener) {
+    public void discardCalculatedOptimum() {
         //TODO: implement later
         throw new UnsupportedOperationException("Not supported yet.");
     }

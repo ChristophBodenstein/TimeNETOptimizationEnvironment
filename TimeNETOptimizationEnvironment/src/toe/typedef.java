@@ -425,10 +425,15 @@ public class typedef {
          */
         TargetValueNotUnique,
         /**
-         * Check of selected target value has failed, Optimization should bot be
+         * Check of selected target value has failed. Optimization should not be
          * started, might lead to wrong results.
          */
-        TargetCheckFailed
+        TargetCheckFailed,
+        /**
+         * Target was discarded because something changed (parameter, SCPN,
+         * benchmark-function, etc.)
+         */
+        TargetDiscarded
     };
 
     /**

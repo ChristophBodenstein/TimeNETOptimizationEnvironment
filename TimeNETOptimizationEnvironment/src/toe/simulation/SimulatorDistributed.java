@@ -598,7 +598,7 @@ public class SimulatorDistributed extends Thread implements Simulator {
     }
 
     @Override
-    public void discardCalculatedOptimum(SimOptiCallback listener) {
+    public void discardCalculatedOptimum() {
         //not needed
         throw new UnsupportedOperationException("Not supported yet.");
     }

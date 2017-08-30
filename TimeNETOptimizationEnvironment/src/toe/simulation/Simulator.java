@@ -76,7 +76,7 @@ public interface Simulator {
      * Discard the calculated optimum solution. This should be called after
      * design space has changed
      */
-    public void discardCalculatedOptimum(SimOptiCallback listener);
+    public void discardCalculatedOptimum();
 
     /**
      * Cancel all running simulations (called on program exit)

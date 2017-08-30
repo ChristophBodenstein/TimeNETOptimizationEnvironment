@@ -13,6 +13,7 @@ import toe.datamodel.SimulationType;
 import toe.datamodel.MeasureType;
 import toe.helper.SimOptiCallback;
 import toe.support;
+import toe.typedef;
 import toe.typedef.typeOfBenchmarkFunction;
 import toe.typedef.typeOfLogLevel;
 
@@ -205,16 +206,18 @@ public class SimulatorBenchmark extends Thread implements Simulator {
         //Get List of all parametersets.
         //Iterate through all possible parametersets
         //support.getMainFrame()
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        listener.operationFeedback("End of opti-calculation", typedef.typeOfProcessFeedback.TargetCheckSuccessful);
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void stopCalculatingOptimum(SimOptiCallback listener) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        listener.operationFeedback("Targetcheck canceled.", typedef.typeOfProcessFeedback.TargetDiscarded);
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void discardCalculatedOptimum(SimOptiCallback listener) {
+    public void discardCalculatedOptimum() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

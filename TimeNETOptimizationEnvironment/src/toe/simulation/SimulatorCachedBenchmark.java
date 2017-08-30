@@ -56,7 +56,7 @@ public class SimulatorCachedBenchmark extends SimulatorCachedLocal {
     }
 
     @Override
-    public void discardCalculatedOptimum(SimOptiCallback listener) {
-        getNoCacheSimulator().discardCalculatedOptimum(listener);
+    public void discardCalculatedOptimum() {
+        getNoCacheSimulator().discardCalculatedOptimum();
     }
 }
