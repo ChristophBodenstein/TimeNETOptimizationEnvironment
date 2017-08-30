@@ -9,6 +9,7 @@ package toe.simulation;
 
 import toe.datamodel.MeasureType;
 import toe.datamodel.SimulationType;
+import toe.helper.SimOptiCallback;
 
 /**
  *
@@ -45,17 +46,17 @@ public class SimulatorCachedBenchmark extends SimulatorCachedLocal {
     }
 
     @Override
-    public void startCalculatingOptimum() {
-        getNoCacheSimulator().startCalculatingOptimum();
+    public void startCalculatingOptimum(SimOptiCallback listener) {
+        getNoCacheSimulator().startCalculatingOptimum(listener);
     }
 
     @Override
-    public void stopCalculatingOptimum() {
-        getNoCacheSimulator().stopCalculatingOptimum();
+    public void stopCalculatingOptimum(SimOptiCallback listener) {
+        getNoCacheSimulator().stopCalculatingOptimum(listener);
     }
 
     @Override
-    public void discardCalculatedOptimum() {
-        getNoCacheSimulator().discardCalculatedOptimum();
+    public void discardCalculatedOptimum(SimOptiCallback listener) {
+        getNoCacheSimulator().discardCalculatedOptimum(listener);
     }
 }

@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import toe.datamodel.MeasureType;
 import toe.datamodel.parameter;
 import toe.datamodel.SimulationType;
+import toe.helper.SimOptiCallback;
 
 /**
  *
@@ -63,19 +64,19 @@ public interface Simulator {
      * Start calculating the optimum solution, this can take time for big design
      * spaces.
      */
-    public void startCalculatingOptimum();
+    public void startCalculatingOptimum(SimOptiCallback listener);
 
     /**
      * Trigger to stop the calculation of optimum solution
      * TODO: Check if necessary, maybe CancelAll works
      */
-    public void stopCalculatingOptimum();
+    public void stopCalculatingOptimum(SimOptiCallback listener);
 
     /**
      * Discard the calculated optimum solution. This should be called after
      * design space has changed
      */
-    public void discardCalculatedOptimum();
+    public void discardCalculatedOptimum(SimOptiCallback listener);
 
     /**
      * Cancel all running simulations (called on program exit)

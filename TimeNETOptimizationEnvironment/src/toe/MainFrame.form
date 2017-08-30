@@ -251,7 +251,7 @@
                                   </Group>
                                   <Group type="102" alignment="1" attributes="0">
                                       <Group type="103" groupAlignment="1" attributes="0">
-                                          <Component id="jButtonCheckOptimum" alignment="0" max="32767" attributes="0"/>
+                                          <Component id="jButtonCheckTarget" alignment="0" max="32767" attributes="0"/>
                                           <Component id="jButtonStartOptimization" max="32767" attributes="1"/>
                                       </Group>
                                       <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
@@ -319,10 +319,12 @@
                   </Group>
               </Group>
               <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="jLabelDesignspaceSize" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jButtonCheckOptimum" alignment="3" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="jLabelTargetStatus" alignment="0" max="32767" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="jLabelDesignspaceSize" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jButtonCheckTarget" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -734,12 +736,12 @@
         <Property name="text" type="java.lang.String" value="Designspace size:"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="jButtonCheckOptimum">
+    <Component class="javax.swing.JButton" name="jButtonCheckTarget">
       <Properties>
         <Property name="text" type="java.lang.String" value="Check Target"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonCheckOptimumActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonCheckTargetActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabelTargetStatus">

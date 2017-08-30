@@ -411,9 +411,24 @@ public class typedef {
          */
         SomethingCanceled,
         /**
-         * Something was successful (geenric success handler)
+         * Something was successful (generic success handler)
          */
-        SomethingSuccessful
+        SomethingSuccessful,
+        /**
+         * Check of selected target value was successful, Optimization can be
+         * analyzed completely
+         */
+        TargetCheckSuccessful,
+        /**
+         * *
+         * Targetvalue is not unique, Optimization statistics will be wrong
+         */
+        TargetValueNotUnique,
+        /**
+         * Check of selected target value has failed, Optimization should bot be
+         * started, might lead to wrong results.
+         */
+        TargetCheckFailed
     };
 
     /**

@@ -39,6 +39,7 @@ import toe.Parser;
 import toe.datamodel.MeasureType;
 import toe.datamodel.SimulationType;
 import toe.datamodel.parameter;
+import toe.helper.SimOptiCallback;
 import toe.support;
 import toe.typedef.typeOfLogLevel;
 
@@ -585,17 +586,20 @@ public class SimulatorDistributed extends Thread implements Simulator {
     }
 
     @Override
-    public void startCalculatingOptimum() {
+    public void startCalculatingOptimum(SimOptiCallback listener) {
         //not needed
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void stopCalculatingOptimum() {
+    public void stopCalculatingOptimum(SimOptiCallback listener) {
         //not needed
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void discardCalculatedOptimum() {
+    public void discardCalculatedOptimum(SimOptiCallback listener) {
         //not needed
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

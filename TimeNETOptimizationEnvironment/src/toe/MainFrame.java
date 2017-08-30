@@ -300,6 +300,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         listOfUIComponents.add(this.jButtonEmptyCache);
         listOfUIComponents.add(this.jButtonSetSecret);
         listOfUIComponents.add(this.measurementForm1);
+        listOfUIComponents.add(this.jButtonCheckTarget);
 
         //Reload the last File
         try {
@@ -469,7 +470,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         jLabelCachSizeIndicator = new javax.swing.JLabel();
         jLabelCacheSize = new javax.swing.JLabel();
         jLabelDesignspaceSize = new javax.swing.JLabel();
-        jButtonCheckOptimum = new javax.swing.JButton();
+        jButtonCheckTarget = new javax.swing.JButton();
         jLabelTargetStatus = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenuFile = new javax.swing.JMenu();
@@ -740,10 +741,10 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
 
         jLabelDesignspaceSize.setText("Designspace size:");
 
-        jButtonCheckOptimum.setText("Check Target");
-        jButtonCheckOptimum.addActionListener(new java.awt.event.ActionListener() {
+        jButtonCheckTarget.setText("Check Target");
+        jButtonCheckTarget.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonCheckOptimumActionPerformed(evt);
+                jButtonCheckTargetActionPerformed(evt);
             }
         });
 
@@ -923,7 +924,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                                             .add(jComboBoxOptimizationType, 0, 121, Short.MAX_VALUE)))
                                     .add(layout.createSequentialGroup()
                                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                                            .add(org.jdesktop.layout.GroupLayout.LEADING, jButtonCheckOptimum, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .add(org.jdesktop.layout.GroupLayout.LEADING, jButtonCheckTarget, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                             .add(jButtonStartOptimization, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                         .add(18, 18, 18)
                                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
@@ -973,10 +974,11 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                         .add(5, 5, 5)
                         .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
                 .add(4, 4, 4)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jLabelDesignspaceSize)
-                    .add(jButtonCheckOptimum)
-                    .add(jLabelTargetStatus, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jLabelTargetStatus, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                        .add(jLabelDesignspaceSize)
+                        .add(jButtonCheckTarget)))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jButtonStartOptimization)
@@ -1623,10 +1625,18 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         saveProperties();
     }//GEN-LAST:event_formWindowClosing
 
-    private void jButtonCheckOptimumActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCheckOptimumActionPerformed
-        SimOptiFactory.getSimulator().startCalculatingOptimum();
-        
-    }//GEN-LAST:event_jButtonCheckOptimumActionPerformed
+    private void jButtonCheckTargetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCheckTargetActionPerformed
+        support.setCancelEverything(false);
+        this.pushUIState();
+        this.switchUIState(uiState.processRunning);
+        try {
+            SimOptiFactory.getSimulator().startCalculatingOptimum(this);
+        } catch (Exception e) {
+            this.popUIState();
+        }
+        //popuistate on callback from Calculaion
+
+    }//GEN-LAST:event_jButtonCheckTargetActionPerformed
 
     /**
      * Calculates the design space, number of all permutations of parameters
@@ -1726,7 +1736,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonCancel;
-    private javax.swing.JButton jButtonCheckOptimum;
+    private javax.swing.JButton jButtonCheckTarget;
     private javax.swing.JButton jButtonEmptyCache;
     private javax.swing.JButton jButtonEnterURLToSimServer;
     private javax.swing.JButton jButtonExport;
@@ -2592,7 +2602,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
      * @param feedback will determine what to do next (button activation etc.)
      */
     @Override
-    public void operationSucessfull(String message, typeOfProcessFeedback feedback) {
+    public void operationFeedback(String message, typeOfProcessFeedback feedback) {
         int tmpNumberOfOptiRunsToGo = support.getNumberOfOptiRunsToGo();
 
         switch (feedback) {
@@ -2652,7 +2662,43 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
                     this.startOptimization();
                 }
                 break;
-
+            case SomethingSuccessful:
+                support.log("Something was successful. Message was: " + message, typeOfLogLevel.RESULT);
+                support.setStatusText(message);
+                this.popUIState();
+                break;
+            case TargetCheckSuccessful:
+                support.log("Check of target value successful. Target is unique.", typeOfLogLevel.RESULT);
+                support.setStatusText(message);
+                this.jLabelTargetStatus.setText("UNIQUE");
+                this.popUIState();
+                break;
+            case TargetCheckFailed:
+                support.log("Check of target value failed with:" + message, typeOfLogLevel.ERROR);
+                support.setStatusText(message);
+                this.jLabelTargetStatus.setText("");
+                this.popUIState();
+                break;
+            case TargetValueNotUnique:
+                support.log("Check of target value succesful but target is not unique.", typeOfLogLevel.RESULT);
+                support.setStatusText(message);
+                this.jLabelTargetStatus.setText("NOT UNIQUE");
+                this.popUIState();
+                break;
+            case GenerationCanceled:
+                this.popUIState();
+                jButtonStartBatchSimulation.setEnabled(false);
+                support.log("Generation canceled. Deactivate StartBatchButton.", typeOfLogLevel.INFO);
+                break;
+            case GenerationNotSuccessful:
+                this.popUIState();
+                support.log("Generation not successful. Deactivate StartBatchButton.", typeOfLogLevel.INFO);
+                jButtonStartBatchSimulation.setEnabled(false);
+                break;
+            case SomethingCanceled:
+                this.popUIState();
+                support.log("Something canceld with message: " + message, typeOfLogLevel.INFO);
+                break;
             default:
                 break;
         }
@@ -2680,30 +2726,6 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
             } else {
                 support.log("Failed to load from Cache.", typeOfLogLevel.ERROR);
             }
-        }
-    }
-
-    /**
-     * Callback-Method of SimOptiCallback called when Simulation or optimization
-     * is canceled
-     *
-     * @param message will be shown in staus-label
-     */
-    @Override
-    public void operationCanceled(String message, typeOfProcessFeedback feedback) {
-        this.popUIState();
-        support.setStatusText(message);
-        switch (feedback) {
-            case GenerationCanceled:
-                jButtonStartBatchSimulation.setEnabled(false);
-                support.log("Generation canceled. Deactivate StartBatchButton.", typeOfLogLevel.INFO);
-                break;
-            case GenerationNotSuccessful:
-                jButtonStartBatchSimulation.setEnabled(false);
-                break;
-
-            default:
-                break;
         }
     }
 
@@ -2963,13 +2985,13 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
     public String getPathToSCPNFile() {
         return jTextFieldSCPNFile.getText();
     }
-    
-    /***
-     * Discard check of current targets.
-     * Enables Target-Check-Button
-     * Sets Target-Status-Label
+
+    /**
+     * *
+     * Discard check of current targets. Enables Target-Check-Button Sets
+     * Target-Status-Label
      */
-    public void discardTarget(){
+    public void discardTarget() {
         //TODO: ...
     }
 }

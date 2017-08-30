@@ -22,13 +22,6 @@ public interface SimOptiCallback {
      * @param message to be displayed or printed
      * @param feedback Type of feedback (successful, canceled, etc.)
      */
-    public void operationSucessfull(String message, typedef.typeOfProcessFeedback feedback);
+    public void operationFeedback(String message, typedef.typeOfProcessFeedback feedback);
 
-    /**
-     * Is called after simulation has been canceled
-     *
-     * @param message to be displayed or printed
-     * @param feedback Type of feedback, mostly "canceled"
-     */
-    public void operationCanceled(String message, typedef.typeOfProcessFeedback feedback);
 }

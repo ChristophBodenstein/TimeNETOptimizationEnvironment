@@ -1570,7 +1570,7 @@ public class support {
      * @param message Text to be displayed in info-label of mainFrame
      */
     public static void simOptiOperationSuccessfull(String message) {
-        mainFrame.operationSucessfull(message, typeOfProcessFeedback.SomethingSuccessful);
+        mainFrame.operationFeedback(message, typeOfProcessFeedback.SomethingSuccessful);
     }
 
     /**
@@ -1580,7 +1580,7 @@ public class support {
      * @param message Text to be displayed in info-label of mainFrame
      */
     public static void simOptiOperationCanceled(String message) {
-        mainFrame.operationCanceled(message, typeOfProcessFeedback.SomethingCanceled);
+        mainFrame.operationFeedback(message, typeOfProcessFeedback.SomethingCanceled);
     }
 
     /**
@@ -1597,11 +1597,11 @@ public class support {
             @Override
             public void run() {
                 if (mySimulator.getStatus() >= 100) {
-                    listener.operationSucessfull("The end.", typeOfProcessFeedback.SimulationSuccessful);
+                    listener.operationFeedback("The end.", typeOfProcessFeedback.SimulationSuccessful);
                     this.cancel();
                 }
                 if (support.isCancelEverything()) {
-                    listener.operationCanceled("Operation canceled by user.", typeOfProcessFeedback.SimulationCanceled);
+                    listener.operationFeedback("Operation canceled by user.", typeOfProcessFeedback.SimulationCanceled);
                     this.cancel();
                 }
             }
@@ -1626,11 +1626,11 @@ public class support {
                 if (myOptimizer.getOptimum() != null) {
                     MeasureType myOptiMeasure = support.getOptimizationMeasure();
                     StatisticAggregator.getStatisticByName(myOptimizer.getLogFileName()).setFoundOptimum(myOptimizer.getOptimum(), SimOptiFactory.getSimulator().getCalculatedOptimum(myOptiMeasure));
-                    listener.operationSucessfull("The end.", typeOfProcessFeedback.OptimizationSuccessful);
+                    listener.operationFeedback("The end.", typeOfProcessFeedback.OptimizationSuccessful);
                     this.cancel();
                 }
                 if (support.isCancelEverything()) {
-                    listener.operationCanceled("Operation canceled by user.", typeOfProcessFeedback.OptimizationCanceled);
+                    listener.operationFeedback("Operation canceled by user.", typeOfProcessFeedback.OptimizationCanceled);
                     this.cancel();
                 }
             }
@@ -1650,11 +1650,11 @@ public class support {
             @Override
             public void run() {
                 if (!myGenerator.isRunning()) {
-                    listener.operationSucessfull("DS generated.", typeOfProcessFeedback.GenerationSuccessful);
+                    listener.operationFeedback("DS generated.", typeOfProcessFeedback.GenerationSuccessful);
                     this.cancel();
                 }
                 if (support.isCancelEverything()) {
-                    listener.operationCanceled("Operation canceled by user.", typeOfProcessFeedback.GenerationCanceled);
+                    listener.operationFeedback("Operation canceled by user.", typeOfProcessFeedback.GenerationCanceled);
                     this.cancel();
                 }
             }
