@@ -203,9 +203,13 @@ public class SimulatorBenchmark extends Thread implements Simulator {
 
     @Override
     public void startCalculatingOptimum(SimOptiCallback listener) {
-        //Get List of all parametersets.
-        //Iterate through all possible parametersets
-        //support.getMainFrame()
+        //Check if all parametersets are generated (ListOfParameterSetsToBeWritten)
+        //If not, ask to generate it
+        //If yes --> warn before simulation 
+        //--> simulate all and check for optimum.
+        //Same procedure as jButtonStartBatchSimulationActionPerformed in Mainframe
+        //Should be done during batch simulation???
+        
         listener.operationFeedback("End of opti-calculation", typedef.typeOfProcessFeedback.TargetCheckSuccessful);
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
