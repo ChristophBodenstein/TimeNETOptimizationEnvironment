@@ -218,6 +218,7 @@ public class SimulatorBenchmark extends Thread implements Simulator {
 
     @Override
     public void discardCalculatedOptimum() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        support.log("TBD Implement: discardCalculatedOptimum()", typeOfLogLevel.ERROR);
     }
 }
