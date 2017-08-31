@@ -49,6 +49,11 @@ public final class MeasurementForm extends javax.swing.JPanel {
 
         jComboBoxMeasurementName.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "No Measure available!" }));
         jComboBoxMeasurementName.setToolTipText("Chose Measurement to optimize");
+        jComboBoxMeasurementName.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jComboBoxMeasurementNameItemStateChanged(evt);
+            }
+        });
 
         jComboBoxTargetType.setModel(new DefaultComboBoxModel(typeOfTarget.values()));
         jComboBoxTargetType.setToolTipText("Chose Optimization Target Value");
@@ -60,6 +65,11 @@ public final class MeasurementForm extends javax.swing.JPanel {
 
         jSpinnerTargetValue.setModel(targetSpinnerModel);
         jSpinnerTargetValue.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerTargetValue, "#.####"));
+        jSpinnerTargetValue.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinnerTargetValueStateChanged(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -100,8 +110,16 @@ public final class MeasurementForm extends javax.swing.JPanel {
                 break;
         }
         this.jSpinnerTargetValue.setValue((Double) currentTargetValue);
-
+        support.discardTarget();
     }//GEN-LAST:event_jComboBoxTargetTypeItemStateChanged
+
+    private void jSpinnerTargetValueStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerTargetValueStateChanged
+        support.discardTarget();
+    }//GEN-LAST:event_jSpinnerTargetValueStateChanged
+
+    private void jComboBoxMeasurementNameItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxMeasurementNameItemStateChanged
+        support.discardTarget();
+    }//GEN-LAST:event_jComboBoxMeasurementNameItemStateChanged
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -291,16 +309,17 @@ public final class MeasurementForm extends javax.swing.JPanel {
     }
 
     /**
-     * Used to announce the success of optimum calculation incl. reasons for possible fails
+     * Used to announce the success of optimum calculation incl. reasons for
+     * possible fails
+     *
      * @param result Type of sucess: see type definition
-     * @param comment 
+     * @param comment
      */
-    public void optimumWasCalculated(typeOfOptimumCalculationResult result, String comment){
+    public void optimumWasCalculated(typeOfOptimumCalculationResult result, String comment) {
         /**
-         * success-levels:
-         * 0->Optimum calculated successful
-         * 1->Optimum calculated but issues occured, read comment for info
-         * 2->Optimum not calculated, read comment for info
-        */
+         * success-levels: 0->Optimum calculated successful 1->Optimum
+         * calculated but issues occured, read comment for info 2->Optimum not
+         * calculated, read comment for info
+         */
     }
 }
