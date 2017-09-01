@@ -215,6 +215,7 @@ public class SimulatorBenchmark extends Thread implements Simulator {
         }
         
         support.setParameterBase(support.getMainFrame().getParameterBase());
+        support.setOriginalParameterBase(support.getMainFrame().getParameterBase());
         //Check for Parameterbase, maybe not necessary
         /*if (support.getParameterBase() == null) {
             support.setStatusText("No Paramaterbase set for target check.");
