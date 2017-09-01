@@ -8,6 +8,7 @@ package toe.simulation;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
+import toe.SimOptiFactory;
 import toe.datamodel.parameter;
 import toe.datamodel.SimulationType;
 import toe.datamodel.MeasureType;
@@ -204,12 +205,32 @@ public class SimulatorBenchmark extends Thread implements Simulator {
     @Override
     public void startCalculatingOptimum(SimOptiCallback listener) {
         //Check if all parametersets are generated (ListOfParameterSetsToBeWritten)
-        //If not, ask to generate it
+        if (support.getMainFrame().getListOfParameterSetsToBeWritten() == null) {
+            support.setStatusText("No Parametersets to simulate for target check.");
+            support.log("No Parametersets to simulate for target check.", typeOfLogLevel.INFO);
+            listener.operationFeedback("Error checking target.", typedef.typeOfProcessFeedback.TargetCheckFailed);
+            return;
+        } else {
+            //TODO If not, ask to generate it
+        }
+        
+        support.setParameterBase(support.getMainFrame().getParameterBase());
+        //Check for Parameterbase, maybe not necessary
+        /*if (support.getParameterBase() == null) {
+            support.setStatusText("No Paramaterbase set for target check.");
+            support.log("No Paramaterbase set. No Simulation possible.", typeOfLogLevel.INFO);
+            listener.operationFeedback("End of opti-calculation", typedef.typeOfProcessFeedback.TargetCheckFailed);
+            return;
+        }*/
+        
         //If yes --> warn before simulation 
         //--> simulate all and check for optimum.
         //Same procedure as jButtonStartBatchSimulationActionPerformed in Mainframe
+        Simulator mySimulator = SimOptiFactory.getSimulator();
+        mySimulator.initSimulator(support.getMainFrame().getListOfParameterSetsToBeWritten(), false);
+        support.waitForEndOfSimulator(mySimulator, 1000);
+
         //Should be done during batch simulation???
-        
         listener.operationFeedback("End of opti-calculation", typedef.typeOfProcessFeedback.TargetCheckSuccessful);
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
