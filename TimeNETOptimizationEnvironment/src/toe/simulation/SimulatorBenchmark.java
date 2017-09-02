@@ -205,8 +205,8 @@ public class SimulatorBenchmark extends Thread implements Simulator {
     @Override
     public void startCalculatingOptimum(SimOptiCallback listener) {
         //Check if all parametersets are generated (ListOfParameterSetsToBeWritten)
-        if (support.getMainFrame().getListOfParameterSetsToBeWritten() == null) {
-            support.setStatusText("No Parametersets to simulate for target check.");
+        if (support.getMainFrame().getListOfParameterSetsToBeWritten().size() <= support.DEFAULT_MINIMUM_DESIGNSPACE_FOR_OPTIMIZATION) {
+            support.setStatusText("Not enaugh Parametersets to simulate for target check.");
             support.log("No Parametersets to simulate for target check.", typeOfLogLevel.INFO);
             listener.operationFeedback("Error checking target.", typedef.typeOfProcessFeedback.TargetCheckFailed);
             return;
@@ -248,24 +248,22 @@ public class SimulatorBenchmark extends Thread implements Simulator {
         if (foundOptima.size() < 1) {
             //Error checking the target
             listener.operationFeedback("Opticheck failed.", typedef.typeOfProcessFeedback.TargetCheckFailed);
-        }
-        if (foundOptima.size() > 1) {
+        } else if (foundOptima.size() > 1) {
             //Not unique
             listener.operationFeedback("Selected Target is not unique There are " + foundOptima.size() + " same targets.", typedef.typeOfProcessFeedback.TargetValueNotUnique);
-
-        }
-
-        if (foundOptima.size() == 1) {
+        } else if (foundOptima.size() == 1) {
             //Exactly one optimum with selected target value was found
             if (oldDistance > 0.0) {
                 //distance not zero --> will adapt selected optimum!
+                listener.operationFeedback("Target is unique, will change target value to match distance of 0.0.", typedef.typeOfProcessFeedback.TargetCheckSuccessful);
+
+            } else {
+                listener.operationFeedback("Target is unique and distance is 0.0!", typedef.typeOfProcessFeedback.TargetCheckSuccessful);
             }
         }
-
         //Store simulation results in mainframe for next targetcheck, until table was changed?
-        
         //Should be done during batch simulation???
-                listener.operationFeedback("End of opti-calculation", typedef.typeOfProcessFeedback.TargetCheckSuccessful);
+        //listener.operationFeedback("End of opti-calculation", typedef.typeOfProcessFeedback.TargetCheckSuccessful);
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
