@@ -213,7 +213,7 @@ public class SimulatorBenchmark extends Thread implements Simulator {
         } else {
             //TODO If not, ask to generate it
         }
-        
+
         support.setParameterBase(support.getMainFrame().getParameterBase());
         support.setOriginalParameterBase(support.getMainFrame().getParameterBase());
         //Check for Parameterbase, maybe not necessary
@@ -223,7 +223,7 @@ public class SimulatorBenchmark extends Thread implements Simulator {
             listener.operationFeedback("End of opti-calculation", typedef.typeOfProcessFeedback.TargetCheckFailed);
             return;
         }*/
-        
+
         //If yes --> warn before simulation 
         //--> simulate all and check for optimum.
         //Same procedure as jButtonStartBatchSimulationActionPerformed in Mainframe
@@ -231,8 +231,41 @@ public class SimulatorBenchmark extends Thread implements Simulator {
         mySimulator.initSimulator(support.getMainFrame().getListOfParameterSetsToBeWritten(), false);
         support.waitForEndOfSimulator(mySimulator, 1000);
 
+        ArrayList<SimulationType> simulationResults = mySimulator.getListOfCompletedSimulations();
+        double oldDistance = simulationResults.get(0).getDistanceToTargetValue();
+        ArrayList<SimulationType> foundOptima = new ArrayList<SimulationType>();
+        foundOptima.add(simulationResults.get(0));
+
+        for (int i = 1; i < simulationResults.size(); i++) {
+            if (oldDistance > simulationResults.get(i).getDistanceToTargetValue()) {
+                foundOptima.clear();
+                foundOptima.add(simulationResults.get(i));
+            } else if (oldDistance == simulationResults.get(i).getDistanceToTargetValue()) {
+                foundOptima.add(simulationResults.get(i));
+            }
+        }
+
+        if (foundOptima.size() < 1) {
+            //Error checking the target
+            listener.operationFeedback("Opticheck failed.", typedef.typeOfProcessFeedback.TargetCheckFailed);
+        }
+        if (foundOptima.size() > 1) {
+            //Not unique
+            listener.operationFeedback("Selected Target is not unique There are " + foundOptima.size() + " same targets.", typedef.typeOfProcessFeedback.TargetValueNotUnique);
+
+        }
+
+        if (foundOptima.size() == 1) {
+            //Exactly one optimum with selected target value was found
+            if (oldDistance > 0.0) {
+                //distance not zero --> will adapt selected optimum!
+            }
+        }
+
+        //Store simulation results in mainframe for next targetcheck, until table was changed?
+        
         //Should be done during batch simulation???
-        listener.operationFeedback("End of opti-calculation", typedef.typeOfProcessFeedback.TargetCheckSuccessful);
+                listener.operationFeedback("End of opti-calculation", typedef.typeOfProcessFeedback.TargetCheckSuccessful);
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
