@@ -274,11 +274,13 @@ public class SimulatorBenchmark extends Thread implements Simulator, SimOptiCall
                     } else if (foundOptima.size() > 1) {
                         //Not unique
                         listener.operationFeedback("Selected Target is not unique There are " + foundOptima.size() + " same targets.", typedef.typeOfProcessFeedback.TargetValueNotUnique);
+                        support.log("The distance to target is: "+ oldDistance, typeOfLogLevel.INFO);
                     } else if (foundOptima.size() == 1) {
                         //Exactly one optimum with selected target value was found
                         if (oldDistance > 0.0) {
                             //distance not zero --> will adapt selected optimum!
                             listener.operationFeedback("Target is unique, will change target value to match distance of 0.0.", typedef.typeOfProcessFeedback.TargetCheckSuccessful);
+                            support.log("Old distance to target is: "+ oldDistance, typeOfLogLevel.INFO);
 
                         } else {
                             listener.operationFeedback("Target is unique and distance is 0.0!", typedef.typeOfProcessFeedback.TargetCheckSuccessful);
