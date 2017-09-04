@@ -739,6 +739,7 @@
     <Component class="javax.swing.JButton" name="jButtonCheckTarget">
       <Properties>
         <Property name="text" type="java.lang.String" value="Check Target"/>
+        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonCheckTargetActionPerformed"/>
