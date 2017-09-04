@@ -24,7 +24,7 @@ import toe.typedef.typeOfLogLevel;
  *
  * @author Christoph Bodenstein
  */
-public class SimulatorBenchmark extends Thread implements Simulator {
+public class SimulatorBenchmark extends Thread implements Simulator, SimOptiCallback {
 
     private SimulationCache mySimulationCache = null;
     private ArrayList<SimulationType> myListOfSimulations = null;
@@ -35,6 +35,8 @@ public class SimulatorBenchmark extends Thread implements Simulator {
     ArrayList<ArrayList<parameter>> listOfParameterSetsTMP;
     boolean isOptimumCalculated = false; // by default optimum coordinates are not calculated
     boolean cancelAllSimulations = false;//Flag to cancel all simulations
+    private SimOptiCallback listener = null;
+    private Simulator mySimulator = null;
 
     /**
      * Constructor
@@ -204,14 +206,15 @@ public class SimulatorBenchmark extends Thread implements Simulator {
 
     @Override
     public void startCalculatingOptimum(SimOptiCallback listener) {
+        this.listener = listener;
         //Check if all parametersets are generated (ListOfParameterSetsToBeWritten)
         if (support.getMainFrame().getListOfParameterSetsToBeWritten().size() <= support.DEFAULT_MINIMUM_DESIGNSPACE_FOR_OPTIMIZATION) {
             support.setStatusText("Not enaugh Parametersets to simulate for target check.");
             support.log("No Parametersets to simulate for target check.", typeOfLogLevel.INFO);
-            listener.operationFeedback("Error checking target.", typedef.typeOfProcessFeedback.TargetCheckFailed);
+            listener.operationFeedback("Generate DS first!", typedef.typeOfProcessFeedback.TargetCheckFailed);
             return;
         } else {
-            //TODO If not, ask to generate it
+            //If not, ask to generate it (not necessary, button is disabled in this case)
         }
 
         support.setParameterBase(support.getMainFrame().getParameterBase());
@@ -227,44 +230,11 @@ public class SimulatorBenchmark extends Thread implements Simulator {
         //If yes --> warn before simulation 
         //--> simulate all and check for optimum.
         //Same procedure as jButtonStartBatchSimulationActionPerformed in Mainframe
-        Simulator mySimulator = SimOptiFactory.getSimulator();
+        //support.waitForSimulatorAsynchronous(mySimulator, listener);
+        this.mySimulator = SimOptiFactory.getSimulator();
         mySimulator.initSimulator(support.getMainFrame().getListOfParameterSetsToBeWritten(), false);
-        support.waitForEndOfSimulator(mySimulator, 1000);
+        support.waitForSimulatorAsynchronous(mySimulator, this);
 
-        ArrayList<SimulationType> simulationResults = mySimulator.getListOfCompletedSimulations();
-        double oldDistance = simulationResults.get(0).getDistanceToTargetValue();
-        ArrayList<SimulationType> foundOptima = new ArrayList<SimulationType>();
-        foundOptima.add(simulationResults.get(0));
-
-        for (int i = 1; i < simulationResults.size(); i++) {
-            if (oldDistance > simulationResults.get(i).getDistanceToTargetValue()) {
-                foundOptima.clear();
-                foundOptima.add(simulationResults.get(i));
-            } else if (oldDistance == simulationResults.get(i).getDistanceToTargetValue()) {
-                foundOptima.add(simulationResults.get(i));
-            }
-        }
-
-        if (foundOptima.size() < 1) {
-            //Error checking the target
-            listener.operationFeedback("Opticheck failed.", typedef.typeOfProcessFeedback.TargetCheckFailed);
-        } else if (foundOptima.size() > 1) {
-            //Not unique
-            listener.operationFeedback("Selected Target is not unique There are " + foundOptima.size() + " same targets.", typedef.typeOfProcessFeedback.TargetValueNotUnique);
-        } else if (foundOptima.size() == 1) {
-            //Exactly one optimum with selected target value was found
-            if (oldDistance > 0.0) {
-                //distance not zero --> will adapt selected optimum!
-                listener.operationFeedback("Target is unique, will change target value to match distance of 0.0.", typedef.typeOfProcessFeedback.TargetCheckSuccessful);
-
-            } else {
-                listener.operationFeedback("Target is unique and distance is 0.0!", typedef.typeOfProcessFeedback.TargetCheckSuccessful);
-            }
-        }
-        //Store simulation results in mainframe for next targetcheck, until table was changed?
-        //Should be done during batch simulation???
-        //listener.operationFeedback("End of opti-calculation", typedef.typeOfProcessFeedback.TargetCheckSuccessful);
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -277,5 +247,59 @@ public class SimulatorBenchmark extends Thread implements Simulator {
     public void discardCalculatedOptimum() {
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         support.log("TBD Implement: discardCalculatedOptimum()", typeOfLogLevel.ERROR);
+    }
+
+    @Override
+    public void operationFeedback(String message, typedef.typeOfProcessFeedback feedback) {
+        try {
+            switch (feedback) {
+                case SimulationSuccessful:
+                    ArrayList<SimulationType> simulationResults = mySimulator.getListOfCompletedSimulations();
+                    double oldDistance = simulationResults.get(0).getDistanceToTargetValue();
+                    ArrayList<SimulationType> foundOptima = new ArrayList<SimulationType>();
+                    foundOptima.add(simulationResults.get(0));
+
+                    for (int i = 1; i < simulationResults.size(); i++) {
+                        if (oldDistance > simulationResults.get(i).getDistanceToTargetValue()) {
+                            foundOptima.clear();
+                            foundOptima.add(simulationResults.get(i));
+                        } else if (oldDistance == simulationResults.get(i).getDistanceToTargetValue()) {
+                            foundOptima.add(simulationResults.get(i));
+                        }
+                    }
+
+                    if (foundOptima.size() < 1) {
+                        //Error checking the target
+                        listener.operationFeedback("Opticheck failed.", typedef.typeOfProcessFeedback.TargetCheckFailed);
+                    } else if (foundOptima.size() > 1) {
+                        //Not unique
+                        listener.operationFeedback("Selected Target is not unique There are " + foundOptima.size() + " same targets.", typedef.typeOfProcessFeedback.TargetValueNotUnique);
+                    } else if (foundOptima.size() == 1) {
+                        //Exactly one optimum with selected target value was found
+                        if (oldDistance > 0.0) {
+                            //distance not zero --> will adapt selected optimum!
+                            listener.operationFeedback("Target is unique, will change target value to match distance of 0.0.", typedef.typeOfProcessFeedback.TargetCheckSuccessful);
+
+                        } else {
+                            listener.operationFeedback("Target is unique and distance is 0.0!", typedef.typeOfProcessFeedback.TargetCheckSuccessful);
+                        }
+                    }
+                    //Store simulation results in mainframe for next targetcheck, until table was changed?
+                    //Should be done during batch simulation???
+
+                    break;
+                case SimulationCanceled:
+                    support.log("Simulation aborted during targetcheck.", typeOfLogLevel.INFO);
+                    listener.operationFeedback("Targetecheck aborted.", typedef.typeOfProcessFeedback.TargetCheckFailed);
+                    break;
+                default:
+                    support.log("Unexpected feedback from simulator during targetcheck.", typeOfLogLevel.ERROR);
+                    listener.operationFeedback("Unexpected feedback.", typedef.typeOfProcessFeedback.TargetCheckFailed);
+            }
+        } catch (Exception e) {
+            support.log("General error during targetcheck. Maybe Reference to simulator missing?", typeOfLogLevel.ERROR);
+            listener.operationFeedback("Error during targetcheck.", typedef.typeOfProcessFeedback.TargetCheckFailed);
+            e.printStackTrace();
+        }
     }
 }

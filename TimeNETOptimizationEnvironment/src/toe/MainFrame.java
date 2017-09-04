@@ -1967,6 +1967,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         saveProperties();
         calculateDesignSpace();
         checkIfCachedSimulationIsPossible();
+        discardTarget();
         if (this.jComboBoxSimulationType.getSelectedItem().equals(typeOfSimulator.Cache_Only)) {
             if (!support.isCachedSimulationAvailable()) {
                 this.jComboBoxSimulationType.setSelectedItem(typeOfSimulator.Cached_Local);
@@ -2023,6 +2024,8 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         this.jButtonReload.setEnabled(false);
         this.jButtonStartOptimization.setEnabled(false);
         //this.jButtonGenerateListOfExperiments.setEnabled(false);
+        this.jButtonCheckTarget.setEnabled(false);
+        this.jButtonCheckTarget.setToolTipText("Generate design space before checking target value.");
     }
 
     /**
@@ -2036,6 +2039,8 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
         //this.jButtonStartOptimization.setEnabled(true);
         this.jButtonGenerateListOfExperiments.setEnabled(true);
         this.checkIfTimeNetPathIsCorrect();
+        this.jButtonCheckTarget.setEnabled(true);
+        this.jButtonCheckTarget.setToolTipText("Check selected target value.");
     }
 
     /**
