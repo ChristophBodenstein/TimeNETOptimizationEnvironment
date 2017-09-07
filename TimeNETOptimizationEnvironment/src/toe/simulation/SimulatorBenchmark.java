@@ -8,7 +8,6 @@ package toe.simulation;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
-import toe.SimOptiFactory;
 import toe.datamodel.parameter;
 import toe.datamodel.SimulationType;
 import toe.datamodel.MeasureType;
@@ -33,10 +32,10 @@ public class SimulatorBenchmark extends Thread implements Simulator, SimOptiCall
     int status = 0;
     boolean log = true;
     ArrayList<ArrayList<parameter>> listOfParameterSetsTMP;
-    boolean isOptimumCalculated = false; // by default optimum coordinates are not calculated
+    //boolean isOptimumCalculated = false; // by default optimum coordinates are not calculated
     boolean cancelAllSimulations = false;//Flag to cancel all simulations
     private SimOptiCallback listener = null;
-    private Simulator mySimulator = null;
+    private SimulationType calculatedOptimum = null;
 
     /**
      * Constructor
@@ -185,7 +184,11 @@ public class SimulatorBenchmark extends Thread implements Simulator, SimOptiCall
      */
     @Override
     public SimulationType getCalculatedOptimum(MeasureType targetMeasure) {
-        return BenchmarkFactory.getBenchmarkFunction().getOptimumSimulation(targetMeasure);
+        if (calculatedOptimum != null) {
+            return this.calculatedOptimum;
+        } else {
+            return BenchmarkFactory.getBenchmarkFunction().getOptimumSimulation(targetMeasure);
+        }
     }
 
     @Override
@@ -201,7 +204,7 @@ public class SimulatorBenchmark extends Thread implements Simulator, SimOptiCall
 
     @Override
     public boolean isOptimumCalculated() {
-        return isOptimumCalculated;
+        return (this.calculatedOptimum != null);
     }
 
     @Override
@@ -230,10 +233,8 @@ public class SimulatorBenchmark extends Thread implements Simulator, SimOptiCall
         //If yes --> warn before simulation 
         //--> simulate all and check for optimum.
         //Same procedure as jButtonStartBatchSimulationActionPerformed in Mainframe
-        //support.waitForSimulatorAsynchronous(mySimulator, listener);
-        this.mySimulator = SimOptiFactory.getSimulator();
-        mySimulator.initSimulator(support.getMainFrame().getListOfParameterSetsToBeWritten(), false);
-        support.waitForSimulatorAsynchronous(mySimulator, this);
+        this.initSimulator(support.getMainFrame().getListOfParameterSetsToBeWritten(), false);
+        support.waitForSimulatorAsynchronous(this, this);
 
     }
 
@@ -247,6 +248,7 @@ public class SimulatorBenchmark extends Thread implements Simulator, SimOptiCall
     public void discardCalculatedOptimum() {
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         support.log("TBD Implement: discardCalculatedOptimum()", typeOfLogLevel.ERROR);
+        this.calculatedOptimum = null;
     }
 
     @Override
@@ -254,18 +256,21 @@ public class SimulatorBenchmark extends Thread implements Simulator, SimOptiCall
         try {
             switch (feedback) {
                 case SimulationSuccessful:
-                    ArrayList<SimulationType> simulationResults = mySimulator.getListOfCompletedSimulations();
+                    ArrayList<SimulationType> simulationResults = this.getListOfCompletedSimulations();
                     double oldDistance = simulationResults.get(0).getDistanceToTargetValue();
                     ArrayList<SimulationType> foundOptima = new ArrayList<SimulationType>();
                     foundOptima.add(simulationResults.get(0));
 
                     for (int i = 1; i < simulationResults.size(); i++) {
+                        support.log(String.valueOf(simulationResults.get(i).getDistanceToTargetValue()), typeOfLogLevel.VERBOSE);
                         if (oldDistance > simulationResults.get(i).getDistanceToTargetValue()) {
                             foundOptima.clear();
                             foundOptima.add(simulationResults.get(i));
-                        } else if (oldDistance == simulationResults.get(i).getDistanceToTargetValue()) {
+                            oldDistance = simulationResults.get(i).getDistanceToTargetValue();
+                        } else if (Math.abs(oldDistance - simulationResults.get(i).getDistanceToTargetValue()) < support.DEFAULT_TARGET_STEPPING) {
                             foundOptima.add(simulationResults.get(i));
                         }
+
                     }
 
                     if (foundOptima.size() < 1) {
@@ -274,21 +279,36 @@ public class SimulatorBenchmark extends Thread implements Simulator, SimOptiCall
                     } else if (foundOptima.size() > 1) {
                         //Not unique
                         listener.operationFeedback("Selected Target is not unique There are " + foundOptima.size() + " same targets.", typedef.typeOfProcessFeedback.TargetValueNotUnique);
-                        support.log("The distance to target is: "+ oldDistance, typeOfLogLevel.INFO);
+                        support.log("The distance to target is: " + oldDistance, typeOfLogLevel.INFO);
                     } else if (foundOptima.size() == 1) {
                         //Exactly one optimum with selected target value was found
                         if (oldDistance > 0.0) {
                             //distance not zero --> will adapt selected optimum!
                             listener.operationFeedback("Target is unique, will change target value to match distance of 0.0.", typedef.typeOfProcessFeedback.TargetCheckSuccessful);
-                            support.log("Old distance to target is: "+ oldDistance, typeOfLogLevel.INFO);
+                            support.log("Old distance to target is: " + oldDistance, typeOfLogLevel.INFO);
 
                         } else {
                             listener.operationFeedback("Target is unique and distance is 0.0!", typedef.typeOfProcessFeedback.TargetCheckSuccessful);
                         }
                     }
+                    support.log("Target value(s) found at: ", typeOfLogLevel.RESULT);
+                    for (int i = 0; i < foundOptima.size(); i++) {
+                        support.log("Parameterset: " + i, typeOfLogLevel.RESULT);
+                        for (int c = 0; c < foundOptima.get(i).getListOfParameters().size(); c++) {
+                            if (foundOptima.get(i).getListOfParameters().get(c).isIteratable()) {
+                                foundOptima.get(i).getListOfParameters().get(c).printInfo(typeOfLogLevel.INFO);
+                            }
+                        }
+                        if (i == 0) {
+                            support.log("Targetvalue #0 will be used for optimization and statistics.", typeOfLogLevel.RESULT);
+                        }
+                    }
+
+                    calculatedOptimum = foundOptima.get(0);
+
                     //Store simulation results in mainframe for next targetcheck, until table was changed?
                     //Should be done during batch simulation???
-
+                    //Store best optimum to be returned by getCalculatedOptimum
                     break;
                 case SimulationCanceled:
                     support.log("Simulation aborted during targetcheck.", typeOfLogLevel.INFO);
