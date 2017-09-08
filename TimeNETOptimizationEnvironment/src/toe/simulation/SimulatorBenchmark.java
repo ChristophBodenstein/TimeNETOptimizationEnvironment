@@ -233,7 +233,7 @@ public class SimulatorBenchmark extends Thread implements Simulator, SimOptiCall
 
     @Override
     public void discardCalculatedOptimum() {
-        support.log("TBD Implement: discardCalculatedOptimum()", typeOfLogLevel.ERROR);
+        support.log("CalculatedOptimum will be discarded.", typeOfLogLevel.INFO);
         this.calculatedOptimum = null;
     }
 

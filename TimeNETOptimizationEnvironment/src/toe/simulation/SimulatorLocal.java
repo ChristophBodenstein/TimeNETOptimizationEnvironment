@@ -24,6 +24,7 @@ import toe.helper.SimOptiCallback;
 import toe.helper.nativeProcess;
 import toe.helper.nativeProcessCallbacks;
 import toe.support;
+import toe.typedef;
 import toe.typedef.typeOfLogLevel;
 
 /**
@@ -362,19 +363,18 @@ public class SimulatorLocal extends Thread implements Simulator, nativeProcessCa
 
     @Override
     public void startCalculatingOptimum(SimOptiCallback listener) {
-        //not needed
-        throw new UnsupportedOperationException("Not supported yet.");
+        listener.operationFeedback("Targetcheck not possible.", typedef.typeOfProcessFeedback.TargetCheckFailed);
+        support.log("Targetcheck not possible for local simulation.", typeOfLogLevel.ERROR);
     }
 
     @Override
     public void stopCalculatingOptimum(SimOptiCallback listener) {
-        //not needed
-        throw new UnsupportedOperationException("Not supported yet.");
+        listener.operationFeedback("Stop of targetcheck not possible.", typedef.typeOfProcessFeedback.TargetCheckFailed);
+        support.log("Stop of targetcheck not possible for local simulation.", typeOfLogLevel.ERROR);
     }
 
     @Override
     public void discardCalculatedOptimum() {
-        //not needed
-        //throw new UnsupportedOperationException("Not supported yet.");
+        support.log("Discard calculated optimum not possible for local simulation.", typeOfLogLevel.ERROR);
     }
 }

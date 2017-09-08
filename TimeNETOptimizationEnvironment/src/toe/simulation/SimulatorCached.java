@@ -13,6 +13,7 @@ import toe.datamodel.SimulationType;
 import toe.datamodel.MeasureType;
 import toe.helper.SimOptiCallback;
 import toe.support;
+import toe.typedef;
 import toe.typedef.typeOfLogLevel;
 
 /**
@@ -21,7 +22,7 @@ import toe.typedef.typeOfLogLevel;
  *
  * @author Christoph Bodenstein
  */
-public class SimulatorCached extends Thread implements Simulator {
+public class SimulatorCached extends Thread implements Simulator, SimOptiCallback {
 
     //Temporary simulation cache, to store current simulation results. Results find in this cache are taged as "isCache", other results are tagged as fresh simulations
     SimulationCache myTmpSimulationCache = support.getTmpSimulationCache();
@@ -29,6 +30,8 @@ public class SimulatorCached extends Thread implements Simulator {
     final String logFileName;
     ArrayList<ArrayList<parameter>> listOfParameterSetsTMP = null;
     boolean log = false;
+    private SimOptiCallback listener = null;
+    private SimulationType calculatedOptimum = null;
 
     /**
      * Constructor
@@ -232,26 +235,105 @@ public class SimulatorCached extends Thread implements Simulator {
         return this.logFileName;
     }
 
-    @Override
+        @Override
     public boolean isOptimumCalculated() {
-        return true;
+        return (this.calculatedOptimum != null);
     }
 
     @Override
     public void startCalculatingOptimum(SimOptiCallback listener) {
-        //TODO: implement later
-        throw new UnsupportedOperationException("Not supported yet.");
+        this.listener = listener;
+        //Check if all parametersets are generated (ListOfParameterSetsToBeWritten)
+        if (support.getMainFrame().getListOfParameterSetsToBeWritten().size() <= support.DEFAULT_MINIMUM_DESIGNSPACE_FOR_OPTIMIZATION) {
+            support.setStatusText("Not enaugh Parametersets to simulate for target check.");
+            support.log("No Parametersets to simulate for target check.", typeOfLogLevel.INFO);
+            listener.operationFeedback("Generate DS first!", typedef.typeOfProcessFeedback.TargetCheckFailed);
+            return;
+        } else {
+            //If not, ask to generate it (not necessary, button is disabled in this case)
+        }
+        support.setParameterBase(support.getMainFrame().getParameterBase());
+        support.setOriginalParameterBase(support.getMainFrame().getParameterBase());
+        this.initSimulator(support.getMainFrame().getListOfParameterSetsToBeWritten(), false);
+        support.waitForSimulatorAsynchronous(this, this);
     }
 
     @Override
     public void stopCalculatingOptimum(SimOptiCallback listener) {
-        //TODO: implement later
-        throw new UnsupportedOperationException("Not supported yet.");
+        listener.operationFeedback("Targetcheck canceled.", typedef.typeOfProcessFeedback.TargetDiscarded);
+        this.calculatedOptimum = null;
     }
 
     @Override
     public void discardCalculatedOptimum() {
-        //TODO: implement later
-        throw new UnsupportedOperationException("Not supported yet.");
+        support.log("CalculatedOptimum will be discarded.", typeOfLogLevel.INFO);
+        this.calculatedOptimum = null;
+    }
+
+    @Override
+    public void operationFeedback(String message, typedef.typeOfProcessFeedback feedback) {
+        try {
+            switch (feedback) {
+                case SimulationSuccessful:
+                    ArrayList<SimulationType> simulationResults = this.getListOfCompletedSimulations();
+                    double oldDistance = simulationResults.get(0).getDistanceToTargetValue();
+                    ArrayList<SimulationType> foundOptima = new ArrayList<>();
+                    foundOptima.add(simulationResults.get(0));
+
+                    for (int i = 1; i < simulationResults.size(); i++) {
+                        support.spinInLabel();
+                        support.log(String.valueOf(simulationResults.get(i).getDistanceToTargetValue()), typeOfLogLevel.VERBOSE);
+                        if (oldDistance > simulationResults.get(i).getDistanceToTargetValue()) {
+                            foundOptima.clear();
+                            foundOptima.add(simulationResults.get(i));
+                            oldDistance = simulationResults.get(i).getDistanceToTargetValue();
+                        } else if (Math.abs(oldDistance - simulationResults.get(i).getDistanceToTargetValue()) < support.DEFAULT_TARGET_STEPPING) {
+                            foundOptima.add(simulationResults.get(i));
+                        }
+                    }
+
+                    if (foundOptima.size() < 1) {
+                        //Error checking the target
+                        listener.operationFeedback("Opticheck failed.", typedef.typeOfProcessFeedback.TargetCheckFailed);
+                    } else if (foundOptima.size() > 1) {
+                        //Not unique
+                        listener.operationFeedback("Selected Target is not unique There are " + foundOptima.size() + " same targets.", typedef.typeOfProcessFeedback.TargetValueNotUnique);
+                        support.log("The distance to target is: " + oldDistance, typeOfLogLevel.INFO);
+                    } else if (foundOptima.size() == 1) {
+                        //Exactly one optimum with selected target value was found
+                        if (oldDistance > 0.0) {
+                            //distance not zero --> will adapt selected optimum!
+                            listener.operationFeedback("Target is unique, will change target value to match distance of 0.0.", typedef.typeOfProcessFeedback.TargetCheckSuccessful);
+                            support.log("Old distance to target is: " + oldDistance, typeOfLogLevel.INFO);
+
+                        } else {
+                            listener.operationFeedback("Target is unique and distance is 0.0!", typedef.typeOfProcessFeedback.TargetCheckSuccessful);
+                        }
+                    }
+                    support.log("Target value(s) found at: ", typeOfLogLevel.RESULT);
+                    for (int i = 0; i < foundOptima.size(); i++) {
+                        support.log("Parameterset: " + i, typeOfLogLevel.RESULT);
+                        for (int c = 0; c < foundOptima.get(i).getListOfParameters().size(); c++) {
+                            if (foundOptima.get(i).getListOfParameters().get(c).isIteratable()) {
+                                foundOptima.get(i).getListOfParameters().get(c).printInfo(typeOfLogLevel.INFO);
+                            }
+                        }
+                    }
+                    support.log("Targetvalue #0 will be used for optimization and statistics.", typeOfLogLevel.RESULT);
+                    calculatedOptimum = foundOptima.get(0);
+                    break;
+                case SimulationCanceled:
+                    support.log("Simulation aborted during targetcheck.", typeOfLogLevel.INFO);
+                    listener.operationFeedback("Targetecheck aborted.", typedef.typeOfProcessFeedback.TargetCheckFailed);
+                    break;
+                default:
+                    support.log("Unexpected feedback from simulator during targetcheck.", typeOfLogLevel.ERROR);
+                    listener.operationFeedback("Unexpected feedback.", typedef.typeOfProcessFeedback.TargetCheckFailed);
+            }
+        } catch (Exception e) {
+            support.log("General error during targetcheck. Maybe Reference to simulator missing?", typeOfLogLevel.ERROR);
+            listener.operationFeedback("Error during targetcheck.", typedef.typeOfProcessFeedback.TargetCheckFailed);
+            support.log(e.getMessage(), typeOfLogLevel.ERROR);
+        }
     }
 }
