@@ -15,6 +15,7 @@ import toe.helper.SimOptiCallback;
 import toe.support;
 import toe.typedef;
 import toe.typedef.typeOfLogLevel;
+import toe.typedef.typeOfTarget;
 
 /**
  * Class to simulate real SCPN-Simulation. It uses the SimulationCache with read
@@ -235,7 +236,7 @@ public class SimulatorCached extends Thread implements Simulator, SimOptiCallbac
         return this.logFileName;
     }
 
-        @Override
+    @Override
     public boolean isOptimumCalculated() {
         return (this.calculatedOptimum != null);
     }
@@ -276,25 +277,65 @@ public class SimulatorCached extends Thread implements Simulator, SimOptiCallbac
             switch (feedback) {
                 case SimulationSuccessful:
                     ArrayList<SimulationType> simulationResults = this.getListOfCompletedSimulations();
-                    double oldDistance = simulationResults.get(0).getDistanceToTargetValue();
+                    double oldDistance = 0.0;
                     ArrayList<SimulationType> foundOptima = new ArrayList<>();
-                    foundOptima.add(simulationResults.get(0));
-
-                    for (int i = 1; i < simulationResults.size(); i++) {
-                        support.spinInLabel();
-                        support.log(String.valueOf(simulationResults.get(i).getDistanceToTargetValue()), typeOfLogLevel.VERBOSE);
-                        if (oldDistance > simulationResults.get(i).getDistanceToTargetValue()) {
-                            foundOptima.clear();
-                            foundOptima.add(simulationResults.get(i));
-                            oldDistance = simulationResults.get(i).getDistanceToTargetValue();
-                        } else if (Math.abs(oldDistance - simulationResults.get(i).getDistanceToTargetValue()) < support.DEFAULT_TARGET_STEPPING) {
-                            foundOptima.add(simulationResults.get(i));
-                        }
+                    
+                    MeasureType targetMeasure = support.getOptimizationMeasure();
+                    typeOfTarget selectedTypeOfTarget = targetMeasure.getTargetTypeOf();
+                    switch (selectedTypeOfTarget) {
+                        case min:
+                            oldDistance = simulationResults.get(0).getMeasureValueByMeasureName(targetMeasure.getMeasureName());
+                            foundOptima.add(simulationResults.get(0));
+                            for (int i = 1; i < simulationResults.size(); i++) {
+                                support.spinInLabel();
+                                support.log("Value of measure is: " + String.valueOf(simulationResults.get(i).getMeasureValueByMeasureName(targetMeasure.getMeasureName())), typeOfLogLevel.VERBOSE);
+                                if (oldDistance > simulationResults.get(i).getMeasureValueByMeasureName(targetMeasure.getMeasureName())) {
+                                    foundOptima.clear();
+                                    foundOptima.add(simulationResults.get(i));
+                                    oldDistance = simulationResults.get(i).getMeasureValueByMeasureName(targetMeasure.getMeasureName());
+                                } else if (Math.abs(oldDistance - simulationResults.get(i).getMeasureValueByMeasureName(targetMeasure.getMeasureName())) < support.DEFAULT_TARGET_STEPPING) {
+                                    foundOptima.add(simulationResults.get(i));
+                                }
+                            }
+                            //TODO feedback --> set target value in measure-panel
+                            break;
+                        case max:
+                            oldDistance = simulationResults.get(0).getMeasureValueByMeasureName(targetMeasure.getMeasureName());
+                            foundOptima.add(simulationResults.get(0));
+                            for (int i = 1; i < simulationResults.size(); i++) {
+                                support.spinInLabel();
+                                support.log("Value of measure is: " + String.valueOf(simulationResults.get(i).getMeasureValueByMeasureName(targetMeasure.getMeasureName())), typeOfLogLevel.VERBOSE);
+                                if (oldDistance < simulationResults.get(i).getMeasureValueByMeasureName(targetMeasure.getMeasureName())) {
+                                    foundOptima.clear();
+                                    foundOptima.add(simulationResults.get(i));
+                                    oldDistance = simulationResults.get(i).getMeasureValueByMeasureName(targetMeasure.getMeasureName());
+                                } else if (Math.abs(oldDistance - simulationResults.get(i).getMeasureValueByMeasureName(targetMeasure.getMeasureName())) < support.DEFAULT_TARGET_STEPPING) {
+                                    foundOptima.add(simulationResults.get(i));
+                                }
+                            }
+                            //TODO feedback --> set target value in measure-panel
+                            break;
+                        case value:
+                            oldDistance = simulationResults.get(0).getDistanceToTargetValue();
+                            foundOptima.add(simulationResults.get(0));
+                            for (int i = 1; i < simulationResults.size(); i++) {
+                                support.spinInLabel();
+                                support.log("Distance is: " + String.valueOf(simulationResults.get(i).getDistanceToTargetValue()), typeOfLogLevel.VERBOSE);
+                                if (oldDistance > simulationResults.get(i).getDistanceToTargetValue()) {
+                                    foundOptima.clear();
+                                    foundOptima.add(simulationResults.get(i));
+                                    oldDistance = simulationResults.get(i).getDistanceToTargetValue();
+                                } else if (Math.abs(oldDistance - simulationResults.get(i).getDistanceToTargetValue()) < support.DEFAULT_TARGET_STEPPING) {
+                                    foundOptima.add(simulationResults.get(i));
+                                }
+                            }
+                            break;
                     }
 
                     if (foundOptima.size() < 1) {
                         //Error checking the target
                         listener.operationFeedback("Opticheck failed.", typedef.typeOfProcessFeedback.TargetCheckFailed);
+                        support.log("No optimum found, targetcheck failed.", typeOfLogLevel.ERROR);
                     } else if (foundOptima.size() > 1) {
                         //Not unique
                         listener.operationFeedback("Selected Target is not unique There are " + foundOptima.size() + " same targets.", typedef.typeOfProcessFeedback.TargetValueNotUnique);
@@ -303,8 +344,8 @@ public class SimulatorCached extends Thread implements Simulator, SimOptiCallbac
                         //Exactly one optimum with selected target value was found
                         if (oldDistance > 0.0) {
                             //distance not zero --> will adapt selected optimum!
-                            listener.operationFeedback("Target is unique, will change target value to match distance of 0.0.", typedef.typeOfProcessFeedback.TargetCheckSuccessful);
-                            support.log("Old distance to target is: " + oldDistance, typeOfLogLevel.INFO);
+                            listener.operationFeedback("Target is unique, but distance is not 0.0.", typedef.typeOfProcessFeedback.TargetCheckSuccessful);
+                            support.log("Distance to target is: " + oldDistance, typeOfLogLevel.INFO);
 
                         } else {
                             listener.operationFeedback("Target is unique and distance is 0.0!", typedef.typeOfProcessFeedback.TargetCheckSuccessful);
