@@ -341,14 +341,7 @@ public class SimulatorCached extends Thread implements Simulator, SimOptiCallbac
                         support.log("The distance to target is: " + oldDistance, typeOfLogLevel.INFO);
                     } else if (foundOptima.size() == 1) {
                         //Exactly one optimum with selected target value was found
-                        if (oldDistance > 0.0) {
-                            //distance not zero --> will adapt selected optimum!
-                            listener.operationFeedback("Target is unique, but distance was not 0.0.", typedef.typeOfProcessFeedback.TargetCheckSuccessful);
-                            support.log("Distance to target is: " + oldDistance, typeOfLogLevel.INFO);
-
-                        } else {
-                            listener.operationFeedback("Target is unique and distance is 0.0!", typedef.typeOfProcessFeedback.TargetCheckSuccessful);
-                        }
+                        listener.operationFeedback("Target is unique!", typedef.typeOfProcessFeedback.TargetCheckSuccessful);
                     }
                     support.log("Target value(s) found at: ", typeOfLogLevel.RESULT);
                     for (int i = 0; i < foundOptima.size(); i++) {

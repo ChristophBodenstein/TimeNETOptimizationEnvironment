@@ -2688,7 +2688,7 @@ public final class MainFrame extends javax.swing.JFrame implements TableModelLis
             case TargetCheckFailed:
                 support.log("Check of target value failed with:" + message, typeOfLogLevel.ERROR);
                 support.setStatusText(message);
-                this.jLabelTargetStatus.setText("");
+                this.jLabelTargetStatus.setText("ERROR");
                 this.popUIState();
                 break;
             case TargetValueNotUnique:
