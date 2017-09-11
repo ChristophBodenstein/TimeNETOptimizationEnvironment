@@ -8,6 +8,7 @@ package toe.simulation;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
+import toe.MeasurementForm;
 import toe.datamodel.parameter;
 import toe.datamodel.SimulationType;
 import toe.datamodel.MeasureType;
@@ -279,7 +280,7 @@ public class SimulatorCached extends Thread implements Simulator, SimOptiCallbac
                     ArrayList<SimulationType> simulationResults = this.getListOfCompletedSimulations();
                     double oldDistance = 0.0;
                     ArrayList<SimulationType> foundOptima = new ArrayList<>();
-                    
+
                     MeasureType targetMeasure = support.getOptimizationMeasure();
                     typeOfTarget selectedTypeOfTarget = targetMeasure.getTargetTypeOf();
                     switch (selectedTypeOfTarget) {
@@ -297,7 +298,6 @@ public class SimulatorCached extends Thread implements Simulator, SimOptiCallbac
                                     foundOptima.add(simulationResults.get(i));
                                 }
                             }
-                            //TODO feedback --> set target value in measure-panel
                             break;
                         case max:
                             oldDistance = simulationResults.get(0).getMeasureValueByMeasureName(targetMeasure.getMeasureName());
@@ -313,7 +313,6 @@ public class SimulatorCached extends Thread implements Simulator, SimOptiCallbac
                                     foundOptima.add(simulationResults.get(i));
                                 }
                             }
-                            //TODO feedback --> set target value in measure-panel
                             break;
                         case value:
                             oldDistance = simulationResults.get(0).getDistanceToTargetValue();
@@ -344,7 +343,7 @@ public class SimulatorCached extends Thread implements Simulator, SimOptiCallbac
                         //Exactly one optimum with selected target value was found
                         if (oldDistance > 0.0) {
                             //distance not zero --> will adapt selected optimum!
-                            listener.operationFeedback("Target is unique, but distance is not 0.0.", typedef.typeOfProcessFeedback.TargetCheckSuccessful);
+                            listener.operationFeedback("Target is unique, but distance was not 0.0.", typedef.typeOfProcessFeedback.TargetCheckSuccessful);
                             support.log("Distance to target is: " + oldDistance, typeOfLogLevel.INFO);
 
                         } else {
@@ -362,6 +361,9 @@ public class SimulatorCached extends Thread implements Simulator, SimOptiCallbac
                     }
                     support.log("Targetvalue #0 will be used for optimization and statistics.", typeOfLogLevel.RESULT);
                     calculatedOptimum = foundOptima.get(0);
+                    support.log("Will set targetvalue to: " + calculatedOptimum.getMeasureValueByMeasureName(targetMeasure.getMeasureName()), typeOfLogLevel.RESULT);
+                    MeasurementForm tmpMeasurementForm = (MeasurementForm) support.getMeasureFormPane().getComponent(0);
+                    tmpMeasurementForm.setTargetValue(calculatedOptimum.getMeasureValueByMeasureName(targetMeasure.getMeasureName()));
                     break;
                 case SimulationCanceled:
                     support.log("Simulation aborted during targetcheck.", typeOfLogLevel.INFO);
