@@ -331,18 +331,6 @@ public class SimulatorCached extends Thread implements Simulator, SimOptiCallbac
                             break;
                     }
 
-                    if (foundOptima.size() < 1) {
-                        //Error checking the target
-                        listener.operationFeedback("Opticheck failed.", typedef.typeOfProcessFeedback.TargetCheckFailed);
-                        support.log("No optimum found, targetcheck failed.", typeOfLogLevel.ERROR);
-                    } else if (foundOptima.size() > 1) {
-                        //Not unique
-                        listener.operationFeedback("Selected Target is not unique There are " + foundOptima.size() + " same targets.", typedef.typeOfProcessFeedback.TargetValueNotUnique);
-                        support.log("The distance to target is: " + oldDistance, typeOfLogLevel.INFO);
-                    } else if (foundOptima.size() == 1) {
-                        //Exactly one optimum with selected target value was found
-                        listener.operationFeedback("Target is unique!", typedef.typeOfProcessFeedback.TargetCheckSuccessful);
-                    }
                     support.log("Target value(s) found at: ", typeOfLogLevel.RESULT);
                     for (int i = 0; i < foundOptima.size(); i++) {
                         support.log("Parameterset: " + i, typeOfLogLevel.RESULT);
@@ -357,6 +345,20 @@ public class SimulatorCached extends Thread implements Simulator, SimOptiCallbac
                     support.log("Will set targetvalue to: " + calculatedOptimum.getMeasureValueByMeasureName(targetMeasure.getMeasureName()), typeOfLogLevel.RESULT);
                     MeasurementForm tmpMeasurementForm = (MeasurementForm) support.getMeasureFormPane().getComponent(0);
                     tmpMeasurementForm.setTargetValue(calculatedOptimum.getMeasureValueByMeasureName(targetMeasure.getMeasureName()));
+
+                    if (foundOptima.size() < 1) {
+                        //Error checking the target
+                        listener.operationFeedback("Opticheck failed.", typedef.typeOfProcessFeedback.TargetCheckFailed);
+                        support.log("No optimum found, targetcheck failed.", typeOfLogLevel.ERROR);
+                    } else if (foundOptima.size() > 1) {
+                        //Not unique
+                        listener.operationFeedback("Selected Target is not unique There are " + foundOptima.size() + " same targets.", typedef.typeOfProcessFeedback.TargetValueNotUnique);
+                        support.log("The distance to target is: " + oldDistance, typeOfLogLevel.INFO);
+                    } else if (foundOptima.size() == 1) {
+                        //Exactly one optimum with selected target value was found
+                        listener.operationFeedback("Target is unique!", typedef.typeOfProcessFeedback.TargetCheckSuccessful);
+                    }
+
                     break;
                 case SimulationCanceled:
                     support.log("Simulation aborted during targetcheck.", typeOfLogLevel.INFO);
