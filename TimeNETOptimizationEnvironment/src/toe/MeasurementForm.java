@@ -188,6 +188,7 @@ public final class MeasurementForm extends javax.swing.JPanel {
      */
     public void setTargetValue(double targetValue) {
         jSpinnerTargetValue.setValue(targetValue);
+        currentTargetValue = targetValue;
     }
 
     /**
