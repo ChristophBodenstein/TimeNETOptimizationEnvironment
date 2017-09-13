@@ -42,7 +42,7 @@ public class AboutPanel extends javax.swing.JPanel implements HyperlinkListener 
             versionInformation.load(ddlStream);
             ddlStream.close();
             this.jLabelVersion.setText("Version: " + versionInformation.getProperty("version", ""));
-            this.linkToVersion+=versionInformation.getProperty("shorthash", "");
+            this.linkToVersion += versionInformation.getProperty("shorthash", "");
         } catch (Exception e) {
             support.log("Could not load Version.properties.", typeOfLogLevel.ERROR);
         }
