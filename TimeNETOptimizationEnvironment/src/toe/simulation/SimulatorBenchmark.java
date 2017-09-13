@@ -8,6 +8,7 @@ package toe.simulation;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
+import toe.MeasurementForm;
 import toe.datamodel.parameter;
 import toe.datamodel.SimulationType;
 import toe.datamodel.MeasureType;
@@ -247,6 +248,8 @@ public class SimulatorBenchmark extends Thread implements Simulator, SimOptiCall
                     ArrayList<SimulationType> foundOptima = new ArrayList<>();
                     foundOptima.add(simulationResults.get(0));
 
+                    MeasureType targetMeasure = support.getOptimizationMeasure();
+
                     for (int i = 1; i < simulationResults.size(); i++) {
                         support.spinInLabel();
                         support.log(String.valueOf(simulationResults.get(i).getDistanceToTargetValue()), typeOfLogLevel.VERBOSE);
@@ -259,24 +262,6 @@ public class SimulatorBenchmark extends Thread implements Simulator, SimOptiCall
                         }
                     }
 
-                    if (foundOptima.size() < 1) {
-                        //Error checking the target
-                        listener.operationFeedback("Opticheck failed.", typedef.typeOfProcessFeedback.TargetCheckFailed);
-                    } else if (foundOptima.size() > 1) {
-                        //Not unique
-                        listener.operationFeedback("Selected Target is not unique There are " + foundOptima.size() + " same targets.", typedef.typeOfProcessFeedback.TargetValueNotUnique);
-                        support.log("The distance to target is: " + oldDistance, typeOfLogLevel.INFO);
-                    } else if (foundOptima.size() == 1) {
-                        //Exactly one optimum with selected target value was found
-                        if (oldDistance > 0.0) {
-                            //distance not zero --> will adapt selected optimum!
-                            listener.operationFeedback("Target is unique, will change target value to match distance of 0.0.", typedef.typeOfProcessFeedback.TargetCheckSuccessful);
-                            support.log("Old distance to target is: " + oldDistance, typeOfLogLevel.INFO);
-
-                        } else {
-                            listener.operationFeedback("Target is unique and distance is 0.0!", typedef.typeOfProcessFeedback.TargetCheckSuccessful);
-                        }
-                    }
                     support.log("Target value(s) found at: ", typeOfLogLevel.RESULT);
                     for (int i = 0; i < foundOptima.size(); i++) {
                         support.log("Parameterset: " + i, typeOfLogLevel.RESULT);
@@ -287,6 +272,30 @@ public class SimulatorBenchmark extends Thread implements Simulator, SimOptiCall
                         }
                     }
                     support.log("Targetvalue #0 will be used for optimization and statistics.", typeOfLogLevel.RESULT);
+                    calculatedOptimum = foundOptima.get(0);
+                    support.log("Will set targetvalue to: " + calculatedOptimum.getMeasureValueByMeasureName(targetMeasure.getMeasureName()), typeOfLogLevel.RESULT);
+                    MeasurementForm tmpMeasurementForm = (MeasurementForm) support.getMeasureFormPane().getComponent(0);
+                    tmpMeasurementForm.setTargetValue(calculatedOptimum.getMeasureValueByMeasureName(targetMeasure.getMeasureName()));
+
+                    if (foundOptima.size() < 1) {
+                        //Error checking the target
+                        listener.operationFeedback("Opticheck failed.", typedef.typeOfProcessFeedback.TargetCheckFailed);
+                    } else if (foundOptima.size() > 1) {
+                        //Not unique
+                        listener.operationFeedback("Selected Target is not unique There are " + foundOptima.size() + " same targets.", typedef.typeOfProcessFeedback.TargetValueNotUnique);
+                        support.log("The distance to target is: " + oldDistance, typeOfLogLevel.INFO);
+                    } else if (foundOptima.size() == 1) {
+                        //Exactly one optimum with selected target value was found
+                        if (Math.abs(oldDistance - simulationResults.get(0).getDistanceToTargetValue()) < support.DEFAULT_TARGET_STEPPING) {
+                            //distance not zero --> will adapt selected optimum!
+                            listener.operationFeedback("Target will be adapted.", typedef.typeOfProcessFeedback.TargetCheckSuccessful);
+                            support.log("Old distance to target was: " + oldDistance, typeOfLogLevel.INFO);
+
+                        } else {
+                            listener.operationFeedback("Target is unique and distance is 0.0!", typedef.typeOfProcessFeedback.TargetCheckSuccessful);
+                        }
+                    }
+
                     calculatedOptimum = foundOptima.get(0);
                     break;
                 case SimulationCanceled:
