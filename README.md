@@ -51,3 +51,7 @@ Multiphase introduction:
 
 Multiphase validation with benchmark functions:
 [http://www.scitepress.org/DigitalLibrary/PublicationsDetail.aspx?ID=t+AXD5JJD04=&t=1](https://www.tu-ilmenau.de/fileadmin/public/sse/Veroeffentlichungen/2015/Simultech2015.pdf)
+
+[PhD thesis](https://www.db-thueringen.de/receive/dbt_mods_00035154)
+
+[Some videos of optimization heuristics](https://www.youtube.com/watch?v=wf2XJZKnTwc&list=PLUkI_z21pHyVd4wdcqljd1VYAK2eh0mQn)
